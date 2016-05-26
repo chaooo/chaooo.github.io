@@ -15,24 +15,21 @@
     }, searchAnimDuration);
   };
 
-  $('#nav-search-btn').on('click', function(){
-    if (isSearchAnim) return;
-
+$('#nav-search-btn').on('mouseenter', function(){
+  if (isSearchAnim) return;
+  startSearchAnim();
+  $searchWrap.addClass('on');
+  stopSearchAnim(function(){
+    $('.search-form-input').focus();
+  });
+}); 
+$('.search-form-input').on('blur', function(){ 
+  $('.search-form').on('mouseleave',function(){
     startSearchAnim();
-    $searchWrap.addClass('on');
-    stopSearchAnim(function(){
-      $('.search-form-input').focus();
-    });
+    $searchWrap.removeClass('on');
+    stopSearchAnim();
   });
- 
-  
-    $('.search-form-submit').on('keyup',function(){
-      $('.search-form-input').on('blur', function(){ 
-      startSearchAnim();
-      $searchWrap.removeClass('on');
-      stopSearchAnim();
-    });
-  });
+});
 
   // Share
   $('body').on('click', function(){
