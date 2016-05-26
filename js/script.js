@@ -15,7 +15,7 @@
     }, searchAnimDuration);
   };
 
-  $('#nav-search-btn').on('mouseenter', function(){
+  $('#nav-search-btn').on('click', function(){
     if (isSearchAnim) return;
 
     startSearchAnim();
@@ -25,8 +25,9 @@
     });
   });
  
-  $('.search-form-input').on('blur', function(){ 
-    $('.search-form').on('mouseleave',function(){
+  
+    $('.search-form-submit').on('keyup',function(){
+      $('.search-form-input').on('blur', function(){ 
       startSearchAnim();
       $searchWrap.removeClass('on');
       stopSearchAnim();
