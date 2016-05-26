@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Hexo3.2+GitHub搭建静态博客 | 秋过冬漫长</title>
+  <meta property="qc:admins" content="136042646177767140526177" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="开始之前在安装hexo之前，必须确认你已经安装了Node.js和Git。
+1.创建GitHub仓库注册GitHub账号，创建一个以”用户名.github.io”命名的仓库，如我的用户名为chaooo,那我的仓库名为：chaooo.github.io，仓库默有master分支，用于托管生成的静态文件，再新建一个develop(名字自定)分支，用于托管后台文件，方便以后换电脑时后台文件不会丢失。
+2.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo3.2+GitHub搭建静态博客">
+<meta property="og:url" content="http://chaooo.github.io/2016/05/23/Hexo3-2-github搭建静态博客.html">
+<meta property="og:site_name" content="秋过冬漫长">
+<meta property="og:description" content="开始之前在安装hexo之前，必须确认你已经安装了Node.js和Git。
+1.创建GitHub仓库注册GitHub账号，创建一个以”用户名.github.io”命名的仓库，如我的用户名为chaooo,那我的仓库名为：chaooo.github.io，仓库默有master分支，用于托管生成的静态文件，再新建一个develop(名字自定)分支，用于托管后台文件，方便以后换电脑时后台文件不会丢失。
+2.">
+<meta property="og:updated_time" content="2016-05-26T01:01:56.265Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo3.2+GitHub搭建静态博客">
+<meta name="twitter:description" content="开始之前在安装hexo之前，必须确认你已经安装了Node.js和Git。
+1.创建GitHub仓库注册GitHub账号，创建一个以”用户名.github.io”命名的仓库，如我的用户名为chaooo,那我的仓库名为：chaooo.github.io，仓库默有master分支，用于托管生成的静态文件，再新建一个develop(名字自定)分支，用于托管后台文件，方便以后换电脑时后台文件不会丢失。
+2.">
+  <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">  
+  <link rel="icon" href="/favicon.png">  
+  <link href="http://fonts.useso.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css"> 
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <!--[if lt IE 9]><div id="header"><![endif]-->
+      <header id="header">
+        <div id="banner"></div>
+        <div id="header-outer" class="outer">
+          <div id="header-title" class="inner">
+            <h1 id="logo-wrap"><a href="/" id="logo">秋过冬漫长</a></h1>
+             <h2 id="subtitle-wrap"><a href="/" id="subtitle">没有比脚更长的路，走下去，前面是个天！</a></h2> 
+          </div>
+          <div id="header-inner" class="inner">
+            <nav id="main-nav">
+              <a id="main-nav-toggle" class="nav-icon"></a>
+               <a class="main-nav-link" href="/">Home</a>  <a class="main-nav-link" href="/archives">Archives</a>  <a class="main-nav-link" href="/baidusitemap.xml">baidusitemap</a> 
+            </nav>
+            <nav id="sub-nav">
+              <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+               <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a> 
+            </nav>
+            <div id="search-form-wrap">
+              <form action="" method="get" accept-charset="UTF-8" class="search-form">
+                <input autocapitalize="off" autocorrect="off" autocomplete="off" name="q" results="0" id="search" maxlength="20" placeholder="Search" style="border:none;background:none;width:161px;height:30px;line-height:30px;padding:0px 11px 0px 28px;" class="st-default-search-input search-form-input" type="text">
+                <button type="submit" class="search-form-submit"></button>
+              </form>
+            </div>
+          </div>
+          <!--[if lt IE 9]>
+            <style>.hid-ltIE9{position:absolute;bottom:0;left:0;z-index:999;width:100%;line-height:46px;color:#7b1a00;font-size:14px;text-align:center;background:#fff3c8;border-radius:4px;border:1px solid #;text-shadow:0 1px #fff;-webkit-box-shadow:0 -1px 4px #ccc inset;box-shadow:0 -1px 4px #ccc inset;border:1px solid #ccc;}.hid-ltIE9 a{color:#258fb8;text-decoration:none;}.hid-ltIE9 a:hover{text-decoration:underline;}.hid-exclamation-triangle,.hid-chrome,.hid-firefox{font:normal normal normal 14px/1 FontAwesome;display:inline-block;width:30px;height:30px;font-size:14px;text-align:center;}.hid-exclamation-triangle:before{content:"\f071";}.hid-chrome:before{content:"\f268";}.hid-firefox:before{content:"\f269";}</style><p class="hid-ltIE9"><i class="hid-exclamation-triangle" aria-hidden="true"></i>重要提示：您当前使用的浏览器版本过低，可能存在安全风险！想要更好的体验，建议升级浏览器：<a href="https://www.google.cn/intl/zh-CN/chrome/browser/desktop/" title="谷歌Chrome浏览器"><i class="hid-chrome" aria-hidden="true"></i>Chrome</a>、<a href="http://www.firefox.com.cn/download/"title="火狐Firefox浏览器"><i class="hid-firefox" aria-hidden="true"></i>Firefox</a></p>
+          <![endif]-->
+        </div>
+      </header>
+      <!--[if lt IE 9]></div><![endif]-->
+      <div class="outer">
+        <section id="main">      <article id="post-Hexo3-2-github搭建静态博客" class="article article-type-post" itemscope itemprop="blogPost">
+            <div class="article-meta">
+              <a href="/2016/05/23/Hexo3-2-github搭建静态博客.html" class="article-date">
+                <time datetime="2016-05-23T03:16:51.000Z" itemprop="datePublished">2016-05-23</time>
+              </a> 
+            </div>
+            <div class="article-inner">
+              
+              <header class="article-header">                
+                <h1 class="article-title" itemprop="name">
+                  Hexo3.2+GitHub搭建静态博客
+                </h1>
+              </header>
+              
+              <div class="article-entry" itemprop="articleBody">
+                
+                <h3 id="开始之前"><a href="#开始之前" class="headerlink" title="开始之前"></a>开始之前</h3><p>在安装<a href="https://hexo.io/zh-cn/" target="_blank" rel="external">hexo</a>之前，必须确认你已经安装了<a href="http://nodejs.org/" target="_blank" rel="external">Node.js</a>和<a href="http://git-scm.com/" target="_blank" rel="external">Git</a>。</p>
+<h4 id="1-创建GitHub仓库"><a href="#1-创建GitHub仓库" class="headerlink" title="1.创建GitHub仓库"></a>1.创建GitHub仓库</h4><p>注册<a href="https://github.com/" target="_blank" rel="external">GitHub</a>账号，创建一个以”用户名.github.io”命名的仓库，如我的用户名为chaooo,那我的仓库名为：<a href="https://github.com/chaooo/chaooo.github.io" target="_blank" rel="external">chaooo.github.io</a>，仓库默有master分支，用于托管生成的静态文件，再新建一个develop(名字自定)分支，用于托管后台文件，方便以后换电脑时后台文件不会丢失。</p>
+<h4 id="2-配置Git"><a href="#2-配置Git" class="headerlink" title="2.配置Git"></a>2.配置Git</h4><p>设置Git的用户名和邮件地址（邮箱就是你注册Github时候的邮箱），打开Git Bash,键入：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global user.name <span class="string">"username"</span></span><br><span class="line">$ git config --global user.email <span class="string">"email@example.com"</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="3-本地Git与GitHub建立联系"><a href="#3-本地Git与GitHub建立联系" class="headerlink" title="3.本地Git与GitHub建立联系"></a>3.本地Git与GitHub建立联系</h4><p>这里介绍SSH的配置，先检查电脑是否已经有SSH<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ls -al ~/.ssh</span><br></pre></td></tr></table></figure></p>
+<p>如果不存在就没有关系，如果存在的话，直接删除.ssh文件夹里面所有文件。<br>输入以下指令后，一路回车就好：<br><a id="more"></a><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -t rsa -C <span class="string">"emailt@example.com"</span></span><br></pre></td></tr></table></figure></p>
+<p>然后键入以下指令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-agent <span class="_">-s</span></span><br><span class="line">$ ssh-add ~/.ssh/id_rsa</span><br></pre></td></tr></table></figure></p>
+<p>如果出现这个错误:<code>Could not open a connection to your authentication agent</code>，则先执行如下命令即可：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-agent bash</span><br></pre></td></tr></table></figure></p>
+<p>再重新输入指令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-add ~/.ssh/id_rsa</span><br></pre></td></tr></table></figure></p>
+<p>到了这一步，就可以添加SSH key到你的Github账户了。键入以下指令，拷贝Key（先拷贝了，等一下可以直接粘贴）：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ clip &lt; ~/.ssh/id_rsa.pub</span><br></pre></td></tr></table></figure></p>
+<p>在github上点击你的头像–&gt;Your profile–&gt;Edit profile–&gt;SSH and GPG keys–&gt;New SSH key<br>Title自己随便取，然后这个Key就是刚刚拷贝的，你直接粘贴就好（也可以文本打开id_rsa.pub复制其内容），最后Add SSH key。<br>最后还是测试一下吧，键入以下命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh -T git@github.com</span><br></pre></td></tr></table></figure></p>
+<p>你可能会看到有警告，没事，输入“yes”就好。</p>
+<h4 id="4-初始化hexo文件夹"><a href="#4-初始化hexo文件夹" class="headerlink" title="4.初始化hexo文件夹"></a>4.初始化hexo文件夹</h4><p>到GitHub的chaooo.github.io仓库下，点击Clone or download,复制里面的HTTPS地址。<br>在E盘或是你喜爱的文件夹下，右键Git Bash Here: 键入git clone -b develop &lt;刚复制的地址&gt;<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> -b develop https://github.com/chaooo/chaooo.github.io.git</span><br><span class="line">$ mkdir Hexo-admin</span><br></pre></td></tr></table></figure></p>
+<h3 id="Hexo安装配置"><a href="#Hexo安装配置" class="headerlink" title="Hexo安装配置"></a>Hexo安装配置</h3><h4 id="1-Hexo初始化"><a href="#1-Hexo初始化" class="headerlink" title="1.Hexo初始化"></a>1.Hexo初始化</h4><p>进入Hexo-admin文件夹<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> Hexo-admin</span><br></pre></td></tr></table></figure></p>
+<p>接下来只需要使用 npm 即可完成 Hexo 的安装:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g hexo-cli</span><br></pre></td></tr></table></figure></p>
+<p>安装 Hexo 完成后，请执行下列命令，Hexo 将会在指定文件夹中新建所需要的文件:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ hexo init</span><br><span class="line">$ npm install</span><br></pre></td></tr></table></figure></p>
+<p>接下来也可以本地预览博客，执行下列命令,然后到浏览器输入localhost:4000看看。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br><span class="line">$ hexo server</span><br></pre></td></tr></table></figure></p>
+<p>输入Ctrl+C停止服务。</p>
+<h4 id="2-Hexo配置"><a href="#2-Hexo配置" class="headerlink" title="2.Hexo配置"></a>2.Hexo配置</h4><p>用编辑器打开 Hexo-admin/ 下的配置文件_config.yml找到：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Deployment</span></span><br><span class="line"><span class="comment">## Docs: https://hexo.io/docs/deployment.html</span></span><br><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: </span><br><span class="line">  repository:</span><br></pre></td></tr></table></figure></p>
+<p>到GitHub的chaooo.github.io仓库下，点击Clone or download,复制里面的HTTPS地址到repository:，添加branch: master。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Deployment</span></span><br><span class="line"><span class="comment">## Docs: https://hexo.io/docs/deployment.html</span></span><br><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: git</span><br><span class="line">  repository: https://github.com/chaooo/chaooo.github.io.git</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure></p>
+<h4 id="3-完成部署"><a href="#3-完成部署" class="headerlink" title="3.完成部署"></a>3.完成部署</h4><p>最后一步，快要成功了，键入指令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-deployer-git --save</span><br><span class="line">$ hexo generate</span><br><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure></p>
+<p>输入弹出框的用户名与密码(首次使用git会弹出)。<br>OK，我们的博客就已经完全搭建起来了，在浏览器输入（当然，是你的Repository名），例如我的：<a href="http://chaooo.github.io/">chaooo.github.io/</a><br>每次修改本地文件后，需要键入hexo generate才能保存，再键入hexo deploy上传文件。成功之后命令行最后两句大概是这样：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">To https://github.com/chaooo/chaooo.github.io.git</span><br><span class="line">   7f3b50a..128a10d  HEAD -&gt; master</span><br><span class="line">INFO  Deploy <span class="keyword">done</span>: git</span><br></pre></td></tr></table></figure></p>
+<p>当然，不要忘了回退到父文件夹提交网站相关的文件以备今后迁移，依次执行git add .、git commit -m “…”、git push origin develop。</p>
+<h3 id="日常操作"><a href="#日常操作" class="headerlink" title="日常操作"></a>日常操作</h3><h4 id="1-写文章"><a href="#1-写文章" class="headerlink" title="1.写文章"></a>1.写文章</h4><p>执行new命令，生成指定名称的文章至 Admin-blog\source_posts\文章标题.md 。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new [layout] <span class="string">"文章标题"</span> <span class="comment">#新建文章</span></span><br></pre></td></tr></table></figure></p>
+<p>然后用编辑器打开“文章标题.md”按照<a href="http://www.appinn.com/markdown/" target="_blank" rel="external">Markdown语法</a>书写文章。<br> 其中layout是可选参数，默认值为post。到 scaffolds 目录下查看现有的layout。当然你可以添加自己的layout，<br> 同时你也可以编辑现有的layout，比如post的layout默认是 hexo\scaffolds\post.md<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">title: &#123; &#123; title &#125; &#125;</span><br><span class="line">date: &#123; &#123; date &#125; &#125;</span><br><span class="line">tags:</span><br><span class="line">---</span><br></pre></td></tr></table></figure></p>
+<p>我想添加categories，以免每次手工输入，只需要修改这个文件添加一行，如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">title: &#123; &#123; title &#125; &#125;</span><br><span class="line">date: &#123; &#123; date &#125; &#125;</span><br><span class="line">categories:</span><br><span class="line">tags:</span><br><span class="line">---</span><br></pre></td></tr></table></figure></p>
+<p>文件标题也是md文件的名字，同时也出现在你文章的URL中，postName如果包含空格，必须用”将其包围。<br><code>请注意，大括号与大括号之间我多加了个空格，否则会被转义，不能正常显示；所有文件&quot;：&quot;后面都必须有个空格，不然会报错。</code></p>
+<h4 id="2-提交"><a href="#2-提交" class="headerlink" title="2.提交"></a>2.提交</h4><p>每次在本地对博客进行修改后，先执行下列命令提交网站相关的文件。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git add .</span><br><span class="line">$ git commit -m <span class="string">"..."</span></span><br><span class="line">$ git push origin develop</span><br></pre></td></tr></table></figure></p>
+<p>然后才执行hexo generate -d发布网站到master分支上。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate <span class="_">-d</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="3-本地仓库丢失"><a href="#3-本地仓库丢失" class="headerlink" title="3.本地仓库丢失"></a>3.本地仓库丢失</h4><p>当你想在其他电脑工作，或电脑重装系统后，安装Git与Node.js后，可以使用下列步骤：</p>
+<h5 id="3-1拷贝仓库"><a href="#3-1拷贝仓库" class="headerlink" title="3.1拷贝仓库"></a>3.1拷贝仓库</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> -b develop https://github.com/chaooo/chaooo.github.io.git</span><br></pre></td></tr></table></figure>
+<h5 id="3-2配置Hexo"><a href="#3-2配置Hexo" class="headerlink" title="3.2配置Hexo"></a>3.2配置Hexo</h5><p>在本地新拷贝的chaooo.github.io文件夹下通过Git bash依次执行下列指令:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g hexo-cli</span><br><span class="line">$ npm install hexo</span><br><span class="line">$ npm install</span><br><span class="line">$ npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure></p>
+<h5 id="小Tips-hexo-命令"><a href="#小Tips-hexo-命令" class="headerlink" title="小Tips:hexo 命令"></a>小Tips:hexo 命令</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">hexo new <span class="string">"postName"</span> <span class="comment">#新建文章</span></span><br><span class="line">hexo new page <span class="string">"pageName"</span> <span class="comment">#新建页面</span></span><br><span class="line">hexo generate <span class="comment">#生成静态页面至public目录</span></span><br><span class="line">hexo server <span class="comment">#开启预览访问端口（默认端口4000，'ctrl + c'关闭server）</span></span><br><span class="line">hexo deploy <span class="comment">#将.deploy目录部署到GitHub</span></span><br><span class="line">hexo <span class="built_in">help</span>  <span class="comment"># 查看帮助</span></span><br><span class="line">hexo version  <span class="comment">#查看Hexo的版本</span></span><br><span class="line">hexo deploy -g  <span class="comment">#生成加部署</span></span><br><span class="line">hexo server -g  <span class="comment">#生成加预览</span></span><br><span class="line"><span class="comment">#命令的简写</span></span><br><span class="line">hexo n == hexo new</span><br><span class="line">hexo g == hexo generate</span><br><span class="line">hexo s == hexo server</span><br><span class="line">hexo d == hexo deploy</span><br></pre></td></tr></table></figure>
+              </div>
+              <footer class="article-footer">
+                
+                <div class="bdsharebuttonbox"style="float:right;"><span style="float:left;line-height:16px;height:16px;margin: 6px 6px 6px 0;">分享到：</span><a title="分享到新浪微博" href="#" class="bds_tsina" data-cmd="tsina"></a><a title="分享到QQ空间" href="#" class="bds_qzone" data-cmd="qzone"></a><a title="分享到微信" href="#" class="bds_weixin" data-cmd="weixin"></a><a title="分享到人人网" href="#" class="bds_renren" data-cmd="renren"></a><a title="分享到Facebook" href="#" class="bds_fbook" data-cmd="fbook"></a><a title="分享到一键分享" href="#" class="bds_mshare" data-cmd="mshare"></a><a href="#" class="bds_more" data-cmd="more"></a></div>
+                
+                              
+                <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hexo/">Hexo</a></li></ul>
+              
+              </footer>
+            </div>
+            
+              
+<nav id="article-nav">
+  
+    <a href="/2016/05/23/Hexo博客优化--主题、分享、评论、微博秀.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Hexo博客优化——主题、分享、评论、微博秀
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+            
+          </article>
+          
+          <section id="comments">
+            <!-- 多说评论框 start -->
+            <div class="ds-thread" data-thread-key="2016/05/23/Hexo3-2-github搭建静态博客.html" data-title="Hexo3.2+GitHub搭建静态博客" data-url="undefined"></div>
+            <!-- 多说评论框 end -->
+          </section>
+          
+        </section>
+          <aside id="sidebar">            
+            
+              
+              <div class="widget-wrap">
+                <h3 class="widget-title">标签</h3>
+                <div class="widget">
+                  <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li></ul>
+                </div>
+              </div>               
+              <div class="widget-wrap">
+                <h3 class="widget-title">归档</h3>
+                <div class="widget">
+                  <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a></li></ul>
+                </div>
+              </div> 
+              
+              
+              <div class="widget-wrap">
+                <h3 class="widget-title">标签云</h3>
+                <div class="widget tagcloud">
+                  <a href="/tags/Hexo/" style="font-size: 10px;">Hexo</a>
+                </div>
+              </div> 
+                            
+              <div class="widget-wrap">
+                <h3 class="widget-title">最新文章</h3>
+                <div class="widget">
+                  <ul>
+                    <li>
+                        <a href="/2016/05/25/Hexo博客优化--站内搜索、版权、IE8兼容.html">Hexo博客优化——站内搜索、版权、IE8兼容</a>
+                    </li><li>
+                        <a href="/2016/05/24/Hexo博客优化--库、字体、收录、统计.html">Hexo博客优化——库、字体、收录、统计</a>
+                    </li><li>
+                        <a href="/2016/05/23/Hexo博客优化--主题、分享、评论、微博秀.html">Hexo博客优化——主题、分享、评论、微博秀</a>
+                    </li><li>
+                        <a href="/2016/05/23/Hexo3-2-github搭建静态博客.html">Hexo3.2+GitHub搭建静态博客</a>
+                    </li>
+                  </ul>
+              </div>
+                            
+              <div class="widget-wrap">
+                <h3 class="widget-title">微博</h3>
+                <div class="widget" style="padding: 0">
+                  <iframe width="100%" height="400" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=400&fansRow=2&ptype=1&speed=0&skin=2&isTitle=0&noborder=0&isWeibo=1&isFans=0&uid=1700139362&verifier=85be6061&colors=d6f3f7,dddddd,555555,837f86,cccccc&dpc=1"></iframe>
+                </div>
+              </div>
+              
+          </aside> 
+      </div>
+      <!--[if lt IE 9]><div id="footer"><![endif]-->
+      <footer id="footer">
+        
+        <div class="outer">
+          <div id="footer-info" class="inner" style="text-align:center;">
+            Copyright &copy; 2016 郑超(Charles)<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a><br>
+            <a href="/baidusitemap.xml">网站地图</a>&nbsp; &nbsp;|&nbsp; &nbsp;<a href="/atom.xml">订阅本站</a>&nbsp; &nbsp;|&nbsp; &nbsp;<a href="mailto:zhenggchaoo@gmail.com" target="_blank">联系博主</a>           
+          </div>
+        </div>
+      </footer>
+      <!--[if lt IE 9]></div><![endif]-->
+
+    </div>
+    <nav id="mobile-nav">
+        <a href="/" class="mobile-nav-link">Home</a>  <a href="/archives" class="mobile-nav-link">Archives</a>  <a href="/baidusitemap.xml" class="mobile-nav-link">baidusitemap</a> 
+    </nav>
+    <script src="http://lib.sinaapp.com/js/jquery/2.0.3/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript">
+    //<![CDATA[
+    if (typeof jQuery == 'undefined') {
+      document.write(unescape("%3Cscript src='/js/jquery-2.0.3.min.js' type='text/javascript'%3E%3C/script%3E"));
+    }
+    // ]]>
+    </script>
+     
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+    <script src="/fancybox/jquery.fancybox.pack.js"></script> 
+    
+    <!-- Swiftype Search Start -->
+    <script type="text/javascript">
+      (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+      (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+      e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+      })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');  
+      _st('install','Hvy4-e-Ew4x8PR6Let84','2.0.0');
+    </script>
+    <!-- Swiftype Search End -->
+    <!-- Google Analytics -->
+    <script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-78287143-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+    <!-- End Google Analytics -->
+    <!-- Baidu Share Start -->
+    <script>window._bd_share_config={"common":{"bdSnsKey":{"tsina":"2524825","tqq":"294a84f647b3e69c5cdc3d8a77f1c927"},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"分享到：","viewSize":"16"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+    <!-- Baidu Share End -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">var duoshuoQuery = {short_name:"chaooo"};(function() { var ds = document.createElement('script'); ds.type = 'text/javascript';ds.async = true;  ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js'; ds.charset = 'UTF-8'; (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);})();</script>
+    <!-- 多说公共JS代码 end -->
+    <script>(function(){var bp = document.createElement('script');var curProtocol = window.location.protocol.split(':')[0];if (curProtocol === 'https') {bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';}else {bp.src = 'http://push.zhanzhang.baidu.com/push.js';}var s = document.getElementsByTagName("script")[0];s.parentNode.insertBefore(bp, s);})();</script>
+
+    <script src="/js/script.js"></script>
+  </div>
+</body>
+</html>
