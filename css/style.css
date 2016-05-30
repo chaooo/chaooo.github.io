@@ -414,6 +414,7 @@ body {
   padding: 20px 15px;
   position: relative;
   cursor: pointer;
+  z-index: 1;
 }
 .main-nav-link {
   font-weight: 300;
@@ -439,9 +440,6 @@ body {
   float: right;
   margin-right: -15px;
 }
-#nav-rss-link {
-  z-index: 99;
-}
 #nav-rss-link:before {
   content: "\f09e";
 }
@@ -450,11 +448,12 @@ body {
 }
 #search-form-wrap {
   position: absolute;
-  top: 12px;
+  top: 14px;
   width: 200px;
   height: 30px;
-  right: 40px;
+  right: 35px;
   opacity: 0;
+  visibility: hidden;
   -webkit-transition: 0.2s ease-out;
   -moz-transition: 0.2s ease-out;
   -ms-transition: 0.2s ease-out;
@@ -466,6 +465,7 @@ body {
 }
 #search-form-wrap.on {
   opacity: 1;
+  visibility: visible;
   -webkit-transform: scale(1) translate(0, 0);
   -moz-transform: scale(1) translate(0, 0);
   -ms-transform: scale(1) translate(0, 0);
@@ -510,6 +510,7 @@ body {
   background: none;
   color: #bbb;
   cursor: pointer;
+  font-size: 14px;
 }
 .search-form-submit:hover,
 .search-form-submit:focus {

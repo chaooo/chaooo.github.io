@@ -15,20 +15,19 @@
     }, searchAnimDuration);
   };
 
-$('#nav-search-btn').on('mouseenter', function(){
+$('#nav-search-btn').on('click', function(){
   if (isSearchAnim) return;
   startSearchAnim();
   $searchWrap.addClass('on');
   stopSearchAnim(function(){
     $('.search-form-input').focus();
   });
-}); 
-$('.search-form-input').on('blur', function(){ 
-  $('.search-form').on('mouseleave',function(){
-    startSearchAnim();
-    $searchWrap.removeClass('on');
-    stopSearchAnim();
-  });
+});
+$('.search-form-input').on('blur', function(){
+   if (isSearchAnim) return;
+  startSearchAnim();
+  $searchWrap.removeClass('on');
+  stopSearchAnim();
 });
 
   // Share
