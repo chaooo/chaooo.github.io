@@ -439,6 +439,9 @@ body {
   float: right;
   margin-right: -15px;
 }
+#nav-rss-link {
+  z-index: 99;
+}
 #nav-rss-link:before {
   content: "\f09e";
 }
@@ -450,16 +453,23 @@ body {
   top: 12px;
   width: 200px;
   height: 30px;
-  right: -160px;
+  right: 40px;
   opacity: 0;
   -webkit-transition: 0.2s ease-out;
   -moz-transition: 0.2s ease-out;
   -ms-transition: 0.2s ease-out;
   transition: 0.2s ease-out;
+  -webkit-transform: scale(0.5) translate(94px, 0);
+  -moz-transform: scale(0.5) translate(94px, 0);
+  -ms-transform: scale(0.5) translate(94px, 0);
+  transform: scale(0.5) translate(94px, 0);
 }
 #search-form-wrap.on {
   opacity: 1;
-  right: 30px;
+  -webkit-transform: scale(1) translate(0, 0);
+  -moz-transform: scale(1) translate(0, 0);
+  -ms-transform: scale(1) translate(0, 0);
+  transform: scale(1) translate(0, 0);
 }
 @media screen and (max-width: 479px) {
   #search-form-wrap {
