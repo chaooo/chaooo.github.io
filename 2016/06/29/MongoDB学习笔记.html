@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>MongoDB学习笔记 | 秋过冬漫长</title>
+  <meta property="qc:admins" content="136042646177767140526177" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="part1 安装配置一、安装：在mongodb官网下载对应自己电脑系统的安装包，地址为： http://www.mongodb.org/downloads。   1、以Windows64bit为例，下载.msi文件双击安装。   2、安装过程中，点击 “Custom(自定义)” 按钮来设置安装目录(D:\MongoDB\bin)。   3、创建数据目录(D:\MongoDB\data\db),Mo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MongoDB学习笔记">
+<meta property="og:url" content="http://chaooo.github.io/2016/06/29/MongoDB学习笔记.html">
+<meta property="og:site_name" content="秋过冬漫长">
+<meta property="og:description" content="part1 安装配置一、安装：在mongodb官网下载对应自己电脑系统的安装包，地址为： http://www.mongodb.org/downloads。   1、以Windows64bit为例，下载.msi文件双击安装。   2、安装过程中，点击 “Custom(自定义)” 按钮来设置安装目录(D:\MongoDB\bin)。   3、创建数据目录(D:\MongoDB\data\db),Mo">
+<meta property="og:updated_time" content="2016-06-29T02:34:39.696Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MongoDB学习笔记">
+<meta name="twitter:description" content="part1 安装配置一、安装：在mongodb官网下载对应自己电脑系统的安装包，地址为： http://www.mongodb.org/downloads。   1、以Windows64bit为例，下载.msi文件双击安装。   2、安装过程中，点击 “Custom(自定义)” 按钮来设置安装目录(D:\MongoDB\bin)。   3、创建数据目录(D:\MongoDB\data\db),Mo">
+  <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">  
+  <link rel="icon" href="/favicon.png">  
+  <link href="http://fonts.useso.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css"> 
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <!--[if lt IE 9]><div id="header"><![endif]-->
+      <header id="header">
+        <div id="banner"></div>
+        <div id="header-outer" class="outer">
+          <div id="header-title" class="inner">
+            <h1 id="logo-wrap"><a href="/" id="logo">秋过冬漫长</a></h1>
+             <h2 id="subtitle-wrap"><a href="/" id="subtitle">没有比脚更长的路，走下去，前面是个天！</a></h2> 
+          </div>
+          <div id="header-inner" class="inner">
+            <nav id="main-nav">
+              <a id="main-nav-toggle" class="nav-icon"></a>
+               <a class="main-nav-link" href="/">Home</a>  <a class="main-nav-link" href="/archives">Archives</a>  <a class="main-nav-link" href="/baidusitemap.xml">baidusitemap</a> 
+            </nav>
+            <nav id="sub-nav">
+              <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+               <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a> 
+            </nav>
+            <div id="search-form-wrap">
+              <form action="" method="get" accept-charset="UTF-8" class="search-form">
+                <input autocapitalize="off" autocorrect="off" autocomplete="off" name="q" results="0" id="search" maxlength="20" placeholder="Search" style="border:none;background:none;width:161px;height:30px;line-height:30px;padding:0px 11px 0px 28px;" class="st-default-search-input search-form-input" type="text">
+                <button type="submit" class="search-form-submit"></button>
+              </form>
+            </div>
+          </div>
+          <!--[if lt IE 9]>
+            <style>.hid-ltIE9{position:absolute;bottom:0;left:0;z-index:999;width:100%;line-height:46px;color:#7b1a00;font-size:14px;text-align:center;background:#fff3c8;border-radius:4px;border:1px solid #;text-shadow:0 1px #fff;-webkit-box-shadow:0 -1px 4px #ccc inset;box-shadow:0 -1px 4px #ccc inset;border:1px solid #ccc;}.hid-ltIE9 a{color:#258fb8;text-decoration:none;}.hid-ltIE9 a:hover{text-decoration:underline;}.hid-exclamation-triangle,.hid-chrome,.hid-firefox{font:normal normal normal 14px/1 FontAwesome;display:inline-block;width:30px;height:30px;font-size:14px;text-align:center;}.hid-exclamation-triangle:before{content:"\f071";}.hid-chrome:before{content:"\f268";}.hid-firefox:before{content:"\f269";}</style><p class="hid-ltIE9"><i class="hid-exclamation-triangle" aria-hidden="true"></i>重要提示：您当前使用的浏览器版本过低，可能存在安全风险！想要更好的体验，建议升级浏览器：<a href="https://www.google.cn/intl/zh-CN/chrome/browser/desktop/" title="谷歌Chrome浏览器"><i class="hid-chrome" aria-hidden="true"></i>Chrome</a>、<a href="http://www.firefox.com.cn/download/"title="火狐Firefox浏览器"><i class="hid-firefox" aria-hidden="true"></i>Firefox</a></p>
+          <![endif]-->
+        </div>
+      </header>
+      <!--[if lt IE 9]></div><![endif]-->
+      <div class="outer">
+        <section id="main">      <article id="post-MongoDB学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
+            <div class="article-meta">
+              <a href="/2016/06/29/MongoDB学习笔记.html" class="article-date">
+                <time datetime="2016-06-29T02:22:14.000Z" itemprop="datePublished">2016-06-29</time>
+              </a> 
+            </div>
+            <div class="article-inner">
+              
+              <header class="article-header">                
+                <h1 class="article-title" itemprop="name">
+                  MongoDB学习笔记
+                </h1>
+              </header>
+              
+              <div class="article-entry" itemprop="articleBody">
+                
+                <h2 id="part1-安装配置"><a href="#part1-安装配置" class="headerlink" title="part1 安装配置"></a>part1 安装配置</h2><h3 id="一、安装："><a href="#一、安装：" class="headerlink" title="一、安装："></a>一、安装：</h3><p>在mongodb官网下载对应自己电脑系统的安装包，地址为： <a href="http://www.mongodb.org/downloads" target="_blank" rel="external">http://www.mongodb.org/downloads</a>。<br>   1、以Windows64bit为例，下载.msi文件双击安装。<br>   2、安装过程中，点击 “Custom(自定义)” 按钮来设置安装目录(D:\MongoDB\bin)。<br>   3、创建数据目录(D:\MongoDB\data\db),MongoDB默认数据目录\data\db。<br>   4、连接数据库(命令行win+r cmd,到D:\MongoDB\bin目录下，执行代码：mongod –dbpath D:\MongoDB\data\db)<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">D:</span><br><span class="line"><span class="built_in">cd</span> D:\MongoDB\bin</span><br><span class="line">mongod --dbpath D:\MongoDB\data\db</span><br></pre></td></tr></table></figure></p>
+<pre><code>5、启动 MongoDB JavaScript 工具(D:\MongoDB\bin目录下,打开mongo,会看到：)
+    MongoDB shell version: 3.2.4  //mongodb版本
+    connecting to: test  //默认shell连接的是本机localhost 上面的test库
+此时就可以操作数据库了。
+</code></pre><h3 id="二、将MongoDB服务器作为Windows服务运行"><a href="#二、将MongoDB服务器作为Windows服务运行" class="headerlink" title="二、将MongoDB服务器作为Windows服务运行"></a>二、将MongoDB服务器作为Windows服务运行</h3><p>1、在D:\MongoDB目录下创建mongodb.config,写入如下：</p>
+<pre><code>## 数据库文件目录
+dbpath=D:/MongoDB/data
+## 日志目录
+logpath=D:/MongoDB/log/mongo.log
+diaglog=3
+</code></pre><p>2、常规命令(cmd管理员):</p>
+<pre><code>&gt;D:
+&gt;cd D:\MongoDB\bin
+&gt;mongod --config D:\MongoDB\mongodb.config 
+</code></pre><p>3、若常规方式失败，则sc方式(cmd管理员)：</p>
+<pre><code>&gt;D:
+&gt;cd D:\MongoDB\bin
+&gt;sc create mongodb binPath= &quot;D:\MongoDB\bin\mongod.exe --service --config=D:\mongoDB\mongodb.config&quot; 
+</code></pre><p>访问地址：localhost:27017测试是否启动成功</p>
+<p>part2 CRUD操作(Creat,Read,Update,Delete)<br>    一、基础：<br>        document(文档)<br>        MongoDB把所有数据存放在类似于JSON数据结构的文档内：<br>            { “item”: “pencil”, “qty”: 500, “type”: “no.2” }<br>        collection(集合)<br>        集合是一组相关的文档，MongoDB存储所有的文档在集合里,他们拥有一套共享的通用索引。<br>            { “item”: “pencil”, “qty”: 500, “type”: “no.1” }<br>            { “item”: “pencil2”, “qty”: 550, “type”: “no.2” }<br>            { “item”: “pencil3”, “qty”: 800, “type”: “no.3” }<br>        database(数据库)<br>        MongoDB的默认数据库为”db”，该数据库存储在data目录中。一个mongodb中可以建立多个数据库。</p>
+<pre><code>二、数据库操作：
+    连接及运行mongoDB
+    &quot;show dbs&quot;命令可以显示所有的数据的列表
+    &quot;db&quot;命令可以显示当前数据库对象或集合
+    &quot;use&quot;命令可以连接到一个指定的数据库
+    数据库也通过名字来标识。数据库名可以是满足以下条件的任意UTF-8字符串。
+        不能是空字符串（&quot;&quot;)。
+        不得含有&apos; &apos;（空格)、.、$、/、\和\0 (空宇符)。
+        应全部小写。
+        最多64字节。
+    1、创建数据库：use Database_Name
+        栗子：use test
+    2、删除当前数据库：
+        db.dropDatabase()
+
+三、文档操作（以 Collection_Name = col 为例）
+    1、插入：
+        db.col.insert(Document) //插入一条或多组数据
+        db.col.insertOne(Document) //插入一条数据
+            栗子：
+            db.col.insertOne({ &quot;item&quot;: &quot;pencil&quot;, &quot;type&quot;: &quot;no.1&quot; })
+        db.col.insertMany(Document) //插入多条数据
+            栗子：
+            db.col.insertMany([
+            { &quot;item&quot;: &quot;dog&quot;, &quot;type&quot;: &quot;no.2&quot; },
+            { &quot;item&quot;: &quot;apple&quot;, &quot;type&quot;: &quot;no.3&quot; },
+            { &quot;item&quot;: &quot;orange&quot;, &quot;type&quot;: &quot;no.4&quot; }
+            ])
+    2、删除：
+        db.col.remove({})//删除所有数据
+        db.col.remove(query &lt;,options&gt;)
+            query：查询条件(数据索引或名字)
+            options：两个可选参数
+                {justOne: &lt;boolean&gt;,    //默认false，删除所有匹配到的。
+                writeConcern: &lt;document&gt;//抛出异常的级别。
+                }
+        db.col.deleteOne(query &lt;,options&gt;) //同上，无justOne参数，只删除第一条
+        db.col.deleteMany(query &lt;,options&gt;)//同上，无justOne参数，只删除多条
+    3、更新：
+        db.col.update(query, update &lt;,options&gt;)
+            query：查询条件(数据索引或名字)
+            update：更新的内容，语法：{$set:query}
+            options：三个可选参数
+                {upsert: &lt;boolean&gt;,     //如果不存在update的记录，是否插入新数据，默认:false。
+                multi: &lt;boolean&gt;,       //只更新找到的第一条记录，默认是false,如果为true,多条记录全部更新。
+                writeConcern: &lt;document&gt;//抛出异常的级别。
+                }
+            栗子：
+            db.col.update(
+                {&quot;type&quot;: &quot;no.1&quot;}, 
+                {$set: {&quot;item&quot;: &quot;human&quot;}}, 
+                {upsert: true, multi: true}
+                )
+        db.col.updateOne() //同上，无multi参数，只更新第一条
+        db.col.updateMany()//同上，无multi参数
+        db.col.replaceOne()//同updateOne
+        db.col.save(document &lt;,writeConcern&gt;)//通过传入的文档整个替换
+        # insert 与 save的区别 : 如果插入的数据的_id相同,save将会更新该文档,而insert将会报错
+        # update常用操作符
+            $set        //当文档中包含该字段的时候,更新该字段,如果该文档中没有该字段,则为本文档添加一个字段.
+            $unset      //删除文档中的一个字段.
+            $rename     //重命名某个列
+            $inc        //增长某个列
+            $setOnInsert//当upsert为true时,并且发生了insert操作时,可以补充的字段
+            $push       //将一个数字存入一个数组,分为三种情况,如果该字段存在,则直接将数字存入数组.如果该字段不存在,创建字段并且将数字插入该数组.如果更新的字段不是数组,会报错的.
+            $pushAll    //将多个数值一次存入数组.上面的push只能一个一个的存入
+            $addToSet   //与$push功能相同将一个数字存入数组,不同的是如果数组中有这个数字,将不会插入,只会插入新的数据,同样也会有三种情况,与$push相同.
+            $pop        //删除数组最后一个元素
+            $pull       //删除数组中的指定的元素,如果删除的字段不是数组,会报错
+            $pullAll    //删除数组中的多个值,跟pushAll与push的关系类似.
+    4、查询
+        db.col.find({}) //查询所有文档
+        db.col.find().pretty() //以易读的方式来读取数据
+        db.collection.find(query, projection)
+            query：查询条件(数据索引或名字)
+            projection：可选。指定返回的字段。
+        4.1、深入查询表达式
+            db.col.find()//查询所有
+            db.col.find({filed: value})  //等值查询
+            db.col.find({filed: {$ne: value}}) //不等于 $ne
+            db.col.find({filed: {$nin: [value1, value2, ...]}}) //不能包含给定的值 $nin
+            db.col.find({filed: {$all: [value1, value2, ...]}}) //必须包含所有给定的值 $all
+            db.col.find({filed: {$in: [value1, value2, ...]}}) //只要包含一个或多个给定的值 $in
+            db.col.find({filed: {$exists:1}}) //存在filed字段的
+            db.col.find({filed: {$exists:0}}) //不存在filed字段的
+            db.col.find({filed: {$mod:[3,1]}}) //模三余一 #取模操作 $mod
+            db.col.find({$or: [{filed1: vulue1}, {filed2: vulue2}]}) //或 $or
+            db.col.find({$nor: [{filed1: vulue1}, {filed2: vulue2}]}) //排除 $nor
+            db.col.find({filed: {$size: 3}}) //返回值得数组是给定的长度(3) $size
+            db.col.find({$where: function(){return ...}}) //回调，隐式迭代，符合条件才返回
+            db.col.find({$where: &apos;...&apos;}}) //同上
+            db.col.find({filed: {$type: 1}}) //查找filed为双精度的文档
+                #根据数据类型查询 $type
+                    |类型                |编号|
+                    |双精度              |1   |
+                    |字符串              |2   |
+                    |对象                |3   |
+                    |数组                |4   |
+                    |二进制数据          |5   |
+                    |对象 ID             |7   |
+                    |布尔值              |8   |
+                    |日期                |9   |
+                    |空                  |10  |
+                    |正则表达式          |11  |
+                    |JavaScript          |13  |
+                    |符号                |14  |
+                    |JavaScript（带范围）|15  |
+                    |32 位整数           |16  |
+                    |时间戳              |17  |
+                    |64 位整数           |18  |
+                    |最小键              |255 |
+                    |最大键              |127 |
+            db.col.find({filed: /user.*/i}) //正则，查询filed以user开头不区分大小写（正则效率低）
+            db.col.find({age: {$lt: 5}}).limit(3) //查询age的值小于5，限制3条
+                #范围查询：
+                    $lt  （小于）
+                    $gt  （大于）
+                    $lte （小于等于）
+                    $gte （大于等于）
+                    limit（限制显示）
+            db.col.find().skip(2).limit(3) //跳过前两个文档查询后面三个
+                # skip(num):表示跳过前面num个文档
+            db.col.find().sort({age: 1}) //查询后以age升序排列显示
+                # sort():排序，这里 1 代表升序, -1 代表降序.
+        4.2、group分组查询
+            group{key:{字段:1},initial:{变量:初始值},$reduce:function(doc,prev){函数代码}}.
+                # 其中key下的字段代表,需要按哪个字段分组.
+                  initial下的变量表示这一个分组中会使用的变量,并且给一个初始值.可以在后面的$reduce函数中使用.
+                  $reduce的两个参数,分别代表当前的文档和上个文档执行完函数后的结果.
+                # 栗子：如下我们按年龄分组,同级不同年龄的用户的多少:
+                &gt; db.user.find()
+                    { &quot;_id&quot; : ObjectId(&quot;5198c286c686eb50e2c843b2&quot;), &quot;name&quot; : &quot;user0&quot;, &quot;age&quot; : 0 }
+                    { &quot;_id&quot; : ObjectId(&quot;5198c286c686eb50e2c843b3&quot;), &quot;name&quot; : &quot;user1&quot;, &quot;age&quot; : 1 }
+                    { &quot;_id&quot; : ObjectId(&quot;5198c286c686eb50e2c843b4&quot;), &quot;name&quot; : &quot;user2&quot;, &quot;age&quot; : 2 }
+                    { &quot;_id&quot; : ObjectId(&quot;5198c286c686eb50e2c843b5&quot;), &quot;name&quot; : &quot;user3&quot;, &quot;age&quot; : 1 }
+                    { &quot;_id&quot; : ObjectId(&quot;5198c286c686eb50e2c843b6&quot;), &quot;name&quot; : &quot;user4&quot;, &quot;age&quot; : 1 }
+                    { &quot;_id&quot; : ObjectId(&quot;5198c286c686eb50e2c843b7&quot;), &quot;name&quot; : &quot;user5&quot;, &quot;age&quot; : 2 }
+                &gt; db.user.group({key:{age:1},initial:{count:0},$reduce:function(doc,prev){prev.count++}}); 
+                    [
+                        {&quot;age&quot;: 0, &quot;count&quot;: 1},
+                        {&quot;age&quot;: 1, &quot;count&quot;: 3},
+                        {&quot;age&quot;: 2, &quot;count&quot;: 2}
+                    ]
+                &gt; db.user.group({key:{age:1},initial:{users:[]},$reduce:function(doc,prev){prev.users.push(doc.name)}});
+                    [
+                        {&quot;age&quot;: 0, &quot;users&quot;: [&quot;user0&quot;]},
+                        {&quot;age&quot;: 1, &quot;users&quot;: [&quot;user1&quot;, &quot;user3&quot;, &quot;user4&quot;]},
+                        {&quot;age&quot;: 2, &quot;users&quot;: [&quot;user2&quot;, &quot;user5&quot;]}
+                    ]
+                # 另外本函数还有两个可选参数 condition 和 finalize
+                # condition就是分组的条件筛选类似mysql中的having
+                &gt; db.user.group({key:{age:1},initial:{users:[]},$reduce:function(doc,prev){prev.users.push(doc.name)},condition:{age:{$gt:0}}}) # 筛选出age大于0的;
+                    [
+                        {&quot;age&quot;: 1, &quot;users&quot;: [&quot;user1&quot;, &quot;user3&quot;, &quot;user4&quot;]},
+                        {&quot;age&quot;: 2, &quot;users&quot;: [&quot;user2&quot;, &quot;user5&quot;]}
+                    ]
+        4.3、count统计
+            db.goods.count() //统计该集合总数
+            db.goods.count({cat_id: 3}) //统计cat_id=3的总数
+        4.4、distinct排重
+            栗子：
+                &gt; db.user.find()
+                    { &quot;_id&quot; : ObjectId(&quot;5198c286c686eb50e2c843b2&quot;), &quot;name&quot; : &quot;user0&quot;, &quot;age&quot; : 0 }
+                    { &quot;_id&quot; : ObjectId(&quot;5198c286c686eb50e2c843b3&quot;), &quot;name&quot; : &quot;user1&quot;, &quot;age&quot; : 1 }
+                    { &quot;_id&quot; : ObjectId(&quot;5198c286c686eb50e2c843b4&quot;), &quot;name&quot; : &quot;user2&quot;, &quot;age&quot; : 2 }
+                    { &quot;_id&quot; : ObjectId(&quot;5198c286c686eb50e2c843b5&quot;), &quot;name&quot; : &quot;user3&quot;, &quot;age&quot; : 1 }
+                    { &quot;_id&quot; : ObjectId(&quot;5198c286c686eb50e2c843b6&quot;), &quot;name&quot; : &quot;user4&quot;, &quot;age&quot; : 1 }
+                    { &quot;_id&quot; : ObjectId(&quot;5198c286c686eb50e2c843b7&quot;), &quot;name&quot; : &quot;user5&quot;, &quot;age&quot; : 2 }
+                &gt; db.user.distinct(&quot;age&quot;) # 特殊,传入的参数直接是字符串,而不是对象;
+                    [0, 1, 2]
+        4.5、子文档查询$elemMatch与对象中的属性
+</code></pre>
+              </div>
+              <footer class="article-footer">
+                
+                <div class="bdsharebuttonbox"style="float:right;"><span style="float:left;line-height:16px;height:16px;margin: 6px 6px 6px 0;">分享到：</span><a title="分享到新浪微博" href="#" class="bds_tsina" data-cmd="tsina"></a><a title="分享到QQ空间" href="#" class="bds_qzone" data-cmd="qzone"></a><a title="分享到微信" href="#" class="bds_weixin" data-cmd="weixin"></a><a title="分享到人人网" href="#" class="bds_renren" data-cmd="renren"></a><a title="分享到Facebook" href="#" class="bds_fbook" data-cmd="fbook"></a><a title="分享到一键分享" href="#" class="bds_mshare" data-cmd="mshare"></a><a href="#" class="bds_more" data-cmd="more"></a></div>
+                
+                              
+                <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mongodb/">mongodb</a></li></ul>
+              
+              </footer>
+            </div>
+            
+              
+<nav id="article-nav">
+  
+  
+    <a href="/2016/06/29/sublime-text3个人习惯配置-C.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">sublime text3个人习惯配置</div>
+    </a>
+  
+</nav>
+
+            
+          </article>
+          
+          <section id="comments">
+            <!-- 多说评论框 start -->
+            <div class="ds-thread" data-thread-key="2016/06/29/MongoDB学习笔记.html" data-title="MongoDB学习笔记" data-url="undefined"></div>
+            <!-- 多说评论框 end -->
+          </section>
+          
+        </section>
+          <aside id="sidebar">            
+            
+              
+              <div class="widget-wrap">
+                <h3 class="widget-title">标签</h3>
+                <div class="widget">
+                  <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/">mongodb</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/node/">node</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sublime/">sublime</a></li></ul>
+                </div>
+              </div>               
+              <div class="widget-wrap">
+                <h3 class="widget-title">归档</h3>
+                <div class="widget">
+                  <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a></li></ul>
+                </div>
+              </div> 
+              
+              
+              <div class="widget-wrap">
+                <h3 class="widget-title">标签云</h3>
+                <div class="widget tagcloud">
+                  <a href="/tags/hexo/" style="font-size: 20px;">hexo</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/node/" style="font-size: 10px;">node</a> <a href="/tags/sublime/" style="font-size: 10px;">sublime</a>
+                </div>
+              </div> 
+                            
+              <div class="widget-wrap">
+                <h3 class="widget-title">最新文章</h3>
+                <div class="widget">
+                  <ul>
+                    <li>
+                        <a href="/2016/06/29/MongoDB学习笔记.html">MongoDB学习笔记</a>
+                    </li><li>
+                        <a href="/2016/06/29/sublime-text3个人习惯配置-C.html">sublime text3个人习惯配置</a>
+                    </li><li>
+                        <a href="/2016/06/27/NodeJs学习笔记.html">NodeJs学习笔记</a>
+                    </li><li>
+                        <a href="/2016/05/25/Hexo博客优化--站内搜索、版权、IE8兼容.html">Hexo博客优化——站内搜索、版权、IE8兼容</a>
+                    </li><li>
+                        <a href="/2016/05/24/Hexo博客优化--库、字体、收录、统计.html">Hexo博客优化——库、字体、收录、统计</a>
+                    </li>
+                  </ul>
+              </div>
+                            
+              <div class="widget-wrap">
+                <h3 class="widget-title">微博</h3>
+                <div class="widget" style="padding: 0">
+                  <iframe width="100%" height="400" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=400&fansRow=2&ptype=1&speed=0&skin=2&isTitle=0&noborder=0&isWeibo=1&isFans=0&uid=1700139362&verifier=85be6061&colors=d6f3f7,dddddd,555555,837f86,cccccc&dpc=1"></iframe>
+                </div>
+              </div>
+              
+          </aside> 
+      </div>
+      <!--[if lt IE 9]><div id="footer"><![endif]-->
+      <footer id="footer">
+        
+        <div class="outer">
+          <div id="footer-info" class="inner" style="text-align:center;">
+            Copyright &copy; 2016 郑超(Charles)<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a><br>
+            <a href="/baidusitemap.xml">网站地图</a>&nbsp; &nbsp;|&nbsp; &nbsp;<a href="/atom.xml">订阅本站</a>&nbsp; &nbsp;|&nbsp; &nbsp;<a href="mailto:zhenggchaoo@gmail.com" target="_blank">联系博主</a>           
+          </div>
+        </div>
+      </footer>
+      <!--[if lt IE 9]></div><![endif]-->
+
+    </div>
+    <nav id="mobile-nav">
+        <a href="/" class="mobile-nav-link">Home</a>  <a href="/archives" class="mobile-nav-link">Archives</a>  <a href="/baidusitemap.xml" class="mobile-nav-link">baidusitemap</a> 
+    </nav>
+    <script src="http://lib.sinaapp.com/js/jquery/2.0.3/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript">
+    //<![CDATA[
+    if (typeof jQuery == 'undefined') {
+      document.write(unescape("%3Cscript src='/js/jquery-2.0.3.min.js' type='text/javascript'%3E%3C/script%3E"));
+    }
+    // ]]>
+    </script>
+     
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+    <script src="/fancybox/jquery.fancybox.pack.js"></script> 
+    
+    <!-- Swiftype Search Start -->
+    <script type="text/javascript">
+      (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+      (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+      e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+      })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');  
+      _st('install','Hvy4-e-Ew4x8PR6Let84','2.0.0');
+    </script>
+    <!-- Swiftype Search End -->
+    <!-- Google Analytics -->
+    <script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-78287143-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+    <!-- End Google Analytics -->
+    <!-- Baidu Share Start -->
+    <script>window._bd_share_config={"common":{"bdSnsKey":{"tsina":"2524825","tqq":"294a84f647b3e69c5cdc3d8a77f1c927"},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"分享到：","viewSize":"16"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+    <!-- Baidu Share End -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">var duoshuoQuery = {short_name:"chaooo"};(function() { var ds = document.createElement('script'); ds.type = 'text/javascript';ds.async = true;  ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js'; ds.charset = 'UTF-8'; (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);})();</script>
+    <!-- 多说公共JS代码 end -->
+    <script>(function(){var bp = document.createElement('script');var curProtocol = window.location.protocol.split(':')[0];if (curProtocol === 'https') {bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';}else {bp.src = 'http://push.zhanzhang.baidu.com/push.js';}var s = document.getElementsByTagName("script")[0];s.parentNode.insertBefore(bp, s);})();</script>
+
+    <script src="/js/script.js"></script>
+  </div>
+</body>
+</html>

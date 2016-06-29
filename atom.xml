@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://chaooo.github.io/"/>
-  <updated>2016-06-29T02:18:48.838Z</updated>
+  <updated>2016-06-29T02:34:39.696Z</updated>
   <id>http://chaooo.github.io/</id>
   
   <author>
@@ -14,6 +14,218 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MongoDB学习笔记</title>
+    <link href="http://chaooo.github.io/2016/06/29/MongoDB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html"/>
+    <id>http://chaooo.github.io/2016/06/29/MongoDB学习笔记.html</id>
+    <published>2016-06-29T02:22:14.000Z</published>
+    <updated>2016-06-29T02:34:39.696Z</updated>
+    
+    <content type="html">&lt;h2 id=&quot;part1-安装配置&quot;&gt;&lt;a href=&quot;#part1-安装配置&quot; class=&quot;headerlink&quot; title=&quot;part1 安装配置&quot;&gt;&lt;/a&gt;part1 安装配置&lt;/h2&gt;&lt;h3 id=&quot;一、安装：&quot;&gt;&lt;a href=&quot;#一、安装：&quot; class=&quot;headerlink&quot; title=&quot;一、安装：&quot;&gt;&lt;/a&gt;一、安装：&lt;/h3&gt;&lt;p&gt;在mongodb官网下载对应自己电脑系统的安装包，地址为： &lt;a href=&quot;http://www.mongodb.org/downloads&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://www.mongodb.org/downloads&lt;/a&gt;。&lt;br&gt;   1、以Windows64bit为例，下载.msi文件双击安装。&lt;br&gt;   2、安装过程中，点击 “Custom(自定义)” 按钮来设置安装目录(D:\MongoDB\bin)。&lt;br&gt;   3、创建数据目录(D:\MongoDB\data\db),MongoDB默认数据目录\data\db。&lt;br&gt;   4、连接数据库(命令行win+r cmd,到D:\MongoDB\bin目录下，执行代码：mongod –dbpath D:\MongoDB\data\db)&lt;br&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;D:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;cd&lt;/span&gt; D:\MongoDB\bin&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;mongod --dbpath D:\MongoDB\data\db&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;5、启动 MongoDB JavaScript 工具(D:\MongoDB\bin目录下,打开mongo,会看到：)
+    MongoDB shell version: 3.2.4  //mongodb版本
+    connecting to: test  //默认shell连接的是本机localhost 上面的test库
+此时就可以操作数据库了。
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;二、将MongoDB服务器作为Windows服务运行&quot;&gt;&lt;a href=&quot;#二、将MongoDB服务器作为Windows服务运行&quot; class=&quot;headerlink&quot; title=&quot;二、将MongoDB服务器作为Windows服务运行&quot;&gt;&lt;/a&gt;二、将MongoDB服务器作为Windows服务运行&lt;/h3&gt;&lt;p&gt;1、在D:\MongoDB目录下创建mongodb.config,写入如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## 数据库文件目录
+dbpath=D:/MongoDB/data
+## 日志目录
+logpath=D:/MongoDB/log/mongo.log
+diaglog=3
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;2、常规命令(cmd管理员):&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt;D:
+&amp;gt;cd D:\MongoDB\bin
+&amp;gt;mongod --config D:\MongoDB\mongodb.config 
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;3、若常规方式失败，则sc方式(cmd管理员)：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt;D:
+&amp;gt;cd D:\MongoDB\bin
+&amp;gt;sc create mongodb binPath= &amp;quot;D:\MongoDB\bin\mongod.exe --service --config=D:\mongoDB\mongodb.config&amp;quot; 
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;访问地址：localhost:27017测试是否启动成功&lt;/p&gt;
+&lt;p&gt;part2 CRUD操作(Creat,Read,Update,Delete)&lt;br&gt;    一、基础：&lt;br&gt;        document(文档)&lt;br&gt;        MongoDB把所有数据存放在类似于JSON数据结构的文档内：&lt;br&gt;            { “item”: “pencil”, “qty”: 500, “type”: “no.2” }&lt;br&gt;        collection(集合)&lt;br&gt;        集合是一组相关的文档，MongoDB存储所有的文档在集合里,他们拥有一套共享的通用索引。&lt;br&gt;            { “item”: “pencil”, “qty”: 500, “type”: “no.1” }&lt;br&gt;            { “item”: “pencil2”, “qty”: 550, “type”: “no.2” }&lt;br&gt;            { “item”: “pencil3”, “qty”: 800, “type”: “no.3” }&lt;br&gt;        database(数据库)&lt;br&gt;        MongoDB的默认数据库为”db”，该数据库存储在data目录中。一个mongodb中可以建立多个数据库。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;二、数据库操作：
+    连接及运行mongoDB
+    &amp;quot;show dbs&amp;quot;命令可以显示所有的数据的列表
+    &amp;quot;db&amp;quot;命令可以显示当前数据库对象或集合
+    &amp;quot;use&amp;quot;命令可以连接到一个指定的数据库
+    数据库也通过名字来标识。数据库名可以是满足以下条件的任意UTF-8字符串。
+        不能是空字符串（&amp;quot;&amp;quot;)。
+        不得含有&amp;apos; &amp;apos;（空格)、.、$、/、\和\0 (空宇符)。
+        应全部小写。
+        最多64字节。
+    1、创建数据库：use Database_Name
+        栗子：use test
+    2、删除当前数据库：
+        db.dropDatabase()
+
+三、文档操作（以 Collection_Name = col 为例）
+    1、插入：
+        db.col.insert(Document) //插入一条或多组数据
+        db.col.insertOne(Document) //插入一条数据
+            栗子：
+            db.col.insertOne({ &amp;quot;item&amp;quot;: &amp;quot;pencil&amp;quot;, &amp;quot;type&amp;quot;: &amp;quot;no.1&amp;quot; })
+        db.col.insertMany(Document) //插入多条数据
+            栗子：
+            db.col.insertMany([
+            { &amp;quot;item&amp;quot;: &amp;quot;dog&amp;quot;, &amp;quot;type&amp;quot;: &amp;quot;no.2&amp;quot; },
+            { &amp;quot;item&amp;quot;: &amp;quot;apple&amp;quot;, &amp;quot;type&amp;quot;: &amp;quot;no.3&amp;quot; },
+            { &amp;quot;item&amp;quot;: &amp;quot;orange&amp;quot;, &amp;quot;type&amp;quot;: &amp;quot;no.4&amp;quot; }
+            ])
+    2、删除：
+        db.col.remove({})//删除所有数据
+        db.col.remove(query &amp;lt;,options&amp;gt;)
+            query：查询条件(数据索引或名字)
+            options：两个可选参数
+                {justOne: &amp;lt;boolean&amp;gt;,    //默认false，删除所有匹配到的。
+                writeConcern: &amp;lt;document&amp;gt;//抛出异常的级别。
+                }
+        db.col.deleteOne(query &amp;lt;,options&amp;gt;) //同上，无justOne参数，只删除第一条
+        db.col.deleteMany(query &amp;lt;,options&amp;gt;)//同上，无justOne参数，只删除多条
+    3、更新：
+        db.col.update(query, update &amp;lt;,options&amp;gt;)
+            query：查询条件(数据索引或名字)
+            update：更新的内容，语法：{$set:query}
+            options：三个可选参数
+                {upsert: &amp;lt;boolean&amp;gt;,     //如果不存在update的记录，是否插入新数据，默认:false。
+                multi: &amp;lt;boolean&amp;gt;,       //只更新找到的第一条记录，默认是false,如果为true,多条记录全部更新。
+                writeConcern: &amp;lt;document&amp;gt;//抛出异常的级别。
+                }
+            栗子：
+            db.col.update(
+                {&amp;quot;type&amp;quot;: &amp;quot;no.1&amp;quot;}, 
+                {$set: {&amp;quot;item&amp;quot;: &amp;quot;human&amp;quot;}}, 
+                {upsert: true, multi: true}
+                )
+        db.col.updateOne() //同上，无multi参数，只更新第一条
+        db.col.updateMany()//同上，无multi参数
+        db.col.replaceOne()//同updateOne
+        db.col.save(document &amp;lt;,writeConcern&amp;gt;)//通过传入的文档整个替换
+        # insert 与 save的区别 : 如果插入的数据的_id相同,save将会更新该文档,而insert将会报错
+        # update常用操作符
+            $set        //当文档中包含该字段的时候,更新该字段,如果该文档中没有该字段,则为本文档添加一个字段.
+            $unset      //删除文档中的一个字段.
+            $rename     //重命名某个列
+            $inc        //增长某个列
+            $setOnInsert//当upsert为true时,并且发生了insert操作时,可以补充的字段
+            $push       //将一个数字存入一个数组,分为三种情况,如果该字段存在,则直接将数字存入数组.如果该字段不存在,创建字段并且将数字插入该数组.如果更新的字段不是数组,会报错的.
+            $pushAll    //将多个数值一次存入数组.上面的push只能一个一个的存入
+            $addToSet   //与$push功能相同将一个数字存入数组,不同的是如果数组中有这个数字,将不会插入,只会插入新的数据,同样也会有三种情况,与$push相同.
+            $pop        //删除数组最后一个元素
+            $pull       //删除数组中的指定的元素,如果删除的字段不是数组,会报错
+            $pullAll    //删除数组中的多个值,跟pushAll与push的关系类似.
+    4、查询
+        db.col.find({}) //查询所有文档
+        db.col.find().pretty() //以易读的方式来读取数据
+        db.collection.find(query, projection)
+            query：查询条件(数据索引或名字)
+            projection：可选。指定返回的字段。
+        4.1、深入查询表达式
+            db.col.find()//查询所有
+            db.col.find({filed: value})  //等值查询
+            db.col.find({filed: {$ne: value}}) //不等于 $ne
+            db.col.find({filed: {$nin: [value1, value2, ...]}}) //不能包含给定的值 $nin
+            db.col.find({filed: {$all: [value1, value2, ...]}}) //必须包含所有给定的值 $all
+            db.col.find({filed: {$in: [value1, value2, ...]}}) //只要包含一个或多个给定的值 $in
+            db.col.find({filed: {$exists:1}}) //存在filed字段的
+            db.col.find({filed: {$exists:0}}) //不存在filed字段的
+            db.col.find({filed: {$mod:[3,1]}}) //模三余一 #取模操作 $mod
+            db.col.find({$or: [{filed1: vulue1}, {filed2: vulue2}]}) //或 $or
+            db.col.find({$nor: [{filed1: vulue1}, {filed2: vulue2}]}) //排除 $nor
+            db.col.find({filed: {$size: 3}}) //返回值得数组是给定的长度(3) $size
+            db.col.find({$where: function(){return ...}}) //回调，隐式迭代，符合条件才返回
+            db.col.find({$where: &amp;apos;...&amp;apos;}}) //同上
+            db.col.find({filed: {$type: 1}}) //查找filed为双精度的文档
+                #根据数据类型查询 $type
+                    |类型                |编号|
+                    |双精度              |1   |
+                    |字符串              |2   |
+                    |对象                |3   |
+                    |数组                |4   |
+                    |二进制数据          |5   |
+                    |对象 ID             |7   |
+                    |布尔值              |8   |
+                    |日期                |9   |
+                    |空                  |10  |
+                    |正则表达式          |11  |
+                    |JavaScript          |13  |
+                    |符号                |14  |
+                    |JavaScript（带范围）|15  |
+                    |32 位整数           |16  |
+                    |时间戳              |17  |
+                    |64 位整数           |18  |
+                    |最小键              |255 |
+                    |最大键              |127 |
+            db.col.find({filed: /user.*/i}) //正则，查询filed以user开头不区分大小写（正则效率低）
+            db.col.find({age: {$lt: 5}}).limit(3) //查询age的值小于5，限制3条
+                #范围查询：
+                    $lt  （小于）
+                    $gt  （大于）
+                    $lte （小于等于）
+                    $gte （大于等于）
+                    limit（限制显示）
+            db.col.find().skip(2).limit(3) //跳过前两个文档查询后面三个
+                # skip(num):表示跳过前面num个文档
+            db.col.find().sort({age: 1}) //查询后以age升序排列显示
+                # sort():排序，这里 1 代表升序, -1 代表降序.
+        4.2、group分组查询
+            group{key:{字段:1},initial:{变量:初始值},$reduce:function(doc,prev){函数代码}}.
+                # 其中key下的字段代表,需要按哪个字段分组.
+                  initial下的变量表示这一个分组中会使用的变量,并且给一个初始值.可以在后面的$reduce函数中使用.
+                  $reduce的两个参数,分别代表当前的文档和上个文档执行完函数后的结果.
+                # 栗子：如下我们按年龄分组,同级不同年龄的用户的多少:
+                &amp;gt; db.user.find()
+                    { &amp;quot;_id&amp;quot; : ObjectId(&amp;quot;5198c286c686eb50e2c843b2&amp;quot;), &amp;quot;name&amp;quot; : &amp;quot;user0&amp;quot;, &amp;quot;age&amp;quot; : 0 }
+                    { &amp;quot;_id&amp;quot; : ObjectId(&amp;quot;5198c286c686eb50e2c843b3&amp;quot;), &amp;quot;name&amp;quot; : &amp;quot;user1&amp;quot;, &amp;quot;age&amp;quot; : 1 }
+                    { &amp;quot;_id&amp;quot; : ObjectId(&amp;quot;5198c286c686eb50e2c843b4&amp;quot;), &amp;quot;name&amp;quot; : &amp;quot;user2&amp;quot;, &amp;quot;age&amp;quot; : 2 }
+                    { &amp;quot;_id&amp;quot; : ObjectId(&amp;quot;5198c286c686eb50e2c843b5&amp;quot;), &amp;quot;name&amp;quot; : &amp;quot;user3&amp;quot;, &amp;quot;age&amp;quot; : 1 }
+                    { &amp;quot;_id&amp;quot; : ObjectId(&amp;quot;5198c286c686eb50e2c843b6&amp;quot;), &amp;quot;name&amp;quot; : &amp;quot;user4&amp;quot;, &amp;quot;age&amp;quot; : 1 }
+                    { &amp;quot;_id&amp;quot; : ObjectId(&amp;quot;5198c286c686eb50e2c843b7&amp;quot;), &amp;quot;name&amp;quot; : &amp;quot;user5&amp;quot;, &amp;quot;age&amp;quot; : 2 }
+                &amp;gt; db.user.group({key:{age:1},initial:{count:0},$reduce:function(doc,prev){prev.count++}}); 
+                    [
+                        {&amp;quot;age&amp;quot;: 0, &amp;quot;count&amp;quot;: 1},
+                        {&amp;quot;age&amp;quot;: 1, &amp;quot;count&amp;quot;: 3},
+                        {&amp;quot;age&amp;quot;: 2, &amp;quot;count&amp;quot;: 2}
+                    ]
+                &amp;gt; db.user.group({key:{age:1},initial:{users:[]},$reduce:function(doc,prev){prev.users.push(doc.name)}});
+                    [
+                        {&amp;quot;age&amp;quot;: 0, &amp;quot;users&amp;quot;: [&amp;quot;user0&amp;quot;]},
+                        {&amp;quot;age&amp;quot;: 1, &amp;quot;users&amp;quot;: [&amp;quot;user1&amp;quot;, &amp;quot;user3&amp;quot;, &amp;quot;user4&amp;quot;]},
+                        {&amp;quot;age&amp;quot;: 2, &amp;quot;users&amp;quot;: [&amp;quot;user2&amp;quot;, &amp;quot;user5&amp;quot;]}
+                    ]
+                # 另外本函数还有两个可选参数 condition 和 finalize
+                # condition就是分组的条件筛选类似mysql中的having
+                &amp;gt; db.user.group({key:{age:1},initial:{users:[]},$reduce:function(doc,prev){prev.users.push(doc.name)},condition:{age:{$gt:0}}}) # 筛选出age大于0的;
+                    [
+                        {&amp;quot;age&amp;quot;: 1, &amp;quot;users&amp;quot;: [&amp;quot;user1&amp;quot;, &amp;quot;user3&amp;quot;, &amp;quot;user4&amp;quot;]},
+                        {&amp;quot;age&amp;quot;: 2, &amp;quot;users&amp;quot;: [&amp;quot;user2&amp;quot;, &amp;quot;user5&amp;quot;]}
+                    ]
+        4.3、count统计
+            db.goods.count() //统计该集合总数
+            db.goods.count({cat_id: 3}) //统计cat_id=3的总数
+        4.4、distinct排重
+            栗子：
+                &amp;gt; db.user.find()
+                    { &amp;quot;_id&amp;quot; : ObjectId(&amp;quot;5198c286c686eb50e2c843b2&amp;quot;), &amp;quot;name&amp;quot; : &amp;quot;user0&amp;quot;, &amp;quot;age&amp;quot; : 0 }
+                    { &amp;quot;_id&amp;quot; : ObjectId(&amp;quot;5198c286c686eb50e2c843b3&amp;quot;), &amp;quot;name&amp;quot; : &amp;quot;user1&amp;quot;, &amp;quot;age&amp;quot; : 1 }
+                    { &amp;quot;_id&amp;quot; : ObjectId(&amp;quot;5198c286c686eb50e2c843b4&amp;quot;), &amp;quot;name&amp;quot; : &amp;quot;user2&amp;quot;, &amp;quot;age&amp;quot; : 2 }
+                    { &amp;quot;_id&amp;quot; : ObjectId(&amp;quot;5198c286c686eb50e2c843b5&amp;quot;), &amp;quot;name&amp;quot; : &amp;quot;user3&amp;quot;, &amp;quot;age&amp;quot; : 1 }
+                    { &amp;quot;_id&amp;quot; : ObjectId(&amp;quot;5198c286c686eb50e2c843b6&amp;quot;), &amp;quot;name&amp;quot; : &amp;quot;user4&amp;quot;, &amp;quot;age&amp;quot; : 1 }
+                    { &amp;quot;_id&amp;quot; : ObjectId(&amp;quot;5198c286c686eb50e2c843b7&amp;quot;), &amp;quot;name&amp;quot; : &amp;quot;user5&amp;quot;, &amp;quot;age&amp;quot; : 2 }
+                &amp;gt; db.user.distinct(&amp;quot;age&amp;quot;) # 特殊,传入的参数直接是字符串,而不是对象;
+                    [0, 1, 2]
+        4.5、子文档查询$elemMatch与对象中的属性
+&lt;/code&gt;&lt;/pre&gt;</content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;part1-安装配置&quot;&gt;&lt;a href=&quot;#part1-安装配置&quot; class=&quot;headerlink&quot; title=&quot;part1 安装配置&quot;&gt;&lt;/a&gt;part1 安装配置&lt;/h2&gt;&lt;h3 id=&quot;一、安装：&quot;&gt;&lt;a href=&quot;#一、安装：&quot; class=&quot;he
+    
+    </summary>
+    
+    
+      <category term="mongodb" scheme="http://chaooo.github.io/tags/mongodb/"/>
+    
+  </entry>
   
   <entry>
     <title>sublime text3个人习惯配置</title>
