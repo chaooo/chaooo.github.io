@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://chaooo.github.io/"/>
-  <updated>2016-06-29T07:10:40.201Z</updated>
+  <updated>2016-08-12T07:49:34.285Z</updated>
   <id>http://chaooo.github.io/</id>
   
   <author>
@@ -14,6 +14,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Web包管理器-Bower</title>
+    <link href="http://chaooo.github.io/2016/08/12/Web%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8-Bower.html"/>
+    <id>http://chaooo.github.io/2016/08/12/Web包管理器-Bower.html</id>
+    <published>2016-08-12T07:32:41.000Z</published>
+    <updated>2016-08-12T07:49:34.285Z</updated>
+    
+    <content type="html">&lt;p&gt;Bower是twitter推出的客户端包管理工具，用于命令行操作包的搜索、下载、更新、卸载(如jQuery、Bootstrap、JavaScript、HTML、CSS之类的网络资源)。&lt;/p&gt;
+&lt;h3 id=&quot;开始之前&quot;&gt;&lt;a href=&quot;#开始之前&quot; class=&quot;headerlink&quot; title=&quot;开始之前&quot;&gt;&lt;/a&gt;开始之前&lt;/h3&gt;&lt;p&gt;在安装&lt;a href=&quot;https://bower.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;bower&lt;/a&gt;之前，必须确认你已经安装了&lt;a href=&quot;http://nodejs.org/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Node.js&lt;/a&gt;和&lt;a href=&quot;http://git-scm.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Git&lt;/a&gt;。&lt;/p&gt;
+&lt;h3 id=&quot;1-安装Bower&quot;&gt;&lt;a href=&quot;#1-安装Bower&quot; class=&quot;headerlink&quot; title=&quot;1.安装Bower&quot;&gt;&lt;/a&gt;1.安装Bower&lt;/h3&gt;&lt;p&gt;使用npm，打开终端，键入：&lt;br&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;npm install -g bower   &lt;span class=&quot;comment&quot;&gt;#全局安装bower&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;移步&lt;a href=&quot;https://github.com/bower/bower/wiki/Troubleshooting&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;这里&lt;/a&gt;查看不同平台上安装的问题。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Bower是twitter推出的客户端包管理工具，用于命令行操作包的搜索、下载、更新、卸载(如jQuery、Bootstrap、JavaScript、HTML、CSS之类的网络资源)。&lt;/p&gt;
+&lt;h3 id=&quot;开始之前&quot;&gt;&lt;a href=&quot;#开始之前&quot; class=&quot;hea
+    
+    </summary>
+    
+    
+      <category term="bower" scheme="http://chaooo.github.io/tags/bower/"/>
+    
+  </entry>
   
   <entry>
     <title>MongoDB学习笔记</title>
