@@ -5,22 +5,16 @@
   <title>Hexo3.2+GitHub搭建静态博客 | 秋过冬漫长</title>
   <meta property="qc:admins" content="136042646177767140526177" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="开始之前在安装hexo之前，必须确认你已经安装了Node.js和Git。
-1.创建GitHub仓库注册GitHub账号，创建一个以”用户名.github.io”命名的仓库，如我的用户名为chaooo,那我的仓库名为：chaooo.github.io，仓库默有master分支，用于托管生成的静态文件，再新建一个develop(名字自定)分支，用于托管后台文件，方便以后换电脑时后台文件不会丢失。
-2.">
+  <meta name="description" content="开始之前在安装hexo之前，必须确认你已经安装了Node.js和Git。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hexo3.2+GitHub搭建静态博客">
 <meta property="og:url" content="http://chaooo.github.io/2016/05/23/Hexo3-2-github搭建静态博客.html">
 <meta property="og:site_name" content="秋过冬漫长">
-<meta property="og:description" content="开始之前在安装hexo之前，必须确认你已经安装了Node.js和Git。
-1.创建GitHub仓库注册GitHub账号，创建一个以”用户名.github.io”命名的仓库，如我的用户名为chaooo,那我的仓库名为：chaooo.github.io，仓库默有master分支，用于托管生成的静态文件，再新建一个develop(名字自定)分支，用于托管后台文件，方便以后换电脑时后台文件不会丢失。
-2.">
-<meta property="og:updated_time" content="2016-06-29T01:40:25.606Z">
+<meta property="og:description" content="开始之前在安装hexo之前，必须确认你已经安装了Node.js和Git。">
+<meta property="og:updated_time" content="2016-08-15T03:27:08.730Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hexo3.2+GitHub搭建静态博客">
-<meta name="twitter:description" content="开始之前在安装hexo之前，必须确认你已经安装了Node.js和Git。
-1.创建GitHub仓库注册GitHub账号，创建一个以”用户名.github.io”命名的仓库，如我的用户名为chaooo,那我的仓库名为：chaooo.github.io，仓库默有master分支，用于托管生成的静态文件，再新建一个develop(名字自定)分支，用于托管后台文件，方便以后换电脑时后台文件不会丢失。
-2.">
+<meta name="twitter:description" content="开始之前在安装hexo之前，必须确认你已经安装了Node.js和Git。">
   <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">  
   <link rel="icon" href="/favicon.png">  
   <link href="http://fonts.useso.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css"> 
@@ -76,11 +70,11 @@
               
               <div class="article-entry" itemprop="articleBody">
                 
-                <h3 id="开始之前"><a href="#开始之前" class="headerlink" title="开始之前"></a>开始之前</h3><p>在安装<a href="https://hexo.io/zh-cn/" target="_blank" rel="external">hexo</a>之前，必须确认你已经安装了<a href="http://nodejs.org/" target="_blank" rel="external">Node.js</a>和<a href="http://git-scm.com/" target="_blank" rel="external">Git</a>。</p>
+                <h3 id="开始之前"><a href="#开始之前" class="headerlink" title="开始之前"></a>开始之前</h3><p>在安装<a href="https://hexo.io/zh-cn/" target="_blank" rel="external">hexo</a>之前，必须确认你已经安装了<a href="http://nodejs.org/" target="_blank" rel="external">Node.js</a>和<a href="http://git-scm.com/" target="_blank" rel="external">Git</a>。<br><a id="more"></a> </p>
 <h4 id="1-创建GitHub仓库"><a href="#1-创建GitHub仓库" class="headerlink" title="1.创建GitHub仓库"></a>1.创建GitHub仓库</h4><p>注册<a href="https://github.com/" target="_blank" rel="external">GitHub</a>账号，创建一个以”用户名.github.io”命名的仓库，如我的用户名为chaooo,那我的仓库名为：<a href="https://github.com/chaooo/chaooo.github.io" target="_blank" rel="external">chaooo.github.io</a>，仓库默有master分支，用于托管生成的静态文件，再新建一个develop(名字自定)分支，用于托管后台文件，方便以后换电脑时后台文件不会丢失。</p>
 <h4 id="2-配置Git"><a href="#2-配置Git" class="headerlink" title="2.配置Git"></a>2.配置Git</h4><p>设置Git的用户名和邮件地址（邮箱就是你注册Github时候的邮箱），打开Git Bash,键入：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global user.name <span class="string">"username"</span></span><br><span class="line">$ git config --global user.email <span class="string">"email@example.com"</span></span><br></pre></td></tr></table></figure></p>
 <h4 id="3-本地Git与GitHub建立联系"><a href="#3-本地Git与GitHub建立联系" class="headerlink" title="3.本地Git与GitHub建立联系"></a>3.本地Git与GitHub建立联系</h4><p>这里介绍SSH的配置，先检查电脑是否已经有SSH<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ls -al ~/.ssh</span><br></pre></td></tr></table></figure></p>
-<p>如果不存在就没有关系，如果存在的话，直接删除.ssh文件夹里面所有文件。<br>输入以下指令后，一路回车就好：<br><a id="more"></a><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -t rsa -C <span class="string">"emailt@example.com"</span></span><br></pre></td></tr></table></figure></p>
+<p>如果不存在就没有关系，如果存在的话，直接删除.ssh文件夹里面所有文件。<br>输入以下指令后，一路回车就好：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -t rsa -C <span class="string">"emailt@example.com"</span></span><br></pre></td></tr></table></figure></p>
 <p>然后键入以下指令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-agent <span class="_">-s</span></span><br><span class="line">$ ssh-add ~/.ssh/id_rsa</span><br></pre></td></tr></table></figure></p>
 <p>如果出现这个错误:<code>Could not open a connection to your authentication agent</code>，则先执行如下命令即可：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-agent bash</span><br></pre></td></tr></table></figure></p>
 <p>再重新输入指令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-add ~/.ssh/id_rsa</span><br></pre></td></tr></table></figure></p>

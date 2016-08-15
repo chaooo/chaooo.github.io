@@ -5,19 +5,16 @@
   <title>MongoDB学习笔记 | 秋过冬漫长</title>
   <meta property="qc:admins" content="136042646177767140526177" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="part1 安装配置一、安装：在mongodb官网下载对应自己电脑系统的安装包，地址为： http://www.mongodb.org/downloads。
-1、以Windows64bit为例，下载.msi文件双击安装。2、安装过程中，点击 “Custom(自定义)” 按钮来设置安装目录(D:\MongoDB\bin)。3、创建数据目录(D:\MongoDB\data\db),MongoDB默认数">
+  <meta name="description" content="part1 安装配置一、安装：在mongodb官网下载对应自己电脑系统的安装包，地址为： http://www.mongodb.org/downloads。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MongoDB学习笔记">
 <meta property="og:url" content="http://chaooo.github.io/2016/06/29/MongoDB学习笔记.html">
 <meta property="og:site_name" content="秋过冬漫长">
-<meta property="og:description" content="part1 安装配置一、安装：在mongodb官网下载对应自己电脑系统的安装包，地址为： http://www.mongodb.org/downloads。
-1、以Windows64bit为例，下载.msi文件双击安装。2、安装过程中，点击 “Custom(自定义)” 按钮来设置安装目录(D:\MongoDB\bin)。3、创建数据目录(D:\MongoDB\data\db),MongoDB默认数">
-<meta property="og:updated_time" content="2016-06-29T07:10:40.201Z">
+<meta property="og:description" content="part1 安装配置一、安装：在mongodb官网下载对应自己电脑系统的安装包，地址为： http://www.mongodb.org/downloads。">
+<meta property="og:updated_time" content="2016-08-15T03:26:53.751Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MongoDB学习笔记">
-<meta name="twitter:description" content="part1 安装配置一、安装：在mongodb官网下载对应自己电脑系统的安装包，地址为： http://www.mongodb.org/downloads。
-1、以Windows64bit为例，下载.msi文件双击安装。2、安装过程中，点击 “Custom(自定义)” 按钮来设置安装目录(D:\MongoDB\bin)。3、创建数据目录(D:\MongoDB\data\db),MongoDB默认数">
+<meta name="twitter:description" content="part1 安装配置一、安装：在mongodb官网下载对应自己电脑系统的安装包，地址为： http://www.mongodb.org/downloads。">
   <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">  
   <link rel="icon" href="/favicon.png">  
   <link href="http://fonts.useso.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css"> 
@@ -73,11 +70,10 @@
               
               <div class="article-entry" itemprop="articleBody">
                 
-                <h2 id="part1-安装配置"><a href="#part1-安装配置" class="headerlink" title="part1 安装配置"></a>part1 安装配置</h2><h3 id="一、安装："><a href="#一、安装：" class="headerlink" title="一、安装："></a>一、安装：</h3><p>在mongodb官网下载对应自己电脑系统的安装包，地址为： <a href="http://www.mongodb.org/downloads" target="_blank" rel="external">http://www.mongodb.org/downloads</a>。</p>
-<p>1、以Windows64bit为例，下载.msi文件双击安装。<br>2、安装过程中，点击 “Custom(自定义)” 按钮来设置安装目录(D:\MongoDB\bin)。<br>3、创建数据目录(D:\MongoDB\data\db),MongoDB默认数据目录\data\db。<br>4、连接数据库(命令行win+r cmd,到D:\MongoDB\bin目录下，执行代码：mongod –dbpath D:\MongoDB\data\db)<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">D:</span><br><span class="line"><span class="built_in">cd</span> D:\MongoDB\bin</span><br><span class="line">mongod --dbpath D:\MongoDB\data\db</span><br></pre></td></tr></table></figure></p>
+                <h2 id="part1-安装配置"><a href="#part1-安装配置" class="headerlink" title="part1 安装配置"></a>part1 安装配置</h2><h3 id="一、安装："><a href="#一、安装：" class="headerlink" title="一、安装："></a>一、安装：</h3><p>在mongodb官网下载对应自己电脑系统的安装包，地址为： <a href="http://www.mongodb.org/downloads" target="_blank" rel="external">http://www.mongodb.org/downloads</a>。<br><a id="more"></a><br>1、以Windows64bit为例，下载.msi文件双击安装。<br>2、安装过程中，点击 “Custom(自定义)” 按钮来设置安装目录(D:\MongoDB\bin)。<br>3、创建数据目录(D:\MongoDB\data\db),MongoDB默认数据目录\data\db。<br>4、连接数据库(命令行win+r cmd,到D:\MongoDB\bin目录下，执行代码：mongod –dbpath D:\MongoDB\data\db)<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">D:</span><br><span class="line"><span class="built_in">cd</span> D:\MongoDB\bin</span><br><span class="line">mongod --dbpath D:\MongoDB\data\db</span><br></pre></td></tr></table></figure></p>
 <p>5、启动 MongoDB JavaScript 工具(D:\MongoDB\bin目录下,打开mongo,会看到：)<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MongoDB shell version: 3.2.4  //mongodb版本</span><br><span class="line">connecting to: <span class="built_in">test</span>  //默认shell连接的是本机localhost 上面的<span class="built_in">test</span>库</span><br></pre></td></tr></table></figure></p>
 <p>此时就可以操作数据库了。</p>
-<h3 id="二、将MongoDB服务器作为Windows服务运行"><a href="#二、将MongoDB服务器作为Windows服务运行" class="headerlink" title="二、将MongoDB服务器作为Windows服务运行"></a>二、将MongoDB服务器作为Windows服务运行</h3><p>1、在D:\MongoDB目录下创建mongodb.config,写入如下：<br><a id="more"></a><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 数据库文件目录</span></span><br><span class="line">dbpath=D:/MongoDB/data</span><br><span class="line"><span class="comment">## 日志目录</span></span><br><span class="line">logpath=D:/MongoDB/<span class="built_in">log</span>/mongo.log</span><br><span class="line">diaglog=3</span><br></pre></td></tr></table></figure></p>
+<h3 id="二、将MongoDB服务器作为Windows服务运行"><a href="#二、将MongoDB服务器作为Windows服务运行" class="headerlink" title="二、将MongoDB服务器作为Windows服务运行"></a>二、将MongoDB服务器作为Windows服务运行</h3><p>1、在D:\MongoDB目录下创建mongodb.config,写入如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 数据库文件目录</span></span><br><span class="line">dbpath=D:/MongoDB/data</span><br><span class="line"><span class="comment">## 日志目录</span></span><br><span class="line">logpath=D:/MongoDB/<span class="built_in">log</span>/mongo.log</span><br><span class="line">diaglog=3</span><br></pre></td></tr></table></figure></p>
 <p>2、常规命令(cmd管理员):<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">D:</span><br><span class="line">cd D:\MongoDB\bin</span><br><span class="line">mongod --config D:\MongoDB\mongodb.config</span><br></pre></td></tr></table></figure></p>
 <p>3、若常规方式失败，则sc方式(cmd管理员)：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">D:</span><br><span class="line">cd D:\MongoDB\bin</span><br><span class="line">sc create mongodb binPath= &quot;D:\MongoDB\bin\mongod.exe --service --config=D:\mongoDB\mongodb.config&quot;</span><br></pre></td></tr></table></figure></p>
 <p>访问地址：localhost:27017测试是否启动成功</p>
