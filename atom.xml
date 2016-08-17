@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://chaooo.github.io/"/>
-  <updated>2016-08-17T03:15:29.680Z</updated>
+  <updated>2016-08-17T08:40:41.306Z</updated>
   <id>http://chaooo.github.io/</id>
   
   <author>
@@ -20,15 +20,15 @@
     <link href="http://chaooo.github.io/2016/08/17/%E7%99%BE%E5%BA%A6%E7%88%AC%E8%99%AB%E6%97%A0%E6%B3%95%E6%8A%93%E5%8F%96GitHub%E5%8D%9A%E5%AE%A2%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html"/>
     <id>http://chaooo.github.io/2016/08/17/百度爬虫无法抓取GitHub博客的解决方案.html</id>
     <published>2016-08-17T03:14:25.000Z</published>
-    <updated>2016-08-17T03:15:29.680Z</updated>
+    <updated>2016-08-17T08:40:41.306Z</updated>
     
-    <content type="html"><![CDATA[<p>1.占个坑，等研究后再写、、、、、</p>
+    <content type="html"><![CDATA[<h3 id="1-迁移代码"><a href="#1-迁移代码" class="headerlink" title="1.迁移代码"></a>1.迁移代码</h3><p>把代码从<a href="https://github.com/" target="_blank" rel="external">github</a>迁移至<a href="http://git.oschina.net/" target="_blank" rel="external">码云（oschina）</a>。</p>
+<p><img src="http://obzf7z93c.bkt.clouddn.com/blog/oschina.jpg" alt="img"></p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;1.占个坑，等研究后再写、、、、、&lt;/p&gt;
-
+      &lt;h3 id=&quot;1-迁移代码&quot;&gt;&lt;a href=&quot;#1-迁移代码&quot; class=&quot;headerlink&quot; title=&quot;1.迁移代码&quot;&gt;&lt;/a&gt;1.迁移代码&lt;/h3&gt;&lt;p&gt;把代码从&lt;a href=&quot;https://github.com/&quot; target=&quot;_blank&quot; rel=
     
     </summary>
     
