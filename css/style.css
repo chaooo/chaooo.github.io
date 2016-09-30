@@ -123,7 +123,7 @@ body,
   height: 100%;
 }
 body {
-  background: #eee;
+  background: #d8e2eb url("images/bg.jpg") no-repeat center top;
   font: 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-text-size-adjust: 100%;
 }
@@ -349,7 +349,6 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: #000 url("images/banner.jpg") center top;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   background-size: cover;
