@@ -4,9 +4,9 @@
   <subtitle>没有比脚更长的路，走过去，前面是个天！</subtitle>
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://chaoo.oschina.io/"/>
+  <link href="http://chaooo.github.io/"/>
   <updated>2016-11-01T07:31:33.306Z</updated>
-  <id>http://chaoo.oschina.io/</id>
+  <id>http://chaooo.github.io/</id>
   
   <author>
     <name>郑超(Charles·Zheng)</name>
@@ -17,8 +17,8 @@
   
   <entry>
     <title>百度爬虫无法抓取GitHub博客的解决方案</title>
-    <link href="http://chaoo.oschina.io/2016/08/17/%E7%99%BE%E5%BA%A6%E7%88%AC%E8%99%AB%E6%97%A0%E6%B3%95%E6%8A%93%E5%8F%96GitHub%E5%8D%9A%E5%AE%A2%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html"/>
-    <id>http://chaoo.oschina.io/2016/08/17/百度爬虫无法抓取GitHub博客的解决方案.html</id>
+    <link href="http://chaooo.github.io/2016/08/17/%E7%99%BE%E5%BA%A6%E7%88%AC%E8%99%AB%E6%97%A0%E6%B3%95%E6%8A%93%E5%8F%96GitHub%E5%8D%9A%E5%AE%A2%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html"/>
+    <id>http://chaooo.github.io/2016/08/17/百度爬虫无法抓取GitHub博客的解决方案.html</id>
     <published>2016-08-17T03:14:25.000Z</published>
     <updated>2016-11-01T07:31:33.306Z</updated>
     
@@ -41,17 +41,17 @@
     
     </summary>
     
-      <category term="hexo博客折腾" scheme="http://chaoo.oschina.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
+      <category term="hexo博客折腾" scheme="http://chaooo.github.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
     
     
-      <category term="github" scheme="http://chaoo.oschina.io/tags/github/"/>
+      <category term="github" scheme="http://chaooo.github.io/tags/github/"/>
     
   </entry>
   
   <entry>
     <title>好用的Web包管理器-Bower</title>
-    <link href="http://chaoo.oschina.io/2016/08/12/Web%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8-Bower.html"/>
-    <id>http://chaoo.oschina.io/2016/08/12/Web包管理器-Bower.html</id>
+    <link href="http://chaooo.github.io/2016/08/12/Web%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8-Bower.html"/>
+    <id>http://chaooo.github.io/2016/08/12/Web包管理器-Bower.html</id>
     <published>2016-08-12T07:32:41.000Z</published>
     <updated>2016-11-01T01:40:14.150Z</updated>
     
@@ -80,17 +80,17 @@
     
     </summary>
     
-      <category term="前端工具" scheme="http://chaoo.oschina.io/categories/%E5%89%8D%E7%AB%AF%E5%B7%A5%E5%85%B7/"/>
+      <category term="前端工具" scheme="http://chaooo.github.io/categories/%E5%89%8D%E7%AB%AF%E5%B7%A5%E5%85%B7/"/>
     
     
-      <category term="bower" scheme="http://chaoo.oschina.io/tags/bower/"/>
+      <category term="bower" scheme="http://chaooo.github.io/tags/bower/"/>
     
   </entry>
   
   <entry>
     <title>MongoDB学习笔记</title>
-    <link href="http://chaoo.oschina.io/2016/06/29/MongoDB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html"/>
-    <id>http://chaoo.oschina.io/2016/06/29/MongoDB学习笔记.html</id>
+    <link href="http://chaooo.github.io/2016/06/29/MongoDB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html"/>
+    <id>http://chaooo.github.io/2016/06/29/MongoDB学习笔记.html</id>
     <published>2016-06-29T02:22:14.000Z</published>
     <updated>2016-11-01T01:39:29.423Z</updated>
     
@@ -135,17 +135,17 @@
     
     </summary>
     
-      <category term="数据库" scheme="http://chaoo.oschina.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+      <category term="数据库" scheme="http://chaooo.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
     
     
-      <category term="mongodb" scheme="http://chaoo.oschina.io/tags/mongodb/"/>
+      <category term="mongodb" scheme="http://chaooo.github.io/tags/mongodb/"/>
     
   </entry>
   
   <entry>
     <title>sublime text3个人习惯配置</title>
-    <link href="http://chaoo.oschina.io/2016/06/29/sublime-text3%E4%B8%AA%E4%BA%BA%E4%B9%A0%E6%83%AF%E9%85%8D%E7%BD%AE-C.html"/>
-    <id>http://chaoo.oschina.io/2016/06/29/sublime-text3个人习惯配置-C.html</id>
+    <link href="http://chaooo.github.io/2016/06/29/sublime-text3%E4%B8%AA%E4%BA%BA%E4%B9%A0%E6%83%AF%E9%85%8D%E7%BD%AE-C.html"/>
+    <id>http://chaooo.github.io/2016/06/29/sublime-text3个人习惯配置-C.html</id>
     <published>2016-06-29T01:41:48.000Z</published>
     <updated>2016-11-01T01:39:57.719Z</updated>
     
@@ -168,17 +168,17 @@
     
     </summary>
     
-      <category term="前端工具" scheme="http://chaoo.oschina.io/categories/%E5%89%8D%E7%AB%AF%E5%B7%A5%E5%85%B7/"/>
+      <category term="前端工具" scheme="http://chaooo.github.io/categories/%E5%89%8D%E7%AB%AF%E5%B7%A5%E5%85%B7/"/>
     
     
-      <category term="sublime" scheme="http://chaoo.oschina.io/tags/sublime/"/>
+      <category term="sublime" scheme="http://chaooo.github.io/tags/sublime/"/>
     
   </entry>
   
   <entry>
     <title>NodeJs学习笔记</title>
-    <link href="http://chaoo.oschina.io/2016/06/27/NodeJs%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html"/>
-    <id>http://chaoo.oschina.io/2016/06/27/NodeJs学习笔记.html</id>
+    <link href="http://chaooo.github.io/2016/06/27/NodeJs%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html"/>
+    <id>http://chaooo.github.io/2016/06/27/NodeJs学习笔记.html</id>
     <published>2016-06-27T03:55:07.000Z</published>
     <updated>2016-11-01T01:39:44.156Z</updated>
     
@@ -425,17 +425,17 @@
     
     </summary>
     
-      <category term="nodeJS" scheme="http://chaoo.oschina.io/categories/nodeJS/"/>
+      <category term="nodeJS" scheme="http://chaooo.github.io/categories/nodeJS/"/>
     
     
-      <category term="node" scheme="http://chaoo.oschina.io/tags/node/"/>
+      <category term="node" scheme="http://chaooo.github.io/tags/node/"/>
     
   </entry>
   
   <entry>
     <title>Hexo博客优化——站内搜索、版权、IE8兼容</title>
-    <link href="http://chaoo.oschina.io/2016/05/25/Hexo%E5%8D%9A%E5%AE%A2%E4%BC%98%E5%8C%96--%E7%AB%99%E5%86%85%E6%90%9C%E7%B4%A2%E3%80%81%E7%89%88%E6%9D%83%E3%80%81IE8%E5%85%BC%E5%AE%B9.html"/>
-    <id>http://chaoo.oschina.io/2016/05/25/Hexo博客优化--站内搜索、版权、IE8兼容.html</id>
+    <link href="http://chaooo.github.io/2016/05/25/Hexo%E5%8D%9A%E5%AE%A2%E4%BC%98%E5%8C%96--%E7%AB%99%E5%86%85%E6%90%9C%E7%B4%A2%E3%80%81%E7%89%88%E6%9D%83%E3%80%81IE8%E5%85%BC%E5%AE%B9.html"/>
+    <id>http://chaooo.github.io/2016/05/25/Hexo博客优化--站内搜索、版权、IE8兼容.html</id>
     <published>2016-05-25T02:03:15.000Z</published>
     <updated>2016-11-01T01:39:10.242Z</updated>
     
@@ -460,17 +460,17 @@
     
     </summary>
     
-      <category term="hexo博客折腾" scheme="http://chaoo.oschina.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
+      <category term="hexo博客折腾" scheme="http://chaooo.github.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
     
     
-      <category term="hexo" scheme="http://chaoo.oschina.io/tags/hexo/"/>
+      <category term="hexo" scheme="http://chaooo.github.io/tags/hexo/"/>
     
   </entry>
   
   <entry>
     <title>Hexo博客优化——库、字体、收录、统计</title>
-    <link href="http://chaoo.oschina.io/2016/05/24/Hexo%E5%8D%9A%E5%AE%A2%E4%BC%98%E5%8C%96--%E5%BA%93%E3%80%81%E5%AD%97%E4%BD%93%E3%80%81%E6%94%B6%E5%BD%95%E3%80%81%E7%BB%9F%E8%AE%A1.html"/>
-    <id>http://chaoo.oschina.io/2016/05/24/Hexo博客优化--库、字体、收录、统计.html</id>
+    <link href="http://chaooo.github.io/2016/05/24/Hexo%E5%8D%9A%E5%AE%A2%E4%BC%98%E5%8C%96--%E5%BA%93%E3%80%81%E5%AD%97%E4%BD%93%E3%80%81%E6%94%B6%E5%BD%95%E3%80%81%E7%BB%9F%E8%AE%A1.html"/>
+    <id>http://chaooo.github.io/2016/05/24/Hexo博客优化--库、字体、收录、统计.html</id>
     <published>2016-05-24T03:22:56.000Z</published>
     <updated>2016-11-01T01:39:06.252Z</updated>
     
@@ -509,17 +509,17 @@
     
     </summary>
     
-      <category term="hexo博客折腾" scheme="http://chaoo.oschina.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
+      <category term="hexo博客折腾" scheme="http://chaooo.github.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
     
     
-      <category term="hexo" scheme="http://chaoo.oschina.io/tags/hexo/"/>
+      <category term="hexo" scheme="http://chaooo.github.io/tags/hexo/"/>
     
   </entry>
   
   <entry>
     <title>Hexo博客优化——主题、分享、评论、微博秀</title>
-    <link href="http://chaoo.oschina.io/2016/05/23/Hexo%E5%8D%9A%E5%AE%A2%E4%BC%98%E5%8C%96--%E4%B8%BB%E9%A2%98%E3%80%81%E5%88%86%E4%BA%AB%E3%80%81%E8%AF%84%E8%AE%BA%E3%80%81%E5%BE%AE%E5%8D%9A%E7%A7%80.html"/>
-    <id>http://chaoo.oschina.io/2016/05/23/Hexo博客优化--主题、分享、评论、微博秀.html</id>
+    <link href="http://chaooo.github.io/2016/05/23/Hexo%E5%8D%9A%E5%AE%A2%E4%BC%98%E5%8C%96--%E4%B8%BB%E9%A2%98%E3%80%81%E5%88%86%E4%BA%AB%E3%80%81%E8%AF%84%E8%AE%BA%E3%80%81%E5%BE%AE%E5%8D%9A%E7%A7%80.html"/>
+    <id>http://chaooo.github.io/2016/05/23/Hexo博客优化--主题、分享、评论、微博秀.html</id>
     <published>2016-05-23T06:30:13.000Z</published>
     <updated>2016-11-01T01:39:01.797Z</updated>
     
@@ -549,17 +549,17 @@
     
     </summary>
     
-      <category term="hexo博客折腾" scheme="http://chaoo.oschina.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
+      <category term="hexo博客折腾" scheme="http://chaooo.github.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
     
     
-      <category term="hexo" scheme="http://chaoo.oschina.io/tags/hexo/"/>
+      <category term="hexo" scheme="http://chaooo.github.io/tags/hexo/"/>
     
   </entry>
   
   <entry>
     <title>Hexo3.2+GitHub搭建静态博客</title>
-    <link href="http://chaoo.oschina.io/2016/05/23/Hexo3-2-github%E6%90%AD%E5%BB%BA%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2.html"/>
-    <id>http://chaoo.oschina.io/2016/05/23/Hexo3-2-github搭建静态博客.html</id>
+    <link href="http://chaooo.github.io/2016/05/23/Hexo3-2-github%E6%90%AD%E5%BB%BA%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2.html"/>
+    <id>http://chaooo.github.io/2016/05/23/Hexo3-2-github搭建静态博客.html</id>
     <published>2016-05-23T03:16:51.000Z</published>
     <updated>2016-11-01T01:39:15.271Z</updated>
     
@@ -602,17 +602,17 @@
     
     </summary>
     
-      <category term="hexo博客折腾" scheme="http://chaoo.oschina.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
+      <category term="hexo博客折腾" scheme="http://chaooo.github.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
     
     
-      <category term="hexo" scheme="http://chaoo.oschina.io/tags/hexo/"/>
+      <category term="hexo" scheme="http://chaooo.github.io/tags/hexo/"/>
     
   </entry>
   
   <entry>
     <title>Hello World</title>
-    <link href="http://chaoo.oschina.io/2015/12/31/hello-world.html"/>
-    <id>http://chaoo.oschina.io/2015/12/31/hello-world.html</id>
+    <link href="http://chaooo.github.io/2015/12/31/hello-world.html"/>
+    <id>http://chaooo.github.io/2015/12/31/hello-world.html</id>
     <published>2015-12-31T15:59:59.000Z</published>
     <updated>2016-11-03T04:51:40.556Z</updated>
     
@@ -633,10 +633,10 @@
     
     </summary>
     
-      <category term="hexo博客折腾" scheme="http://chaoo.oschina.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
+      <category term="hexo博客折腾" scheme="http://chaooo.github.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
     
     
-      <category term="hexo" scheme="http://chaoo.oschina.io/tags/hexo/"/>
+      <category term="hexo" scheme="http://chaooo.github.io/tags/hexo/"/>
     
   </entry>
   
