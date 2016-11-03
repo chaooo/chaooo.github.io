@@ -1,28 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-  <title>秋过冬漫长</title>
-  <subtitle>没有比脚更长的路，走过去，前面是个天！</subtitle>
-  <link href="/atom.xml" rel="self"/>
+<search>
   
-  <link href="http://chaooo.github.io/"/>
-  <updated>2016-11-01T07:31:33.306Z</updated>
-  <id>http://chaooo.github.io/</id>
   
-  <author>
-    <name>郑超(Charles·Zheng)</name>
     
-  </author>
-  
-  <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>百度爬虫无法抓取GitHub博客的解决方案</title>
-    <link href="http://chaooo.github.io/2016/08/17/%E7%99%BE%E5%BA%A6%E7%88%AC%E8%99%AB%E6%97%A0%E6%B3%95%E6%8A%93%E5%8F%96GitHub%E5%8D%9A%E5%AE%A2%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html"/>
-    <id>http://chaooo.github.io/2016/08/17/百度爬虫无法抓取GitHub博客的解决方案.html</id>
-    <published>2016-08-17T03:14:25.000Z</published>
-    <updated>2016-11-01T07:31:33.306Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="1-迁移代码"><a href="#1-迁移代码" class="headerlink" title="1.迁移代码"></a>1.迁移代码</h3><p>把代码从<a href="https://github.com/" target="_blank" rel="external">github</a>迁移至<a href="http://git.oschina.net/" target="_blank" rel="external">码云（oschina）</a>。<br>首先，你要先在码云注册一个账号，和GitHub操作基本一样，这里不再赘述。<br>码云的Pages服务基本和GitHub的一样，不过码云的Pages服务更灵活一些。<br><a id="more"></a><br>在GitHub上，可以新建一个以<code>用户名</code>命名的仓库，将网站代码放在master分支下，即可自动部署到：<code>http://用户名.github.io/</code>，若其他命名的仓库则新建一个<code>gh-pages</code>的分支，网站代码放在<code>gh-pages</code>下，，即可自动部署到：<code>http://用户名.github.io/仓库名/</code>。<br>对于码云，基本和GitHub一样，不过还需要手动开启Pages服务，而且其他仓库虽然默认在<code>osc-pages</code>下，但可自定到自己喜欢的分支上。<br>代码迁移步骤如下：</p>
+    <entry>
+      <title><![CDATA[百度爬虫无法抓取GitHub博客的解决方案]]></title>
+      <url>http://chaooo.github.io/2016/08/17/%E7%99%BE%E5%BA%A6%E7%88%AC%E8%99%AB%E6%97%A0%E6%B3%95%E6%8A%93%E5%8F%96GitHub%E5%8D%9A%E5%AE%A2%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html</url>
+      <content type="html"><![CDATA[<h3 id="1-迁移代码"><a href="#1-迁移代码" class="headerlink" title="1.迁移代码"></a>1.迁移代码</h3><p>把代码从<a href="https://github.com/" target="_blank" rel="external">github</a>迁移至<a href="http://git.oschina.net/" target="_blank" rel="external">码云（oschina）</a>。<br>首先，你要先在码云注册一个账号，和GitHub操作基本一样，这里不再赘述。<br>码云的Pages服务基本和GitHub的一样，不过码云的Pages服务更灵活一些。<br><a id="more"></a><br>在GitHub上，可以新建一个以<code>用户名</code>命名的仓库，将网站代码放在master分支下，即可自动部署到：<code>http://用户名.github.io/</code>，若其他命名的仓库则新建一个<code>gh-pages</code>的分支，网站代码放在<code>gh-pages</code>下，，即可自动部署到：<code>http://用户名.github.io/仓库名/</code>。<br>对于码云，基本和GitHub一样，不过还需要手动开启Pages服务，而且其他仓库虽然默认在<code>osc-pages</code>下，但可自定到自己喜欢的分支上。<br>代码迁移步骤如下：</p>
 <h5 id="1-1-新建码云项目"><a href="#1-1-新建码云项目" class="headerlink" title="1.1 新建码云项目"></a>1.1 新建码云项目</h5><p>以我自己的博客为例，项目地址：<a href="https://github.com/chaooo/chaooo.github.io.git" target="_blank" rel="external">https://github.com/chaooo/chaooo.github.io.git</a>。<br>它在Github上的Pages地址是：<a href="http://chaooo.github.io">http://chaooo.github.io</a><br>如果想把它转移到码云Pages，只需要登录你的码云账户，点击右上角的<code>+</code>号，选择新建项目:<br><img src="http://obzf7z93c.bkt.clouddn.com/blog/oschina.jpg" alt="博客迁移至码云1"></p>
 <h5 id="1-2-开启pages服务"><a href="#1-2-开启pages服务" class="headerlink" title="1.2 开启pages服务"></a>1.2 开启pages服务</h5><p>然后点击创建，项目会在后台自动导入，导入成功后，点击菜单栏的<code>Pages</code>,码云默认的Pages服务分支是osc-pages，但是你也已选择自己静态页面所在的分支，这里我的博客项目的静态页面分支是master，选择master并点击启动服务。<br><img src="http://obzf7z93c.bkt.clouddn.com/blog/oschina1.jpg" alt="博客迁移至码云2"><br>至此，博客已经部署成功，访问提供的地址：<a href="http://chaoo.oschina.io" target="_blank" rel="external">http://chaoo.oschina.io</a>即可查看到我的博客。<br><img src="http://obzf7z93c.bkt.clouddn.com/blog/oschina2.jpg" alt="博客迁移至码云3"></p>
 <h3 id="2-修改hexo配置"><a href="#2-修改hexo配置" class="headerlink" title="2.修改hexo配置"></a>2.修改hexo配置</h3><p>打开博客根目录的_config.yml文件，找到：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># URL</span></span><br><span class="line"><span class="comment">## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'</span></span><br><span class="line">url: http://chaooo.github.io</span><br><span class="line"></span><br><span class="line"><span class="comment"># Deployment</span></span><br><span class="line"><span class="comment">## Docs: https://hexo.io/docs/deployment.html</span></span><br><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: git</span><br><span class="line">  repository: https://github.com/chaooo/chaooo.github.io.git</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure></p>
@@ -34,28 +18,12 @@
 <p>这样就可以等待百度收录了。</p>
 <p><img src="http://obzf7z93c.bkt.clouddn.com/blog/oschina3.jpg" alt="博客迁移至码云4"></p>
 ]]></content>
+    </entry>
     
-    <summary type="html">
-    
-      &lt;h3 id=&quot;1-迁移代码&quot;&gt;&lt;a href=&quot;#1-迁移代码&quot; class=&quot;headerlink&quot; title=&quot;1.迁移代码&quot;&gt;&lt;/a&gt;1.迁移代码&lt;/h3&gt;&lt;p&gt;把代码从&lt;a href=&quot;https://github.com/&quot;&gt;github&lt;/a&gt;迁移至&lt;a href=&quot;http://git.oschina.net/&quot;&gt;码云（oschina）&lt;/a&gt;。&lt;br&gt;首先，你要先在码云注册一个账号，和GitHub操作基本一样，这里不再赘述。&lt;br&gt;码云的Pages服务基本和GitHub的一样，不过码云的Pages服务更灵活一些。&lt;br&gt;
-    
-    </summary>
-    
-      <category term="hexo博客折腾" scheme="http://chaooo.github.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
-    
-    
-      <category term="github" scheme="http://chaooo.github.io/tags/github/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>好用的Web包管理器-Bower</title>
-    <link href="http://chaooo.github.io/2016/08/12/Web%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8-Bower.html"/>
-    <id>http://chaooo.github.io/2016/08/12/Web包管理器-Bower.html</id>
-    <published>2016-08-12T07:32:41.000Z</published>
-    <updated>2016-11-01T01:40:14.150Z</updated>
-    
-    <content type="html"><![CDATA[<p>Bower是twitter推出的客户端包管理工具，用于命令行操作包的搜索、下载、更新、卸载(如jQuery、Bootstrap、JavaScript、HTML、CSS之类的网络资源)。Bower对包结构没有强制规范，可以很方便获取各种Web模块文件，但bower本身不存储模块文件和模块版本信息，模块发布者通过register方式将模块可访问的公开的git地址记录在bower的数据库中，而所有版本都是通过代码库的tag来决定的。<br><a id="more"></a> </p>
+    <entry>
+      <title><![CDATA[好用的Web包管理器-Bower]]></title>
+      <url>http://chaooo.github.io/2016/08/12/Web%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8-Bower.html</url>
+      <content type="html"><![CDATA[<p>Bower是twitter推出的客户端包管理工具，用于命令行操作包的搜索、下载、更新、卸载(如jQuery、Bootstrap、JavaScript、HTML、CSS之类的网络资源)。Bower对包结构没有强制规范，可以很方便获取各种Web模块文件，但bower本身不存储模块文件和模块版本信息，模块发布者通过register方式将模块可访问的公开的git地址记录在bower的数据库中，而所有版本都是通过代码库的tag来决定的。<br><a id="more"></a> </p>
 <h3 id="开始之前"><a href="#开始之前" class="headerlink" title="开始之前"></a>开始之前</h3><p>在安装<a href="https://bower.io/" target="_blank" rel="external">bower</a>之前，必须确认你已经安装了<a href="http://nodejs.org/" target="_blank" rel="external">Node.js</a>和<a href="http://git-scm.com/" target="_blank" rel="external">Git</a>。</p>
 <h3 id="1-安装Bower"><a href="#1-安装Bower" class="headerlink" title="1.安装Bower"></a>1.安装Bower</h3><p>使用npm，打开终端，键入：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g bower   <span class="comment">#全局安装bower</span></span><br></pre></td></tr></table></figure></p>
 <p>移步<a href="https://github.com/bower/bower/wiki/Troubleshooting" target="_blank" rel="external">这里</a>查看不同平台上安装的问题。</p>
@@ -73,28 +41,12 @@
 <h3 id="8-卸载包"><a href="#8-卸载包" class="headerlink" title="8.卸载包"></a>8.卸载包</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bower uninstall &lt;name&gt; [&lt;name&gt; ..] [&lt;options&gt;]</span><br></pre></td></tr></table></figure>
 <p>卸载选项<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-S, --save: Remove uninstalled packages from the project’s bower.json dependencies</span><br><span class="line">-D, --save-dev: Remove uninstalled packages from the project’s bower.json devDependencies</span><br></pre></td></tr></table></figure></p>
 ]]></content>
+    </entry>
     
-    <summary type="html">
-    
-      &lt;p&gt;Bower是twitter推出的客户端包管理工具，用于命令行操作包的搜索、下载、更新、卸载(如jQuery、Bootstrap、JavaScript、HTML、CSS之类的网络资源)。Bower对包结构没有强制规范，可以很方便获取各种Web模块文件，但bower本身不存储模块文件和模块版本信息，模块发布者通过register方式将模块可访问的公开的git地址记录在bower的数据库中，而所有版本都是通过代码库的tag来决定的。&lt;br&gt;
-    
-    </summary>
-    
-      <category term="前端工具" scheme="http://chaooo.github.io/categories/%E5%89%8D%E7%AB%AF%E5%B7%A5%E5%85%B7/"/>
-    
-    
-      <category term="bower" scheme="http://chaooo.github.io/tags/bower/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MongoDB学习笔记</title>
-    <link href="http://chaooo.github.io/2016/06/29/MongoDB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html"/>
-    <id>http://chaooo.github.io/2016/06/29/MongoDB学习笔记.html</id>
-    <published>2016-06-29T02:22:14.000Z</published>
-    <updated>2016-11-01T01:39:29.423Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="part1-安装配置"><a href="#part1-安装配置" class="headerlink" title="part1 安装配置"></a>part1 安装配置</h2><h3 id="一、安装："><a href="#一、安装：" class="headerlink" title="一、安装："></a>一、安装：</h3><p>在mongodb官网下载对应自己电脑系统的安装包，地址为： <a href="http://www.mongodb.org/downloads" target="_blank" rel="external">http://www.mongodb.org/downloads</a>。<br><a id="more"></a><br>1、以Windows64bit为例，下载.msi文件双击安装。<br>2、安装过程中，点击 “Custom(自定义)” 按钮来设置安装目录(D:\MongoDB\bin)。<br>3、创建数据目录(D:\MongoDB\data\db),MongoDB默认数据目录\data\db。<br>4、连接数据库(命令行win+r cmd,到D:\MongoDB\bin目录下，执行代码：mongod –dbpath D:\MongoDB\data\db)<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">D:</span><br><span class="line"><span class="built_in">cd</span> D:\MongoDB\bin</span><br><span class="line">mongod --dbpath D:\MongoDB\data\db</span><br></pre></td></tr></table></figure></p>
+    <entry>
+      <title><![CDATA[MongoDB学习笔记]]></title>
+      <url>http://chaooo.github.io/2016/06/29/MongoDB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html</url>
+      <content type="html"><![CDATA[<h2 id="part1-安装配置"><a href="#part1-安装配置" class="headerlink" title="part1 安装配置"></a>part1 安装配置</h2><h3 id="一、安装："><a href="#一、安装：" class="headerlink" title="一、安装："></a>一、安装：</h3><p>在mongodb官网下载对应自己电脑系统的安装包，地址为： <a href="http://www.mongodb.org/downloads" target="_blank" rel="external">http://www.mongodb.org/downloads</a>。<br><a id="more"></a><br>1、以Windows64bit为例，下载.msi文件双击安装。<br>2、安装过程中，点击 “Custom(自定义)” 按钮来设置安装目录(D:\MongoDB\bin)。<br>3、创建数据目录(D:\MongoDB\data\db),MongoDB默认数据目录\data\db。<br>4、连接数据库(命令行win+r cmd,到D:\MongoDB\bin目录下，执行代码：mongod –dbpath D:\MongoDB\data\db)<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">D:</span><br><span class="line"><span class="built_in">cd</span> D:\MongoDB\bin</span><br><span class="line">mongod --dbpath D:\MongoDB\data\db</span><br></pre></td></tr></table></figure></p>
 <p>5、启动 MongoDB JavaScript 工具(D:\MongoDB\bin目录下,打开mongo,会看到：)<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MongoDB shell version: 3.2.4  //mongodb版本</span><br><span class="line">connecting to: <span class="built_in">test</span>  //默认shell连接的是本机localhost 上面的<span class="built_in">test</span>库</span><br></pre></td></tr></table></figure></p>
 <p>此时就可以操作数据库了。</p>
 <h3 id="二、将MongoDB服务器作为Windows服务运行"><a href="#二、将MongoDB服务器作为Windows服务运行" class="headerlink" title="二、将MongoDB服务器作为Windows服务运行"></a>二、将MongoDB服务器作为Windows服务运行</h3><p>1、在D:\MongoDB目录下创建mongodb.config,写入如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 数据库文件目录</span></span><br><span class="line">dbpath=D:/MongoDB/data</span><br><span class="line"><span class="comment">## 日志目录</span></span><br><span class="line">logpath=D:/MongoDB/<span class="built_in">log</span>/mongo.log</span><br><span class="line">diaglog=3</span><br></pre></td></tr></table></figure></p>
@@ -128,28 +80,12 @@
 <p>查询结果说明：<br><code>_id为1的文档</code>，students数组包含多个元素中存在school键且值为102的元素，$elemMatch只返回一个匹配条件的元素。<br><code>_id为3的文档</code>，因为students数组中元素无法匹配$elemMatch条件，所以查询结果不包含”students”字段。</p>
 <p>$elemMatch可以指定多个字段的限定条件，下面的操作将查询邮政编码键值是63109的所有文档。 $elemMatch操作符将返回 students数组中的第一个匹配条件（内嵌文档的school键且值为102且age键值大于10）的元素。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">db.school.find( &#123; zipcode: 63109 &#125;,&#123; students: &#123; <span class="variable">$elemMatch</span>: &#123; school: 102, age: &#123; <span class="variable">$gt</span>: 10&#125; &#125; &#125; &#125; );</span><br><span class="line"></span><br><span class="line">  &#123;<span class="string">"_id"</span>: 1, <span class="string">"students"</span>: [&#123;<span class="string">"name"</span>:<span class="string">"jess"</span>, <span class="string">"school"</span>:102, <span class="string">"age"</span>:11&#125;]&#125;</span><br><span class="line">  &#123;<span class="string">"_id"</span>: 3&#125;</span><br><span class="line">  &#123;<span class="string">"_id"</span>: 4&#125;</span><br></pre></td></tr></table></figure></p>
 ]]></content>
+    </entry>
     
-    <summary type="html">
-    
-      &lt;h2 id=&quot;part1-安装配置&quot;&gt;&lt;a href=&quot;#part1-安装配置&quot; class=&quot;headerlink&quot; title=&quot;part1 安装配置&quot;&gt;&lt;/a&gt;part1 安装配置&lt;/h2&gt;&lt;h3 id=&quot;一、安装：&quot;&gt;&lt;a href=&quot;#一、安装：&quot; class=&quot;headerlink&quot; title=&quot;一、安装：&quot;&gt;&lt;/a&gt;一、安装：&lt;/h3&gt;&lt;p&gt;在mongodb官网下载对应自己电脑系统的安装包，地址为： &lt;a href=&quot;http://www.mongodb.org/downloads&quot;&gt;http://www.mongodb.org/downloads&lt;/a&gt;。&lt;br&gt;
-    
-    </summary>
-    
-      <category term="数据库" scheme="http://chaooo.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    
-    
-      <category term="mongodb" scheme="http://chaooo.github.io/tags/mongodb/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>sublime text3个人习惯配置</title>
-    <link href="http://chaooo.github.io/2016/06/29/sublime-text3%E4%B8%AA%E4%BA%BA%E4%B9%A0%E6%83%AF%E9%85%8D%E7%BD%AE-C.html"/>
-    <id>http://chaooo.github.io/2016/06/29/sublime-text3个人习惯配置-C.html</id>
-    <published>2016-06-29T01:41:48.000Z</published>
-    <updated>2016-11-01T01:39:57.719Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="1、安装"><a href="#1、安装" class="headerlink" title="1、安装"></a>1、安装</h3><p>分别在官网下载并安装 <a href="https://nodejs.org/en/download/" target="_blank" rel="external">nodejs</a> 和 <a href="https://www.sublimetext.com/3" target="_blank" rel="external">sublime text3</a>。</p>
+    <entry>
+      <title><![CDATA[sublime text3个人习惯配置]]></title>
+      <url>http://chaooo.github.io/2016/06/29/sublime-text3%E4%B8%AA%E4%BA%BA%E4%B9%A0%E6%83%AF%E9%85%8D%E7%BD%AE-C.html</url>
+      <content type="html"><![CDATA[<h3 id="1、安装"><a href="#1、安装" class="headerlink" title="1、安装"></a>1、安装</h3><p>分别在官网下载并安装 <a href="https://nodejs.org/en/download/" target="_blank" rel="external">nodejs</a> 和 <a href="https://www.sublimetext.com/3" target="_blank" rel="external">sublime text3</a>。</p>
 <h3 id="2、sublime-text3注册："><a href="#2、sublime-text3注册：" class="headerlink" title="2、sublime text3注册："></a>2、sublime text3注册：</h3><a id="more"></a> 
 <p>点击菜单【help】－&gt;【Enter License】，粘贴下面注册码(亲测v3103可用 ):<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">—– BEGIN LICENSE —–</span><br><span class="line">Ryan Clark</span><br><span class="line">Single User License</span><br><span class="line">EA7E-812479</span><br><span class="line">2158A7DE B690A7A3 8EC04710 006A5EEB</span><br><span class="line">34E77CA3 9C82C81F 0DB6371B 79704E6F</span><br><span class="line">93F36655 B031503A 03257CCC 01B20F60</span><br><span class="line">D304FA8D B1B4F0AF 8A76C7BA 0FA94D55</span><br><span class="line">56D46BCE 5237A341 CD837F30 4D60772D</span><br><span class="line">349B1179 A996F826 90CDB73C 24D41245</span><br><span class="line">FD032C30 AD5E7241 4EAA66ED 167D91FB</span><br><span class="line">55896B16 EA125C81 F550AF6B A6820916</span><br><span class="line">—— END LICENSE ——</span><br></pre></td></tr></table></figure></p>
 <h3 id="3、安装package-control组件，用于管理所有插件"><a href="#3、安装package-control组件，用于管理所有插件" class="headerlink" title="3、安装package control组件，用于管理所有插件"></a>3、安装package control组件，用于管理所有插件</h3><p>按ctrl + ~调出控制台(或点击菜单栏的【View】-&gt;【Show Console】)，在Console窗口中输入以下代码，按回车键：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import urllib.request,os,hashlib; h = <span class="string">'2915d1851351e5ee549c20394736b442'</span> + <span class="string">'8bc59f460fa1548d1514676163dafc88'</span>; pf = <span class="string">'Package Control.sublime-package'</span>; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( <span class="string">'http://packagecontrol.io/'</span> + pf.replace(<span class="string">' '</span>, <span class="string">'%20'</span>)).read(); dh = hashlib.sha256(by).hexdigest(); <span class="built_in">print</span>(<span class="string">'Error validating download (got %s instead of %s), please try manual install'</span> % (dh, h)) <span class="keyword">if</span> dh != h <span class="keyword">else</span> open(os.path.join( ipp, pf), <span class="string">'wb'</span> ).write(by)</span><br></pre></td></tr></table></figure></p>
@@ -160,29 +96,12 @@
 <p>(5)完成:随便写一段nodejs代码，ctrl+B运行<br>(6)注意：在手动解压sublime Text插件后，需要在preference-&gt;package settings-&gt;package control的user setting下添加installed packages中的“Nodejs”，不然重启sublime Text 会被删除Nodejs插件。</p>
 <h5 id="方法2"><a href="#方法2" class="headerlink" title="方法2"></a>方法2</h5><p>首先需要先安装<a href="https://nodejs.org/en/download/" target="_blank" rel="external">nodejs</a>。<br>(1)运行Sublime,菜单上找到Tools —&gt; Build System —&gt; new Build System<br>(2)输入：<br>{<br>  “cmd”: [“node”, “$file”],<br>  “file_regex”: “^[ ]<em>File \”(…</em>?)\”, line ([0-9]*)”,<br>  “selector”: “source.js”,<br>  “shell”:true,<br>  “encoding”: “utf-8”,<br>  “windows”:<br>    {<br>      “cmd”: [“taskkill /F /IM node.exe”, “”],<br>      “cmd”: [“node”, “$file”]<br>    }<br>}<br>(3)保存文件为NodeJs.sublime-build<br>(4)菜单上找到Tools —&gt; Build System —&gt;选择 NodeJs<br>(5)安装sublime插件 JavaScript &amp; NodeJs Snippets<br>(6)新建test.js文件，输入 console.log(‘Hello Node.js’); 按快捷键 Ctrl + B 运行，成功输出</p>
 ]]></content>
+    </entry>
     
-    <summary type="html">
-    
-      &lt;h3 id=&quot;1、安装&quot;&gt;&lt;a href=&quot;#1、安装&quot; class=&quot;headerlink&quot; title=&quot;1、安装&quot;&gt;&lt;/a&gt;1、安装&lt;/h3&gt;&lt;p&gt;分别在官网下载并安装 &lt;a href=&quot;https://nodejs.org/en/download/&quot;&gt;nodejs&lt;/a&gt; 和 &lt;a href=&quot;https://www.sublimetext.com/3&quot;&gt;sublime text3&lt;/a&gt;。&lt;/p&gt;
-&lt;h3 id=&quot;2、sublime-text3注册：&quot;&gt;&lt;a href=&quot;#2、sublime-text3注册：&quot; class=&quot;headerlink&quot; title=&quot;2、sublime text3注册：&quot;&gt;&lt;/a&gt;2、sublime text3注册：&lt;/h3&gt;
-    
-    </summary>
-    
-      <category term="前端工具" scheme="http://chaooo.github.io/categories/%E5%89%8D%E7%AB%AF%E5%B7%A5%E5%85%B7/"/>
-    
-    
-      <category term="sublime" scheme="http://chaooo.github.io/tags/sublime/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>NodeJs学习笔记</title>
-    <link href="http://chaooo.github.io/2016/06/27/NodeJs%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html"/>
-    <id>http://chaooo.github.io/2016/06/27/NodeJs学习笔记.html</id>
-    <published>2016-06-27T03:55:07.000Z</published>
-    <updated>2016-11-01T01:39:44.156Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="1、Node-js创建第一个应用"><a href="#1、Node-js创建第一个应用" class="headerlink" title="1、Node.js创建第一个应用"></a>1、Node.js创建第一个应用</h3><h4 id="1-1、创建服务器"><a href="#1-1、创建服务器" class="headerlink" title="1.1、创建服务器"></a>1.1、创建服务器</h4><p>使用 <code>http.createServer()</code> 方法创建服务器，并使用 <code>listen</code> 方法绑定 8888 端口。 函数通过 <code>request</code>, <code>response</code> 参数来接收和响应数据。实例如下，在项目的根目录下创建一个叫 server.js 的文件，并写入以下代码：<br><a id="more"></a><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> http = <span class="built_in">require</span>(<span class="string">"http"</span>);<span class="comment">//引入require模块</span></span><br><span class="line">http.createServer(<span class="function"><span class="keyword">function</span>(<span class="params">require, response</span>)</span>&#123;</span><br><span class="line">  <span class="comment">//发送 HTTP 头部</span></span><br><span class="line">  <span class="comment">//HTTP 状态值：200：OK</span></span><br><span class="line">  <span class="comment">//内容类型：text/plain</span></span><br><span class="line">  response.writeHead(<span class="number">200</span>, &#123;<span class="string">'Content-Type'</span>:<span class="string">'text/plain'</span>&#125;);</span><br><span class="line">  <span class="comment">//发送响应数据：“Hello World”</span></span><br><span class="line">  response.end(<span class="string">'Hello World\n'</span>);</span><br><span class="line">&#125;).listen(<span class="number">8888</span>);</span><br><span class="line"><span class="comment">//终端打印如下信息</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'Server running at http://127.0.0.1:8888/'</span>);</span><br></pre></td></tr></table></figure></p>
+    <entry>
+      <title><![CDATA[NodeJs学习笔记]]></title>
+      <url>http://chaooo.github.io/2016/06/27/NodeJs%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html</url>
+      <content type="html"><![CDATA[<h3 id="1、Node-js创建第一个应用"><a href="#1、Node-js创建第一个应用" class="headerlink" title="1、Node.js创建第一个应用"></a>1、Node.js创建第一个应用</h3><h4 id="1-1、创建服务器"><a href="#1-1、创建服务器" class="headerlink" title="1.1、创建服务器"></a>1.1、创建服务器</h4><p>使用 <code>http.createServer()</code> 方法创建服务器，并使用 <code>listen</code> 方法绑定 8888 端口。 函数通过 <code>request</code>, <code>response</code> 参数来接收和响应数据。实例如下，在项目的根目录下创建一个叫 server.js 的文件，并写入以下代码：<br><a id="more"></a><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> http = <span class="built_in">require</span>(<span class="string">"http"</span>);<span class="comment">//引入require模块</span></span><br><span class="line">http.createServer(<span class="function"><span class="keyword">function</span>(<span class="params">require, response</span>)</span>&#123;</span><br><span class="line">  <span class="comment">//发送 HTTP 头部</span></span><br><span class="line">  <span class="comment">//HTTP 状态值：200：OK</span></span><br><span class="line">  <span class="comment">//内容类型：text/plain</span></span><br><span class="line">  response.writeHead(<span class="number">200</span>, &#123;<span class="string">'Content-Type'</span>:<span class="string">'text/plain'</span>&#125;);</span><br><span class="line">  <span class="comment">//发送响应数据：“Hello World”</span></span><br><span class="line">  response.end(<span class="string">'Hello World\n'</span>);</span><br><span class="line">&#125;).listen(<span class="number">8888</span>);</span><br><span class="line"><span class="comment">//终端打印如下信息</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'Server running at http://127.0.0.1:8888/'</span>);</span><br></pre></td></tr></table></figure></p>
 <p>使用 node 命令执行以上的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node server.js</span><br><span class="line">Server running at http://127.0.0.1:8888/</span><br></pre></td></tr></table></figure></p>
 <p>接下来，打开浏览器访问 <code>http://127.0.0.1:8888/</code>，你会看到一个写着 “Hello World” 的网页。</p>
 <h3 id="2、Node-js-事件循环"><a href="#2、Node-js-事件循环" class="headerlink" title="2、Node.js 事件循环"></a>2、Node.js 事件循环</h3><p>Node.js 有多个内置的事件，我们可以通过引入 <code>events</code> 模块，并通过实例化 <code>EventEmitter</code> 类来绑定和监听事件，如下实例：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//引入events模块</span></span><br><span class="line"><span class="keyword">var</span> events = <span class="built_in">require</span>(<span class="string">'events'</span>);</span><br><span class="line"><span class="comment">//创建eventEmitter对象</span></span><br><span class="line"><span class="keyword">var</span> eventEmitter = <span class="keyword">new</span> events.EventEmitter();</span><br><span class="line"><span class="comment">//创建时间处理程序</span></span><br><span class="line"><span class="keyword">var</span> connectHander = <span class="function"><span class="keyword">function</span> <span class="title">connected</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'连接成功。'</span>);</span><br><span class="line">  <span class="comment">//触发data_received事件</span></span><br><span class="line">  eventEmitter.emit(<span class="string">'data_received'</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//绑定connection事件处理程序</span></span><br><span class="line">eventEmitter.on(<span class="string">'connection'</span>, connectHandler);</span><br><span class="line"><span class="comment">//使用匿名函数绑定data_received事件</span></span><br><span class="line">eventEmitter.on(<span class="string">'data_received'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'数据接收成功。'</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">//触发connection事件</span></span><br><span class="line">eventEmitter.emit(<span class="string">'connection'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"程序执行完毕。"</span>);</span><br></pre></td></tr></table></figure></p>
@@ -418,28 +337,12 @@
 <p>使用 JXcore 编译后，我们可以使用以下命令来执行生成的 jx 二进制文件：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jx index.jx <span class="built_in">command</span>_line_arguments</span><br></pre></td></tr></table></figure></p>
 <p>更多 JXcore 功能特性你可以参考官网：<a href="http://jxcore.com/" target="_blank" rel="external">http://jxcore.com/</a></p>
 ]]></content>
+    </entry>
     
-    <summary type="html">
-    
-      &lt;h3 id=&quot;1、Node-js创建第一个应用&quot;&gt;&lt;a href=&quot;#1、Node-js创建第一个应用&quot; class=&quot;headerlink&quot; title=&quot;1、Node.js创建第一个应用&quot;&gt;&lt;/a&gt;1、Node.js创建第一个应用&lt;/h3&gt;&lt;h4 id=&quot;1-1、创建服务器&quot;&gt;&lt;a href=&quot;#1-1、创建服务器&quot; class=&quot;headerlink&quot; title=&quot;1.1、创建服务器&quot;&gt;&lt;/a&gt;1.1、创建服务器&lt;/h4&gt;&lt;p&gt;使用 &lt;code&gt;http.createServer()&lt;/code&gt; 方法创建服务器，并使用 &lt;code&gt;listen&lt;/code&gt; 方法绑定 8888 端口。 函数通过 &lt;code&gt;request&lt;/code&gt;, &lt;code&gt;response&lt;/code&gt; 参数来接收和响应数据。实例如下，在项目的根目录下创建一个叫 server.js 的文件，并写入以下代码：&lt;br&gt;
-    
-    </summary>
-    
-      <category term="nodeJS" scheme="http://chaooo.github.io/categories/nodeJS/"/>
-    
-    
-      <category term="node" scheme="http://chaooo.github.io/tags/node/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hexo博客优化——站内搜索、版权、IE8兼容</title>
-    <link href="http://chaooo.github.io/2016/05/25/Hexo%E5%8D%9A%E5%AE%A2%E4%BC%98%E5%8C%96--%E7%AB%99%E5%86%85%E6%90%9C%E7%B4%A2%E3%80%81%E7%89%88%E6%9D%83%E3%80%81IE8%E5%85%BC%E5%AE%B9.html"/>
-    <id>http://chaooo.github.io/2016/05/25/Hexo博客优化--站内搜索、版权、IE8兼容.html</id>
-    <published>2016-05-25T02:03:15.000Z</published>
-    <updated>2016-11-01T01:39:10.242Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="1-添加Hexo的swiftype站内搜索"><a href="#1-添加Hexo的swiftype站内搜索" class="headerlink" title="1.添加Hexo的swiftype站内搜索"></a>1.添加Hexo的swiftype站内搜索</h3><p>先去<a href="https://swiftype.com" target="_blank" rel="external">swiftype官网</a>注册一个账号,然后根据指引建立好自己网站对应的索引。<br><a id="more"></a><br>步骤：<br>     <code>Create an engine</code><br>—&gt; <code>Create a search engine &gt;(standard web crawler)</code><br>—&gt; <code>WEBSITE URL</code>下填写你的网站地址：如：<a href="http://chaooo.github.io">http://chaooo.github.io</a><br>—&gt; <code>ENGINE NAME</code>自己取一个名字：如：chaooo<br>—&gt; 然后他开始抓取你网站的数据。<br>—&gt; 完成后，可以点击<code>Content</code>去看看抓了些什么数据，然后可以自己删除不想要的数据。（可选）<br>—&gt; 点击<code>Install Search</code>复制里面的代码：</p>
+    <entry>
+      <title><![CDATA[Hexo博客优化——站内搜索、版权、IE8兼容]]></title>
+      <url>http://chaooo.github.io/2016/05/25/Hexo%E5%8D%9A%E5%AE%A2%E4%BC%98%E5%8C%96--%E7%AB%99%E5%86%85%E6%90%9C%E7%B4%A2%E3%80%81%E7%89%88%E6%9D%83%E3%80%81IE8%E5%85%BC%E5%AE%B9.html</url>
+      <content type="html"><![CDATA[<h3 id="1-添加Hexo的swiftype站内搜索"><a href="#1-添加Hexo的swiftype站内搜索" class="headerlink" title="1.添加Hexo的swiftype站内搜索"></a>1.添加Hexo的swiftype站内搜索</h3><p>先去<a href="https://swiftype.com" target="_blank" rel="external">swiftype官网</a>注册一个账号,然后根据指引建立好自己网站对应的索引。<br><a id="more"></a><br>步骤：<br>     <code>Create an engine</code><br>—&gt; <code>Create a search engine &gt;(standard web crawler)</code><br>—&gt; <code>WEBSITE URL</code>下填写你的网站地址：如：<a href="http://chaooo.github.io">http://chaooo.github.io</a><br>—&gt; <code>ENGINE NAME</code>自己取一个名字：如：chaooo<br>—&gt; 然后他开始抓取你网站的数据。<br>—&gt; 完成后，可以点击<code>Content</code>去看看抓了些什么数据，然后可以自己删除不想要的数据。（可选）<br>—&gt; 点击<code>Install Search</code>复制里面的代码：</p>
 <p>然后在<code>themes\landscape\layout\_partial\after-footer.ejs</code>在最后加上刚复制的代码：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">  (<span class="function"><span class="keyword">function</span>(<span class="params">w,d,t,u,n,s,e</span>)</span>&#123;w[<span class="string">'SwiftypeObject'</span>]=n;w[n]=w[n]||<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  (w[n].q=w[n].q||[]).push(<span class="built_in">arguments</span>);&#125;;s=d.createElement(t);</span><br><span class="line">  e=d.getElementsByTagName(t)[<span class="number">0</span>];s.async=<span class="number">1</span>;s.src=u;e.parentNode.insertBefore(s,e);</span><br><span class="line">  &#125;)(<span class="built_in">window</span>,<span class="built_in">document</span>,<span class="string">'script'</span>,<span class="string">'//s.swiftypecdn.com/install/v2/st.js'</span>,<span class="string">'_st'</span>); </span><br><span class="line"></span><br><span class="line">  _st(<span class="string">'install'</span>,<span class="string">'Hvy4-e-Ew4x8PR6Let84'</span>,<span class="string">'2.0.0'</span>);</span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure></p>
 <p>在<code>themes\landscape\_config.yml</code>末尾添加如下代码：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">swift_search:</span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br></pre></td></tr></table></figure></p>
 <p>然后到<code>themes\landscape\layout\_partial\header.ejs</code>中找到：<code>&lt;div id=&quot;search-form-wrap&quot;&gt;...&lt;/div&gt;</code>刪除里面的內容，插入如下代码：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"search-form-wrap"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">""</span> <span class="attr">method</span>=<span class="string">"get"</span> <span class="attr">accept-charset</span>=<span class="string">"UTF-8"</span> <span class="attr">class</span>=<span class="string">"search-form"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">autocapitalize</span>=<span class="string">"off"</span> <span class="attr">autocorrect</span>=<span class="string">"off"</span> <span class="attr">autocomplete</span>=<span class="string">"off"</span> <span class="attr">name</span>=<span class="string">"q"</span> <span class="attr">results</span>=<span class="string">"0"</span> <span class="attr">id</span>=<span class="string">"search"</span> <span class="attr">maxlength</span>=<span class="string">"20"</span> <span class="attr">placeholder</span>=<span class="string">"Search"</span> <span class="attr">style</span>=<span class="string">"border:none;background:none;width:161px;height:30px;line-height:30px;padding:0px 11px 0px 28px;"</span> <span class="attr">class</span>=<span class="string">"st-default-search-input search-form-input"</span> <span class="attr">type</span>=<span class="string">"text"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">class</span>=<span class="string">"search-form-submit"</span>&gt;</span><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
@@ -453,28 +356,12 @@
 <p>在<code>themes\landscape\layout\_partial\footer.ejs</code>中，把<code>&lt;header id=&quot;footer&quot;&gt;&lt;/div&gt;</code>用下面的代码包起来：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--[if lt IE 9]&gt;&lt;div id="footer"&gt;&lt;![endif]--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">footer</span> <span class="attr">id</span>=<span class="string">"footer"</span>&gt;</span></span><br><span class="line">   //....其他代码</span><br><span class="line"><span class="tag">&lt;/<span class="name">footer</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--[if lt IE 9]&gt;&lt;/div&gt;&lt;![endif]--&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>虽然这样调整并不高明，但能使其在IE8下显示效果大体上还能接受。</p>
 ]]></content>
+    </entry>
     
-    <summary type="html">
-    
-      &lt;h3 id=&quot;1-添加Hexo的swiftype站内搜索&quot;&gt;&lt;a href=&quot;#1-添加Hexo的swiftype站内搜索&quot; class=&quot;headerlink&quot; title=&quot;1.添加Hexo的swiftype站内搜索&quot;&gt;&lt;/a&gt;1.添加Hexo的swiftype站内搜索&lt;/h3&gt;&lt;p&gt;先去&lt;a href=&quot;https://swiftype.com&quot;&gt;swiftype官网&lt;/a&gt;注册一个账号,然后根据指引建立好自己网站对应的索引。&lt;br&gt;
-    
-    </summary>
-    
-      <category term="hexo博客折腾" scheme="http://chaooo.github.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
-    
-    
-      <category term="hexo" scheme="http://chaooo.github.io/tags/hexo/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hexo博客优化——库、字体、收录、统计</title>
-    <link href="http://chaooo.github.io/2016/05/24/Hexo%E5%8D%9A%E5%AE%A2%E4%BC%98%E5%8C%96--%E5%BA%93%E3%80%81%E5%AD%97%E4%BD%93%E3%80%81%E6%94%B6%E5%BD%95%E3%80%81%E7%BB%9F%E8%AE%A1.html"/>
-    <id>http://chaooo.github.io/2016/05/24/Hexo博客优化--库、字体、收录、统计.html</id>
-    <published>2016-05-24T03:22:56.000Z</published>
-    <updated>2016-11-01T01:39:06.252Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="1-jQuery-库的优化"><a href="#1-jQuery-库的优化" class="headerlink" title="1. jQuery 库的优化"></a>1. jQuery 库的优化</h3><p>landscape默认是使用Google jQuery 库，但在国内速度不是很理想，这里把它换成新浪的，在<code>themes\landscape\layout\_partial\after-footer.ejs</code>17行：<br><a id="more"></a><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=<span class="string">"//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"</span>&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+    <entry>
+      <title><![CDATA[Hexo博客优化——库、字体、收录、统计]]></title>
+      <url>http://chaooo.github.io/2016/05/24/Hexo%E5%8D%9A%E5%AE%A2%E4%BC%98%E5%8C%96--%E5%BA%93%E3%80%81%E5%AD%97%E4%BD%93%E3%80%81%E6%94%B6%E5%BD%95%E3%80%81%E7%BB%9F%E8%AE%A1.html</url>
+      <content type="html"><![CDATA[<h3 id="1-jQuery-库的优化"><a href="#1-jQuery-库的优化" class="headerlink" title="1. jQuery 库的优化"></a>1. jQuery 库的优化</h3><p>landscape默认是使用Google jQuery 库，但在国内速度不是很理想，这里把它换成新浪的，在<code>themes\landscape\layout\_partial\after-footer.ejs</code>17行：<br><a id="more"></a><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=<span class="string">"//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"</span>&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
 <p>替换为如下代码：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=<span class="string">"http://lib.sinaapp.com/js/jquery/2.0.3/jquery-2.0.3.min.js"</span>&gt;&lt;/script&gt;</span><br><span class="line">&lt;script <span class="built_in">type</span>=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line">//&lt;![CDATA[</span><br><span class="line"><span class="keyword">if</span> (typeof jQuery == <span class="string">'undefined'</span>) &#123;</span><br><span class="line">  document.write(unescape(<span class="string">"%3Cscript src='/js/jquery-2.0.3.min.js' type='text/javascript'%3E%3C/script%3E"</span>));</span><br><span class="line">&#125;</span><br><span class="line">// ]]&gt;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
 <p>这里不但将 Google 的 jQuery 替换成了 SAE 的，随后还进行了一个判断，如果获取新浪的 jQuery 失败，则使用本网站自己的 jQuery。为了让这段代码有效，我们要去 jQuery 官方下载合适版本的 jQuery 并将其放到 <code>themes/landscape/source/js/</code>目录下，命名为 <code>jquery-2.0.3.min.js</code>。<br>还有一点需要特别注意，那就是 jQuery 这个文件在 hexo 生成博客时会被解析，因此一定要将 jQuery 文件开头处的 //@ sourceMappingURL=jquery-2.0.3.min.map 这一行代码删去，否则会导致博客无法生成。</p>
 <h3 id="2-字体优化"><a href="#2-字体优化" class="headerlink" title="2. 字体优化"></a>2. 字体优化</h3><h4 id="2-1跨平台字体优化"><a href="#2-1跨平台字体优化" class="headerlink" title="2.1跨平台字体优化"></a>2.1跨平台字体优化</h4><p>为了能在各个平台上都显示令人满意的字体，我们要修改CSS文件中的字体设置，列出多个备选的字体，操作系统会依次尝试，使用系统中已安装的字体。我们要修改的是<code>themes/landscape/source/css/_variables.styl</code>这一文件，将其中第22行:<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">font-sans = "Helvetica Neue", Helvetica, Arial, sans-serif</span><br></pre></td></tr></table></figure></p>
@@ -502,28 +389,12 @@
 <p>改为：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">permalink: :year/:month/:day/:title.html</span><br></pre></td></tr></table></figure></p>
 <p>最后浏览器访问就是<code>http://chaooo.github.io/2016/05/24/文章标题.html</code> 的格式了。</p>
 ]]></content>
+    </entry>
     
-    <summary type="html">
-    
-      &lt;h3 id=&quot;1-jQuery-库的优化&quot;&gt;&lt;a href=&quot;#1-jQuery-库的优化&quot; class=&quot;headerlink&quot; title=&quot;1. jQuery 库的优化&quot;&gt;&lt;/a&gt;1. jQuery 库的优化&lt;/h3&gt;&lt;p&gt;landscape默认是使用Google jQuery 库，但在国内速度不是很理想，这里把它换成新浪的，在&lt;code&gt;themes\landscape\layout\_partial\after-footer.ejs&lt;/code&gt;17行：&lt;br&gt;
-    
-    </summary>
-    
-      <category term="hexo博客折腾" scheme="http://chaooo.github.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
-    
-    
-      <category term="hexo" scheme="http://chaooo.github.io/tags/hexo/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hexo博客优化——主题、分享、评论、微博秀</title>
-    <link href="http://chaooo.github.io/2016/05/23/Hexo%E5%8D%9A%E5%AE%A2%E4%BC%98%E5%8C%96--%E4%B8%BB%E9%A2%98%E3%80%81%E5%88%86%E4%BA%AB%E3%80%81%E8%AF%84%E8%AE%BA%E3%80%81%E5%BE%AE%E5%8D%9A%E7%A7%80.html"/>
-    <id>http://chaooo.github.io/2016/05/23/Hexo博客优化--主题、分享、评论、微博秀.html</id>
-    <published>2016-05-23T06:30:13.000Z</published>
-    <updated>2016-11-01T01:39:01.797Z</updated>
-    
-    <content type="html"><![CDATA[<p>继上一篇<a href="Hexo3-2-github搭建静态博客.html">Hexo3.2+GitHub搭建静态博客</a>。</p>
+    <entry>
+      <title><![CDATA[Hexo博客优化——主题、分享、评论、微博秀]]></title>
+      <url>http://chaooo.github.io/2016/05/23/Hexo%E5%8D%9A%E5%AE%A2%E4%BC%98%E5%8C%96--%E4%B8%BB%E9%A2%98%E3%80%81%E5%88%86%E4%BA%AB%E3%80%81%E8%AF%84%E8%AE%BA%E3%80%81%E5%BE%AE%E5%8D%9A%E7%A7%80.html</url>
+      <content type="html"><![CDATA[<p>继上一篇<a href="Hexo3-2-github搭建静态博客.html">Hexo3.2+GitHub搭建静态博客</a>。</p>
 <h3 id="1-主题"><a href="#1-主题" class="headerlink" title="1.主题"></a>1.主题</h3><p>Hexo提供了很多主题，具体可参见<a href="https://hexo.io/themes/" target="_blank" rel="external">Themes|Hexo</a>，这里我选择默认主题<a href="https://github.com/hexojs/hexo-theme-landscape" target="_blank" rel="external">landscape</a>(此主题默认已安装)。<br><a id="more"></a> </p>
 <h4 id="1-1安装主题"><a href="#1-1安装主题" class="headerlink" title="1.1安装主题"></a>1.1安装主题</h4><p>将Git Shell切换到根目录，执行下列命令，将主题下载到themes/spfk目录下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/hexojs/hexo-theme-landscape.git themes/landscape</span><br></pre></td></tr></table></figure></p>
 <p>获取landscape主题的最新版本：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> themes/landscape</span><br><span class="line">$ git pull</span><br></pre></td></tr></table></figure></p>
@@ -541,29 +412,12 @@
 <h3 id="4-侧栏微博秀"><a href="#4-侧栏微博秀" class="headerlink" title="4. 侧栏微博秀"></a>4. 侧栏微博秀</h3><p>登录<a href="http://app.weibo.com/tool/weiboshow" target="_blank" rel="external">新浪微博开放平台</a>来获取微博秀的代码，将其样式调整与主题一致，关掉各种边框和标题栏。然后新建themes/landscape/layout/_widget/weibo.ejs这个文件，将刚刚获取到的代码添加到这个文件中。最后编辑themes/landscape/_config.yml，在widgets:标签后面的适当位置添加- weibo。这样微博秀应该就可以显示在你的博客上了。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"widget-wrap"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h3</span> <span class="attr">class</span>=<span class="string">"widget-title"</span>&gt;</span>微博<span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"widget"</span> <span class="attr">style</span>=<span class="string">"padding: 0"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">iframe</span> <span class="attr">width</span>=<span class="string">"100%"</span> <span class="attr">height</span>=<span class="string">"400"</span> <span class="attr">class</span>=<span class="string">"share_self"</span>  <span class="attr">frameborder</span>=<span class="string">"0"</span> <span class="attr">scrolling</span>=<span class="string">"no"</span> <span class="attr">src</span>=<span class="string">"http://widget.weibo.com/weiboshow/index.php?language=&amp;width=0&amp;height=400&amp;fansRow=2&amp;ptype=1&amp;speed=0&amp;skin=2&amp;isTitle=0&amp;noborder=0&amp;isWeibo=1&amp;isFans=0&amp;uid=1700139362&amp;verifier=85be6061&amp;colors=d6f3f7,dddddd,555555,837f86,cccccc&amp;dpc=1"</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>其中，<code>&lt;iframe...&gt;&lt;/iframe&gt;</code>为获取微博秀的代码。</p>
 ]]></content>
+    </entry>
     
-    <summary type="html">
-    
-      &lt;p&gt;继上一篇&lt;a href=&quot;Hexo3-2-github搭建静态博客.html&quot;&gt;Hexo3.2+GitHub搭建静态博客&lt;/a&gt;。&lt;/p&gt;
-&lt;h3 id=&quot;1-主题&quot;&gt;&lt;a href=&quot;#1-主题&quot; class=&quot;headerlink&quot; title=&quot;1.主题&quot;&gt;&lt;/a&gt;1.主题&lt;/h3&gt;&lt;p&gt;Hexo提供了很多主题，具体可参见&lt;a href=&quot;https://hexo.io/themes/&quot;&gt;Themes|Hexo&lt;/a&gt;，这里我选择默认主题&lt;a href=&quot;https://github.com/hexojs/hexo-theme-landscape&quot;&gt;landscape&lt;/a&gt;(此主题默认已安装)。&lt;br&gt;
-    
-    </summary>
-    
-      <category term="hexo博客折腾" scheme="http://chaooo.github.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
-    
-    
-      <category term="hexo" scheme="http://chaooo.github.io/tags/hexo/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hexo3.2+GitHub搭建静态博客</title>
-    <link href="http://chaooo.github.io/2016/05/23/Hexo3-2-github%E6%90%AD%E5%BB%BA%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2.html"/>
-    <id>http://chaooo.github.io/2016/05/23/Hexo3-2-github搭建静态博客.html</id>
-    <published>2016-05-23T03:16:51.000Z</published>
-    <updated>2016-11-01T01:39:15.271Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="开始之前"><a href="#开始之前" class="headerlink" title="开始之前"></a>开始之前</h3><p>在安装<a href="https://hexo.io/zh-cn/" target="_blank" rel="external">hexo</a>之前，必须确认你已经安装了<a href="http://nodejs.org/" target="_blank" rel="external">Node.js</a>和<a href="http://git-scm.com/" target="_blank" rel="external">Git</a>。<br><a id="more"></a> </p>
+    <entry>
+      <title><![CDATA[Hexo3.2+GitHub搭建静态博客]]></title>
+      <url>http://chaooo.github.io/2016/05/23/Hexo3-2-github%E6%90%AD%E5%BB%BA%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2.html</url>
+      <content type="html"><![CDATA[<h3 id="开始之前"><a href="#开始之前" class="headerlink" title="开始之前"></a>开始之前</h3><p>在安装<a href="https://hexo.io/zh-cn/" target="_blank" rel="external">hexo</a>之前，必须确认你已经安装了<a href="http://nodejs.org/" target="_blank" rel="external">Node.js</a>和<a href="http://git-scm.com/" target="_blank" rel="external">Git</a>。<br><a id="more"></a> </p>
 <h4 id="1-创建GitHub仓库"><a href="#1-创建GitHub仓库" class="headerlink" title="1.创建GitHub仓库"></a>1.创建GitHub仓库</h4><p>注册<a href="https://github.com/" target="_blank" rel="external">GitHub</a>账号，创建一个以”用户名.github.io”命名的仓库，如我的用户名为chaooo,那我的仓库名为：<a href="https://github.com/chaooo/chaooo.github.io" target="_blank" rel="external">chaooo.github.io</a>，仓库默有master分支，用于托管生成的静态文件，再新建一个develop(名字自定)分支，用于托管后台文件，方便以后换电脑时后台文件不会丢失。</p>
 <h4 id="2-配置Git"><a href="#2-配置Git" class="headerlink" title="2.配置Git"></a>2.配置Git</h4><p>设置Git的用户名和邮件地址（邮箱就是你注册Github时候的邮箱），打开Git Bash,键入：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global user.name <span class="string">"username"</span></span><br><span class="line">$ git config --global user.email <span class="string">"email@example.com"</span></span><br></pre></td></tr></table></figure></p>
 <h4 id="3-本地Git与GitHub建立联系"><a href="#3-本地Git与GitHub建立联系" class="headerlink" title="3.本地Git与GitHub建立联系"></a>3.本地Git与GitHub建立联系</h4><p>这里介绍SSH的配置，先检查电脑是否已经有SSH<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ls -al ~/.ssh</span><br></pre></td></tr></table></figure></p>
@@ -595,28 +449,12 @@
 <h5 id="3-1拷贝仓库"><a href="#3-1拷贝仓库" class="headerlink" title="3.1拷贝仓库"></a>3.1拷贝仓库</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> -b develop https://github.com/chaooo/chaooo.github.io.git</span><br></pre></td></tr></table></figure>
 <h5 id="3-2配置Hexo"><a href="#3-2配置Hexo" class="headerlink" title="3.2配置Hexo"></a>3.2配置Hexo</h5><p>在本地新拷贝的chaooo.github.io文件夹下通过Git bash依次执行下列指令:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g hexo-cli</span><br><span class="line">$ npm install hexo</span><br><span class="line">$ npm install</span><br><span class="line">$ npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure></p>
 <h5 id="小Tips-hexo-命令"><a href="#小Tips-hexo-命令" class="headerlink" title="小Tips:hexo 命令"></a>小Tips:hexo 命令</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">hexo new <span class="string">"postName"</span> <span class="comment">#新建文章</span></span><br><span class="line">hexo new page <span class="string">"pageName"</span> <span class="comment">#新建页面</span></span><br><span class="line">hexo generate <span class="comment">#生成静态页面至public目录</span></span><br><span class="line">hexo server <span class="comment">#开启预览访问端口（默认端口4000，'ctrl + c'关闭server）</span></span><br><span class="line">hexo deploy <span class="comment">#将.deploy目录部署到GitHub</span></span><br><span class="line">hexo <span class="built_in">help</span>  <span class="comment"># 查看帮助</span></span><br><span class="line">hexo version  <span class="comment">#查看Hexo的版本</span></span><br><span class="line">hexo deploy -g  <span class="comment">#生成加部署</span></span><br><span class="line">hexo server -g  <span class="comment">#生成加预览</span></span><br><span class="line"><span class="comment">#命令的简写</span></span><br><span class="line">hexo n == hexo new</span><br><span class="line">hexo g == hexo generate</span><br><span class="line">hexo s == hexo server</span><br><span class="line">hexo d == hexo deploy</span><br></pre></td></tr></table></figure>]]></content>
+    </entry>
     
-    <summary type="html">
-    
-      &lt;h3 id=&quot;开始之前&quot;&gt;&lt;a href=&quot;#开始之前&quot; class=&quot;headerlink&quot; title=&quot;开始之前&quot;&gt;&lt;/a&gt;开始之前&lt;/h3&gt;&lt;p&gt;在安装&lt;a href=&quot;https://hexo.io/zh-cn/&quot;&gt;hexo&lt;/a&gt;之前，必须确认你已经安装了&lt;a href=&quot;http://nodejs.org/&quot;&gt;Node.js&lt;/a&gt;和&lt;a href=&quot;http://git-scm.com/&quot;&gt;Git&lt;/a&gt;。&lt;br&gt;
-    
-    </summary>
-    
-      <category term="hexo博客折腾" scheme="http://chaooo.github.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
-    
-    
-      <category term="hexo" scheme="http://chaooo.github.io/tags/hexo/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hello World</title>
-    <link href="http://chaooo.github.io/2015/12/31/hello-world.html"/>
-    <id>http://chaooo.github.io/2015/12/31/hello-world.html</id>
-    <published>2015-12-31T15:59:59.000Z</published>
-    <updated>2016-11-03T04:51:40.556Z</updated>
-    
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
+    <entry>
+      <title><![CDATA[Hello World]]></title>
+      <url>http://chaooo.github.io/2015/12/31/hello-world.html</url>
+      <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
 <h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
 <p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
 <h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
@@ -626,18 +464,8 @@
 <h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
 <p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
 ]]></content>
+    </entry>
     
-    <summary type="html">
-    
-      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
-    
-    </summary>
-    
-      <category term="hexo博客折腾" scheme="http://chaooo.github.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
-    
-    
-      <category term="hexo" scheme="http://chaooo.github.io/tags/hexo/"/>
-    
-  </entry>
   
-</feed>
+  
+</search>
