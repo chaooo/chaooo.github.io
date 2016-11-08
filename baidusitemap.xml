@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>http://chaoo.oschina.io/2016/06/29/Node.js%20GET%20POST%E8%AF%B7%E6%B1%82.html</loc>
+    <lastmod>2016-11-08T09:05:47.591Z</lastmod>
+    <data>
+        <display>
+        <title>Node.js GET/POST请求(12)</title>
+        <pubTime>2016-06-29T07:38:20.000Z</pubTime>
+        
+        <tag>node</tag>
+         
+         
+           
+             
+              <breadCrumb title="nodeJS学习笔记" url="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://chaoo.oschina.io/2016/06/29/Node.js%20JXcore%E6%89%93%E5%8C%85.html</loc>
     <lastmod>2016-11-08T09:01:04.914Z</lastmod>
     <data>
@@ -130,26 +150,6 @@
         <display>
         <title>Node.js 文件系统(11)</title>
         <pubTime>2016-06-29T05:35:20.000Z</pubTime>
-        
-        <tag>node</tag>
-         
-         
-           
-             
-              <breadCrumb title="nodeJS学习笔记" url="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://chaoo.oschina.io/2016/06/29/Node.js%20GET/POST%E8%AF%B7%E6%B1%82.html</loc>
-    <lastmod>2016-11-08T08:51:32.401Z</lastmod>
-    <data>
-        <display>
-        <title>Node.js GET/POST请求(12)</title>
-        <pubTime>2016-06-29T07:38:20.000Z</pubTime>
         
         <tag>node</tag>
          
