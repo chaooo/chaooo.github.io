@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://chaoo.oschina.io/2016/07/29/MongoDB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0(1).html</loc>
+    
+    <lastmod>2016-11-08T09:10:14.758Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://chaoo.oschina.io/2016/07/30/MongoDB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0(2).html</loc>
+    
+    <lastmod>2016-11-08T09:10:13.141Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://chaoo.oschina.io/2016/06/29/Node.js%20GET%20POST%E8%AF%B7%E6%B1%82.html</loc>
     
     <lastmod>2016-11-08T09:05:47.591Z</lastmod>
@@ -124,20 +138,6 @@
     <loc>http://chaoo.oschina.io/2016/06/27/Node.js%E5%88%9B%E5%BB%BA%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%BA%94%E7%94%A8.html</loc>
     
     <lastmod>2016-11-08T08:37:08.721Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://chaoo.oschina.io/2016/06/29/MongoDB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0(1).html</loc>
-    
-    <lastmod>2016-11-08T08:31:21.073Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://chaoo.oschina.io/2016/06/30/MongoDB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0(2).html</loc>
-    
-    <lastmod>2016-11-08T08:31:05.540Z</lastmod>
     
   </url>
   
