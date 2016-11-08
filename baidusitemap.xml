@@ -3,16 +3,415 @@
 
 
     
-    
   <url>
-    <loc>http://chaoo.oschina.io/2015/12/31/hello-world.html</loc>
-    <lastmod>2016-11-03T04:51:40.556Z</lastmod>
+    <loc>http://chaoo.oschina.io/2016/06/29/Node.js%20JXcore%E6%89%93%E5%8C%85.html</loc>
+    <lastmod>2016-11-08T09:01:04.914Z</lastmod>
     <data>
         <display>
-        <title>Hello World</title>
-        <pubTime>2015-12-31T15:59:59.000Z</pubTime>
+        <title>Node.js JXcore 打包(18)</title>
+        <pubTime>2016-06-29T12:14:59.000Z</pubTime>
         
-        <tag>hexo</tag>
+        <tag>node</tag>
+         
+         
+           
+             
+              <breadCrumb title="nodeJS学习笔记" url="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://chaoo.oschina.io/2016/06/30/Node.js%20%E5%A4%9A%E8%BF%9B%E7%A8%8B.html</loc>
+    <lastmod>2016-11-08T09:00:33.575Z</lastmod>
+    <data>
+        <display>
+        <title>Node.js 多进程(17)</title>
+        <pubTime>2016-06-30T07:42:28.000Z</pubTime>
+        
+        <tag>node</tag>
+         
+         
+           
+             
+              <breadCrumb title="nodeJS学习笔记" url="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://chaoo.oschina.io/2016/06/30/Node.js%20RESTful%20API.html</loc>
+    <lastmod>2016-11-08T08:59:18.066Z</lastmod>
+    <data>
+        <display>
+        <title>Node.js RESTful API(16)</title>
+        <pubTime>2016-06-30T03:38:20.000Z</pubTime>
+        
+        <tag>node</tag>
+         
+         
+           
+             
+              <breadCrumb title="nodeJS学习笔记" url="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://chaoo.oschina.io/2016/06/30/Node.js%20Express%20%E6%A1%86%E6%9E%B6.html</loc>
+    <lastmod>2016-11-08T08:58:16.786Z</lastmod>
+    <data>
+        <display>
+        <title>Node.js Express 框架(15)</title>
+        <pubTime>2016-06-30T01:38:20.000Z</pubTime>
+        
+        <tag>node</tag>
+         
+         
+           
+             
+              <breadCrumb title="nodeJS学习笔记" url="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://chaoo.oschina.io/2016/06/29/Node.js%20Web%E6%A8%A1%E5%9D%97.html</loc>
+    <lastmod>2016-11-08T08:56:52.015Z</lastmod>
+    <data>
+        <display>
+        <title>Node.js Web 模块(14)</title>
+        <pubTime>2016-06-29T12:51:36.000Z</pubTime>
+        
+        <tag>node</tag>
+         
+         
+           
+             
+              <breadCrumb title="nodeJS学习笔记" url="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://chaoo.oschina.io/2016/06/29/Node.js%20%E5%B7%A5%E5%85%B7%E6%A8%A1%E5%9D%97.html</loc>
+    <lastmod>2016-11-08T08:55:44.132Z</lastmod>
+    <data>
+        <display>
+        <title>Node.js 工具模块(13)</title>
+        <pubTime>2016-06-29T10:38:26.000Z</pubTime>
+        
+        <tag>node</tag>
+         
+         
+           
+             
+              <breadCrumb title="nodeJS学习笔记" url="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://chaoo.oschina.io/2016/06/29/Node.js%20%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F.html</loc>
+    <lastmod>2016-11-08T08:52:21.685Z</lastmod>
+    <data>
+        <display>
+        <title>Node.js 文件系统(11)</title>
+        <pubTime>2016-06-29T05:35:20.000Z</pubTime>
+        
+        <tag>node</tag>
+         
+         
+           
+             
+              <breadCrumb title="nodeJS学习笔记" url="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://chaoo.oschina.io/2016/06/29/Node.js%20GET/POST%E8%AF%B7%E6%B1%82.html</loc>
+    <lastmod>2016-11-08T08:51:32.401Z</lastmod>
+    <data>
+        <display>
+        <title>Node.js GET/POST请求(12)</title>
+        <pubTime>2016-06-29T07:38:20.000Z</pubTime>
+        
+        <tag>node</tag>
+         
+         
+           
+             
+              <breadCrumb title="nodeJS学习笔记" url="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://chaoo.oschina.io/2016/06/29/Node.js%20%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7.html</loc>
+    <lastmod>2016-11-08T08:50:05.413Z</lastmod>
+    <data>
+        <display>
+        <title>Node.js常用工具(10)</title>
+        <pubTime>2016-06-29T00:10:03.000Z</pubTime>
+        
+        <tag>node</tag>
+         
+         
+           
+             
+              <breadCrumb title="nodeJS学习笔记" url="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://chaoo.oschina.io/2016/06/28/Node.js%20%E5%85%A8%E5%B1%80%E5%AF%B9%E8%B1%A1.html</loc>
+    <lastmod>2016-11-08T08:48:08.697Z</lastmod>
+    <data>
+        <display>
+        <title>Node.js 全局对象(9)</title>
+        <pubTime>2016-06-28T12:42:07.000Z</pubTime>
+        
+        <tag>node</tag>
+         
+         
+           
+             
+              <breadCrumb title="nodeJS学习笔记" url="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://chaoo.oschina.io/2016/06/28/Node.js%20%E8%B7%AF%E7%94%B1.html</loc>
+    <lastmod>2016-11-08T08:46:35.795Z</lastmod>
+    <data>
+        <display>
+        <title>Node.js 路由(9)</title>
+        <pubTime>2016-06-28T10:55:08.000Z</pubTime>
+        
+        <tag>node</tag>
+         
+         
+           
+             
+              <breadCrumb title="nodeJS学习笔记" url="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://chaoo.oschina.io/2016/06/28/Node.js%E5%87%BD%E6%95%B0.html</loc>
+    <lastmod>2016-11-08T08:45:40.714Z</lastmod>
+    <data>
+        <display>
+        <title>Node.js函数(7)</title>
+        <pubTime>2016-06-28T07:20:07.000Z</pubTime>
+        
+        <tag>node</tag>
+         
+         
+           
+             
+              <breadCrumb title="nodeJS学习笔记" url="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://chaoo.oschina.io/2016/06/28/Node.js%E6%A8%A1%E5%9D%97%E7%B3%BB%E7%BB%9F.html</loc>
+    <lastmod>2016-11-08T08:43:50.477Z</lastmod>
+    <data>
+        <display>
+        <title>Node.js模块系统(6)</title>
+        <pubTime>2016-06-28T03:32:07.000Z</pubTime>
+        
+        <tag>node</tag>
+         
+         
+           
+             
+              <breadCrumb title="nodeJS学习笔记" url="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://chaoo.oschina.io/2016/06/28/Node.js%20Stream%E6%B5%81.html</loc>
+    <lastmod>2016-11-08T08:42:30.928Z</lastmod>
+    <data>
+        <display>
+        <title>Node.js Stream流(5)</title>
+        <pubTime>2016-06-28T01:50:03.000Z</pubTime>
+        
+        <tag>node</tag>
+         
+         
+           
+             
+              <breadCrumb title="nodeJS学习笔记" url="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://chaoo.oschina.io/2016/06/27/Node.js%20Buffer.html</loc>
+    <lastmod>2016-11-08T08:41:01.232Z</lastmod>
+    <data>
+        <display>
+        <title>Node.js Buffer缓冲区(4)</title>
+        <pubTime>2016-06-27T07:54:06.000Z</pubTime>
+        
+        <tag>node</tag>
+         
+         
+           
+             
+              <breadCrumb title="nodeJS学习笔记" url="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://chaoo.oschina.io/2016/06/27/Node.js%20EventEmitter%E7%B1%BB.html</loc>
+    <lastmod>2016-11-08T08:38:57.485Z</lastmod>
+    <data>
+        <display>
+        <title>Node.js EventEmitter类(3)</title>
+        <pubTime>2016-06-27T05:02:05.000Z</pubTime>
+        
+        <tag>node</tag>
+         
+         
+           
+             
+              <breadCrumb title="nodeJS学习笔记" url="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://chaoo.oschina.io/2016/06/27/Node.js%20%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF.html</loc>
+    <lastmod>2016-11-08T08:37:12.987Z</lastmod>
+    <data>
+        <display>
+        <title>NodeJs学习笔记(2)</title>
+        <pubTime>2016-06-27T04:55:00.000Z</pubTime>
+        
+        <tag>node</tag>
+         
+         
+           
+             
+              <breadCrumb title="nodeJS学习笔记" url="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://chaoo.oschina.io/2016/06/27/Node.js%E5%88%9B%E5%BB%BA%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%BA%94%E7%94%A8.html</loc>
+    <lastmod>2016-11-08T08:37:08.721Z</lastmod>
+    <data>
+        <display>
+        <title>Node.js创建第一个应用(1)</title>
+        <pubTime>2016-06-27T03:55:07.000Z</pubTime>
+        
+        <tag>node</tag>
+         
+         
+           
+             
+              <breadCrumb title="nodeJS学习笔记" url="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://chaoo.oschina.io/2016/06/29/MongoDB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0(1).html</loc>
+    <lastmod>2016-11-08T08:31:21.073Z</lastmod>
+    <data>
+        <display>
+        <title>MongoDB学习笔记</title>
+        <pubTime>2016-06-29T02:22:14.000Z</pubTime>
+        
+        <tag>mongodb</tag>
+         
+         
+           
+             
+              <breadCrumb title="数据库" url="http://chaoo.oschina.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://chaoo.oschina.io/2016/06/30/MongoDB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0(2).html</loc>
+    <lastmod>2016-11-08T08:31:05.540Z</lastmod>
+    <data>
+        <display>
+        <title>MongoDB学习笔记(2)</title>
+        <pubTime>2016-06-30T00:20:16.000Z</pubTime>
+        
+        <tag>mongodb</tag>
+         
+         
+           
+             
+              <breadCrumb title="数据库" url="http://chaoo.oschina.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://chaoo.oschina.io/2016/08/17/github%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB.html</loc>
+    <lastmod>2016-11-08T08:27:08.272Z</lastmod>
+    <data>
+        <display>
+        <title>github博客迁移</title>
+        <pubTime>2016-08-17T03:14:25.000Z</pubTime>
+        
+        <tag>github,hexo</tag>
          
          
            
@@ -24,15 +423,16 @@
     </url>
 
     
+    
   <url>
-    <loc>http://chaoo.oschina.io/2016/08/17/%E7%99%BE%E5%BA%A6%E7%88%AC%E8%99%AB%E6%97%A0%E6%B3%95%E6%8A%93%E5%8F%96GitHub%E5%8D%9A%E5%AE%A2%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html</loc>
-    <lastmod>2016-11-01T07:31:33.306Z</lastmod>
+    <loc>http://chaoo.oschina.io/2015/12/31/hello-world.html</loc>
+    <lastmod>2016-11-03T04:51:40.556Z</lastmod>
     <data>
         <display>
-        <title>百度爬虫无法抓取GitHub博客的解决方案</title>
-        <pubTime>2016-08-17T03:14:25.000Z</pubTime>
+        <title>Hello World</title>
+        <pubTime>2015-12-31T15:59:59.000Z</pubTime>
         
-        <tag>github</tag>
+        <tag>hexo</tag>
          
          
            
@@ -78,46 +478,6 @@
            
              
               <breadCrumb title="前端工具" url="http://chaoo.oschina.io/categories/%E5%89%8D%E7%AB%AF%E5%B7%A5%E5%85%B7/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://chaoo.oschina.io/2016/06/27/NodeJs%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html</loc>
-    <lastmod>2016-11-01T01:39:44.156Z</lastmod>
-    <data>
-        <display>
-        <title>NodeJs学习笔记</title>
-        <pubTime>2016-06-27T03:55:07.000Z</pubTime>
-        
-        <tag>node</tag>
-         
-         
-           
-             
-              <breadCrumb title="nodeJS" url="http://chaoo.oschina.io/categories/nodeJS/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://chaoo.oschina.io/2016/06/29/MongoDB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.html</loc>
-    <lastmod>2016-11-01T01:39:29.423Z</lastmod>
-    <data>
-        <display>
-        <title>MongoDB学习笔记</title>
-        <pubTime>2016-06-29T02:22:14.000Z</pubTime>
-        
-        <tag>mongodb</tag>
-         
-         
-           
-             
-              <breadCrumb title="数据库" url="http://chaoo.oschina.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
           
         </display>
     </data>
