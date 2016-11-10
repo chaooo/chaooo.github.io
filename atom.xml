@@ -4,9 +4,9 @@
   <subtitle>没有比脚更长的路，走过去，前面是个天！</subtitle>
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://chaooo.github.io/"/>
-  <updated>2016-11-09T07:52:29.289Z</updated>
-  <id>http://chaooo.github.io/</id>
+  <link href="http://chaoo.oschina.io/"/>
+  <updated>2016-11-10T02:45:08.689Z</updated>
+  <id>http://chaoo.oschina.io/</id>
   
   <author>
     <name>郑超(Charles·Zheng)</name>
@@ -17,10 +17,10 @@
   
   <entry>
     <title>自定义HEXO站内搜索Javascript+json</title>
-    <link href="http://chaooo.github.io/2016/11/09/%E8%87%AA%E5%AE%9A%E4%B9%89HEXO%E7%AB%99%E5%86%85%E6%90%9C%E7%B4%A2Javascript-json.html"/>
-    <id>http://chaooo.github.io/2016/11/09/自定义HEXO站内搜索Javascript-json.html</id>
+    <link href="http://chaoo.oschina.io/2016/11/09/%E8%87%AA%E5%AE%9A%E4%B9%89HEXO%E7%AB%99%E5%86%85%E6%90%9C%E7%B4%A2Javascript-json.html"/>
+    <id>http://chaoo.oschina.io/2016/11/09/自定义HEXO站内搜索Javascript-json.html</id>
     <published>2016-11-09T01:24:56.000Z</published>
-    <updated>2016-11-09T07:52:29.289Z</updated>
+    <updated>2016-11-10T02:45:08.689Z</updated>
     
     <content type="html"><![CDATA[<p>目前很多<a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>博客都用的Swiftype和Algolia等第三方搜索服务。其实针对无数据库的情况下，Hexo本身也提供了两个插件来生成数据文件作为数据源：<br>    <a href="https://github.com/PaicHyperionDev/hexo-generator-search" target="_blank" rel="external">hexo-generator-search</a>生成<code>xml</code>格式的数据文件。<br>    <a href="https://github.com/alexbruno/hexo-generator-json-content" target="_blank" rel="external">hexo-generator-json-content</a> 生成<code>json</code>格式的数据文件。<br>今天的主角是<a href="https://github.com/alexbruno/hexo-generator-json-content" target="_blank" rel="external">hexo-generator-json-content</a>，对于 Javascript语言来说还是解析 json 更方便，如果需要用 xml 做数据文件也可以使用已有的atom.xml。</p>
 <h3 id="1-安装"><a href="#1-安装" class="headerlink" title="1.安装"></a>1.安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-generator-json-content --save</span><br></pre></td></tr></table></figure>
@@ -37,19 +37,21 @@
     
     </summary>
     
-      <category term="hexo博客折腾" scheme="http://chaooo.github.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
+      <category term="hexo博客折腾" scheme="http://chaoo.oschina.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
     
     
-      <category term="javascript,hexo" scheme="http://chaooo.github.io/tags/javascript-hexo/"/>
+      <category term="hexo" scheme="http://chaoo.oschina.io/tags/hexo/"/>
+    
+      <category term="javascript" scheme="http://chaoo.oschina.io/tags/javascript/"/>
     
   </entry>
   
   <entry>
     <title>github博客迁移</title>
-    <link href="http://chaooo.github.io/2016/08/17/github%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB.html"/>
-    <id>http://chaooo.github.io/2016/08/17/github博客迁移.html</id>
+    <link href="http://chaoo.oschina.io/2016/08/17/github%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB.html"/>
+    <id>http://chaoo.oschina.io/2016/08/17/github博客迁移.html</id>
     <published>2016-08-17T03:14:25.000Z</published>
-    <updated>2016-11-08T08:27:08.272Z</updated>
+    <updated>2016-11-10T02:45:47.534Z</updated>
     
     <content type="html"><![CDATA[<p>由于github博客在国内访问非常慢而且经常不稳定，百度爬虫也无法抓取github博客内容，所以决定将博客迁移至码云。</p>
 <h3 id="1-迁移代码"><a href="#1-迁移代码" class="headerlink" title="1.迁移代码"></a>1.迁移代码</h3><p>把代码从<a href="https://github.com/" target="_blank" rel="external">github</a>迁移至<a href="http://git.oschina.net/" target="_blank" rel="external">码云（oschina）</a>。<br>首先，你要先在码云注册一个账号，和GitHub操作基本一样，这里不再赘述。<br>码云的Pages服务基本和GitHub的一样，不过码云的Pages服务更灵活一些。<br><a id="more"></a><br>在GitHub上，可以新建一个以<code>用户名</code>命名的仓库，将网站代码放在master分支下，即可自动部署到：<code>http://用户名.github.io/</code>，若其他命名的仓库则新建一个<code>gh-pages</code>的分支，网站代码放在<code>gh-pages</code>下，，即可自动部署到：<code>http://用户名.github.io/仓库名/</code>。<br>对于码云，基本和GitHub一样，不过还需要手动开启Pages服务，而且其他仓库虽然默认在<code>osc-pages</code>下，但可自定到自己喜欢的分支上。<br>代码迁移步骤如下：</p>
@@ -60,7 +62,7 @@
 <p>然后执行下面命令，以重新生成<code>baidusitemap.xml</code>。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo generate <span class="_">-d</span></span><br></pre></td></tr></table></figure></p>
 <h4 id="3-验证网站"><a href="#3-验证网站" class="headerlink" title="3.验证网站"></a>3.验证网站</h4><p>百度搜索引擎入口：<br><a href="http://zhanzhang.baidu.com/linksubmit/url" target="_blank" rel="external">百度搜索引擎入口</a>。<br>先添加域名，然后验证网站，这里统一都使用文件验证，就是下载对应的html文件，放到域名根目录下，也就收博客根目录下的<code>public/</code>下面 。<br>然后部署到服务器,输入地址：<code>http://chaoo.oschina.io/baidu_verify_wjJ25Q3cv2.html</code>能访问到就可以点验证按钮(按照百度的引导步骤就好)。</p>
 <h3 id="4-sitemap提交"><a href="#4-sitemap提交" class="headerlink" title="4.sitemap提交"></a>4.sitemap提交</h3><p>直接点击<code>sitemap</code>填写数据文件地址：<code>http://chaoo.oschina.io/baidusitemap.xml</code>,输入验证码提交。</p>
-<h5 id="自动推送"><a href="#自动推送" class="headerlink" title="自动推送"></a>自动推送</h5><p>自动推送很简单，就是在你代码里面嵌入自动推送JS代码，在页面被访问时，页面URL将立即被推送给百度，可将代码添加到<code>\themes\landscape\layout\_partial\after_footer.ejs</code>中的最下面就行。<br>代码如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> bp = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</span><br><span class="line">    <span class="keyword">var</span> curProtocol = <span class="built_in">window</span>.location.protocol.split(<span class="string">':'</span>)[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">if</span> (curProtocol === <span class="string">'https'</span>) &#123;</span><br><span class="line">        bp.src = <span class="string">'https://zz.bdstatic.com/linksubmit/push.js'</span>;        </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        bp.src = <span class="string">'http://push.zhanzhang.baidu.com/push.js'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> s = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"script"</span>)[<span class="number">0</span>];</span><br><span class="line">    s.parentNode.insertBefore(bp, s);</span><br><span class="line">&#125;)();</span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<h5 id="自动推送"><a href="#自动推送" class="headerlink" title="自动推送"></a>自动推送</h5><p>自动推送很简单，就是在你代码里面嵌入自动推送JS代码，在页面被访问时，页面URL将立即被推送给百度，可将代码添加到<code>\themes\landscape\layout\_partial\after_footer.ejs</code>中的最下面就行。<br>代码如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> bp = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</span><br><span class="line">    <span class="keyword">var</span> curProtocol = <span class="built_in">window</span>.location.protocol.split(<span class="string">':'</span>)[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">if</span> (curProtocol === <span class="string">'https'</span>) &#123;</span><br><span class="line">        bp.src = <span class="string">'https://zz.bdstatic.com/linksubmit/push.js'</span>;        </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        bp.src = <span class="string">'http://push.zhanzhang.baidu.com/push.js'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> s = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"script"</span>)[<span class="number">0</span>];</span><br><span class="line">    s.parentNode.insertBefore(bp, s);</span><br><span class="line">&#125;)();</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
 <p>这样就可以等待百度收录了。</p>
 <p><img src="http://obzf7z93c.bkt.clouddn.com/blog/oschina3.jpg" alt="博客迁移至码云4"></p>
 ]]></content>
@@ -72,17 +74,19 @@
     
     </summary>
     
-      <category term="hexo博客折腾" scheme="http://chaooo.github.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
+      <category term="hexo博客折腾" scheme="http://chaoo.oschina.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
     
     
-      <category term="github,hexo" scheme="http://chaooo.github.io/tags/github-hexo/"/>
+      <category term="hexo" scheme="http://chaoo.oschina.io/tags/hexo/"/>
+    
+      <category term="github" scheme="http://chaoo.oschina.io/tags/github/"/>
     
   </entry>
   
   <entry>
     <title>好用的Web包管理器-Bower</title>
-    <link href="http://chaooo.github.io/2016/08/12/Web%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8-Bower.html"/>
-    <id>http://chaooo.github.io/2016/08/12/Web包管理器-Bower.html</id>
+    <link href="http://chaoo.oschina.io/2016/08/12/Web%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8-Bower.html"/>
+    <id>http://chaoo.oschina.io/2016/08/12/Web包管理器-Bower.html</id>
     <published>2016-08-12T07:32:41.000Z</published>
     <updated>2016-11-01T01:40:14.150Z</updated>
     
@@ -111,17 +115,17 @@
     
     </summary>
     
-      <category term="前端工具" scheme="http://chaooo.github.io/categories/%E5%89%8D%E7%AB%AF%E5%B7%A5%E5%85%B7/"/>
+      <category term="前端工具" scheme="http://chaoo.oschina.io/categories/%E5%89%8D%E7%AB%AF%E5%B7%A5%E5%85%B7/"/>
     
     
-      <category term="bower" scheme="http://chaooo.github.io/tags/bower/"/>
+      <category term="bower" scheme="http://chaoo.oschina.io/tags/bower/"/>
     
   </entry>
   
   <entry>
     <title>MongoDB学习笔记(2)</title>
-    <link href="http://chaooo.github.io/2016/07/30/MongoDB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0(2).html"/>
-    <id>http://chaooo.github.io/2016/07/30/MongoDB学习笔记(2).html</id>
+    <link href="http://chaoo.oschina.io/2016/07/30/MongoDB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0(2).html"/>
+    <id>http://chaoo.oschina.io/2016/07/30/MongoDB学习笔记(2).html</id>
     <published>2016-07-30T00:20:16.000Z</published>
     <updated>2016-11-09T01:14:35.245Z</updated>
     
@@ -161,17 +165,17 @@
     
     </summary>
     
-      <category term="数据库" scheme="http://chaooo.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+      <category term="数据库" scheme="http://chaoo.oschina.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
     
     
-      <category term="mongodb" scheme="http://chaooo.github.io/tags/mongodb/"/>
+      <category term="mongodb" scheme="http://chaoo.oschina.io/tags/mongodb/"/>
     
   </entry>
   
   <entry>
     <title>MongoDB学习笔记</title>
-    <link href="http://chaooo.github.io/2016/07/29/MongoDB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0(1).html"/>
-    <id>http://chaooo.github.io/2016/07/29/MongoDB学习笔记(1).html</id>
+    <link href="http://chaoo.oschina.io/2016/07/29/MongoDB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0(1).html"/>
+    <id>http://chaoo.oschina.io/2016/07/29/MongoDB学习笔记(1).html</id>
     <published>2016-07-29T02:22:14.000Z</published>
     <updated>2016-11-08T09:10:14.758Z</updated>
     
@@ -190,17 +194,17 @@
     
     </summary>
     
-      <category term="数据库" scheme="http://chaooo.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+      <category term="数据库" scheme="http://chaoo.oschina.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
     
     
-      <category term="mongodb" scheme="http://chaooo.github.io/tags/mongodb/"/>
+      <category term="mongodb" scheme="http://chaoo.oschina.io/tags/mongodb/"/>
     
   </entry>
   
   <entry>
     <title>Node.js 多进程(17)</title>
-    <link href="http://chaooo.github.io/2016/06/30/Node.js%20%E5%A4%9A%E8%BF%9B%E7%A8%8B.html"/>
-    <id>http://chaooo.github.io/2016/06/30/Node.js 多进程.html</id>
+    <link href="http://chaoo.oschina.io/2016/06/30/Node.js%20%E5%A4%9A%E8%BF%9B%E7%A8%8B.html"/>
+    <id>http://chaoo.oschina.io/2016/06/30/Node.js 多进程.html</id>
     <published>2016-06-30T07:42:28.000Z</published>
     <updated>2016-11-09T01:17:57.988Z</updated>
     
@@ -229,17 +233,17 @@
     
     </summary>
     
-      <category term="nodeJS学习笔记" scheme="http://chaooo.github.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="nodeJS学习笔记" scheme="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="node" scheme="http://chaooo.github.io/tags/node/"/>
+      <category term="node" scheme="http://chaoo.oschina.io/tags/node/"/>
     
   </entry>
   
   <entry>
     <title>Node.js RESTful API(16)</title>
-    <link href="http://chaooo.github.io/2016/06/30/Node.js%20RESTful%20API.html"/>
-    <id>http://chaooo.github.io/2016/06/30/Node.js RESTful API.html</id>
+    <link href="http://chaoo.oschina.io/2016/06/30/Node.js%20RESTful%20API.html"/>
+    <id>http://chaoo.oschina.io/2016/06/30/Node.js RESTful API.html</id>
     <published>2016-06-30T03:38:20.000Z</published>
     <updated>2016-11-09T01:20:43.921Z</updated>
     
@@ -267,17 +271,17 @@
     
     </summary>
     
-      <category term="nodeJS学习笔记" scheme="http://chaooo.github.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="nodeJS学习笔记" scheme="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="node" scheme="http://chaooo.github.io/tags/node/"/>
+      <category term="node" scheme="http://chaoo.oschina.io/tags/node/"/>
     
   </entry>
   
   <entry>
     <title>Node.js Express 框架(15)</title>
-    <link href="http://chaooo.github.io/2016/06/30/Node.js%20Express%20%E6%A1%86%E6%9E%B6.html"/>
-    <id>http://chaooo.github.io/2016/06/30/Node.js Express 框架.html</id>
+    <link href="http://chaoo.oschina.io/2016/06/30/Node.js%20Express%20%E6%A1%86%E6%9E%B6.html"/>
+    <id>http://chaoo.oschina.io/2016/06/30/Node.js Express 框架.html</id>
     <published>2016-06-30T01:38:20.000Z</published>
     <updated>2016-11-09T01:20:05.262Z</updated>
     
@@ -317,17 +321,17 @@
     
     </summary>
     
-      <category term="nodeJS学习笔记" scheme="http://chaooo.github.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="nodeJS学习笔记" scheme="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="node" scheme="http://chaooo.github.io/tags/node/"/>
+      <category term="node" scheme="http://chaoo.oschina.io/tags/node/"/>
     
   </entry>
   
   <entry>
     <title>Node.js Web 模块(14)</title>
-    <link href="http://chaooo.github.io/2016/06/29/Node.js%20Web%E6%A8%A1%E5%9D%97.html"/>
-    <id>http://chaooo.github.io/2016/06/29/Node.js Web模块.html</id>
+    <link href="http://chaoo.oschina.io/2016/06/29/Node.js%20Web%E6%A8%A1%E5%9D%97.html"/>
+    <id>http://chaoo.oschina.io/2016/06/29/Node.js Web模块.html</id>
     <published>2016-06-29T12:51:36.000Z</published>
     <updated>2016-11-09T01:20:57.026Z</updated>
     
@@ -349,17 +353,17 @@
     
     </summary>
     
-      <category term="nodeJS学习笔记" scheme="http://chaooo.github.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="nodeJS学习笔记" scheme="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="node" scheme="http://chaooo.github.io/tags/node/"/>
+      <category term="node" scheme="http://chaoo.oschina.io/tags/node/"/>
     
   </entry>
   
   <entry>
     <title>Node.js JXcore 打包(18)</title>
-    <link href="http://chaooo.github.io/2016/06/29/Node.js%20JXcore%E6%89%93%E5%8C%85.html"/>
-    <id>http://chaooo.github.io/2016/06/29/Node.js JXcore打包.html</id>
+    <link href="http://chaoo.oschina.io/2016/06/29/Node.js%20JXcore%E6%89%93%E5%8C%85.html"/>
+    <id>http://chaoo.oschina.io/2016/06/29/Node.js JXcore打包.html</id>
     <published>2016-06-29T12:14:59.000Z</published>
     <updated>2016-11-09T01:20:38.285Z</updated>
     
@@ -382,17 +386,17 @@
     
     </summary>
     
-      <category term="nodeJS学习笔记" scheme="http://chaooo.github.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="nodeJS学习笔记" scheme="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="node" scheme="http://chaooo.github.io/tags/node/"/>
+      <category term="node" scheme="http://chaoo.oschina.io/tags/node/"/>
     
   </entry>
   
   <entry>
     <title>Node.js 工具模块(13)</title>
-    <link href="http://chaooo.github.io/2016/06/29/Node.js%20%E5%B7%A5%E5%85%B7%E6%A8%A1%E5%9D%97.html"/>
-    <id>http://chaooo.github.io/2016/06/29/Node.js 工具模块.html</id>
+    <link href="http://chaoo.oschina.io/2016/06/29/Node.js%20%E5%B7%A5%E5%85%B7%E6%A8%A1%E5%9D%97.html"/>
+    <id>http://chaoo.oschina.io/2016/06/29/Node.js 工具模块.html</id>
     <published>2016-06-29T10:38:26.000Z</published>
     <updated>2016-11-09T01:18:53.340Z</updated>
     
@@ -439,17 +443,17 @@
     
     </summary>
     
-      <category term="nodeJS学习笔记" scheme="http://chaooo.github.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="nodeJS学习笔记" scheme="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="node" scheme="http://chaooo.github.io/tags/node/"/>
+      <category term="node" scheme="http://chaoo.oschina.io/tags/node/"/>
     
   </entry>
   
   <entry>
     <title>Node.js GET/POST请求(12)</title>
-    <link href="http://chaooo.github.io/2016/06/29/Node.js%20GET%20POST%E8%AF%B7%E6%B1%82.html"/>
-    <id>http://chaooo.github.io/2016/06/29/Node.js GET POST请求.html</id>
+    <link href="http://chaoo.oschina.io/2016/06/29/Node.js%20GET%20POST%E8%AF%B7%E6%B1%82.html"/>
+    <id>http://chaoo.oschina.io/2016/06/29/Node.js GET POST请求.html</id>
     <published>2016-06-29T07:38:20.000Z</published>
     <updated>2016-11-09T01:20:23.493Z</updated>
     
@@ -465,17 +469,17 @@
     
     </summary>
     
-      <category term="nodeJS学习笔记" scheme="http://chaooo.github.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="nodeJS学习笔记" scheme="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="node" scheme="http://chaooo.github.io/tags/node/"/>
+      <category term="node" scheme="http://chaoo.oschina.io/tags/node/"/>
     
   </entry>
   
   <entry>
     <title>Node.js 文件系统(11)</title>
-    <link href="http://chaooo.github.io/2016/06/29/Node.js%20%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F.html"/>
-    <id>http://chaooo.github.io/2016/06/29/Node.js 文件系统.html</id>
+    <link href="http://chaoo.oschina.io/2016/06/29/Node.js%20%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F.html"/>
+    <id>http://chaoo.oschina.io/2016/06/29/Node.js 文件系统.html</id>
     <published>2016-06-29T05:35:20.000Z</published>
     <updated>2016-11-09T01:19:23.454Z</updated>
     
@@ -516,17 +520,17 @@
     
     </summary>
     
-      <category term="nodeJS学习笔记" scheme="http://chaooo.github.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="nodeJS学习笔记" scheme="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="node" scheme="http://chaooo.github.io/tags/node/"/>
+      <category term="node" scheme="http://chaoo.oschina.io/tags/node/"/>
     
   </entry>
   
   <entry>
     <title>sublime text3个人习惯配置</title>
-    <link href="http://chaooo.github.io/2016/06/29/sublime-text3%E4%B8%AA%E4%BA%BA%E4%B9%A0%E6%83%AF%E9%85%8D%E7%BD%AE-C.html"/>
-    <id>http://chaooo.github.io/2016/06/29/sublime-text3个人习惯配置-C.html</id>
+    <link href="http://chaoo.oschina.io/2016/06/29/sublime-text3%E4%B8%AA%E4%BA%BA%E4%B9%A0%E6%83%AF%E9%85%8D%E7%BD%AE-C.html"/>
+    <id>http://chaoo.oschina.io/2016/06/29/sublime-text3个人习惯配置-C.html</id>
     <published>2016-06-29T01:41:48.000Z</published>
     <updated>2016-11-01T01:39:57.719Z</updated>
     
@@ -549,17 +553,17 @@
     
     </summary>
     
-      <category term="前端工具" scheme="http://chaooo.github.io/categories/%E5%89%8D%E7%AB%AF%E5%B7%A5%E5%85%B7/"/>
+      <category term="前端工具" scheme="http://chaoo.oschina.io/categories/%E5%89%8D%E7%AB%AF%E5%B7%A5%E5%85%B7/"/>
     
     
-      <category term="sublime" scheme="http://chaooo.github.io/tags/sublime/"/>
+      <category term="sublime" scheme="http://chaoo.oschina.io/tags/sublime/"/>
     
   </entry>
   
   <entry>
     <title>Node.js常用工具(10)</title>
-    <link href="http://chaooo.github.io/2016/06/29/Node.js%20%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7.html"/>
-    <id>http://chaooo.github.io/2016/06/29/Node.js 常用工具.html</id>
+    <link href="http://chaoo.oschina.io/2016/06/29/Node.js%20%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7.html"/>
+    <id>http://chaoo.oschina.io/2016/06/29/Node.js 常用工具.html</id>
     <published>2016-06-29T00:10:03.000Z</published>
     <updated>2016-11-09T01:19:07.159Z</updated>
     
@@ -580,17 +584,17 @@
     
     </summary>
     
-      <category term="nodeJS学习笔记" scheme="http://chaooo.github.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="nodeJS学习笔记" scheme="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="node" scheme="http://chaooo.github.io/tags/node/"/>
+      <category term="node" scheme="http://chaoo.oschina.io/tags/node/"/>
     
   </entry>
   
   <entry>
     <title>Node.js 全局对象(9)</title>
-    <link href="http://chaooo.github.io/2016/06/28/Node.js%20%E5%85%A8%E5%B1%80%E5%AF%B9%E8%B1%A1.html"/>
-    <id>http://chaooo.github.io/2016/06/28/Node.js 全局对象.html</id>
+    <link href="http://chaoo.oschina.io/2016/06/28/Node.js%20%E5%85%A8%E5%B1%80%E5%AF%B9%E8%B1%A1.html"/>
+    <id>http://chaoo.oschina.io/2016/06/28/Node.js 全局对象.html</id>
     <published>2016-06-28T12:42:07.000Z</published>
     <updated>2016-11-09T01:17:25.208Z</updated>
     
@@ -620,17 +624,17 @@
     
     </summary>
     
-      <category term="nodeJS学习笔记" scheme="http://chaooo.github.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="nodeJS学习笔记" scheme="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="node" scheme="http://chaooo.github.io/tags/node/"/>
+      <category term="node" scheme="http://chaoo.oschina.io/tags/node/"/>
     
   </entry>
   
   <entry>
     <title>Node.js 路由(8)</title>
-    <link href="http://chaooo.github.io/2016/06/28/Node.js%20%E8%B7%AF%E7%94%B1.html"/>
-    <id>http://chaooo.github.io/2016/06/28/Node.js 路由.html</id>
+    <link href="http://chaoo.oschina.io/2016/06/28/Node.js%20%E8%B7%AF%E7%94%B1.html"/>
+    <id>http://chaoo.oschina.io/2016/06/28/Node.js 路由.html</id>
     <published>2016-06-28T10:55:08.000Z</published>
     <updated>2016-11-09T01:19:35.619Z</updated>
     
@@ -648,17 +652,17 @@
     
     </summary>
     
-      <category term="nodeJS学习笔记" scheme="http://chaooo.github.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="nodeJS学习笔记" scheme="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="node" scheme="http://chaooo.github.io/tags/node/"/>
+      <category term="node" scheme="http://chaoo.oschina.io/tags/node/"/>
     
   </entry>
   
   <entry>
     <title>Node.js函数(7)</title>
-    <link href="http://chaooo.github.io/2016/06/28/Node.js%E5%87%BD%E6%95%B0.html"/>
-    <id>http://chaooo.github.io/2016/06/28/Node.js函数.html</id>
+    <link href="http://chaoo.oschina.io/2016/06/28/Node.js%E5%87%BD%E6%95%B0.html"/>
+    <id>http://chaoo.oschina.io/2016/06/28/Node.js函数.html</id>
     <published>2016-06-28T07:20:07.000Z</published>
     <updated>2016-11-09T01:16:22.674Z</updated>
     
@@ -675,17 +679,17 @@
     
     </summary>
     
-      <category term="nodeJS学习笔记" scheme="http://chaooo.github.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="nodeJS学习笔记" scheme="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="node" scheme="http://chaooo.github.io/tags/node/"/>
+      <category term="node" scheme="http://chaoo.oschina.io/tags/node/"/>
     
   </entry>
   
   <entry>
     <title>Node.js模块系统(6)</title>
-    <link href="http://chaooo.github.io/2016/06/28/Node.js%E6%A8%A1%E5%9D%97%E7%B3%BB%E7%BB%9F.html"/>
-    <id>http://chaooo.github.io/2016/06/28/Node.js模块系统.html</id>
+    <link href="http://chaoo.oschina.io/2016/06/28/Node.js%E6%A8%A1%E5%9D%97%E7%B3%BB%E7%BB%9F.html"/>
+    <id>http://chaoo.oschina.io/2016/06/28/Node.js模块系统.html</id>
     <published>2016-06-28T03:32:07.000Z</published>
     <updated>2016-11-09T01:16:48.263Z</updated>
     
@@ -703,17 +707,17 @@
     
     </summary>
     
-      <category term="nodeJS学习笔记" scheme="http://chaooo.github.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="nodeJS学习笔记" scheme="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="node" scheme="http://chaooo.github.io/tags/node/"/>
+      <category term="node" scheme="http://chaoo.oschina.io/tags/node/"/>
     
   </entry>
   
   <entry>
     <title>Node.js Stream流(5)</title>
-    <link href="http://chaooo.github.io/2016/06/28/Node.js%20Stream%E6%B5%81.html"/>
-    <id>http://chaooo.github.io/2016/06/28/Node.js Stream流.html</id>
+    <link href="http://chaoo.oschina.io/2016/06/28/Node.js%20Stream%E6%B5%81.html"/>
+    <id>http://chaoo.oschina.io/2016/06/28/Node.js Stream流.html</id>
     <published>2016-06-28T01:50:03.000Z</published>
     <updated>2016-11-09T01:20:50.362Z</updated>
     
@@ -730,10 +734,10 @@
     
     </summary>
     
-      <category term="nodeJS学习笔记" scheme="http://chaooo.github.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="nodeJS学习笔记" scheme="http://chaoo.oschina.io/categories/nodeJS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="node" scheme="http://chaooo.github.io/tags/node/"/>
+      <category term="node" scheme="http://chaoo.oschina.io/tags/node/"/>
     
   </entry>
   
