@@ -4,8 +4,30 @@
 
     
   <url>
+    <loc>http://chaoo.oschina.io/2016/08/17/github%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB.html</loc>
+    <lastmod>2016-11-10T09:44:46.916Z</lastmod>
+    <data>
+        <display>
+        <title>github博客迁移</title>
+        <pubTime>2016-08-17T03:14:25.000Z</pubTime>
+        
+        <tag>hexo</tag>
+         
+        <tag>github</tag>
+         
+         
+           
+             
+              <breadCrumb title="hexo博客折腾" url="http://chaoo.oschina.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://chaoo.oschina.io/2016/11/09/%E8%87%AA%E5%AE%9A%E4%B9%89HEXO%E7%AB%99%E5%86%85%E6%90%9C%E7%B4%A2Javascript-json.html</loc>
-    <lastmod>2016-11-10T03:31:35.876Z</lastmod>
+    <lastmod>2016-11-10T09:44:40.119Z</lastmod>
     <data>
         <display>
         <title>自定义HEXO站内搜索Javascript+json</title>
@@ -27,37 +49,13 @@
     
   <url>
     <loc>http://chaoo.oschina.io/2016/05/23/Hexo3-2-github%E6%90%AD%E5%BB%BA%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2.html</loc>
-    <lastmod>2016-11-10T02:47:32.497Z</lastmod>
+    <lastmod>2016-11-10T08:35:26.499Z</lastmod>
     <data>
         <display>
         <title>Hexo3.2+GitHub搭建静态博客</title>
         <pubTime>2016-05-23T03:16:51.000Z</pubTime>
         
         <tag>hexo</tag>
-         
-        <tag>github</tag>
-         
-         
-           
-             
-              <breadCrumb title="hexo博客折腾" url="http://chaoo.oschina.io/categories/hexo%E5%8D%9A%E5%AE%A2%E6%8A%98%E8%85%BE/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://chaoo.oschina.io/2016/08/17/github%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB.html</loc>
-    <lastmod>2016-11-10T02:45:47.534Z</lastmod>
-    <data>
-        <display>
-        <title>github博客迁移</title>
-        <pubTime>2016-08-17T03:14:25.000Z</pubTime>
-        
-        <tag>hexo</tag>
-         
-        <tag>github</tag>
          
          
            
