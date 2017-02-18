@@ -155,7 +155,7 @@ baidusitemap:
 $ npm install hexo-generator-json-content --save
 ```
 然后在`根_config.yml`添加配置：
-``` yml 主题_config.yml https://github.com/chaooo/hexo-theme-BlueLake/blob/master/_config.yml themes/BlueLake/_config.yml
+``` yml 根_config.yml https://hexo.io/zh-cn/docs/configuration.html _config.yml
 jsonContent:
   meta: false
   pages: false
@@ -187,7 +187,21 @@ local_search: true
 您需要为苹果设备添加网站徽标，请命名为** apple-touch-icon.png **的图像放入hexo目录的“source”文件夹中，建议大小为：114px X 114px。
 (有很多网站都可以在线生成ico格式的图片。)
 
-#### 2.6 其他配置
+
+#### 2.6 添加站点关键字
+
+请在hexo目录的`根_config.yml`中添加keywords字段，如：
+``` yml 根_config.yml https://hexo.io/zh-cn/docs/configuration.html _config.yml
+# Site
+title: Hexo
+subtitle: 副标题
+description: 网站简要描述,如：Charles·Zheng's blog.
+keywords: 网站关键字, key, key1, key2, key3
+author: Charles
+language: zh-CN
+```
+
+#### 2.7 其他配置
 `主题_config.yml`的其他配置
 1. `show_category_count`——是否显示分类下的文章数。
 2. `widgets_on_small_screens`——是否在小屏显示侧边栏，若`true`,则侧边栏挂件将显示在底部。
