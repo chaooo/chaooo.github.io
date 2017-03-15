@@ -11,7 +11,7 @@ categories: hexo博客折腾
 今天的主角是[hexo-generator-json-content](https://github.com/alexbruno/hexo-generator-json-content)，对于 Javascript语言来说还是解析 json 更方便，如果需要用 xml 做数据文件也可以使用已有的atom.xml。
 ### 1.安装 
 ``` bash 
-$ npm install hexo-generator-json-content --save
+$ npm install hexo-generator-json-content@2.2.0 --save
 ```
 然后执行`hexo generate`时会自动生成`content.json`文件，若使用默认设置，生成的数据结构如下 
 ``` json

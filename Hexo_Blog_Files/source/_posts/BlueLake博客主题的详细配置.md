@@ -152,7 +152,7 @@ baidusitemap:
 #### 2.4 添加本地搜索
 默认本地搜索是用原生JS写的，但还需要HEXO插件创建的JSON数据文件配合。安装插件[hexo-generator-json-content](https://github.com/alexbruno/hexo-generator-json-content)来创建JSON数据文件：
 ``` bash git bash
-$ npm install hexo-generator-json-content --save
+$ npm install hexo-generator-json-content@2.2.0 --save
 ```
 然后在`根_config.yml`添加配置：
 ``` yml 根_config.yml https://hexo.io/zh-cn/docs/configuration.html _config.yml
