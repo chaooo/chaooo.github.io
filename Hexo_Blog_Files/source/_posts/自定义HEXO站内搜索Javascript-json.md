@@ -5,11 +5,14 @@ tags: [javascript,hexo]
 categories: hexo博客折腾
 ---
 
+### 开始之前
+
 目前很多[Hexo](https://hexo.io/)博客都用的Swiftype和Algolia等第三方搜索服务。其实针对无数据库的情况下，Hexo本身也提供了两个插件来生成数据文件作为数据源：
     [hexo-generator-search](https://github.com/PaicHyperionDev/hexo-generator-search)生成`xml`格式的数据文件。
     [hexo-generator-json-content](https://github.com/alexbruno/hexo-generator-json-content) 生成`json`格式的数据文件。 
 今天的主角是[hexo-generator-json-content](https://github.com/alexbruno/hexo-generator-json-content)，对于 Javascript语言来说还是解析 json 更方便，如果需要用 xml 做数据文件也可以使用已有的atom.xml。
 ### 1.安装 
+
 ``` bash 
 $ npm install hexo-generator-json-content@2.2.0 --save
 ```
@@ -61,6 +64,8 @@ posts: [{ //-> only published posts
     }]
 }]
 ```
+### 2.配置 
+
 hexo-generator-json-content默认生成的json数据内容非常全，默认配置如下：
 ``` yml
 jsonContent:
@@ -133,9 +138,11 @@ jsonContent:
   }]
 }
 ```
+### 3.JavaScript实现代码
+
 接下来就是用JS实现查询方法并把结果渲染到页面。
+#### 3.1 xhr加载数据
 ``` javascript
-// xhr加载数据
 var searchData;
 function loadData(success) {
     if (!searchData) {
@@ -158,7 +165,9 @@ function loadData(success) {
         success(searchData);
     }
 }
-// 匹配文章内容返回结果
+```
+#### 3.2 匹配文章内容返回结果
+``` javascript
 function matcher(post, regExp) {
     // 匹配优先级：title > tags > text
     return regtest(post.title, regExp) || post.tags.some(function(tag) {
@@ -169,7 +178,9 @@ function regtest(raw, regExp) {
     regExp.lastIndex = 0;
     return regExp.test(raw);
 }
-// 渲染到页面
+```
+#### 3.3 结果渲染到页面
+``` javascript
 function render(data) {
     var html = '';
     if (data.length) {
@@ -185,7 +196,9 @@ function render(data) {
         }).join('');
     } 
 }
-// 查询
+```
+#### 3.3 查询匹配
+``` javascript
 function search(key) {
     // 关键字 => 正则，空格隔开的看作多个关键字
     // a b c => /a|b|c/gmi

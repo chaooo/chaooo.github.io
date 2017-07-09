@@ -28,7 +28,7 @@ $ git clone https://github.com/chaooo/hexo-theme-BlueLake.git themes/BlueLake
 
 BlueLake是基于`jade`和`stylus`写的，所以需要安装`hexo-renderer-jade`和`hexo-renderer-stylus`来渲染。
 ``` bash git bash
-$ npm install hexo-renderer-jade --save
+$ npm install hexo-renderer-jade@0.3.0 --save
 $ npm install hexo-renderer-stylus --save
 ```
 
@@ -187,7 +187,6 @@ local_search: true
 您需要为苹果设备添加网站徽标，请命名为** apple-touch-icon.png **的图像放入hexo目录的“source”文件夹中，建议大小为：114px X 114px。
 (有很多网站都可以在线生成ico格式的图片。)
 
-
 #### 2.6 添加站点关键字
 
 请在hexo目录的`根_config.yml`中添加keywords字段，如：
@@ -214,15 +213,27 @@ widgets_on_small_screens: true
 
 #### 3.1 添加评论
 
-目前主题集成两种第三方评论，分别是`DisQus`和`多说`,他们的配置方法相似，在国内还是推荐使用多说评论，这里只介绍多说的配置。
-1. 登录多说后，在首页点击`我要安装`来创建站点。
-2. 填写站点相关信息，站点地址填写您的`博客主页地址`,多说域名填写的字段即是您即将填写到`主题_config.yml`配置文件中的`duoshuo_shortname`
-3. 配置`主题_config.yml`(假设您的多说域名为`http://test.duoshuo.com`)：
+目前主题集成六种第三方评论，分别是[多说评论](http://duoshuo.com)、[Disqus评论](https://disqus.com)、[来必力评论](https://livere.com)、[友言评论](http://www.uyan.cc/)、[网易云跟帖评论](https://gentie.163.com/info.html)、[畅言评论](http://changyan.kuaizhan.com)，多说马上就要停止服务了，友言好像也没怎么维护,目前我已把自己的博客评论从多说转移到畅言了，在国内目前`网易云跟帖`和`畅言`还不错。
+1. 注册并获得代码。
+  - 若使用[多说评论](http://duoshuo.com)，注册多说后获得short_name。
+  - 若使用[Disqus评论](https://disqus.com)，注册Disqus后获得short_name。
+  - 若使用[来必力评论](https://livere.com)，注册来必力,获得data-uid。
+  - 若使用[友言评论](http://www.uyan.cc/)，注册友言,获得uid。
+  - 若使用[网易云跟帖评论](https://gentie.163.com/info.html)，注册网易云跟帖,获得productKey。
+  - 若使用[畅言评论](http://changyan.kuaizhan.com)，注册畅言，获得appid，appkey。
+2. 配置`主题_config.yml`：
 ``` yml 主题_config.yml https://github.com/chaooo/hexo-theme-BlueLake/blob/master/_config.yml themes/BlueLake/_config.yml
 #Cmments
-duoshuo: test
+comment:
+  duoshuo: ## duoshuo_shortname
+  disqus: ## disqus_shortname
+  livere: ## 来必力(data-uid)
+  uyan: ## 友言(uid)
+  cloudTie: ## 网易云跟帖(productKey)
+  changyan: ## 畅言需在下方配置两个参数，此处不填。
+    appid: ## 畅言(appid)
+    appkey: ##畅言(appkey)
 ```
-> 注意：duoshuo_shortname 并不是你的多说登录的 id，而是创建站点的多说域名中的id字段
 
 #### 3.2 百度统计
 
