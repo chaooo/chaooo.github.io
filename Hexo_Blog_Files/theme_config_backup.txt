@@ -3,7 +3,7 @@
 ##########################
 
 # Theme version
-version: 2.0.2
+version: 2.0.3
 
 # Theme tone
 dark: true #true/false
@@ -68,6 +68,11 @@ baidusitemap:
 
 #Local search
 local_search: true ## Use a javascript-based local search engine, true/false.
+
+#Copyright
+copyright: 
+  enable: true
+  describe: 转载请注明出处(必须保留原文作者署名原文链接)
 
 #Cmments
 comment:

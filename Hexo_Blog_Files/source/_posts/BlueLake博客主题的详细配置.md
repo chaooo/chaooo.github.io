@@ -218,7 +218,22 @@ top: true
 ---
 ```
 
-#### 2.8 其他配置
+#### 2.8 更换主题背景和添加文章版权信息
+更换主题背景为深色
+``` yml 主题_config.yml https://github.com/chaooo/hexo-theme-BlueLake/blob/master/_config.yml themes/BlueLake/_config.yml 
+# Theme tone
+dark: true #true/false
+```
+添加文章版权信息
+``` yml 主题_config.yml https://github.com/chaooo/hexo-theme-BlueLake/blob/master/_config.yml themes/BlueLake/_config.yml 
+# Theme tone
+#Copyright
+copyright: 
+  enable: true #true/false  
+  describe: 转载请注明出处(必须保留原文作者署名原文链接) #自定义描述替换默认描述
+```
+
+#### 2.9 其他配置
 `主题_config.yml`的其他配置
 1. `show_category_count`——是否显示分类下的文章数。
 2. `widgets_on_small_screens`——是否在小屏显示侧边栏，若`true`,则侧边栏挂件将显示在底部。
@@ -226,13 +241,6 @@ top: true
 show_category_count: true 
 widgets_on_small_screens: true 
 ```
-
-#### 2.9 更换主题背景为深色
-``` yml 主题_config.yml https://github.com/chaooo/hexo-theme-BlueLake/blob/master/_config.yml themes/BlueLake/_config.yml 
-# Theme tone
-dark: true #true/false
-```
-
 
 ### 3.集成第三方服务
 
