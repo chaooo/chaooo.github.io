@@ -11,6 +11,7 @@ categories: hexo博客折腾
     [hexo-generator-search](https://github.com/PaicHyperionDev/hexo-generator-search)生成`xml`格式的数据文件。
     [hexo-generator-json-content](https://github.com/alexbruno/hexo-generator-json-content) 生成`json`格式的数据文件。 
 今天的主角是[hexo-generator-json-content](https://github.com/alexbruno/hexo-generator-json-content)，对于 Javascript语言来说还是解析 json 更方便，如果需要用 xml 做数据文件也可以使用已有的atom.xml。
+<!-- more -->
 ### 1.安装 
 
 ``` bash 

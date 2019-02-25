@@ -10,7 +10,7 @@ tags:
   - Nginx，下载地址：[http://nginx.org/en/download.html](http://nginx.org/en/download.html)。
   - PHP，下载地址：[http://php.net/downloads.php](http://php.net/downloads.php)（nginx下php是以FastCGI的方式运行，所以我们下载非线程安全也就是nts的php包）。
   - MySQL，下载地址：[https://www.mysql.com/downloads/](https://www.mysql.com/downloads/)。（选择社区版`Community`->`MySQL Community Server`->`MySQL Community Server 5.6`，根据Windows系统选择对应zip包）。
-
+<!-- more -->
 ### 2. 软件安装
 在C盘新建安装目录`C:\PHP`。
 #### 2.1 Nginx安装

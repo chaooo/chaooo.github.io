@@ -8,7 +8,7 @@ top: true
 ### 开始之前
 
 [BlueLake主题](https://github.com/chaooo/hexo-theme-BlueLake)写了有一段时间了，经常会有朋友发消息给我问一些配置的问题，这篇博文主要也是为了解决这些问题。主题以简洁轻量自居(实则简陋)，去掉了Jquery和Fancybox,用原生JS实现站内搜索功能和回到顶部效果。这个主题只是一个小小的雏形，期待您来帮助它成长。
-
+<!-- more -->
 在阅读本文之前，假定您已经成功安装了[Hexo](https://hexo.io/zh-cn/)，并使用 Hexo 提供的命令创建了一个静态博客。Hexo是一个快速、简洁且高效的博客框架。Hexo基于Node.js ，使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。
 
 > 需要特别注意的是Hexo有两个`_config.yml`配置文件，一份位于站点根目录下，主要包含 Hexo 站点本身的配置，下文中会称为**`根_config.yml`**；另一份位于主题目录下（themes/主题名/_config.yml），这份配置由主题作者提供，主要用于配置主题相关的选项,下文中会称为**`主题_config.yml`**。
