@@ -47,7 +47,7 @@
 </blockquote>
 <h4 id="1-4-引用"><a href="#1-4-引用" class="headerlink" title="1.4 引用"></a>1.4 引用</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">类名 引用变量名;</span><br><span class="line">Person p = <span class="keyword">new</span> Person(); <span class="comment">//声明person类型的引用p指向Person类型对象</span></span><br></pre></td></tr></table></figure>
 
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">引用变量名.成员变量名;</span><br><span class="line">p.name = <span class="string">'zhangsan'</span>;</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">&gt; 在JAVA中，使用引用数据类型声明的变量叫做引用变量，简称‘引用’。</span><br><span class="line">&lt;br&gt;使用引用可以记录对象在堆区中存放的内存地址信息，便于下次访问。</span><br><span class="line"></span><br><span class="line">- 除八种基本类型之外，用类名（接口，数组）声明的变量称为引用类型变量，引用类型变量存的某个对象的地址信息，引用的功能在于访问对象。</span><br><span class="line"></span><br><span class="line">#### 1.5 成员方法</span><br><span class="line">``` java</span><br><span class="line"><span class="class"><span class="keyword">class</span> 类名 </span>&#123;</span><br><span class="line">	返回值类型 成员方法名(形参列表)&#123;方法体;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">引用变量名.成员变量名;</span><br><span class="line">p.name = <span class="string">'zhangsan'</span>;</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">&gt;- 在JAVA中，使用引用数据类型声明的变量叫做引用变量，简称‘引用’。</span><br><span class="line">&gt;- 使用引用可以记录对象在堆区中存放的内存地址信息，便于下次访问。</span><br><span class="line"></span><br><span class="line">- 除八种基本类型之外，用类名（接口，数组）声明的变量称为引用类型变量，引用类型变量存的某个对象的地址信息，引用的功能在于访问对象。</span><br><span class="line"></span><br><span class="line">#### 1.5 成员方法</span><br><span class="line">``` java</span><br><span class="line"><span class="class"><span class="keyword">class</span> 类名 </span>&#123;</span><br><span class="line">	返回值类型 成员方法名(形参列表)&#123;方法体;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>返回值类型：可以是基本数据类型，也可以是引用，当方法不需要返回数据用void</li>
@@ -70,11 +70,14 @@
 <li>实际意义：调用者只需要记住一个方法名就可以不同的版本，从而实现不同的效果。</li>
 </ul>
 <p><span id="id3"><span></span></span></p>
-<h3 id="3-this关键字"><a href="#3-this关键字" class="headerlink" title="3. this关键字"></a>3. this关键字</h3><p>在构造方法中出现this时,this代表当前正在构造的对象；在成员方法中出现this,this代表当前正在调用的对象。<br>使用方式：</p>
-<ol>
+<h3 id="3-this关键字"><a href="#3-this关键字" class="headerlink" title="3. this关键字"></a>3. this关键字</h3><p>在构造方法中出现this时,this代表当前正在构造的对象；在成员方法中出现this,this代表当前正在调用的对象。</p>
+<ul>
+<li>使用方式：<ol>
 <li>当形参变量和成员变量同名时，在方法体中优先使用形参变量，若希望使用成员变量，则需要加上this，即this.变量名</li>
 <li>在构造方法的的第一行，可以调用本类中的其他构造方法。</li>
 </ol>
+</li>
+</ul>
 <p><span id="id4"><span></span></span></p>
 <h3 id="4-方法的传递和递归"><a href="#4-方法的传递和递归" class="headerlink" title="4. 方法的传递和递归"></a>4. 方法的传递和递归</h3><h4 id="4-1-传参"><a href="#4-1-传参" class="headerlink" title="4.1 传参"></a>4.1 传参</h4><ul>
 <li>基本数据类型变量作为参数传递时，型参数值改变不会影响实参变量的数值。</li>
@@ -88,18 +91,20 @@
 <li>若递归影响到程序的执行性能时，则用递推取代之</li>
 </ul>
 <p><span id="id5"><span></span></span></p>
-<h3 id="5-封装"><a href="#5-封装" class="headerlink" title="5. 封装"></a>5. 封装</h3><p>面向对象的三大特征：封装，继承，多态。<br><br>封装基本概念：封装就是对成员变量的数值进行密封包装处理以及合理性判断<br><br>封装基本流程：</p>
-<blockquote>
-<ol>
+<h3 id="5-封装"><a href="#5-封装" class="headerlink" title="5. 封装"></a>5. 封装</h3><p>面向对象的三大特征：封装，继承，多态。</p>
+<ul>
+<li>封装基本概念：封装就是对成员变量的数值进行密封包装处理以及合理性判断</li>
+<li>封装基本流程：<ol>
 <li>私有化成员变量(private)</li>
 <li>提供公有的get、set方法，并在set方法体中进行合理性判断</li>
 <li>在构方法中调用set方法进行合理值的判断</li>
 </ol>
-</blockquote>
+</li>
+</ul>
 <p><span id="id6"><span></span></span></p>
 <h3 id="6-static关键字"><a href="#6-static关键字" class="headerlink" title="6. static关键字"></a>6. static关键字</h3><p>基本概念：通常情况下成员变量隶属于对象层级，也就是每创建一个对象就会申请一块独立的内存空间来存储就会造成内存空间的浪费。</p>
 <blockquote>
-<p>伪列解决上诉问题，Java中使用static关键字修饰该成员变量表达静态的含义，此时成员变量提升到类层级，所有对象共享，随着类的加载准备就绪，与对象创建再无关。</p>
+<p>为了解决上诉问题，Java中使用static关键字修饰该成员变量表达静态的含义，此时成员变量提升到类层级，所有对象共享，随着类的加载准备就绪，与对象创建再无关。</p>
 </blockquote>
 <ul>
 <li>static可以修饰：修饰属性 修饰方法 修饰块 修饰类(内部类)</li>
@@ -118,25 +123,26 @@
 <h3 id="7-单例设计模式"><a href="#7-单例设计模式" class="headerlink" title="7. 单例设计模式"></a>7. 单例设计模式</h3><p>基本概念：当一个类有且只能对外提供一个对象时，这样的类就叫作单例类，而设计单例类的思想和模式，叫做单例设计模式。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 编程实现Singleton类的封装</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> Singleton sin = <span class="keyword">new</span> Singleton();<span class="comment">//2.提供本类的引用指向本类的对象</span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span></span>&#123;&#125; <span class="comment">//1.私有化构造方法</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span></span>&#123;<span class="comment">//3.提供公有的get方法将上述成员变量的数值返回出去</span></span><br><span class="line">		<span class="keyword">return</span> sin;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>实现流程：</p>
-<blockquote>
-<ol>
+<ul>
+<li>实现流程：<ol>
 <li>私有化构造方法（private）</li>
 <li>提供本类类型的引用指向本类类型对象（private static）</li>
 <li>提供公有的get方法将上述对象return出去（public static）</li>
 <li>实现方式：饿汉式和懒汉式，开发中推荐饿汉式。</li>
 </ol>
-</blockquote>
+</li>
+</ul>
 <p><span id="id8"><span></span></span></p>
-<h3 id="8-继承（extends）"><a href="#8-继承（extends）" class="headerlink" title="8. 继承（extends）"></a>8. 继承（extends）</h3><p>继承就是子类复用父类的代码，关键字extends表示类和类的继承关系<br><br>使用继承可以提高代码复用性、扩展性、以及可维护性。</p>
-<blockquote>
-<ol>
+<h3 id="8-继承（extends）"><a href="#8-继承（extends）" class="headerlink" title="8. 继承（extends）"></a>8. 继承（extends）</h3><ul>
+<li>继承就是子类复用父类的代码，关键字extends表示类和类的继承关系</li>
+<li>使用继承可以提高代码复用性、扩展性、以及可维护性。<ol>
 <li>子类不能继承父类的构造方法和私有方法，私有成员变量可以继承但不能直接使用。</li>
 <li>无论使用何种方式构造方式构造子类的对象都会自动调用父类的无参构造方法来初始化从父类中继承下来的成员变量，相当于在构造方法的第一行增加super()的效果。</li>
 <li>使用继承必须满足逻辑关系：子类 is a 父类，不能滥用继承。</li>
 <li>在Java中只能支持单继承，也就是一个一个子类只能有一个父类，但一个父类可以有多个子类。</li>
 </ol>
-</blockquote>
+</li>
+</ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Cricle</span> <span class="keyword">extends</span> <span class="title">Shape</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> r;</span><br><span class="line">	Cricle()&#123;&#125;   <span class="comment">//编译器会加入无参的调用 super()。</span></span><br><span class="line">	Cricle(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> r)&#123;</span><br><span class="line">		<span class="keyword">super</span>(x, y);  <span class="comment">//通过super关键字调用父类的构造方法。</span></span><br><span class="line">		setR(r);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setR</span><span class="params">(<span class="keyword">int</span> r)</span></span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.r = r;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><span id="id9"><span></span></span></p>
@@ -147,7 +153,11 @@
 <li>重写的方法不能抛出更大的异常</li>
 </ol>
 <p><span id="id10"><span></span></span></p>
-<h3 id="10-访问控制"><a href="#10-访问控制" class="headerlink" title="10. 访问控制"></a>10. 访问控制</h3><table>
+<h3 id="10-访问控制"><a href="#10-访问控制" class="headerlink" title="10. 访问控制"></a>10. 访问控制</h3><ul>
+<li>public修饰的内容可以在任意位置使用，private修饰的内容只能在本类中使用，</li>
+<li>通常情况下，成员变量都使用private修饰，成员方法都使用pubic修饰</li>
+</ul>
+<table>
 <thead>
 <tr>
 <th>访问控制符</th>
@@ -191,9 +201,6 @@
 <td align="right">N</td>
 </tr>
 </tbody></table>
-<blockquote>
-<p>public修饰的内容可以在任意位置使用，private修饰的内容只能在本类中使用，<br>通常情况下，成员变量都使用private修饰，成员方法都使用pubic修饰</p>
-</blockquote>
 <p><span id="id11"><span></span></span></p>
 <h3 id="11-包（Package）"><a href="#11-包（Package）" class="headerlink" title="11. 包（Package）"></a>11. 包（Package）</h3><p>为了解决命名冲突问题，便于文件的管理</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> 包名；</span><br><span class="line"><span class="keyword">package</span> 包名<span class="number">1</span>.包名<span class="number">2</span>.包名<span class="number">3</span>...包名n;</span><br><span class="line"><span class="comment">/* 指定包名时应按照一定的规范，eg: 公司域名反写.项目名称.模块名称.类名 */</span></span><br><span class="line">org.apache.commons.lang.StringUtil;</span><br></pre></td></tr></table></figure>
@@ -202,11 +209,11 @@
 <h3 id="12-final关键字"><a href="#12-final关键字" class="headerlink" title="12. final关键字"></a>12. final关键字</h3><ol>
 <li>final关键字修饰<strong>类</strong>体现该类<strong>不能被继承</strong>（防止滥用继承）。</li>
 <li>final关键字修饰<strong>方法</strong>体现在该方法<strong>不能被重新，但可以被继承</strong>（防止不经意间造成的方法重写）。</li>
-<li>final关键字修饰<strong>成员变量</strong>体现在改成员变量<strong>必须初始化且不能更改</strong>（防止不经意间造成的数据更改）。<blockquote>
-<p>扩展：在开发中很少单独使用static或者final单独修饰成员变量，而是使用<strong><code>public static final</code></strong><br>共同修饰成员变量来表达常量的含义，而常量的命名规范是：所有字母大写，不同单词之间下划线连接。</p>
-</blockquote>
-</li>
+<li>final关键字修饰<strong>成员变量</strong>体现在改成员变量<strong>必须初始化且不能更改</strong>（防止不经意间造成的数据更改）。</li>
 </ol>
+<blockquote>
+<p>扩展：在开发中很少单独使用static或者final单独修饰成员变量，而是使用<strong><code>public static final</code></strong>共同修饰成员变量来表达常量的含义，而常量的命名规范是：所有字母大写，不同单词之间下划线连接。</p>
+</blockquote>
 <p><span id="id13"><span></span></span></p>
 <h3 id="13-对象的创建过程"><a href="#13-对象的创建过程" class="headerlink" title="13. 对象的创建过程"></a>13. 对象的创建过程</h3><ul>
 <li>单个对象的创建过程<ol>
@@ -282,13 +289,13 @@
 <li>具有抽象方法的类必须是抽象类，因此其真正意义的抽象类应该是有抽象方法，并且使用abstract修饰。</li>
 <li>子类必须实现抽象方法（不同子类可能有不同实现），否则改子类也变抽象。</li>
 <li>抽象类对子类具有强制性和规范性，因此叫做模板设计模式。</li>
-<li>推荐使用多态的语法格式实现抽象类，若需要更换子类时，该方法中只需要将new关键字后面的类型名称修改而其他位置无需改变就可以立即生效，从而提高了代码的维护性和扩展性。<blockquote>
+<li>推荐使用多态的语法格式实现抽象类，若需要更换子类时，该方法中只需要将new关键字后面的类型名称修改而其他位置无需改变就可以立即生效，从而提高了代码的维护性和扩展性。</li>
+</ol>
+</li>
+</ol>
+<blockquote>
 <p>多态实现抽象类的缺点：若希望调用子类独有的方法时，则需要强制类型转换。</p>
 </blockquote>
-</li>
-</ol>
-</li>
-</ol>
 <p><span id="id16"><span></span></span></p>
 <h3 id="16-接口"><a href="#16-接口" class="headerlink" title="16. 接口"></a>16. 接口</h3><ol>
 <li>基本概念：接口可以看成是特殊的抽象类。即只包含抽象方法的抽象类。通过<strong>interface</strong>关键字定义。</li>
