@@ -39,9 +39,9 @@ categories: javaSE知识梳理
 
 - int hashCode():返回对象的哈希码值，对应一个内存。
 - hashCode规范要求：
-	* 一致性，同一对象，若没有改变属性值，多次调用其hashCode应该时一致的
-	* 如果两个对象判定相等，它们的hashCode应该时同一个值
-	* 如果两个对象不相等，它们的hashCode可以相同，但最好不相同而可以提高哈希表的性能。
+    * 一致性，同一对象，若没有改变属性值，多次调用其hashCode应该时一致的
+    * 如果两个对象判定相等，它们的hashCode应该时同一个值
+    * 如果两个对象不相等，它们的hashCode可以相同，但最好不相同而可以提高哈希表的性能。
 
 - hashCode()方法和equals()方法的判断条件必须保持一致，如果重写一个，另一个也必须重写。
 
@@ -159,12 +159,12 @@ System.out.println(it7 == it8);//比较地址 false
 - java.math.BigDecimal类处理大浮点数，需要import导入，继承自Number
 - Java浮点数据类型(float和double)在运算时会有舍入误差，如果希望得到精确运算结果，可以使用java.math.BigDecimal类。
 - 提供的构造方法全部都是带参数的
-	* 通常利用带String参数的构造方法创建这个类的对象：BigDecimal  bi = new BigDecimal("1.23");
+    * 通常利用带String参数的构造方法创建这个类的对象：BigDecimal  bi = new BigDecimal("1.23");
 
 |BigDecimal类的常用方法|                  |
 |-----------------|------------------|
 |BigDecimal(String val)                       | 根据参数指定的字符串来构造对象|
-|BigDecimal	setScale(int newScale, RoundingMode roundingMode)|两个参数前面是保留小数点之后的位数，后面参数是设置的模式(向上取整或向下等)|
+|BigDecimal    setScale(int newScale, RoundingMode roundingMode)|两个参数前面是保留小数点之后的位数，后面参数是设置的模式(向上取整或向下等)|
 |BigDecimal **add**(BigDecimal augend)            | 用于实现**加法**运算 |
 |BigDecimal **subtract**(BigDecimal subtrahend)   | 用于实现**减法**运算 |
 |BigDecimal **multiply**(BigDecimal multiplicand) | 用于实现**乘法**运算 |
@@ -185,7 +185,7 @@ System.out.println(d3.divide(d4, 8, BigDecimal.ROUND_HALF_UP));//除：1.0344827
 - java.math.BigInteger类处理大整数，需要import导入，继承自Number
 - java提供的整数类型(int\long)的存储范围有限，当需要进行很大整数运算时可以使用java.math.BigInteger类，理论上其储值范围只受内存容量限制。 
 - 如何创建对象，提供的构造方法全部都是带参数的
-	* 通常利用带String参数的构造方法创建这个类的对象：BigInteger  bi = new BigInteger("123");
+    * 通常利用带String参数的构造方法创建这个类的对象：BigInteger  bi = new BigInteger("123");
 - 和BigDecimal类似，BigInteger也提供add()、substract()、multiply()、divide()等方法。
 
 #### 3.5 DecimalFormat类
@@ -193,7 +193,7 @@ System.out.println(d3.divide(d4, 8, BigDecimal.ROUND_HALF_UP));//除：1.0344827
 - 通过带String参数的构造方法创建一个格式化对象(0:未满会补齐，#：未满不补）
 
 ``` java
-	//调用format方法将一个小数格式化成一个字符串
+    //调用format方法将一个小数格式化成一个字符串
 DecimalFormat df = new DecimalFormat("000.000");
 System.out.println(df.format(12.45)); //012.450
 System.out.println(df.format(12345.6789)); //12345.679
@@ -204,7 +204,7 @@ System.out.println(df2.format(12345.6789)); //12345.679
 
 DecimalFormat df3 = new DecimalFormat("000.###");
 System.out.println(df3.format(12.45)); //012.45
-System.out.println(df3.format(12345.6789)); //12345.679	
+System.out.println(df3.format(12345.6789)); //12345.679    
 ```
 
 
@@ -219,8 +219,8 @@ System.out.println(df3.format(12345.6789)); //12345.679
 1. 所属的包java.lang包 不需要导入
 2. 不需要创建对象  通过类名就可以访问
 3. 有三个属性及若干的方法
-	* 三个属性out   in   err
-	* 方法：gc()  exit(0);  currentTimeMillis()获取系统当前时间毫秒;
+    * 三个属性out   in   err
+    * 方法：gc()  exit(0);  currentTimeMillis()获取系统当前时间毫秒;
 
 
 <span id="id5"><span>
@@ -229,14 +229,14 @@ System.out.println(df3.format(12345.6789)); //12345.679
 - java.util.Date类表示特定的瞬间，精确到毫秒。
 - 通常使用无参数的构造方法，或者带long构造方法
 - Date类中常用的方法
-	* before();  after();
-	* setTime()  getTime();----->long
-	* compareTo();   //-1  1  0
+    * before();  after();
+    * setTime()  getTime();----->long
+    * compareTo();   //-1  1  0
 - Date类大多数用于进行时间分量计算的方法已经被Calender取代。
 
 ``` java
 Date date = new Date();//当前日期信息
-	//Date类重写了toString方法，输出格式如：Sun Jan 06 11:52:55 CST 2019
+    //Date类重写了toString方法，输出格式如：Sun Jan 06 11:52:55 CST 2019
 long time = date.getTime();//1970年1月1日距今毫秒数。
 date.setTime(time + 24\*60\*60\*1000);//通过毫秒数设置时间
 ```
@@ -278,20 +278,20 @@ System.out.println(c1.getTime());
 ```
 
 - 常用方法
-	* after()  before()
-	* setTime()  getTime()---->Date
-	* getTimeInMillis()----time
-	* getTimeZone()---TimeZone
-	* Calendar里面包含一个date属性  可以操作date的某一个局部信息
-	* set   get
-		* calendar.set(Calendar.YEAR,2015);
-		*int year = calendar.get(Calendar.YEAR);
+    * after()  before()
+    * setTime()  getTime()---->Date
+    * getTimeInMillis()----time
+    * getTimeZone()---TimeZone
+    * Calendar里面包含一个date属性  可以操作date的某一个局部信息
+    * set   get
+        * calendar.set(Calendar.YEAR,2015);
+        *int year = calendar.get(Calendar.YEAR);
 
 - TimeZone
-	1. java.util包
-	2. 可以通过calendar对象.getTimeZone()获取 或 TimeZone.getDefault();
-	3. 常用方法
-		- tz.getID()	   ---->    Asia/Shanghai
+    1. java.util包
+    2. 可以通过calendar对象.getTimeZone()获取 或 TimeZone.getDefault();
+    3. 常用方法
+        - tz.getID()       ---->    Asia/Shanghai
         - tz.getDisplayName()    ---->  中国标准时间
 
 
@@ -329,7 +329,7 @@ System.out.println(str1.equals(str2));//比较内容 true
 System.out.println(str1==str2);//比较地址 true，不会重新创建
 System.out.println(str1.equals(str3));//比较内容 true
 System.out.println(str1==str3);//比较地址 false，使用new会重新创建新的String对象
-	//1.下面的代码中创建了几个对象并分别存放在什么位置？
+    //1.下面的代码中创建了几个对象并分别存放在什么位置？
 String s1 = "hello"; //1个对象，常量池。
 String s2 = new String("world"); //2个对象，1个在常量池，1个new后在堆区(内容为常量池里的副本)
 ```
@@ -340,15 +340,15 @@ String s2 = new String("world"); //2个对象，1个在常量池，1个new后在
 3. 第三梯队(一般):toUpperCase()，toLowerCase()，startsWith()，endsWith()，isEmpty()。
 
 - 重写了equals(obj)，hashCode()，toString()方法，compareTo(str)方法实现自Comparable接口
-	1. boolean = equals(Object obj);
-		- 继承自Object类中的方法，重写后改变了规则，比较字符串中的字面值（==与equals()区别）;
-	2. int = hashCode();
-		- 继承自Object类中的方法，重写了：31*h+和...
-	3. int = compareTo();
-		- 实现自Comparable接口，实现方法：结果按照字典排布(unicode编码)顺序，按照两个字符串的长度较小的那个(次数)来进行循环，若每次的字符不一致 则直接返回code之差，若比较之后都一致  则直接返回长度之差
-	4. String = toString()
-		- Object类中返回类名@hashCode(16进制形式)
-		- String类重写后返回的是String对象的字面值
+    1. boolean = equals(Object obj);
+        - 继承自Object类中的方法，重写后改变了规则，比较字符串中的字面值（==与equals()区别）;
+    2. int = hashCode();
+        - 继承自Object类中的方法，重写了：31*h+和...
+    3. int = compareTo();
+        - 实现自Comparable接口，实现方法：结果按照字典排布(unicode编码)顺序，按照两个字符串的长度较小的那个(次数)来进行循环，若每次的字符不一致 则直接返回code之差，若比较之后都一致  则直接返回长度之差
+    4. String = toString()
+        - Object类中返回类名@hashCode(16进制形式)
+        - String类重写后返回的是String对象的字面值
 
 >忽略大小写比较：equalsIgnoreCase(), compareToIgnoreCase();
 
@@ -365,15 +365,15 @@ String str6 = new String("hello");
 System.out.println("下标为0的字符是："+str6.charAt(0));// h
 System.out.println("字符串长度是："+str6.length());// 5
 
-	//将字符串"12345"转换为整数类型
+    //将字符串"12345"转换为整数类型
 String str = new String("123456");
-	//方式一：Integer类中的pareseInt方法
+    //方式一：Integer类中的pareseInt方法
 int ia = Integer.parseInt(str);
 System.out.println("转换出来结果是："+ ia);//123456
-	//方式二：利用ASCII数值进行转换'1'-'0'=1，'2'-'0'=2，...
+    //方式二：利用ASCII数值进行转换'1'-'0'=1，'2'-'0'=2，...
 int res = 0;
 for(int i=0; i<str.length(); i++){
-	res = res*10 + (str.charAt(i)-'0');
+    res = res*10 + (str.charAt(i)-'0');
 }
 System.out.println("转换出来结果是："+ res);//123456
 ```
@@ -408,19 +408,19 @@ System.out.println("转换出来结果是："+ res);//123456
 #### 7.1 基本概念
 1. java.lang.StringBuilder类和java.lang.StringBuffer类描述的字符串内容是个可以改变的字符串序列。
 2. StringBuffer和StringBuilder继承AbstractStringBuilder间接继承 Object，实现接口Serializable,CharSequence,Appendable
-	- StringBuffer/StringBuilder没有compareTo方法
-	- StringBuffer/StringBuilder含有一个String没有的方法 append();拼接
+    - StringBuffer/StringBuilder没有compareTo方法
+    - StringBuffer/StringBuilder含有一个String没有的方法 append();拼接
 
 #### 7.2 特性
 可变字符串，char[] value;  动态扩容
 #### 7.3 对象的构建
 
 ``` java
-	//无参数构造方法  构建一个默认长度16个空间的对象  char[]
+    //无参数构造方法  构建一个默认长度16个空间的对象  char[]
 StringBuilder builder = new StringBuilder();
-	//利用给定的参数 构建一个自定义长度空间的对象 char[]
+    //利用给定的参数 构建一个自定义长度空间的对象 char[]
 StringBuilder builder = new StringBuilder(20);
-	//利用带String参数的构造方法  默认数组长度字符串长度+16个
+    //利用带String参数的构造方法  默认数组长度字符串长度+16个
 StringBuilder builder = new StringBuilder("abc");
 ```
 
@@ -447,37 +447,37 @@ StringBuilder builder = new StringBuilder("abc");
 #### 7.5 总结
 1. StringBuilder类不一定需要，是为了避免String频繁拼接修改字符串信息的时候才用的，底层数组是可变的，提高了性能；
 2. 常用方法
-	* 与String类不同的独有方法：append()，insert()，delete()，deleteCharAt()，reverse()；
-	* 与String类相同的方法：length()，charAt()，codePointAt()，indexOf()，lastIndexOf()，substring()，replace()；名字相同 用法不一致
-	* 不是很常用的方法：ensureCapacity()，capacity()，setLength()，trimToSize()，setCharAt();
+    * 与String类不同的独有方法：append()，insert()，delete()，deleteCharAt()，reverse()；
+    * 与String类相同的方法：length()，charAt()，codePointAt()，indexOf()，lastIndexOf()，substring()，replace()；名字相同 用法不一致
+    * 不是很常用的方法：ensureCapacity()，capacity()，setLength()，trimToSize()，setCharAt();
 7. String家族笔试中经常容易考察的知识点
 1. String所属的包 继承关系 实现接口
-	* java.lang 继承Object 接口Serializable,CharSequence,Comparable
+    * java.lang 继承Object 接口Serializable,CharSequence,Comparable
 2. String构建方式
-	* 常量  构造方法  
+    * 常量  构造方法  
 3. String对象内存结构
-	* 字符串常量区  new堆内存对象
-	* ==  equals()区别
-	* "a"+"b"+"c"
+    * 字符串常量区  new堆内存对象
+    * ==  equals()区别
+    * "a"+"b"+"c"
 4. String不可变特性
-	* 长度及内容
+    * 长度及内容
 5. String中的常用方法
-	* concat();  toUpperCase();
+    * concat();  toUpperCase();
 6. String和StringBuilder区别   |   String和StringBuffer区别
-	* String不可变字符串
-		- JDK1.0
-		- 有一个接口Comparable
-		- 不可变体现在长度及内容
-		- 有一些方法StringBuilder没有 concat  compareTo  toUpperCase
-	* StringBuilder可变字符串
-		- JDK1.5
-		- 有一个接口Appendable
-		- 可变字符串  没有final修饰  底层可以进行数组扩容
-		- 有一些方法String没有  append() insert() delete() reverse()
+    * String不可变字符串
+        - JDK1.0
+        - 有一个接口Comparable
+        - 不可变体现在长度及内容
+        - 有一些方法StringBuilder没有 concat  compareTo  toUpperCase
+    * StringBuilder可变字符串
+        - JDK1.5
+        - 有一个接口Appendable
+        - 可变字符串  没有final修饰  底层可以进行数组扩容
+        - 有一些方法String没有  append() insert() delete() reverse()
 7. StringBuffer和StringBuilder的不同
-	* 它们方法基本相同
-	* StringBuffer早期版本1.0，早期版本，线程同步，安全性比较高，执行效率相对较低
-	* StringBuilder后来的版本1.5，后期版本，线程非同步，安全性比较低，执行效率相对较高
+    * 它们方法基本相同
+    * StringBuffer早期版本1.0，早期版本，线程同步，安全性比较高，执行效率相对较低
+    * StringBuilder后来的版本1.5，后期版本，线程非同步，安全性比较低，执行效率相对较高
 
 
 <span id="id8"><span>
