@@ -5,7 +5,7 @@ tags: [javaSE, 后端开发]
 categories: javaSE知识梳理
 ---
 
-##  六、IO流
+##  六、Java输入输出流（IO流）
 1. [File类](#id1)
 2. [IO流](#id2)
 3. [文件流](#id3)

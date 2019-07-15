@@ -483,9 +483,9 @@ StringBuilder builder = new StringBuilder("abc");
 <span id="id8"><span>
 ### 8. Optional类
 - 可能包含或不包含非空值的容器对象。 如果一个值存在， isPresent()将返回true和get()将返回值。
-> 获取字符串长度：
->> 1. 方式1：if(null==str){return 0;}else{return str.length();}
->> 2. 方式2：return Optional.ofNullable(str).map(String::length).orElse(0);
+- 获取字符串长度：
+  1. 方式1：if(null==str){return 0;}else{return str.length();}
+  2. 方式2：return Optional.ofNullable(str).map(String::length).orElse(0);
 
 ``` java
 // 获取两个字符串长度和
