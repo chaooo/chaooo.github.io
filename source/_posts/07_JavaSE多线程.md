@@ -1,11 +1,11 @@
 ---
-title: J2SE多线程
+title: JavaSE多线程
 date: 2019-07-09 18:07:41
 tags: [javaSE, 后端开发]
 categories: javaSE知识梳理
 ---
 
-##  七、Java多线程
+##  七、JavaSE多线程
 1. [基本概念](#id1)
 2. [实现线程的过程](#id2)
 3. [线程常用方法](#id3)

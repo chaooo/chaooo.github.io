@@ -1,12 +1,12 @@
 ---
-title: J2SE面向对象
+title: JavaSE面向对象
 date: 2019-07-07 18:50:47
 tags: [javaSE, 后端开发]
 categories: javaSE知识梳理
 ---
 
 
-## 二、Java面向对象
+## 二、JavaSE面向对象
 1. [类与对象](#id1)
 2. [构造方法和方法重载](#id2)
 3. [this关键字](#id3)

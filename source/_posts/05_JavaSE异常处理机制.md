@@ -1,12 +1,12 @@
 ---
-title: J2SE异常处理机制
+title: JavaSE异常处理机制
 date: 2019-07-09 08:34:31
 tags: [javaSE, 后端开发]
 categories: javaSE知识梳理
 ---
 
 
-##  五、Java异常处理机制
+##  五、JavaSE异常处理机制
 1. [基本概念](#id1)
 2. [异常的分支结构](#id2)
 3. [添加处理异常的手段](#id3)

@@ -1,11 +1,11 @@
 ---
-title: J2SE常用设计模式
+title: JavaSE常用设计模式
 date: 2019-07-15 08:34:55
 tags: [javaSE, 后端开发]
 categories: javaSE知识梳理
 ---
 
-## 十、Java设计模式
+## 十、JavaSE设计模式
 1. [常用的设计原则](#id1)
 2. [设计模式分类](#id2)
 3. [单例模式](#id3)

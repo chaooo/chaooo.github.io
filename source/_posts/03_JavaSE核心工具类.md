@@ -1,12 +1,12 @@
 ---
-title: J2SE核心工具类
+title: JavaSE核心工具类
 date: 2019-07-08 16:42:47
 tags: [javaSE, 后端开发]
 categories: javaSE知识梳理
 ---
 
 
-## 三、Java核心工具类
+## 三、JavaSE核心工具类
 1. [Object类与其常用方法](#id1)
 2. [包装类](#id2)
 3. [数学处理类](#id3)

@@ -1,11 +1,11 @@
 ---
-title: J2SE数据结构与算法入门
+title: JavaSE数据结构与算法入门
 date: 2019-07-15 18:12:38
 tags: [javaSE, 后端开发]
 categories: javaSE知识梳理
 ---
 
-## 十一、Java数据结构与算法入门
+## 十一、JavaSE数据结构与算法入门
 1. [Java数据结构](#id1)
 2. [时间复杂度与空间复杂度](#id2)
 3. [算法的基本概念](#id3)

@@ -1,11 +1,11 @@
 ---
-title: J2SE网络编程
+title: JavaSE网络编程
 date: 2019-07-12 11:59:46
 tags: [javaSE, 后端开发]
 categories: javaSE知识梳理
 ---
 
-## 九、Java网络编程
+## 九、JavaSE网络编程
 1. [网络编程常识](#id1)
 2. [基于tcp协议的编程模型](#id2)
 3. [基于udp协议的编程模型](#id3)

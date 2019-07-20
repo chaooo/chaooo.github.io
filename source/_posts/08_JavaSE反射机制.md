@@ -1,11 +1,11 @@
 ---
-title: J2SE反射机制
+title: JavaSE反射机制
 date: 2019-07-10 15:47:15
 tags: [javaSE, 后端开发]
 categories: javaSE知识梳理
 ---
 
-##  八、Java反射机制
+##  八、JavaSE反射机制
 1. [基本概念](#id1)
 2. [Class类](#id2)
 3. [Constructor类](#id3)

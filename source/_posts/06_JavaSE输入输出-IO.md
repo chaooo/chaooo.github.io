@@ -1,11 +1,11 @@
 ---
-title: J2SE输入输出(IO)
+title: JavaSE输入输出(IO)
 date: 2019-07-09 17:31:22
 tags: [javaSE, 后端开发]
 categories: javaSE知识梳理
 ---
 
-##  六、Java输入输出流（IO流）
+##  六、JavaSE输入输出流（IO流）
 1. [File类](#id1)
 2. [IO流](#id2)
 3. [文件流](#id3)
