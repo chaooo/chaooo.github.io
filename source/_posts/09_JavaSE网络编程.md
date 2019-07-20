@@ -1,11 +1,15 @@
 ---
-title: JavaSE网络编程
+title: 九、JavaSE网络编程
 date: 2019-07-12 11:59:46
 tags: [javaSE, 后端开发]
 categories: javaSE知识梳理
 ---
 
-## 九、JavaSE网络编程
+
+网络编程是指编写运行在多个设备（计算机）的程序，这些设备都通过网络连接起来。
+java.net 包中的类和接口，它们提供低层次的通信细节。你可以直接使用这些类和接口，来专注于解决问题，而不用关注通信细节。
+<!-- more -->
+
 1. [网络编程常识](#id1)
 2. [基于tcp协议的编程模型](#id2)
 3. [基于udp协议的编程模型](#id3)
@@ -82,7 +86,10 @@ categories: javaSE知识梳理
 |OutputStream getOutputStream()|用于获取当前套接字的输出流|
 |void close()|用于关闭套接字|
 
-客户端与服务端通信演示：
+
+
+<span id="id3"><span>
+### 3.客户端与服务端通信演示：
 
 ``` java
 //服务端线程
@@ -192,9 +199,9 @@ public class ClientStringTest {
 
 
 
-<span id="id3"><span>
-### 3. 基于udp协议的编程模型
-#### 3.1 编程模型
+<span id="id4"><span>
+### 4. 基于udp协议的编程模型
+#### 4.1 编程模型
 - 主机A(接收方):
     1. 创建DatagramSocket类型的对象，并提供端口号；
     2. 创建DatagramPacket类型的对象，用于接收发来的数据；
@@ -206,7 +213,7 @@ public class ClientStringTest {
     3. 通过Socket发送数据，调用**send()**方法；
     4. 关闭Socket并释放有关的资源；
 
-#### 3.2 DatagramSocket类
+#### 4.2 DatagramSocket类
 - java.net.DatagramSocket类用于描述发送或接受数据报的套接字(邮局点);
 
 |常用方法||
@@ -218,7 +225,7 @@ public class ClientStringTest {
 |void close()                  | |
 
 
-#### 3.3 DatagramPacket类
+#### 4.3 DatagramPacket类
 - java.net.DatagramPacket类用于描述数据报信息(信件)；
 
 |常用方法||
@@ -229,7 +236,7 @@ public class ClientStringTest {
 |int getPort()                          |用于获取发送方或接收方的端口信息。|
 |int getLength()                        |用于获取发送或接收数据的长度。|
 
-#### 3.4 InetAddress类
+#### 4.4 InetAddress类
 - java.net.InetAddress类用于描述互联网协议地址。
 
 |常用方法||

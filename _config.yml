@@ -61,6 +61,9 @@ time_format: HH:mm:ss
 pagination_dir: page
 index_generator:
   per_page: 6
+  order_by:
+    top: -1
+    date: -1
 archive_generator:
   per_page: 0
   yearly: true

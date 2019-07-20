@@ -1,12 +1,14 @@
 ---
-title: JavaSE核心工具类
+title: 三、JavaSE核心工具类
 date: 2019-07-08 16:42:47
 tags: [javaSE, 后端开发]
 categories: javaSE知识梳理
 ---
 
 
-## 三、JavaSE核心工具类
+API (Application Programming Interface) 应用程序编程接口，Java中的API，就是JDK提供的各种功能的Java类。
+<!-- more -->
+
 1. [Object类与其常用方法](#id1)
 2. [包装类](#id2)
 3. [数学处理类](#id3)

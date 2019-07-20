@@ -1,11 +1,14 @@
 ---
-title: JavaSE反射机制
+title: 八、JavaSE反射机制
 date: 2019-07-10 15:47:15
 tags: [javaSE, 后端开发]
 categories: javaSE知识梳理
 ---
 
-##  八、JavaSE反射机制
+反射(Reflection)是Java 程序开发语言的特征之一，它允许运行中的 Java 程序获取自身的信息，并且可以操作类或对象的内部属性。
+多数情况下反射是为了提高程序的灵活性，运行时动态加载需要加载的对象。
+<!-- more -->
+
 1. [基本概念](#id1)
 2. [Class类](#id2)
 3. [Constructor类](#id3)

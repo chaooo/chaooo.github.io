@@ -1,11 +1,14 @@
 ---
-title: JavaWeb编程基础
+title: 十二、JavaWeb编程基础
 date: 2019-07-20 20:59:40
 tags: [javaEE, 后端开发]
 categories: JavaWeb编程
 ---
 
-## 十二、JavaWeb编程基础
+
+JavaWeb是用Java技术来解决相关web互联网领域的技术总和。Java提供了技术方案可以解决客户端和服务器端的实现，特别是服务器的应用，比如Servlet，JSP和第三方框架等等。
+<!-- more -->
+
 1. [http协议](#id1)
 2. [Servlet](#id2)
 3. [get和post区别](#id3)
@@ -134,25 +137,28 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 
 
 #### 2.6 乱码处理
-1. 乱码情况：
-  * 浏览器提交表单时，会对中文参数值进行自动编码。Tomcat服务器接收到的浏览器请求后，默认使用iso-8859-1去解码，当编码与解码方式不一致时，就会乱码。
-  * tomcat8版本之前(不包含tomcat8版本), GET请求乱码
-  * 任何版本, POST请求乱码
-2. 请求乱码处理：
-  * 适用于所有乱码问题：(Tomcat8之后get无乱码)
-    1. 指定浏览器打开页面的编码`<meta charset="UTF-8">`;
-    2. 将接收到的中文乱码重新编码：
-    ``` java
-      String name = request.getParameter("userName");
-      String userName = new String( name.getByte("ISO-8859-1"),"utf-8");
-    ```
-  * 仅适用于POST请求：
-    1. 指定浏览器打开页面的编码`<meta charset="UTF-8">`;
-    2. Servlet接收之前设置解码（需在调用request.getParameter("key")之前设置）`request.setCharacterEncoding("utf-8")`;
+#### 2.6.1 乱码情况：
+* 浏览器提交表单时，会对中文参数值进行自动编码。Tomcat服务器接收到的浏览器请求后，默认使用iso-8859-1去解码，当编码与解码方式不一致时，就会乱码。
+* tomcat8版本之前(不包含tomcat8版本), GET请求乱码
+* 任何版本, POST请求乱码
 
-3. 响应乱码的处理：
-  * 方式一：设置响应的内容类型, 以及编码格式:`response.setContentType("text/html;charset=utf-8")`;
-  * 方式二：进设置编码格式, 不设置响应内容类型:`response.setCharacterEncoding("UTF-8")`(常用于客户端不是浏览器的情况, 如果在浏览器的环境下设置, 有部分浏览器无法识别, 依然会乱码);
+#### 2.6.2 请求乱码处理：
+* 适用于所有乱码问题：(Tomcat8之后get无乱码)
+  1. 指定浏览器打开页面的编码`<meta charset="UTF-8">`;
+  2. 将接收到的中文乱码重新编码：
+
+``` java
+String name = request.getParameter("userName");
+String userName = new String( name.getByte("ISO-8859-1"),"utf-8");
+```
+
+* 仅适用于POST请求：
+  1. 指定浏览器打开页面的编码`<meta charset="UTF-8">`;
+  2. Servlet接收之前设置解码（需在调用request.getParameter("key")之前设置）`request.setCharacterEncoding("utf-8")`;
+
+#### 2.6.3 响应乱码的处理：
+* 方式一：设置响应的内容类型, 以及编码格式:`response.setContentType("text/html;charset=utf-8")`;
+* 方式二：进设置编码格式, 不设置响应内容类型:`response.setCharacterEncoding("UTF-8")`(常用于客户端不是浏览器的情况, 如果在浏览器的环境下设置, 有部分浏览器无法识别, 依然会乱码);
 
 
 #### 2.7 Servlet的创建时机

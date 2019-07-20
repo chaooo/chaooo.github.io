@@ -3,7 +3,7 @@ title: BlueLake博客主题的详细配置
 date: 2016-12-29 11:25:33
 tags: [hexo,BlueLake]
 categories: hexo博客折腾
-top: true
+top: 9
 ---
 ### 开始之前
 

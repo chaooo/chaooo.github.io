@@ -1,11 +1,14 @@
 ---
-title: JavaSE集合框架
+title: 四、JavaSE集合框架
 date: 2019-07-08 22:10:57
 tags: [javaSE, 后端开发]
 categories: javaSE知识梳理
 ---
 
-##  四、JavaSE集合框架
+
+为了方便对多个对象的操作，对对象进行存储，集合就是存储对象最常用的一种方式。
+<!-- more -->
+
 1. [Collection集合](#id1)
 2. [List集合](#id2)
 3. [泛型机制](#id3)
