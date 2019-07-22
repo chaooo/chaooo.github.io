@@ -15,11 +15,12 @@ JavaWeb是用Java技术来解决相关web互联网领域的技术总和。Java�
 4. [上下文对象ServletContext](#id4)
 5. [会话跟踪（状态管理）](#id5)
 6. [JSP](#id6)
-
+7. [内置对象(隐含对象)](#id7)
+8. [taglib指令](#id8)
 
 <span id="id1"><span>
 ### 1. http协议
-超文本传输协议，是一种应用层的网络传输协议。
+超文本传输协议，是一种应用层的网络传输协议
 
 - http协议的特点：
   1. 简单，快速：支持多种不同的的数据提交方式，如get/post
@@ -38,7 +39,6 @@ JavaWeb是用Java技术来解决相关web互联网领域的技术总和。Java�
   1. 响应头：描述服务器的信息
   2. 响应体：响应的内容，文本，json数据等。
   3. 响应行：描述服务器协议版本，响应状态码，以及响应成功或失败的解释。
-
 
 <span id="id2"><span>
 ### 2. Servlet
@@ -115,9 +115,9 @@ public class MyServlet extends HttpServlet {
 
 #### 2.5 接收请求中的参数
 1. 根据参数的名称，接收参数的单个值
-  - String value = request.getParameter(String name);
+  - String value = **request.getParameter(String name)**;
 2. 根据参数的名称，接收一组参数的值
-  - String[] values = request.getParameterValues(String name);
+  - String[] values = **request.getParameterValues(String name)**;
 
 ``` java
 protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -264,9 +264,9 @@ String userName = new String( name.getByte("ISO-8859-1"),"utf-8");
   * `Cookie cookie = new Cookie(String key, String value);`
   * 注意：tomcat8.5版本之前，cookie无法出场中文
 - 通过响应对象，将cookie添加到响应头,可添加多个
-  * response.addCookie(Cookie cookie);
+  * **response.addCookie(Cookie cookie)**;
 - 通过请求头得到cookie数组，没有则返回null
-  * Cookie[] cookies = request.getCookies();
+  * **Cookie[] cookies = request.getCookies()**;
   * 取键：cookie.getName();
   * 取值：cookie.getValue()
 - Cookie的存储时长：
@@ -289,13 +289,13 @@ String userName = new String( name.getByte("ISO-8859-1"),"utf-8");
 
 #### 5.3 Session
 - 获取Session
-  * 格式1：request.getSession();//等价参数传true
+  * 格式1：**request.getSession()**;//等价参数传true
   * 格式2：request.getSession(boolean isNew);
     + true，根据浏览器的SessionId查找一个session，若没有就新创建一个对象并返回
     + false，根据浏览器的SessionId查找一个session，若没有就返回null
 - Session常用方法
-  * session.setAttribute(String key, object value);//设置/替换值
-  * session.getAttribute(String key);//获取值
+  * **session.setAttribute(String key, object value)**;//设置/替换值
+  * **session.getAttribute(String key)**;//获取值
   * session.invalidate();//销毁
 - 设置session存活时长
   * 默认会话时长30分钟，当浏览器最后一次访问服务器后30分钟后，若没有再次连接，则session被销毁。
@@ -409,5 +409,152 @@ String userName = new String( name.getByte("ISO-8859-1"),"utf-8");
   * 语法格式：`<jsp:include page="地址">`
   
 >include指令 与 include动作区别：
-<br>include指令：引入文件操作，是在JSP引擎的转换时发生，将多个jsp文件，生产为了一个Servlert（多个jsp => 一个Servlet）
-<br>include动作：引入文件操作，是在浏览器请求时，将引用文件的响应体添加到了请求文件的响应体中（多个jsp => 多个Servlet）
+- include指令：引入文件操作，是在JSP引擎的转换时发生，将多个jsp文件，生产为了一个Servlert（多个jsp => 一个Servlet）
+- include动作：引入文件操作，是在浏览器请求时，将引用文件的响应体添加到了请求文件的响应体中（多个jsp => 多个Servlet）
+
+
+<span id="id7"><span>
+### 7.内置对象(隐含对象)
+- 在JSP中，我们的代码执行在service中，所谓内置对象，指的是在JSP引擎转换时期，在我们代码生成位置的上面，提前准备好的一些变量，对象。
+- 内置对象通常是我们会主动创建的对象
+
+#### 7.1 九大内置对象
+1. request
+  * 对象类型：java.servlet.**HttpServletRequest**
+  * request内置对象中包含了有关浏览器请求的信息，提供了大量get方法，用于获取cookie、header以及session内数据等。
+2. response
+  * 对象类型：javax.servlet.**HttpServletResponse**
+  * response对象提供了多个方法用来处理HTTP响应，可以调用response中的方法修改ContentType中的MIME类型以及实现页面的跳转等。
+3. config
+  * 对象类型：javax.servlet.**ServletConfig**
+  * 在Servlet初始化的时候，JSP引擎通过config向它传递信息。这种信息可以是属性名/值匹配的参数，也可以是通过ServletContext对象传递的服务器的有关信息。
+4. out
+  * 对象类型：javax.servlet.jsp.**JspWriter**
+  * 在JSP开发过程中使用得最为频繁的对象
+5. page
+  * 对象类型：java.lang.**Object**
+  * page对象有点类似于Java编程中的this指针，就是指当前JSP页面本身。
+6. pageContext
+  * 对象类型：**pageContext**
+  * pageContext对象是一个比较特殊的对象。它相当于页面中所有其他对象功能的最大集成者，即使用它可以访问到本页面中所有其他对象
+7. session
+  * 对象类型：java.servlet.http.**HttpSession**
+  * session是与请求有关的会话期，用来表示和存储当前页面的请求信息。
+8. application
+  * 对象类型：javax.servlet.**ServletContext**
+  * 用于实现用户之间的数据共享（多使用于网络聊天系统）。
+9. exception
+  * 对象类型：java.lang.**Throwable**
+  * 作用 exception内置对象是用来处理页面出现的异常错误。
+
+#### 7.2 JSP四大域对象
+* 九大内置对象中，存在四个较为特殊的对象，这四个对象用户在不同的作用域中存储数据，获取数据，删除数据
+* 域对象的特点：每一个内置对象，都类似一个Map集合，可以存取删除数据，都具备如下三个方法：
+  1. 存储数据：setAttribute(String key, Object value);
+  2. 获取数据：Object value = getAttribute(String);
+  3. 删除数据： removeAttribute(String key);
+* 四大内置对象，分别指的是：
+  1. pageContext: (作用域：1个页面)
+    * 页面上下文，存储在pageContext中的数据, 作用域是最小的,  pageContext在JSP代码执行时 创建, 在JSP代码执行完毕时, 销毁.
+  2. request: (作用域：一次请求，如果请求被转发，可能跨越多个页面)
+    * 请求对象, 存储在请求对象中的数据, 域范围是一次请求, 请求一旦进行了响应, 就会被销毁.
+  3. session: (作用域：一次会话，一次会话可能包含多个请求)
+    * 会话对象，存储在会话对象中的数据，只有在当前用户会话中可以使用，用户再次访问服务器的时间间隔超过30分钟，session就销毁了。
+  4. application: (域范围：一次服务，应用从启动到关闭application一直都在)
+    * Servlet上下文对象, 存储在application中的数据, 域范围是最大的. 在应用关闭之前 都可以使用.
+
+
+#### 7.3 EL表达式
+* 用于将计算的结果输出到网页，也常用于快速的从域对象中取出数据，并输出到网页。
+* 格式：`${表达式}`
+* EL表达式用于运算
+  - 在JSP中, 可以直接使用el表达式运算一些数据，例如: ${123+123} , 最终网页中显示的效果是:   246 
+* 用于取出域对象中的数据
+  - 取出数据直接输出：`${域对象中存储的键}`
+  - 如果取出的数据不存在, 则不输出 (不可能显示null)
+* 取出对象数据的属性值:
+  - 格式1： ${对象存储的键.属性名}
+  - 格式2： ${对象存储的键["属性名"]}
+  - 格式3(动态取值)： ${对象存储的键[属性存储的键]}
+* 取出集合中的数据
+  - 格式: ${集合存储时的key[下标]}
+
+#### 7.4 EL表达式取出数据的流程
+* 四个域对象之间, 有时数据的键可能重复,优先从域范围较小的对象中, 取出数据.
+* 步骤:
+  1. 先从pageContext中, 寻找数据是否存在.
+  2. 如果pageContext中数据不存在, 则去request中寻找数据是否存在
+  3. 如果request 中数据不存在, 则去session中寻找数据是否存在
+  4. 如果session中数据不存在, 则去application中寻找数据是否存在
+  5. 如果application中数据不存在,则不输出任何数据.
+
+
+<span id="id8"><span>
+### 8. taglib指令
+用于在JSP文件中，引入标签库文件。
+
+* 格式： `<%@ taglib prefix="" uri="" %>`
+  - prefix: 是引入标签库后，标签库的名称。作用是用于区分引入的多个标签库，在使用标签库中的标签时，标签的写法：`<标签库名称:标签名>`
+  - uri: 每个标签库，都会拥有一个uri，它是用于区分标签库的，我们在引入这个库时，需要匹配uri属性
+* JSTL(JSP Standard Tag Library): JSP标准标签库
+  + 使用时，需要引入jar文件
+  + if 标签，格式：<库名称:if text="${ booble }">
+  + forEach 标签，格式：<库名称:forEach items="${ List }" var="item">
+* 自定义标签库:
+  1. 编写一个Java类, 继承SimpleTagSupport类.
+  2. 重写父类的doTag方法.
+  3. 在doTag方法中, 通过getJspContext方法,  的到JSP页面的上下文
+  4. 通过上下文对象, 得到JSP中的out对象, 
+  5. 通过out对象,  向网页中输出内容
+  6. 编写tld文件 , 描述标签库 以及 标签.
+
+自定义标签库案例:
+``` java
+public class MyTag1 extends SimpleTagSupport {
+    private  static ArrayList<String> data = new ArrayList<>();
+    static {
+        data.add("流水在碰到底处时才会释放活力。——歌德");
+    }
+    @Override
+    public void doTag() throws JspException, IOException {
+        JspContext context = getJspContext();
+        JspWriter out = context.getOut();
+        Random r = new Random();
+        int index = r.nextInt(data.size());
+        out.println("<span>"+data.get(index)+"</span>");
+    }
+}
+```
+``` xml
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+version="2.0">
+    <!-- 描述标签库 -->
+    <!-- 是对于标签库的介绍 -->
+    <description>我们这个标签库, 是闲的慌 , 所以写的.</description>
+    <!-- 描述标签库的名称 -->
+    <display-name>xdl</display-name>
+    <!-- 标签库的版本 -->
+    <tlib-version>11.88</tlib-version>
+    <!-- 建议的短命名称 -->
+    <short-name>xdl</short-name>
+    <!-- 标签库的表示, 用于引入时匹配标签库 -->
+    <uri>http://shuidianshuisg.com</uri>
+
+    <!-- 开始描述标签 -->
+    <tag>
+        <!-- 对于标签的介绍 -->
+        <description>这个标签用于随机向网页中, 输出一句名言</description>
+        <!-- 标签名称 -->
+        <name>heiheihei</name>
+        <!-- 标签所对应的的Java类 -->
+        <tag-class>cn.xdl.tag.MyTag1</tag-class>
+        <!-- 标签的内容 -->
+        <body-content>empty</body-content>
+    </tag>
+</taglib>
+```
+
+
+
