@@ -17,6 +17,7 @@ JavaWeb是用Java技术来解决相关web互联网领域的技术总和。Java�
 6. [JSP](#id6)
 7. [内置对象(隐含对象)](#id7)
 8. [taglib指令](#id8)
+9. [JavaWeb三大组件](#id9)
 
 <span id="id1"><span>
 ### 1. http协议
@@ -556,5 +557,87 @@ version="2.0">
 </taglib>
 ```
 
+
+
+<span id="id9"><span>
+### 9. JavaWeb三大组件(Servlet,filter,Lister)
+#### 9.1 Filter过滤器
+* 请求的过滤器，面向切面编程思想（AOP）
+* 使用步骤：
+  1. 编写一个类，实现Filter接口
+  2. 通过注解或web.xml配置过滤器规则
+* 过滤器链：
+  + 当多个过滤器，过滤同一个请求地址时，就形成了过滤器链，所有过滤器都放行后，servlet才会处理用户请求
+* 过滤器链执行顺序：（若同时包含注解与web.xml,优先执行web.xml）
+  + 注解方式：按照类名的自然顺序先后
+  + web.xml配置方式：按照web.xml配置顺序，先后执行
+* 案例：
+
+``` java
+@WebFilter("/home.jsp")
+public class AdminFilter implements Filter {
+    /**
+     * 当Filter即将销毁时执行
+     */
+    @Override
+    public void destroy() { }
+    
+    /**
+     * 有新的请求, 满足了过滤器的过滤规则,  正在过滤
+     * 参数1.   请求对象
+     * 参数2. 响应对象
+     * 参数3.  过滤器链对象
+     */
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        System.out.println("过滤管理员登录的过滤器 正在执行");
+        //1.    从请求中, 得到session
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpSession session = req.getSession();
+        //2.    判断session中是否存在username
+        Object username = session.getAttribute("username");
+        //3.    如果存在, 且值为admin , 则放行 
+        if(username !=null && username.equals("admin")) {
+            //放行
+            chain.doFilter(request, response);
+        }else {
+        //4.    否则拦截, 并响应, 提示请先以管理员身份登录
+            response.getWriter().append("<script>alert('请先以管理员身份登录, 再访问管理页面');window.location.href='login.jsp'</script>");
+        }
+    }
+    
+    /**
+     * 当Filter初始化时 执行
+     */
+    @Override
+    public void init(FilterConfig arg0) throws ServletException { }
+}
+```
+
+* web.xml配置方式
+
+``` xml
+<filter>
+    <filter-name>encoding</filter-name>
+    <filter-class>cn.xdl.demo1.EnCodingFilter</filter-class>
+</filter>
+<filter-mapping>
+    <filter-name>encoding</filter-name>
+    <url-pattern>/home.jsp</url-pattern>
+</filter-mapping>
+```
+
+
+
+#### 9.2 Listener监听器
+* 监听服务器的一些状态事件，事件驱动机制。
+* 分为两类状态事件：
+  + 服务器中组件的生命周期
+  + 一些域对象中数据变化的事件
+* 监听服务器的启动与关闭：ServletContextListener
+* 监听ServletContext中数据的增加,删除,以及替换：ServletContextAttributeListener
+* 监听Session会话的开启与关闭：HttpSessionListener 
+* 监听session中数据的增加,删除,以及替换：HttpSessionAttributeListener 
 
 
