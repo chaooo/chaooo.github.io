@@ -35,8 +35,8 @@ categories: 数据库系统
 14. [数据库的动态完整性(触发器)](#id14)
 15. [数据库索引](#id15)
 16. [数据库序列](#id16)
-17. [数据库安全性](#17)
-18. [数据库自主安全性机制](#18)
+17. [数据库安全性](#id17)
+18. [数据库自主安全性机制](#id18)
 
 
 <span id="id1"><span>
@@ -789,6 +789,7 @@ select 序列名.currval from dual
 3. 删除序列：`Drop sequence 序列名`
 4. 更改序列：`Alter sequence 序列名 [其余参数同创建序列]`
 5. 使用序列示例：
+
 ``` sql
 -- 1.直接使用
 insert into person (id, name, password) values (序列名.nextval, '张三', '123')
