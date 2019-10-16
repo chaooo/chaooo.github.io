@@ -15,7 +15,8 @@ timezone:
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
 url: http://chaooo.github.io
 root: /
-permalink: :year/:month/:day/:title.html
+# permalink: :year/:month/:day/:title.html
+permalink: article/:year:month:day.html
 permalink_defaults:
 
 # Directory
@@ -47,7 +48,17 @@ highlight:
 # Category & Tag
 default_category: uncategorized
 category_map:
+  JavaWeb编程: java-web
+  hexo博客折腾: hexo
+  javaSE知识梳理: java
+  前端工具: front-end
+  数据库: db
+  数据库系统: dbms
+  杂谈: other
 tag_map:
+  后端开发: back-end
+  开源: open-source
+  数据库: db
 
 # Date / Time format
 ## Hexo uses Moment.js to parse and display date

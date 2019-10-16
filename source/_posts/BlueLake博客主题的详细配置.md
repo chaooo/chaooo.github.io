@@ -188,6 +188,7 @@ local_search: true
 您需要为苹果设备添加网站徽标，请命名为** apple-touch-icon.png **的图像放入hexo目录的“source”文件夹中，建议大小为：114px X 114px。
 (有很多网站都可以在线生成ico格式的图片。)
 
+
 #### 2.6 添加站点关键字
 
 请在hexo目录的`根_config.yml`中添加keywords字段，如：
@@ -246,26 +247,27 @@ widgets_on_small_screens: true
 
 #### 3.1 添加评论
 
-目前主题集成六种第三方评论，分别是[多说评论](http://duoshuo.com)、[Disqus评论](https://disqus.com)、[来必力评论](https://livere.com)、[友言评论](http://www.uyan.cc/)、[网易云跟帖评论](https://gentie.163.com/info.html)、[畅言评论](http://changyan.kuaizhan.com)，多说马上就要停止服务了，友言好像也没怎么维护,目前我已把自己的博客评论从多说转移到畅言了。
-1. 注册并获得代码。
-  - 若使用[多说评论](http://duoshuo.com)，注册多说后获得short_name。
-  - 若使用[Disqus评论](https://disqus.com)，注册Disqus后获得short_name。
-  - 若使用[来必力评论](https://livere.com)，注册来必力,获得data-uid。
-  - 若使用[友言评论](http://www.uyan.cc/)，注册友言,获得uid。
-  - 若使用[网易云跟帖评论](https://gentie.163.com/info.html)，注册网易云跟帖,获得productKey。
-  - 若使用[畅言评论](http://changyan.kuaizhan.com)，注册畅言，获得appid，appkey。
+目前主题集成六种第三方评论，分别是[多说评论](http://duoshuo.com)、[Disqus评论](https://disqus.com)、[来必力评论](https://livere.com)、[友言评论](http://www.uyan.cc/)、[网易云跟帖评论](https://gentie.163.com/info.html)、[畅言评论](http://changyan.kuaizhan.com)、基于Github Issue的[GITALK](https://gitalk.github.io/)，推荐[gitalk](https://gitalk.github.io/)。
+1. 需要 GitHub Application，如果没有[点击这里申请](https://github.com/settings/applications/new)。
+  - Application name： 应用名称，随意
+  - Homepage URL： 网站URL，对应自己博客地址
+  - Application description ：描述，随意
+  - Authorization callback URL：# 网站URL，博客地址就好
+  - 点击注册，页面会出现其中**Client ID**和**Client Secret**在后面的配置中需要用到
+
 2. 配置`主题_config.yml`：
 ``` yml 主题_config.yml https://github.com/chaooo/hexo-theme-BlueLake/blob/master/_config.yml themes/BlueLake/_config.yml
 #Cmments
 comment:
-  duoshuo: ## duoshuo_shortname
-  disqus: ## disqus_shortname
-  livere: ## 来必力(data-uid)
-  uyan: ## 友言(uid)
-  cloudTie: ## 网易云跟帖(productKey)
-  changyan: ## 畅言需在下方配置两个参数，此处不填。
-    appid: ## 畅言(appid)
-    appkey: ##畅言(appkey)
+  gitalk:
+    enable: true ## 开启gitalk
+    owner: ## GitHub的用户名
+    repo: ## 此评论存放的GitHub仓库
+    client_id: ## 复制刚才生成的clientID，例如. 75752dafe7907a897619
+    client_secret: ## 复制刚才生成的clientSecret，例如. ec2fb9054972c891289640354993b662f4cccc50
+    admin: ## Github的用户名
+    language: zh-CN ## Language
+    pagerDirection: last # Comment sorting direction, available values are last and first.
 ```
 
 #### 3.2 百度统计
