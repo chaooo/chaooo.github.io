@@ -1,8 +1,8 @@
 ---
-title: 【数据库】深入学习Redis及集群
+title: 【并发】深入学习Redis及集群
 date: 2019-09-20 16:19:26
-tags: [数据库, 后端开发, Redis]
-categories: 数据库
+tags: [并发, 后端开发, Redis]
+categories: 并发
 ---
 
 
