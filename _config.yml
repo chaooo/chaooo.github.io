@@ -48,17 +48,22 @@ highlight:
 # Category & Tag
 default_category: uncategorized
 category_map:
-  JavaWeb编程: java-web
+  Java教程: java-learn
   hexo博客折腾: hexo
-  javaSE知识梳理: java
-  前端工具: front-end
+  Java知识梳理: java
+  安全认证: safe
+  工具: tool
   数据库: db
-  数据库系统: dbms
   杂谈: other
+  环境配置: env
 tag_map:
+  工具: tool
   后端开发: back-end
+  安全认证: ssafe
   开源: open-source
   数据库: db
+  杂谈: other
+  环境配置: env
 
 # Date / Time format
 ## Hexo uses Moment.js to parse and display date
