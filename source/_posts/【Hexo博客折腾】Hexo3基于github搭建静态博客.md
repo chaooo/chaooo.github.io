@@ -2,7 +2,7 @@
 title: 【Hexo博客折腾】Hexo3基于github搭建静态博客
 date: 2016-05-23 11:16:51
 tags: hexo
-categories: hexo博客折腾
+categories: Hexo博客折腾
 ---
 
 ### 开始之前

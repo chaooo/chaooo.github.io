@@ -214,7 +214,7 @@ $ npm install hexo-generator-index-pin-top --save
 ---
 title: BlueLake博客主题的详细配置
 tags: [hexo,BlueLake]
-categories: hexo博客折腾
+categories: Hexo博客折腾
 top: true
 ---
 ```
