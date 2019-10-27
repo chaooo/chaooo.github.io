@@ -1,5 +1,5 @@
 ---
-title: 【Java知识梳理】深入JVM(一)-运行时数据区与垃圾回收机制
+title: 【Java知识梳理】深入JVM(一)-运行时数据区 与 垃圾回收机制
 date: 2019-08-23 23:15:19
 tags: [java, 后端开发]
 categories: Java知识梳理
@@ -13,7 +13,7 @@ categories: Java知识梳理
 4. Java堆（Heap）（线程共享）
 5. 方法区（Method Area）（线程共享）<!-- more -->
 
-![](http://cdn.chaooo.top/blog/JVM.png)
+![](http://cdn.chaooo.top/Java/JVM.png)
 
 
 #### Java运行过程
@@ -35,7 +35,7 @@ categories: Java知识梳理
 + 存储栈帧，支撑Java方法的调用、执行和退出
 + 可能出现OutOfMemoryError异常（如果被设计成动态扩展，而扩展又未申请到足够的内存抛出）和StackOverflowError异常（如线程请求的栈深度大于最大深度抛出）
 
-![](http://cdn.chaooo.top/blog/JVM-Stack.png)
+![](http://cdn.chaooo.top/Java/JVM-stack.png)
 
 
 #### 2.1 栈帧（Frame）
@@ -93,7 +93,7 @@ categories: Java知识梳理
 + 作用是作为Java对象的主要存储区域（通过new创建的对象都会使用堆内存）
 + 有垃圾回收机制
 
-![](http://cdn.chaooo.top/blog/JVM-heap.png)
+![](http://cdn.chaooo.top/Java/JVM-heap.png)
 
 
 #### 4.1 Java堆可能发生的异常
@@ -305,3 +305,10 @@ categories: Java知识梳理
     + 查看日志，看CMS哪个阶段暂停时间长（重新标记阶段），解决：打开开关参数CMSScavengeBeforeRemark
     + 重新标记前对新生代先做垃圾回收：`-XX:+CMSScavengeBeforeRemark`
 
+#### 10.4 G1调优最佳实践
+1. 不要设置新生代和老年代的大小
+    + G1收集器在运行的时候会调整新生代和老年代的大小。通过改变代的大小来调整对象晋升的速度以及晋升年龄，从而达到我们为收集器设置的暂停时间目标。设置了新生代大小相当于放弃了G1为我们做的自动调优。我们需要做的只是设置整个堆内存的大小，剩下的交给G1自己去分配各个代的大小。
+2. 不断调优暂停时间指标
+    + 通过XX:MaxGCPauseMillis=x可以设置启动应用程序暂停的时间，G1在运行的时候会根据这个参数选择CSet来满足响应时间的设置。一般情况下这个值设置到100ms或者200ms都是可以的(不同情况下会不一样)，但如果设置成50ms就不太合理。暂停时间设置的太短，就会导致出现G1跟不上垃圾产生的速度。最终退化成Full GC。所以对这个参数的调优是一个持续的过程，逐步调整到最佳状态。
+3. 关注Evacuation Failure
+    + Evacuation Failure类似于CMS里面的晋升失败，堆空间的垃圾太多导致无法完成Region之间的拷贝，于是不得不退化成Full GC来做一次全局范围内的垃圾收集。
