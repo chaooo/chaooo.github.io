@@ -71,7 +71,7 @@ volatile能够实现**可见性**，但不保证原子性
     1. 从主内存中读取volatile变量的最新值到线程的工作内存中
     2. 从工作内存中读取volatile变量的副本
 
-#### 2.1 happens-before
+#### 2.1 happens-before规则
 在JMM中，如果一个操作执行的结果需要对另一个操作可见，那么这2个操作之间必须要存在happens-before关系。
 - 定义: 如果一个操作在另一个操作之前发生(happens-before),那么第一个操作的执行结果将对第二个操作可见, 而且第一个操作的执行顺序排在第二个操作之前。
 - 两个操作之间存在happens-before关系，并不意味着一定要按照happens-before原则制定的顺序来执行。如果重排序之后的执行结果与按照happens-before关系来执行的结果一致，那么这种重排序并不非法。
@@ -102,6 +102,28 @@ as-if-serial语义：不管怎么重排序(编译器和处理器为了提高并�
 + As-if-serial只是保障单线程不会出问题，所以有序性保障，可以理解为把As-if-serial扩展到多线程，那么在多线程中也不会出现问题
     + 从底层的角度来看，是借助于处理器提供的相关指令内存屏障来实现的
     + 对于Java语言本身来说，Java已经帮我们与底层打交道，我们不会直接接触内存屏障指令，java提供的关键字synchronized和volatile，可以达到这个效果，保障有序性（借助于显式锁Lock也是一样的，Lock逻辑与synchronized一致）
+
+#### 3.2 著名的双检锁(double-checked locking)模式实现单例
+``` java
+public class Singleton {
+    // volatile保证happens-before规则,重排序被禁止
+    private volatile static Singleton INSTANCE = null;
+    private Singleton() {}
+    public Singleton getInstance() {
+        // 实例没创建,才进入内部的synchronized代码块
+        if (null == INSTANCE) {
+            synchronized (Singleton.class) {
+                // 判断其他线程是否已经创建实例
+                if (null == INSTANCE) {
+                    INSTANCE = new Singleton();
+                }
+            }
+        }
+        return INSTANCE;
+    }
+}
+```
+> 如果不用volatile修饰INSTANCE,可能造成访问的是一个初始化未完成的对象; 使用了volatile关键字后，重排序被禁止，所有的写（write）操作都将发生在读（read）操作之前。
 
 
 ### 4. 锁机制
@@ -164,7 +186,7 @@ Java偏向锁(Biased Locking)是Java6引入的一项多线程优
     + java中很多数据结构都是采用这种方法提高并发操作的效率：
         + ConcurrentHashMap: 使用Segment数组,Segment继承自ReenTrantLock，所以每个Segment就是个可重入锁，每个Segment 有一个HashEntry< K,V >数组用来存放数据，put操作时，先确定往哪个Segment放数据，只需要锁定这个Segment，执行put，其它的Segment不会被锁定；所以数组中有多少个Segment就允许同一时刻多少个线程存放数据，这样增加了并发能力。
         + LongAdder:实现思路也类似ConcurrentHashMap，LongAdder有一个根据当前并发状况动态改变的Cell数组，Cell对象里面有一个long类型的value用来存储值;开始没有并发争用的时候或者是cells数组正在初始化的时候，会使用cas来将值累加到成员变量的base上，在并发争用的情况下，LongAdder会初始化cells数组，在Cell数组中选定一个Cell加锁，数组有多少个cell，就允许同时有多少线程进行修改，最后将数组中每个Cell中的value相加，在加上base的值，就是最终的值；cell数组还能根据当前线程争用情况进行扩容，初始长度为2，每次扩容会增长一倍，直到扩容到大于等于cpu数量就不再扩容，这也就是为什么LongAdder比cas和AtomicInteger效率要高的原因，后面两者都是volatile+cas实现的，他们的竞争维度是1，LongAdder的竞争维度为“Cell个数+1”为什么要+1？因为它还有一个base，如果竞争不到锁还会尝试将数值加到base上；
-    + 拆锁的粒度不能无限拆，最多可以将一个锁拆为当前cup数量个锁即可；
+    + 拆锁的粒度不能无限拆，最多可以将一个锁拆为当前CPU数量即可；
 3. **锁粗化**
     + 大部分情况下我们是要让锁的粒度最小化，锁的粗化则是要增大锁的粒度(如:循环内的操作);
 4. **锁分离**
@@ -182,17 +204,68 @@ Java偏向锁(Biased Locking)是Java6引入的一项多线程优
 
 
 ### 6. CAS与原子类
+CAS即`Compare and Swap`翻译过来就是比较并替换, 它体现了一种乐观锁的思想 (synchronized为悲观锁思想); 
+- 结合CAS和volatile可以实现**无锁并发**(非阻塞同步),适用于竞争不激烈,多核CPU的场景下(竞争激烈,重试频繁发生会影响效率);
+- CAS算法涉及到三个操作数: 内存值V, 旧值A, 新值B; 当且仅当V==A时，CAS用新值B来更新V，否则不会执行任何操作（比较和替换是一个原子操作）。一般情况下是一个自旋操作，即不断的重试。
+- CAS底层依赖一个Unsafe类来直接调用操作系统底层的CAS指令;
 
+#### 6.1 Unsafe类
+java中CAS操作依赖于Unsafe类，Unsafe类所有方法都是native的，直接调用操作系统底层资源执行相应任务，它可以像C一样操作内存指针，是非线程安全的。
+- Unsafe里的CAS 操作相关实现: compareAndSwapObject,compareAndSwapInt,compareAndSwapLong
+``` java
+//第一个参数o为给定对象，offset为对象内存的偏移量，通过这个偏移量迅速定位字段并设置或获取该字段的值，
+//expected表示期望值，x表示要设置的值，下面3个方法都通过CAS原子指令执行操作。
+public final native boolean compareAndSwapObject(Object o, long offset,Object expected, Object x);
+public final native boolean compareAndSwapInt(Object o, long offset,int expected,int x);
+public final native boolean compareAndSwapLong(Object o, long offset,long expected,long x);
+```
 
+#### 6.2 原子操作类
+并发包JUC(java.util.concurrent)中的原子操作类(Atomic系列),底层是基于`CAS + volatile`实现的.
++ AtomicBoolean：原子更新布尔类型
++ AtomicInteger：原子更新整型
++ AtomicLong：原子更新长整型
 
+下面看AtomicInteger类的部分源码：
+``` java
+public class AtomicInteger extends Number implements java.io.Serializable{
+    //获取指针类Unsafe    
+    private static final Unsafe unsafe = Unsafe.getUnsafe(); 
+    //省略...获取内存偏移量等
+    //如果当前值为expect，则设置为update(当前值指的是value变量)    
+    public final boolean compareAndSet(int expect, int update) { 
+        return unsafe.compareAndSwapInt(this, valueOffset, expect, update);    
+    }    
+    //当前值加1返回旧值，底层CAS操作    
+    public final int getAndIncrement() { 
+        return unsafe.getAndAddInt(this, valueOffset, 1);   
+    }
+    //省略...其他方法
+}
+```
 
+AtomicInteger基本是基于Unsafe类中CAS相关操作实现的，是无锁操作。
+再看Unsafe类中的getAndAddInt()方法，该方法执行一个CAS操作，保证线程安全。
+``` java
+//Unsafe类中的getAndAddInt方法(JDK8)
+public final int getAndAddInt(Object o, long offset, int delta) {        
+    int v;        
+    do {            
+        v = getIntVolatile(o, offset);        
+    } while (!compareAndSwapInt(o, offset, v, v + delta));        
+    return v;
+}
+```
+可看出getAndAddInt通过一个while循环不断的重试更新要设置的值，直到成功为止，调用的是Unsafe类中的compareAndSwapInt方法，是一个CAS操作方法。
 
-
-
-
-
-
-
-
+#### 6.3 CAS操作中可能会带来的ABA问题
+ABA问题是指在CAS操作时，其他线程将变量值A改为了B，但是又被改回了A，等到本线程使用期望值A与当前变量进行比较时，发现变量A没有变，于是CAS就将A值进行了交换操作，但是实际上该值已经被其他线程改变过，这与乐观锁的设计思想不符合。
+- **无法正确判断这个变量是否已被修改过**，一般称这种情况为ABA问题。
+- ABA问题一般不会有太大影响，产生几率也比较小。但是并不排除极特殊场景下会造成影响，因此需要解决方法：
+    + AtomicStampedReference类
+    + AtomicMarkableReference类
+- **AtomicStampedReference类**: 一个带有时间戳的对象引用，每次修改时，不但会设置新的值，还会记录修改时间。在下一次更新时，不但会对比当前值和期望值，还会对比当前时间和期望值对应的修改时间，只有二者都相同，才会做出更新。解决了反复读写时，无法预知值是否已被修改的窘境。
+    + 底层实现为：一个键值对Pair存储数据和时间戳，并构造volatile修饰的私有实例；两者都符合预期才会调用Unsafe的compareAndSwapObject方法执行数值和时间戳替换。
+- AtomicMarkableReference类: 一个boolean值的标识，true和false两种切换状态表示是否被修改。不靠谱。
 
 
