@@ -9,7 +9,7 @@ categories: 数据库
 ### 1. MySQL基础操作
 #### 1.1 MySQL备份与恢复
 1. 备份：在mysql的安装目录的bin目录下有**mysqldump命令**，可以完成对数据库的备份。 
-    + 语法：`mysqldump -u 用户名 -p 数据库名> 磁盘SQL文件路径` 
+    + 语法：`mysqldump -u 用户名 -p 数据库名> 磁盘SQL文件路径` <!-- more -->
     + 由于mysqldump命令不是sql命令，需要在**dos窗口下使用**。
     + 仅仅只会备份数据库中的表和数据，恢复时需要先手动创建数据库。
 2. 恢复：先手动创建数据库：`create database 数据库名`
