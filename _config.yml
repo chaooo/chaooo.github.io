@@ -56,7 +56,7 @@ category_map:
   数据库: db
   杂谈: other
   环境配置: env
-  并发: concurrent
+  并发编程: concurrent
 tag_map:
   工具: tool
   后端开发: back-end
@@ -65,7 +65,7 @@ tag_map:
   数据库: db
   杂谈: other
   环境配置: env
-  并发: concurrent
+  并发编程: concurrent
 
 # Date / Time format
 ## Hexo uses Moment.js to parse and display date
