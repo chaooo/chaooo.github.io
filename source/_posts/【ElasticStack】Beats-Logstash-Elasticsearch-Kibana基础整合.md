@@ -6,11 +6,11 @@ categories: ElasticStack
 ---
 
 ### 1. ElasticStack的组成
-#### 1.2 ElasticStack各组件作用
 1. **`Beats`**：数据采集
 2. **`LogStash`**: 数据处理
 3. **`ElasticSearch`**(核心引擎): 数据存储、查询和分析
 4. **`Kibana`**: 数据探索与可视化分析
+<!-- more -->
 
 ![](http://cdn.chaooo.top/Java/elastic-stream.jpg)
 
@@ -476,8 +476,9 @@ output {
 
 ### 5. Elasticsearch + Logstash + Beats + Kibana基础整合
 ``` conf
-             读取                发送               写入                      读取
-【日志文件】<-------【FileBeat】------->【Logstash】------->【Elasticsearch】<-------【Kibana】
+           (读取)          (发送)           (写入)                (读取)
+【日志文件】<----【FileBeat】---->【Logstash】---->【Elasticsearch】<----【Kibana】
+
 ```
 
 1. `Filebeat`配置与启动：

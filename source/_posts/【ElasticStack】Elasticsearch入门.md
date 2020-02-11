@@ -11,6 +11,7 @@ categories: ElasticStack
 1. 使用门槛低，开发周期短，上线快
 2. 性能好，查询快，实时展示结果
 3. 扩容方便，快速支撑增长迅猛的数据
+<!-- more -->
 
 #### 1.2 ElasticStack各组件作用
 1. **`Beats`**：数据采集

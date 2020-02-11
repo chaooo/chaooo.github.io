@@ -14,6 +14,7 @@ categories: ElasticStack
 2. `ES`集群由多个`ES实例`构成。
     + 不同集群通过**集群名字**来区分，通过配置文件`elasticsearch.yml`中的`cluster.name`可以修改，默认为`elasticsearch`
     + 每个`ES实例`的本质，其实是一个`JVM进程`，且有自己的名字，通过配置文件中的`node.name`可以修改。
+<!-- more -->
 
 #### 1.2 构建ES集群
 ``` shell
