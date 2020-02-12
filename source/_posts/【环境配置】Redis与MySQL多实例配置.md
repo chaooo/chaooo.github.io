@@ -6,7 +6,7 @@ categories: 环境配置
 ---
 
 最近由于工作的需要，需要在同一台服务器上搭建两个`Redis`与`MySQL`的实例。
-多实例：就是在一台机器上面开启多个不同的端口(如`Redis`用`6379`/`6380`，`MySQL`用`3306`/`3307`)，运行多个服务进程；公用一套安装程序，使用不同的配置文件，数据文件。
+多实例：就是在一台机器上面开启多个不同的端口(如`Redis`用`6379`/`6380`，`MySQL`用`3306`/`3307`等)，运行多个服务进程；公用一套安装程序，使用不同的配置文件，数据文件。
 <!-- more -->
 
 ### 1. Redis多实例配置
@@ -75,6 +75,7 @@ root     15994  8014  0 12:16 pts/2    00:00:00 grep redis
 ```
 
 3. 停止`6380`端口的`Redis`服务
+
 ``` shell
 redis-cli -p 6380 shutdown
 ```
@@ -133,11 +134,13 @@ requirepass password123456
 ```
 
 2. 开启防火墙的端口号规则（安全组），将`6380`端口号开通
+
 ``` shell
 [root@localhost ~]# /sbin/iptables -I INPUT -p tcp --dport 6380 -j ACCEPT
 ```
 
 3. 修改完成后，要在服务里重启`Redis`服务才能使设置生效
+
 ``` shell
 /usr/local/bin/redis-server /etc/redis6380.conf
 ```
@@ -167,8 +170,9 @@ tcp6       0      0 :::3306                 :::*                    LISTEN      
 unix  2      [ ACC ]     STREAM     LISTENING     20497    1089/mysqld          /var/lib/mysql/mysql.sock
 ```
 
-> **须先关闭单实例，跟多实例会有冲突**，可先备份数据库：
-> - `[root@localhost ~]# mysqldump -P 3306 -u root -p --all-databases > /home/backup/data3306.bak`
+> **须先关闭单实例，跟多实例会有冲突**
+> - 备份数据：`[root@localhost ~]# mysqldump -P 3306 -u root -p --all-databases > /home/backup/data3306.bak`
+> - 停止单实例服务：`[root@localhost ~]# service mysqld stop`
 
 2. 查找配置文件位置
 
@@ -231,11 +235,20 @@ default-character-set=utf8
 4. 登录`MySQL`
 
 ``` shell
-[root@localhost ~]# mysql -S /var/lib/mysql/mysql3307.sock
+# 多实例为root增加密码
+[root@localhost ~]# mysqladmin -u root -S /var/lib/mysql/mysql3307.sock password '123qwe'
+# 登录
+[root@localhost ~]# mysql -S /var/lib/mysql/mysql3307.sock -p
+```
+
+5. 停止本实例`MySQL`服务
+
+``` shell
+[root@localhost ~]# mysqladmin -u root -S /var/lib/mysql/mysql3307.sock shutdown
 ```
 
 
-#### 2.2 再添加一个3308端口的实例
+#### 2.3 再添加一个3308端口的实例
 1. 拷贝`my.cnf`并命名为`my3308.cnf`，并修改参数，主要修改port,sockt,datadir
 
 ``` shell
@@ -284,7 +297,32 @@ default-character-set=utf8
 ```
 
 4. 登录`MySQL`
+
 ``` shell
-[root@localhost ~]# mysql -S /var/lib/mysql/mysql3308.sock
+# 多实例为root增加密码
+[root@localhost ~]# mysqladmin -u root -S /var/lib/mysql/mysql3308.sock password '123qwe'
+# 登录
+[root@localhost ~]# mysql -S /var/lib/mysql/mysql3308.sock -p
+```
+
+5. 停止本实例`MySQL`服务
+
+``` shell
+[root@localhost ~]# mysqladmin -u root -S /var/lib/mysql/mysql3308.sock shutdown
+```
+
+
+#### 2.4 实例3307开启远程访问
+1. 开启`3307`端口防火墙
+
+``` shell
+[root@localhost ~]# /sbin/iptables -I INPUT -p tcp --dport 3307 -j ACCEPT
+```
+
+2. 测试远程访问
+
+``` shell
+C:\Users\zc>mysql -h 192.168.111.227 -P 3307 -u root -p
+Enter password: ******
 ```
 
