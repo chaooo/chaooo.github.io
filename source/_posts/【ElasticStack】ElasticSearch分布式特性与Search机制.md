@@ -17,8 +17,8 @@ categories: ElasticStack
 <!-- more -->
 
 #### 1.2 构建ES集群
-``` shell
-// 创建一个本地化集群my_cluster
+``` bash
+# 创建一个本地化集群my_cluster
 bin/elasticsearch -Epath.data=node1 -Ecluster.name=my_cluster -Enode.name=node1 -d
 bin/elasticsearch -Ehttp.port=8200 -Epath.data=node2 -Ecluster.name=my_cluster -Enode.name=node2 -d
 bin/elasticsearch -Ehttp.port=7200 -Epath.data=node3 -Ecluster.name=my_cluster -Enode.name=node3 -d
@@ -51,7 +51,7 @@ bin/elasticsearch -Ehttp.port=7200 -Epath.data=node3 -Ecluster.name=my_cluster -
     + **过大**会导致一个节点分片过多，造成资源浪费，同时会影响查询性能
 - 例如：在3个节点的集群中配置索引指定3个分片和1个副本（`index.number_of_shards:3`,
 `index.number_of_replicas:1`），分布如下：
-![](http://cdn.chaooo.top/Java/es_shard.jpg)
+![](http:\\cdn.chaooo.top/Java/es_shard.jpg)
 
 - 怎样增加节点或副本提高索引的吞吐量
     + **同时**增加新的节点**和**加新的副本，这样把新的副本放在新的节点上，进行索引数据读取的时候，并且读取，就会提升索引数据读取的吞吐量。
@@ -79,16 +79,16 @@ bin/elasticsearch -Ehttp.port=7200 -Epath.data=node3 -Ecluster.name=my_cluster -
     + `number_of_primary_shards`为主分片数
 - **主分片数一旦设定，不能更改**：`为了保证文档对应的分片不会发生改变`。
 - 文档**创建**流程:
-![](http://cdn.chaooo.top/Java/elastic1.jpg)
+![](http:\\cdn.chaooo.top/Java/elastic1.jpg)
 
 - 文档**读取**流程
-![](http://cdn.chaooo.top/Java/elastic2.jpg)
+![](http:\\cdn.chaooo.top/Java/elastic2.jpg)
 
 - 文档**批量创建**流程
-![](http://cdn.chaooo.top/Java/elastic3.jpg)
+![](http:\\cdn.chaooo.top/Java/elastic3.jpg)
 
 - 文档**批量读取**流程
-![](http://cdn.chaooo.top/Java/elastic4.jpg)
+![](http:\\cdn.chaooo.top/Java/elastic4.jpg)
 
 #### 1.6 脑裂问题
 - 在分布式系统中一个经典的网络问题
@@ -163,16 +163,16 @@ bin/elasticsearch -Ehttp.port=7200 -Epath.data=node3 -Ecluster.name=my_cluster -
         6. `discovery.zen.minimum_master_nodes`: 一般设置为`2`，有`3`个即可。
         7. `path.data/path.log`
         8. 除上述参数外，再根据需要增加其他的静态配置参数，如：`refresh`优化参数，`indices.memory.index_buffer_size`。
-    + 动态设定的参数有transient(短暂的)和persistent(持续的)两种，前者在集群重启后会丢失，后者在集群重启后依然// 生效。二者都覆盖了yml中的配置，举例：
+    + 动态设定的参数有transient(短暂的)和persistent(持续的)两种，前者在集群重启后会丢失，后者在集群重启后依然# 生效。二者都覆盖了yml中的配置，举例：
 
-``` json
-// 使用transient和persistent动态设置ES集群参数
+``` bash
+# 使用transient和persistent动态设置ES集群参数
 PUT /_cluster/Settings
 {
- "persistent":{    // 永久
+ "persistent":{    # 永久
   "discovery.zen.minimum_master_nodes:2
  },
- "transient":{   // 临时
+ "transient":{   # 临时
   "indices.store.throttle.max_bytes_per_sec":"50mb"
  }
 }
@@ -184,7 +184,7 @@ PUT /_cluster/Settings
         + 搜索类项目中：内存：数据量   ===>   1：16；
         + 日志类项目中：内存：数据量   ===>   1：48/96。
 
-``` shell
+``` bash
 假设现有数据1TB，3个node，1个副本，那么：
 每个node存储(1+1)*1024 / 3 = 666GB,即700GB左右，做20%预留空间，每个node约存850GB数据。
 此时：
@@ -253,7 +253,8 @@ PUT /_cluster/Settings
 #### 2.5 ES集群监控
 使用官方免费插件`X-pack`。
 1. 安装与启动：
-``` shell
+
+``` bash
 # X-pack的安装
 cd ~/elasticsearch-6.1.1
 bin/elasticsearch-plugin install x-pack
@@ -276,10 +277,10 @@ bin/kibana-plugin indtall x-pack
 #### 3.1 Query—Then—Fetch：
 若集群`my_cluster`中存在三个节点node1、node2、node3，其中`master`为node1，其余的为`data`节点。
 + `Query`阶段:
-![](http://cdn.chaooo.top/Java/elastic-q.jpg)
+![](http:\\cdn.chaooo.top/Java/elastic-q.jpg)
 
 + `Fetch`阶段: 
-![](http://cdn.chaooo.top/Java/elastic-f.jpg)
+![](http:\\cdn.chaooo.top/Java/elastic-f.jpg)
 
 
 #### 3.2 相关性算分：
@@ -291,8 +292,8 @@ bin/kibana-plugin indtall x-pack
 - `DFS Query-then-Fecth`：
     + 在拿到所有文档后，再重新进行完整的计算一次相关性得分，耗费更多的CPU和内存，**执行性能也较低**。所以也不推荐。
 
-``` curl
-// 使用DLS Query-then-Fetch进行查询：
+``` bash
+# 使用DLS Query-then-Fetch进行查询：
 GET my_index/_search？search_type=dfs_query_then_fetch
 {
  "query":{
@@ -305,18 +306,18 @@ GET my_index/_search？search_type=dfs_query_then_fetch
 
 #### 3.3 排序相关：
 默认采用相关性算分结果进行排序。可通过`sort`参数自定义排序规则，如：
-``` json
-// 使用sort关键词进行排序
+``` bash
+# 使用sort关键词进行排序
 GET my_index/_search
 {
- "sort":{    // 关键词
+ "sort":{    # 关键词
   "birth":"desc"
  }
 }
-// 或使用数组形式定义多字段排序规则
+# 或使用数组形式定义多字段排序规则
 GET my_index/_search
 {
- "sort":[    // 使用数组
+ "sort":[    # 使用数组
   {
    "birth":{
     "order":"asc"
@@ -333,20 +334,21 @@ GET my_index/_search
 
 1. 直接按数字/日期排序，如上例中`birth`
 2. 按字符串进行排序：字符串排序较特殊，因为在`ES`中有`keyword`和`text`两种：
-``` json
-// 直接对text类型进行排序
+
+``` bash
+# 直接对text类型进行排序
 GET my_index/_search
 {
  "sort":{
-  "username":"desc"    // 针对username字段进行倒序排序
+  "username":"desc"    # 针对username字段进行倒序排序
  }
 }
-//
-// 针对keyword进行排序
+#
+# 针对keyword进行排序
 GET my_index/_search
 {
  "sort":{
-  "username.keyword":"desc"    // 针对username的子类型keyword类型进行倒叙排序
+  "username.keyword":"desc"    # 针对username的子类型keyword类型进行倒叙排序
  }
 }
 ```
@@ -367,14 +369,15 @@ GET my_index/_search
 ##### 3.3.2 Fielddata的开启:
 `Fielddata`**默认关闭**，可通过如下api进行开启，且在后续使用时随时可以开启/关闭：
 - 使用场景：**一般在对分词做聚合分析的时候开启**。
-``` json
-// 开启字段的fielddata设置
+
+``` bash
+# 开启字段的fielddata设置
 PUT my_index/_mapping/doc
 {
  "properties":{
   "username":{
    "type":"text",
-   "fielddata":true    // 关键词
+   "fielddata":true    # 关键词
   }
  }
 }
@@ -383,8 +386,9 @@ PUT my_index/_mapping/doc
 #### 3.3.3 Docvalues的关闭
 `Docvalues`**默认开启**，可在创建索引时关闭，且之后不能再打开，要打开只能做reindex操作。
 - 使用场景：当明确知道，不会使用这个字段排序或者不做聚合分析的时候，可关闭doc_values，减少磁盘空间的占用。
-``` json
-// 关闭字段的docvalues设置
+
+``` bash
+# 关闭字段的docvalues设置
 PUT my_index
 {
  "mappings":{
@@ -392,7 +396,7 @@ PUT my_index
    "properties":{
     "username":{
      "type":"keyword",
-     "doc_values":false    // 关键词
+     "doc_values":false    # 关键词
     }
    }
   }
@@ -407,12 +411,13 @@ ES提供了三种方式来解决分页和遍历的问题： `from/size`，`scrol
 ##### 3.4.1 from/size
 - `from`：指明开始位置；
 - `size`：指明获取总数
-``` json
-// 使用from——size
+
+``` bash
+# 使用from——size
 GET my_index/_search
 {
- "from":1,    // 从第2个开始搜索
- "size":2     // 获取2个长度
+ "from":1,    # 从第2个开始搜索
+ "size":2     # 获取2个长度
 }
 ```
 
@@ -438,31 +443,31 @@ GET my_index/_search
     3. 之后不断返回新的`_scroll_id`，使用新的`_scroll_id`进行查询，直到返回数组为空。
     4. 当不断的进行迭代，会产生很多`scroll`，导致大量内存被占用，可以通过`clear api`进行删除
 
-``` json
-// 发起一个scroll search
-GET my_index/_search?scroll=5m // 该快照的有效时间为5min
+``` bash
+# 发起一个scroll search
+GET my_index/_search?scroll=5m # 该快照的有效时间为5min
 {
- "size"1    // 指明每次scroll返回的文档数
+ "size"1    # 指明每次scroll返回的文档数
 }
-//
-// 调用scroll search 的api，获取文档集合
+#
+# 调用scroll search 的api，获取文档集合
 POST _search/scroll
 {
- "scroll":"5m",    // 指明有效时间
- "scroll_id":"xxxxxx"    // 上一步返回的_scroll_id
+ "scroll":"5m",    # 指明有效时间
+ "scroll_id":"xxxxxx"    # 上一步返回的_scroll_id
 }
-//
-// 使用clear api对scroll进行删除
+#
+# 使用clear api对scroll进行删除
 DELETE /_search/scroll
 {
  "scroll_id":[
-   "xxxxxx",    // _scroll_id
-   "xxxxxx",    // _scroll_id
+   "xxxxxx",    # _scroll_id
+   "xxxxxx",    # _scroll_id
    ......
  ]
 }
-//
-// 删除所有的scroll
+#
+# 删除所有的scroll
 DELETE /_search/scroll/_all
 ```
 
@@ -473,8 +478,8 @@ DELETE /_search/scroll/_all
     1. 第一步：正常搜索，但是要指定sort值，并保证值唯一：
     2. 第二步：使用上一步最后一个文档的sort值进行查询：
 
-``` json
-// 第一步，正常搜索
+``` bash
+# 第一步，正常搜索
 GET my_index/_search
 {
  "size":1,
@@ -483,12 +488,12 @@ GET my_index/_search
   "_id":"desc"
  }
 }
-//
-// 第二步，使用sort值进行查询
+#
+# 第二步，使用sort值进行查询
 GET my_index/_search
 {
  "size":1,
- "search_after":[28,"2"],// 28,"2"，是上一次搜索返回的sort值
+ "search_after":[28,"2"],# 28,"2"，是上一次搜索返回的sort值
  "sort":{
   "age":"desc",
   "_id":"desc"

@@ -23,15 +23,16 @@ categories: ElasticStack
 + 搜索引擎、日志分析、指标分析
 
 #### 1.4 ElasticStack安装启动
-1. `ElasticSearch`启动：解压到安装目录，启动`bin/elasticsearch`（默认端口:`http://localhost:9200`, 加参数`-d`后台启动）
+1. `ElasticSearch`启动：解压到安装目录，启动`bin/elasticsearch`（默认端口:`http:\\localhost:9200`, 加参数`-d`后台启动）
 2. `ElasticSearch`集群：
-``` shell
+
+``` bash
 bin/elasticsearch -d 
 bin/elasticsearch -Ehttp.port=8200 -Epath.data=node2 -d
 bin/elasticsearch -Ehttp.port=7200 -Epath.data=node3 -d
 ```
 
-3. Kibana启动：解压到安装目录，启动`bin/kibana`（默认端口:`http://localhost:5601`）
+3. Kibana启动：解压到安装目录，启动`bin/kibana`（默认端口:`http:\\localhost:5601`）
 
 #### 1.5 ElasticSearch常见术语
 1. `Document`(文档)：用户存储在ES中的数据文档
@@ -66,15 +67,16 @@ bin/elasticsearch -Ehttp.port=7200 -Epath.data=node3 -d
 
 #### 1.7 CRUD操作（交互基于Kibana DevTools）
 1. 创建文档
-``` json
-// 创建ID为1的Document
+
+``` bash
+# 创建ID为1的Document
 PUT /test_index/doc/1
 {
  "username":"alfred",
  "age":"24"
 }
-//
-// 不指定ID创建Document(ID会自动生成)
+#
+# 不指定ID创建Document(ID会自动生成)
 POST /test_index/doc
 {
  "username":"buzhiding",
@@ -83,13 +85,14 @@ POST /test_index/doc
 ```
 
 2. 查询文档：
-``` json
-// 查看名为test_index的索引中id为1的文档
+
+``` bash
+# 查看名为test_index的索引中id为1的文档
 GET /test_index/doc/1
-//
-// 查询所有文档：
-// 查询名为test_index的索引中所有文档,用到endpoint：_search，默认返回符合的前10条
-// term和match的区别：term完全匹配，不进行分词器分析；match模糊匹配，进行分词器分析，包含即返回
+#
+# 查询所有文档：
+# 查询名为test_index的索引中所有文档,用到endpoint：_search，默认返回符合的前10条
+# term和match的区别：term完全匹配，不进行分词器分析；match模糊匹配，进行分词器分析，包含即返回
 GET /test_index/doc/_search
 {
  "query":{
@@ -101,17 +104,18 @@ GET /test_index/doc/_search
 ```
 
 3. 批量操作文档：
-``` json
-// 批量创建文档，用到endpoint：_bulk
-// index和create的区别，如果文档存在时，使用create会报错，而index会覆盖
+
+``` bash
+# 批量创建文档，用到endpoint：_bulk
+# index和create的区别，如果文档存在时，使用create会报错，而index会覆盖
 POST _bulk
 {"index":{"_index":"test_index","_type":"doc","_id":"3"}}
 {"username":"alfred","age":"20"}
 {"delete":{"_index":"test_index","_type":"doc","_id":"1"}}
 {"update":{"_id":"2","_index":"test_index","_type":"doc"}}
 {"doc":{"age":"30"}}
-//
-// 批量查询文档，使用endpoint:_mget
+#
+# 批量查询文档，使用endpoint:_mget
 GET _mget
 {
  "doc":[
@@ -130,8 +134,9 @@ GET _mget
 ```
 
 4. 删除文档：
-``` json
-// 根据搜索内容删除文档,使用endpoint:_delete_by_query
+
+``` bash
+# 根据搜索内容删除文档,使用endpoint:_delete_by_query
 POST /test_index/doc/_delete_by_query
 {
  "query":{
@@ -140,8 +145,8 @@ POST /test_index/doc/_delete_by_query
   }
  }
 }
-// 
-// 删除整个test_index的索引中的文档,依然使用endpoint:_delete_by_query
+# 
+# 删除整个test_index的索引中的文档,依然使用endpoint:_delete_by_query
 POST /test_index/doc/_delete_by_query
 {
  "query":{
@@ -188,22 +193,23 @@ POST /test_index/doc/_delete_by_query
     1. IK：实现中英文分词，支持多模式，可自定义词库，支持热更新分词词典。
     2. jieba。python中流行，支持繁体分词、并行分词，可自定义词典、词性标记等。
 + ES提供了一个测试分词的API接口，使用`endpoint：_analyze`，不指定分词时，会使用默认的`standard`
-``` json
-// 指定分词器进行分词测试
+
+``` bash
+# 指定分词器进行分词测试
 POST _analyze
 {
  "analyzer":"standard",
  "text":"hello world!"
 }
-// 
-// 直接指定索引中字段：使用username字段的分词方式对text进行分词。
+# 
+# 直接指定索引中字段：使用username字段的分词方式对text进行分词。
 POST test_index/_analyze
 {
  "field":"username",
  "text":"hello world!"
 }
-// 
-// 自定义分词器，自定义Tokenizer、filter、等进行分词：
+# 
+# 自定义分词器，自定义Tokenizer、filter、等进行分词：
 POST _analyze
 {
  "tokenizer":"standard",
@@ -234,17 +240,17 @@ Mapping：类似于数据库中的表结构
     + `false`：不允许自动新增字段，文档可以正常写入，但不能进行查询等操作；
     + `strict`：严格模式。文档不能写入，写入会报错。
 
-``` json
-// 创建名为my_index的索引，并自定义mapping
-// 使用dynamic参数控制字段的新增
+``` bash
+# 创建名为my_index的索引，并自定义mapping
+# 使用dynamic参数控制字段的新增
 PUT my_index
 {
- "mappings":{        // 关键字
-  "doc":{            // 类型名
-   "dynamic":false,  // 设置为false，索引不允许新增字段
-   "properties":{    // 字段名称及类型定义
+ "mappings":{        # 关键字
+  "doc":{            # 类型名
+   "dynamic":false,  # 设置为false，索引不允许新增字段
+   "properties":{    # 字段名称及类型定义
     "title":{
-     "type":"text"   // 字段类型
+     "type":"text"   # 字段类型
     },
     "name":{
      "type":"keyword"
@@ -260,8 +266,8 @@ PUT my_index
 
 #### 3.3 copy_to的使用
 将该字段的值复制到目标字段，类似于6.0版本之前的`_all`的作用。且不会出现在`_source`，一般只用来进行搜索。
-``` json
-// copy_to的使用
+``` bash
+# copy_to的使用
 PUT my_index
 {
  "mappings":{
@@ -282,15 +288,15 @@ PUT my_index
   }
  }
 }
-// 
-// 向索引写入数据
+# 
+# 向索引写入数据
 PUT my_index/doc/1
 {
  "first_name":"John",
  "last_name":"Smith"
 }
-// 
-// 查询索引my_index中full_name同时包含John 和 Smith的数据
+# 
+# 查询索引my_index中full_name同时包含John 和 Smith的数据
 GET my_index/_search
 {
  "query":{
@@ -306,8 +312,8 @@ GET my_index/_search
 
 #### 3.4 index参数的使用
 控制当前字段是否为索引，默认`true`，当设置为`false`的时候，不进行记录，此时该字段不能被搜索
-``` json
-// index参数的使用
+``` bash
+# index参数的使用
 PUT my_index
 {
  "mappings":{
@@ -315,7 +321,7 @@ PUT my_index
    "properties":{
     "cookie":{
      "type":"text",
-     "index":false    // 设置为false，该字段不能被搜索
+     "index":false    # 设置为false，该字段不能被搜索
     }
    }
   }
@@ -324,8 +330,8 @@ PUT my_index
 ```
 
 此时在进行数据写入和查询，不能进行该字段搜索。一般用来进行不想被查询的私密信息设置，如身份证号，电话号码等：
-``` json
-// 向使用了index参数的字段写入信息
+``` bash
+# 向使用了index参数的字段写入信息
 PUT my_index/doc/1
 {
  "cookie":"name=alfred"
@@ -340,8 +346,8 @@ PUT my_index/doc/1
 4. `offsets`：记录文档ID、词频TF、分词位置和偏移
 > 其中：text类型默认的配置是positions，其他的比如integer等类型默认为docs，目的是为了节省空间。
 
-``` json
-// index_options参数的使用
+``` bash
+# index_options参数的使用
 PUT my_index
 {
  "mappings":{
@@ -349,7 +355,7 @@ PUT my_index
    "properties":{
     "cookie":{
      "type":"text",
-     "index_options":"offsets"  // 记录文档ID、词频TF、分词位置和偏移
+     "index_options":"offsets"  # 记录文档ID、词频TF、分词位置和偏移
     }
    }
   }
@@ -359,8 +365,8 @@ PUT my_index
 
 #### 3.6 null_value参数的使用：
 当字段遇到空值`null`时的处理策略。默认为`null`，即跳过。此时ES会忽略该值，可通过修改进行默认值的修改：
-``` json
-// 使用null_value修改ES遇到null值时的默认返回值
+``` bash
+# 使用null_value修改ES遇到null值时的默认返回值
 PUT my_index
 {
  "mappings":{
@@ -368,7 +374,7 @@ PUT my_index
    "properties":{
     "cookie":{
      "type":"keyword",
-     "null_value":"NULL"    // 当遇到空值null的时候，返回一个字符串形式的NULL
+     "null_value":"NULL"    # 当遇到空值null的时候，返回一个字符串形式的NULL
     }
    }
   }
@@ -404,12 +410,13 @@ PUT my_index
 #### 3.8 ES的自动类型识别：
 1. Dynamic Mapping：
     + ES可以自动识别文档字段类型，从而降低用户使用成本。
-``` json
-// ES的自动类型识别
+
+``` bash
+# ES的自动类型识别
 PUT my_index/doc/1
 {
- "username":"alfred",    // username字段自动识别为text类型
- "age":20                // age字段自动识别为long类型
+ "username":"alfred",    # username字段自动识别为text类型
+ "age":20                # age字段自动识别为long类型
 }
 ```
 
@@ -426,25 +433,26 @@ PUT my_index/doc/1
 |String   |匹配为日期，则为date类型(默认开启)<br>匹配为数字，则为long类型/float类型(默认关闭)<br>都未匹配，则设为text类型，并附带keyword子字段 |
 
 3. 验证ES的字段类型自动识别：
-``` json
-// 验证ES的字段类型自动识别
+
+``` bash
+# 验证ES的字段类型自动识别
 PUT my_index/doc/1
 {
- "username":"alfred",    // 字符串类型text
- "age":20,               // 整数long
- "bitrh":"1998-10-10",   // 默认识别日期date
- "married":false,        // 布尔类型boolean
- "year":"18"             // 默认不识别数字text
- "tags":["boy","fashion"],// 数组中第一个不为null的元素为字符串类型，所以为text
- "money":100.1           // 浮点类型float
+ "username":"alfred",    # 字符串类型text
+ "age":20,               # 整数long
+ "bitrh":"1998-10-10",   # 默认识别日期date
+ "married":false,        # 布尔类型boolean
+ "year":"18"             # 默认不识别数字text
+ "tags":["boy","fashion"],# 数组中第一个不为null的元素为字符串类型，所以为text
+ "money":100.1           # 浮点类型float
 }
-//  再对my_index进行mapping查询，就会获得每个字段的类型：
+#  再对my_index进行mapping查询，就会获得每个字段的类型：
 ```
 
 #### 3.9 ES中日期类型和数字的自动识别：
 ES中可自行配置日期的格式，默认：["`strict_date_optional_time`","`yyyy/MM/dd HH:mm:ss Z`|| `yyyy/MM/dd z`"]
-``` json
-// 1. 使用dynamic_date_formats自定义日期格式
+``` bash
+# 1. 使用dynamic_date_formats自定义日期格式
 PUT my_index
 {
  "mappings":{
@@ -453,13 +461,13 @@ PUT my_index
   }
  }
 }
-// 写入符合自定义格式的日期数据，可识别为date类型
+# 写入符合自定义格式的日期数据，可识别为date类型
 PUT my_index/doc/1
 {
- "create_time":"01/01/2019"    // create_time字段识别为date类型
+ "create_time":"01/01/2019"    # create_time字段识别为date类型
 }
-// 
-//  2. 使用date_detection可以关闭自动识别日期格式：
+# 
+#  2. 使用date_detection可以关闭自动识别日期格式：
 PUT my_index
 {
  "mappings":{
@@ -468,26 +476,26 @@ PUT my_index
   }
  }
 }
-// 
+# 
 PUT my_index/doc/1
 {
- "create_time":"01/01/2019"    // create_time字段是text类型
+ "create_time":"01/01/2019"    # create_time字段是text类型
 }
-// 
-// ES中可配置数字是否识别，默认关闭：
+# 
+# ES中可配置数字是否识别，默认关闭：
 PUT my_index
 {
  "mappings":{
   "doc":{
-   "numeric_detection":true    // 开启数字自动识别
+   "numeric_detection":true    # 开启数字自动识别
   }
  }
 }
-// 写入数字数据，ES可以自动识别其类型
+# 写入数字数据，ES可以自动识别其类型
 PUT mu_index/doc/1
 {
- "year":"18",    // year字段自动识别为long类型
- "money":"100.1"    // money字段自动识别为float类型
+ "year":"18",    # year字段自动识别为long类型
+ "money":"100.1"    # money字段自动识别为float类型
 }
 ```
 
@@ -498,8 +506,8 @@ PUT mu_index/doc/1
 3. 以long_开头的字段都设为long类型
 4. 自动匹配为double的类型都设为float类型。（为了节省空间）
 
-``` json
-// ES根据自动识别的数据类型、字段名等动态设定字符类型
+``` bash
+# ES根据自动识别的数据类型、字段名等动态设定字符类型
 PUT test_index
 {
  "mappings":{
@@ -507,7 +515,7 @@ PUT test_index
    "dynamic_template":[
     {
      "strings":{
-      // 匹配到所有的字符串类型，全部设为keyword类型
+      # 匹配到所有的字符串类型，全部设为keyword类型
       "match_mapping_type":"string",
       "mapping":{
        "type":"keyword"
@@ -519,6 +527,7 @@ PUT test_index
  }
 }
 ```
+
 **匹配规则**的参数：
 1. `match_mapping_type`：匹配ES自动识别的字段类型，如boolean、long、string等
 2. `match`、`unmatch`：匹配字段名，比如"match":"message*" ===>以message开头的数据
@@ -542,8 +551,9 @@ PUT test_index
 1. **`URI Search`**：操作简单，直接通过命令行方便测试，但仅包含部分查询语法；
     + 如：`GET /my_index/_search?q=username:alfred`
 2. **`Request Body Search`**：ES提供的完备查询语法，使用`Query DSL(Domain Specific Language)`进行查询
-``` json
-// 如：Request Body Search方式进行查询
+
+``` bash
+# 如：Request Body Search方式进行查询
 GET /my_index/_search
 {
  "query":{
@@ -576,7 +586,8 @@ GET /my_index/_search
 
 ##### 4.1.1 URI Search API
 1. 泛查询：
-``` json
+
+``` bash
 GET my_index/_search?q=alfred
 {
  "profile":true #使用profile参数，可以明确地看到ES如何执行的查询条件
@@ -584,54 +595,57 @@ GET my_index/_search?q=alfred
 ```
 
 2. 指定字段查询：
-``` json
-// a.查询字段username中包含alfred的文档
+
+``` bash
+# a.查询字段username中包含alfred的文档
 GET my_index/_search?q=username:alfred
-//
-// b.查询字段username中包含alfred或way的文档
+#
+# b.查询字段username中包含alfred或way的文档
 GET my_index/_search?q=username:alfred way
-//
-// c.查询字段username为"alfred way"的文档
+#
+# c.查询字段username为"alfred way"的文档
 GET my_index/_search?q=username:"alfred way"
-//
-// d.分组后，查询字段username中包含alfred，包含way的文档
+#
+# d.分组后，查询字段username中包含alfred，包含way的文档
 GET my_index/_search?q=username:(alfred way)
-// 这个和b的结果一样，但是区别在于使用分组之后，不进行泛查询。
+# 这个和b的结果一样，但是区别在于使用分组之后，不进行泛查询。
 ```
 
 3. 布尔操作符AND(&&)、OR(||)、NOT(!)、+(must)、-(must_not)
-``` json
-// 查询索引my_index中username包含alfred但是不包含way的文档
+
+``` bash
+# 查询索引my_index中username包含alfred但是不包含way的文档
 GET my_index/_search?q=username:(alfred NOT way)
-//
-// 查询索引my_index中一定包含lee，一定不含alfred，可能有way的文档
+#
+# 查询索引my_index中一定包含lee，一定不含alfred，可能有way的文档
 GET my_index/_search?q=username:(way +lee -alfred)
-// 或写成
+# 或写成
 GET my_index/_search?q=username:((lee && !alfred) || (way && lee && !alfred))
-//
-// 注意：url中，+(加号)会被解析成空格，所以要用 %2B ：
-// 查询索引my_index中一定包含lee，一定不包含alfred，可能包含way的文档
+#
+# 注意：url中，+(加号)会被解析成空格，所以要用 %2B ：
+# 查询索引my_index中一定包含lee，一定不包含alfred，可能包含way的文档
 GET my_index/_search?q=username:(way %2Blee -alfred)
 ```
 
 4. 范围查询（支持数值和日期）
     + 区间写法：闭区间使用`[]`，开区间使用`{}`
-        1. `age:[1 TO 10]`  // 1<= age <=10
-        2. `age:[1 TO 10}`  // 1<= age <10
-        3. `age:[1 TO ]`    // age >=1
-        4. `age:[* TO 10]`  // age <=10
+        1. `age:[1 TO 10]`  # 1<= age <=10
+        2. `age:[1 TO 10}`  # 1<= age <10
+        3. `age:[1 TO ]`    # age >=1
+        4. `age:[* TO 10]`  # age <=10
     + 算数符号写法：
         1. `age:>=1 `
         2. `age:(>=1 && <= 10) / age:(+ >= 1 + <= 10)`
     + 还可以对日期进行范围查询，注意：年/月是从1月1号/1号开始算的：
-``` json
-// a.查询索引my_index中username字段包含alfred_或_年龄大于20的文档
+
+``` bash
+# a.查询索引my_index中username字段包含alfred_或_年龄大于20的文档
 GET my_index/_search?q=username:alfred age>20
-//  
-// b.查询索引my_index中username字段包含alfred_且_年龄大于20的文档
+#  
+# b.查询索引my_index中username字段包含alfred_且_年龄大于20的文档
 GET my_index/_search?q=username:alfred AND age>20
-// 
-// 查询索引my_index中birth字段在1985和1990之间的文档
+# 
+# 查询索引my_index中birth字段在1985和1990之间的文档
 GET my_index/_search?q=birth:(>1985 AND < 1990)
 ```
 
@@ -643,11 +657,12 @@ GET my_index/_search?q=birth:(>1985 AND < 1990)
     * 正则表达式：举例：`/[a]?l.*/`
     * 模糊匹配：`fuzzy query`
     * 近似度查询：`proximity search`
-``` json
-// 模糊匹配。匹配与alfred差一个字符的词，比如：alfreds、alfret等
+
+``` bash
+# 模糊匹配。匹配与alfred差一个字符的词，比如：alfreds、alfret等
 GET my_index/_search?q=username:alfred~1
-//
-// 近似度查询，查询字段username和"alfred way"差n个单词的文档
+#
+# 近似度查询，查询字段username和"alfred way"差n个单词的文档
 GET my_index/_search?q=username:"alfred way" ~5
 ```
 > 使用场景常见于用户输入词的纠错中。
@@ -670,12 +685,13 @@ ES自带的完备查询语句，将查询语句通过`http request body`发送�
 针对`text`类型的字段进行全文检索，会对查询语句进行“先分词再查询”处理，如：`match`、`match_phrase`等
 ###### 4.2.1.1 match query
 1. 对字段进行全文检索(最基本和最常用的查询类型)，举例：
-``` json
+
+``` bash
 GET my_index/_search
 {
   "query":{  
-   "match":{                 // 关键词
-    "username":"alfred way"  // 字段名和查询语句
+   "match":{                 # 关键词
+    "username":"alfred way"  # 字段名和查询语句
    }
   }
 }
@@ -684,22 +700,24 @@ GET my_index/_search
 > 一般的执行流程为： 1.对查询语句分词==>2.根据字段的倒排索引列表，进行匹配算分==>3.汇总得分==>4.根据得分排序，返回匹配文档
 
 2. 使用`operator`参数，可以控制单词间关系，有`and/or`：
-``` json
-// 使用operator参数控制单词间关系
+
+``` bash
+# 使用operator参数控制单词间关系
 GET my_index/_search
 {
  "query":{
   "match":{
    "username":"alfred way",
-   "operator":"and"    // and，同时包含alfred和way
+   "operator":"and"    # and，同时包含alfred和way
   }
  }
 }
 ```
 
 3. 使用`minimum_should_match`参数控制需匹配的单词数
-``` json
-// 使用minimum_should_match参数控制需匹配的单词数
+
+``` bash
+# 使用minimum_should_match参数控制需匹配的单词数
 GET my_index/_search
 {
  "query":{
@@ -723,11 +741,12 @@ GET my_index/_search
     2. `BM25`模型：5.x版本后的默认模型，是对TF/IDF的优化模型。
 
 1. `TF/IDF`模型：在使用kibana进行查询时，使用explain参数，可以查看具体的计算方法。
-``` json
-// 使用explain参数，可以查看具体的相关性的得分是如何计算的
+
+``` bash
+# 使用explain参数，可以查看具体的相关性的得分是如何计算的
 GET my_index/_search
 {
- "explain":true,    // 设置为true
+ "explain":true,    # 设置为true
  "query":{
   "match":{
    "username":"alfred"
@@ -736,8 +755,9 @@ GET my_index/_search
 }
 ```
 > 注意：ES计算相关性得分是根据`shard`进行的，即分片的分数计算相互独立，所以在使用的时候要注意分片数，可以通过设定分片数为1来避免这个问题，主要是为了观察，不代表之后所有的分片全都设为1。一般放在创建索引后，未加数据之前。
-``` json
-// 设定shards数量为1
+
+``` bash
+# 设定shards数量为1
 PUT my_index
 {
  "settings":{
@@ -753,11 +773,12 @@ PUT my_index
 ###### 4.2.1.3 match phrase query
 对字段做全文检索，有顺序要求。
 1. 使用`match——phrase`查询词语
-``` json
+
+``` bash
 GET my_index/_search
 {
  "query":{
-  "match_phrase":{    // 关键词
+  "match_phrase":{    # 关键词
    "job":"java engineer"
   }
  }
@@ -765,14 +786,15 @@ GET my_index/_search
 ```
 
 2. 通过使用`slop`参数，可以控制单词间间隔：
-``` json
+
+``` bash
 GET my_index/_search
 {
  "query":{
   "match_phrase":{
    "job":{
     "query":"java engineer",
-    "slop":"1"    // 关键词，设定单词间隔
+    "slop":"1"    # 关键词，设定单词间隔
    }
   }
  }
@@ -783,7 +805,8 @@ GET my_index/_search
 ###### 4.2.1.4 query string query
 类似于`URI Search`中的q参数查询，举例：
 1. 使用`query_string`查询
-``` json
+
+``` bash
 GET my_index/_search
 {
  "query":{
@@ -793,8 +816,8 @@ GET my_index/_search
   }
  }
 }
-//
-//* 或 */
+#
+#* 或 */
 GET my_index/_search
 {
  "query":{
@@ -808,9 +831,10 @@ GET my_index/_search
 
 
 ###### 4.2.1.5 simple query string query
+
 类似于`query string`，但会忽略错误的查询语法，且仅支持部分查询语句。使用`+，|，-`分别代替`AND，OR，NOT`。
 1. 使用simple query string query
-``` json
+``` bash
 GET my_index/_search
 {
  "query":{
@@ -827,7 +851,8 @@ GET my_index/_search
 ###### 4.2.2.1 term/terms query
 将待查询语句作为整个单词进行查询，不做分词处理，举例：
 1. 使用term进行单查询
-``` json
+
+``` bash
 GET my_index/_search
 {
  "query":{
@@ -839,7 +864,8 @@ GET my_index/_search
 ```
 
 2. 使用terms进行多查询
-``` json
+
+``` bash
 GET my_index/_search
 {
  "query":{
@@ -858,8 +884,9 @@ GET my_index/_search
     + **`lt`**: less than 小于
     + **`lte`**: less than or equal to 小于等于
 1. 对数值的查询
-``` json
-// range query对数值的查询
+
+``` bash
+# range query对数值的查询
 GET my_index/_search
 {
  "query":{
@@ -874,15 +901,16 @@ GET my_index/_search
 ```
 
 2. 对日期的查询
-``` json
-// range query对日期的查询
+
+``` bash
+# range query对日期的查询
 GET my_index/_search
 {
  "query":{
   "range":{
    "birth":{
     "lte":"1988-01-01" 
-    // 或者使用"lte":"now-30y",这种Date Math类型
+    # 或者使用"lte":"now-30y",这种Date Math类型
    }
   }
  }
@@ -891,8 +919,9 @@ GET my_index/_search
 > **`Date Math`类型**：针对日期提供的一种更友好的计算方式。
 > 当前时间用`now`代替，具体时间的引用，需要使用`||`间隔。年、月、日、时、分、秒跟`date`一致：`y、M、w、d、h、m、s`。
 > 举例：
-``` json
-// 假设当前时间为2019-01-02 12:00:00
+
+``` bash
+# 假设当前时间为2019-01-02 12:00:00
 now+1h   =>   2019-01-02 13:00:00
 now-1h   =>   2019-01-02 11:00:00
 now-1h/d =>   2019-01-02 00:00:00
@@ -906,8 +935,8 @@ now-1h/d =>   2019-01-02 00:00:00
 ###### 4.2.3.1 constant_score query
 1. `constant_score query`: 将内部的查询结果文档得分全部设定为1或boost的值。返回的相关性得分全部为1或boost
 
-``` json
-// 使用constant_score query
+``` bash
+# 使用constant_score query
 GET my_index/_Search
 {
  "query":{
@@ -925,12 +954,12 @@ GET my_index/_Search
 1. `filter`: 只过滤符合条件的文档，不计算相关性得分，返回的相关性得分全部为0；
     + `ES`会对`filter`进行智能缓存，因此执行效率较高，在做简单匹配查询且不考虑得分的时候没推荐使用`filter`代替`query`
 
-``` json
-// 使用filter查询
+``` bash
+# 使用filter查询
 GET my_index/_search
 {
  "query":{
-  "bool":{    // 关键词
+  "bool":{    # 关键词
    "filter":[
     "term":{
      "username":"alfred"
@@ -942,8 +971,9 @@ GET my_index/_search
 ```
 
 2. `must`: 文档必须符合`must`中的所有条件，影响相关性得分；
-``` json
-// 使用must进行查询
+
+``` bash
+# 使用must进行查询
 GET my_index/_search
 {
  "query":{
@@ -966,8 +996,9 @@ GET my_index/_search
 ```
 
 3. `must_not`: 文档必须排除must_not中的所有条件； 
-``` json
-// 使用must_not进行查询
+
+``` bash
+# 使用must_not进行查询
 GET my_index/_search
 {
  "query":{
@@ -995,39 +1026,39 @@ GET my_index/_search
     1. `bool`查询中只有`should`，不包含`must`的情况
     2. bool查询中既有should，又包含must的情况，文档不必满足should中的条件，但是如果满足的话则会增加相关性得分。
 
-``` json
-// bool查询中只有should的情况
+``` bash
+# bool查询中只有should的情况
 GET my_index/_search
 {
  "query":{
   "bool":{
    "should":[
     {
-     "term":{"job":"java"}    // 条件1
+     "term":{"job":"java"}    # 条件1
     },
     {
-     "term":{"job":"ruby"}    // 条件3
+     "term":{"job":"ruby"}    # 条件3
     }
     {
-     "term":{"job":"specialist"}    // 条件3
+     "term":{"job":"specialist"}    # 条件3
     }
    ],
-   "minimum_should_match":2    // 至少需要满足两个条件
+   "minimum_should_match":2    # 至少需要满足两个条件
   }
  }
 }
-// 
-// bool查询中同时包含should和must
+# 
+# bool查询中同时包含should和must
 GET my_index/_search
 {
  "query":{
   "bool":{
-   "should":[    // 同时包含should
+   "should":[    # 同时包含should
    {
     "term":{"job":"ruby"}
    }
    ],
-   "must":[    // 同时包含must
+   "must":[    # 同时包含must
    {
     "term":{"usernmae":"alfred"}
    }
@@ -1043,13 +1074,13 @@ GET my_index/_search
 | query   | 查找和查询语句最匹配的文档，<br>并对所有文档计算相关性得分 | query<br>bool中的：must/should |
 | filter   | 查找和查询语句最匹配的文档 | bool中的：filter/must_not<br>constant_score中的：filter |
 
-``` json
-// query和filter上下文
+``` bash
+# query和filter上下文
 GET my_index/_search
 {
  "query":{
   "bool":{
-   "must":[    // query上下文
+   "must":[    # query上下文
    {
     "term":{"title":"Search"}
    },
@@ -1057,7 +1088,7 @@ GET my_index/_search
     "term":{"content":"ElasticSearch"}
    }
    ],
-   "filter":[    // filter上下文
+   "filter":[    # filter上下文
    {
     "term":{"status":"published"}
    },
@@ -1076,9 +1107,9 @@ GET my_index/_search
 
 ###### 4.2.3.3 count API
 `count API`: 获取符合条件的文档书，使用`endpoint：_count`。
-``` json
-// 使用_count获取符合条件的文档数
-GET my_index/_count    // 关键词
+``` bash
+# 使用_count获取符合条件的文档数
+GET my_index/_count    # 关键词
 {
  "query":{
   "match":{
@@ -1092,18 +1123,19 @@ GET my_index/_count    // 关键词
 `Source Filtering`: 过滤返回结果中的`_source`中的字段，主要由以下两种方式：
 1. GET my_index/_search?_source=username #url参数
 2. 使用Request Body Search：
-``` json
-// 不返回_source
+
+``` bash
+# 不返回_source
 GET my_index/_search
 {
  "_source":false
 }
-// 返回_source部分字段
+# 返回_source部分字段
 GET my_index/_search
 {
  "_source":["username","age"]
 }
-// 通配符匹配返回_source部分字段
+# 通配符匹配返回_source部分字段
 GET my_index/_search
 {
  "_source":{

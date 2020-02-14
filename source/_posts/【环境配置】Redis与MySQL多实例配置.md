@@ -13,25 +13,25 @@ categories: 环境配置
 #### 1.1 查看主机Redis信息
 1. 用`ps`命令查看`Redis`进程
 
-``` shell
-[root@localhost ~]# ps -ef |grep redis
+``` bash
+[root@localhost ~] ps -ef |grep redis
 root      1706     1  0  2019 ?        04:12:09 /usr/local/bin/redis-server *:6379                    
 root     18174  2560  0 15:35 pts/0    00:00:00 grep redis
 ```
 
 2. 查找配置文件位置
 
-``` shell
-[root@localhost ~]# locate redis.conf
+``` bash
+[root@localhost ~] locate redis.conf
 /etc/redis.conf
 ```
 
 #### 1.2 拷贝配置文件并修改
 1. 拷贝`redis.conf`并命名为`redis6380.conf`，并修改参数
 
-``` shell
-[root@localhost ~]# cp /etc/redis.conf /etc/redis6380.conf
-[root@localhost ~]# vim /etc/redis6380.conf
+``` bash
+[root@localhost ~] cp /etc/redis.conf /etc/redis6380.conf
+[root@localhost ~] vim /etc/redis6380.conf
 # 查找 /pidfile 找到pid位置
 # pidfile /var/run/redis.pid        #修改pid，每个实例需要运行在不同的pid
 pidfile /var/run/redis6380.pid
@@ -50,18 +50,18 @@ appendonly yes
 
 2. 准备上面配置的文件
 
-``` shell
-[root@localhost ~]# mkdir –p /mnt/newdatadrive/data/redis6380
-[root@localhost ~]# cp /var/run/redis.pid /var/run/redis6380.pid
+``` bash
+[root@localhost ~] mkdir –p /mnt/newdatadrive/data/redis6380
+[root@localhost ~] cp /var/run/redis.pid /var/run/redis6380.pid
 ```
 
 
 #### 1.3 启动测试
 1. 启动`6380`端口`Redis`服务，并查看`Redis`进程
 
-``` shell
-[root@localhost ~]# /usr/local/bin/redis-server /etc/redis6380.conf
-[root@localhost ~]# ps -ef |grep redis
+``` bash
+[root@localhost ~] /usr/local/bin/redis-server /etc/redis6380.conf
+[root@localhost ~] ps -ef |grep redis
 root      1706     1  0  2019 ?        04:12:00 /usr/local/bin/redis-server *:6379         
 root     15967     1  0 12:16 ?        00:00:00 /usr/local/bin/redis-server *:6380             
 root     15994  8014  0 12:16 pts/2    00:00:00 grep redis
@@ -69,14 +69,14 @@ root     15994  8014  0 12:16 pts/2    00:00:00 grep redis
 
 2. 测试登录`Redis`客户端
 
-``` shell
-[root@localhost ~]# redis-cli -p 6380
+``` bash
+[root@localhost ~] redis-cli -p 6380
 127.0.0.1:6380> QUIT     #退出
 ```
 
 3. 停止`6380`端口的`Redis`服务
 
-``` shell
+``` bash
 redis-cli -p 6380 shutdown
 ```
 
@@ -84,8 +84,8 @@ redis-cli -p 6380 shutdown
 #### 1.4 Redis数据迁移
 1. 登录原`Redis`客户端(`6379`)
 
-``` shell
-[root@localhost ~]# redis-cli -p 6379
+``` bash
+[root@localhost ~] redis-cli -p 6379
 127.0.0.1:6379> SAVE             #数据备份
 127.0.0.1:6379> CONFIG GET dir   #查看Redis数据目录
 1) "dir"
@@ -95,36 +95,36 @@ redis-cli -p 6380 shutdown
 
 2. 拷贝数据文件`appendonly.aof`和`dump.rdb`到`6380`
 
-``` shell
+``` bash
 # 查看6379的数据文件
-[root@localhost ~]# cd /mnt/newdatadrive/data/redis && ll
+[root@localhost ~] cd /mnt/newdatadrive/data/redis && ll
 total 55176
 -rw-r--r-- 1 root root 55411226 Feb 11 09:25 appendonly.aof
 -rw-r--r-- 1 root root  1017181 Feb 11 12:28 dump.rdb
 # 拷贝到6380
-[root@localhost ~]# \cp /mnt/newdatadrive/data/redis/appendonly.aof /mnt/newdatadrive/data/redis6380/appendonly.aof
-[root@localhost ~]# \cp /mnt/newdatadrive/data/redis/dump.rdb /mnt/newdatadrive/data/redis6380/dump.rdb
+[root@localhost ~] \cp /mnt/newdatadrive/data/redis/appendonly.aof /mnt/newdatadrive/data/redis6380/appendonly.aof
+[root@localhost ~] \cp /mnt/newdatadrive/data/redis/dump.rdb /mnt/newdatadrive/data/redis6380/dump.rdb
 ```
 
 3. 启动`6380`端口`Redis`服务，导入`AOF`数据文件
 
-``` shell
-[root@localhost ~]# /usr/local/bin/redis-server /etc/redis6380.conf
-[root@localhost ~]# redis-cli -p 6380 --pipe < /mnt/newdatadrive/data/redis6380/appendonly.aof
+``` bash
+[root@localhost ~] /usr/local/bin/redis-server /etc/redis6380.conf
+[root@localhost ~] redis-cli -p 6380 --pipe < /mnt/newdatadrive/data/redis6380/appendonly.aof
 ```
 
 4. 登录`Redis`查看数据
 
-``` shell
-[root@localhost ~]# redis-cli -p 6380
+``` bash
+[root@localhost ~] redis-cli -p 6380
 127.0.0.1:6380>   #输入具体命令查看数据
 ```
 
 #### 1.5 配置远程可访问
 1. 修改配置文件`redis6380.conf`
 
-``` shell
-[root@localhost ~]# vim /etc/redis6380.conf
+``` bash
+[root@localhost ~] vim /etc/redis6380.conf
 # 查找 /bind 找到：bind 127.0.0.1并注释，其它ip地址也可访问
 # bind 127.0.0.1
 # 
@@ -135,27 +135,27 @@ requirepass password123456
 
 2. 开启防火墙的端口号规则（安全组），将`6380`端口号开通
 
-``` shell
-[root@localhost ~]# /sbin/iptables -I INPUT -p tcp --dport 6380 -j ACCEPT
+``` bash
+[root@localhost ~] /sbin/iptables -I INPUT -p tcp --dport 6380 -j ACCEPT
 ```
 
 3. 修改完成后，要在服务里重启`Redis`服务才能使设置生效
 
-``` shell
+``` bash
 /usr/local/bin/redis-server /etc/redis6380.conf
 ```
 
 4. 测试远程访问
 
-``` shell
+``` bash
 C:\Users\zc> redis-cli -h 192.168.111.226 -p 6380 -a password123456
 192.168.111.226:6380>
 ```
 
 5. 停止`6380`的`Redis`服务也需要密码
 
-``` shell
-[root@localhost ~]# redis-cli -p 6380 -a password123456 shutdown
+``` bash
+[root@localhost ~] redis-cli -p 6380 -a password123456 shutdown
 ```
 
 
@@ -164,20 +164,20 @@ C:\Users\zc> redis-cli -h 192.168.111.226 -p 6380 -a password123456
 #### 2.1 查看主机MySQL信息
 1. 查看现有`MySQL`数据库实例占用端口
 
-``` shell
-[root@localhost ~]# netstat -anp | grep mysqld
+``` bash
+[root@localhost ~] netstat -anp | grep mysqld
 tcp6       0      0 :::3306                 :::*                    LISTEN      1089/mysqld         
 unix  2      [ ACC ]     STREAM     LISTENING     20497    1089/mysqld          /var/lib/mysql/mysql.sock
 ```
 
 > **须先关闭单实例，跟多实例会有冲突**
-> - 备份数据：`[root@localhost ~]# mysqldump -P 3306 -u root -p --all-databases > /home/backup/data3306.bak`
-> - 停止单实例服务：`[root@localhost ~]# service mysqld stop`
+> - 备份数据：`[root@localhost ~] mysqldump -P 3306 -u root -p --all-databases > /home/backup/data3306.bak`
+> - 停止单实例服务：`[root@localhost ~] service mysqld stop`
 
 2. 查找配置文件位置
 
-``` shell
-[root@localhost ~]# locate my.cnf
+``` bash
+[root@localhost ~] locate my.cnf
 /etc/my.cnf
 /etc/my.cnf.d
 ```
@@ -185,9 +185,9 @@ unix  2      [ ACC ]     STREAM     LISTENING     20497    1089/mysqld          
 #### 2.2 添加一个3307端口的实例
 1. 拷贝`my.cnf`并命名为`my3307.cnf`，并修改参数，主要修改port,sockt,datadir
 
-``` shell
-[root@localhost ~]# cp /etc/my.cnf /etc/my3307.cnf
-[root@localhost ~]# vi /etc/my3307.cnf
+``` bash
+[root@localhost ~] cp /etc/my.cnf /etc/my3307.cnf
+[root@localhost ~] vi /etc/my3307.cnf
 [mysqld]
 # server端字符集
 character-set-server=utf8
@@ -220,40 +220,40 @@ default-character-set=utf8
 
 2. 初始化数据库
 
-``` shell
+``` bash
 # 写入host避免反解析报错
-[root@localhost ~]# echo "127.0.0.1   `hostname`" >> /etc/hosts && cat /etc/hosts
-[root@localhost ~]# mysqld --defaults-file=/etc/my3307.cnf --initialize-insecure
+[root@localhost ~] echo "127.0.0.1   `hostname`" >> /etc/hosts && cat /etc/hosts
+[root@localhost ~] mysqld --defaults-file=/etc/my3307.cnf --initialize-insecure
 ```
 
 3. 启动`3307`端口`MySQL`服务，并查看`MySQL`进程
 
-``` shell
-[root@localhost ~]# mysqld --defaults-file=/etc/my3307.cnf --user=root &
+``` bash
+[root@localhost ~] mysqld --defaults-file=/etc/my3307.cnf --user=root &
 ```
 
 4. 登录`MySQL`
 
-``` shell
+``` bash
 # 多实例为root增加密码
-[root@localhost ~]# mysqladmin -u root -S /var/lib/mysql/mysql3307.sock password '123qwe'
+[root@localhost ~] mysqladmin -u root -S /var/lib/mysql/mysql3307.sock password '123qwe'
 # 登录
-[root@localhost ~]# mysql -S /var/lib/mysql/mysql3307.sock -p
+[root@localhost ~] mysql -S /var/lib/mysql/mysql3307.sock -p
 ```
 
 5. 停止本实例`MySQL`服务
 
-``` shell
-[root@localhost ~]# mysqladmin -u root -S /var/lib/mysql/mysql3307.sock shutdown
+``` bash
+[root@localhost ~] mysqladmin -u root -S /var/lib/mysql/mysql3307.sock shutdown
 ```
 
 
 #### 2.3 再添加一个3308端口的实例
 1. 拷贝`my.cnf`并命名为`my3308.cnf`，并修改参数，主要修改port,sockt,datadir
 
-``` shell
-[root@localhost ~]# cp /etc/my.cnf /etc/my3308.cnf
-[root@localhost ~]# vi /etc/my3308.cnf
+``` bash
+[root@localhost ~] cp /etc/my.cnf /etc/my3308.cnf
+[root@localhost ~] vi /etc/my3308.cnf
 [mysqld]
 # server端字符集
 character-set-server=utf8
@@ -286,42 +286,42 @@ default-character-set=utf8
 
 2. 初始化数据库
 
-``` shell
-[root@localhost ~]# mysqld --defaults-file=/etc/my3308.cnf --initialize-insecure
+``` bash
+[root@localhost ~] mysqld --defaults-file=/etc/my3308.cnf --initialize-insecure
 ```
 
 3. 启动`3308`端口`MySQL`服务
 
-``` shell
-[root@localhost ~]# mysqld --defaults-file=/etc/my3308.cnf --user=root &
+``` bash
+[root@localhost ~] mysqld --defaults-file=/etc/my3308.cnf --user=root &
 ```
 
 4. 登录`MySQL`
 
-``` shell
+``` bash
 # 多实例为root增加密码
-[root@localhost ~]# mysqladmin -u root -S /var/lib/mysql/mysql3308.sock password '123qwe'
+[root@localhost ~] mysqladmin -u root -S /var/lib/mysql/mysql3308.sock password '123qwe'
 # 登录
-[root@localhost ~]# mysql -S /var/lib/mysql/mysql3308.sock -p
+[root@localhost ~] mysql -S /var/lib/mysql/mysql3308.sock -p
 ```
 
 5. 停止本实例`MySQL`服务
 
-``` shell
-[root@localhost ~]# mysqladmin -u root -S /var/lib/mysql/mysql3308.sock shutdown
+``` bash
+[root@localhost ~] mysqladmin -u root -S /var/lib/mysql/mysql3308.sock shutdown
 ```
 
 
 #### 2.4 实例3307开启远程访问
 1. 开启`3307`端口防火墙
 
-``` shell
-[root@localhost ~]# /sbin/iptables -I INPUT -p tcp --dport 3307 -j ACCEPT
+``` bash
+[root@localhost ~] /sbin/iptables -I INPUT -p tcp --dport 3307 -j ACCEPT
 ```
 
 2. 测试远程访问
 
-``` shell
+``` bash
 C:\Users\zc>mysql -h 192.168.111.227 -P 3307 -u root -p
 Enter password: ******
 ```

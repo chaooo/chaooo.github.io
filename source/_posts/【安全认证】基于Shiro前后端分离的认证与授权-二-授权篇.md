@@ -117,8 +117,8 @@ public class SysServiceImpl implements SysService {
         redisUtil.set(token, token, JwtUtil.getExpireTime());
         return token;
     }
+    /**
      * 用户登录(用户名，密码)
-     *
      * @param account 用户名
      * @param password 密码
      * @return token

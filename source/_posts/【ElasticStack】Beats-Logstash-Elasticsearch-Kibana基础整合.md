@@ -48,7 +48,8 @@ Filebeat由两个主要组件组成：`prospector`和`harvester`。这些组件�
 
 #### 2.2 Filebeat安装与配置
 安装`Filebeat`，创建配置文件`itcast.yml`，控制台运行测试
-``` yml 
+
+``` bash 
 #创建如下配置文件 itcast.yml
 filebeat.inputs:
 - type: stdin  # 标准输入
@@ -62,7 +63,8 @@ output.console: # 输出到控制台
 ```
 
 输入hello运行结果如下：
-``` json
+
+``` bash
 hello
 {
   "@timestamp": "2019-11-23T09:21:19.213Z",
@@ -93,7 +95,8 @@ hello
 
 #### 2.3 读取文件
 创建配置文件`itcast-log.yml`
-``` yml
+
+``` bash
 filebeat.inputs:
 - type: log
   enabled: true
@@ -107,7 +110,8 @@ output.console: # 输出到控制台
 ```
 
 在`/test/`下创建`a.log`文件，并输入如下内容`hello world`,观察`filebeat`输出:
-``` json
+
+``` bash
 {
   "@timestamp": "2019-11-23T09:45:56.379Z",
   "@metadata": {
@@ -161,7 +165,7 @@ output.console: # 输出到控制台
 ```
 
 #### 2.4 自定义字段
-``` yml
+``` bash
 filebeat.inputs:
 - type: log
   enabled: true
@@ -177,7 +181,7 @@ output.console: # 输出到控制台
 ```
 
 #### 2.5 输出到Elasticsearch
-``` yml
+``` bash
 filebeat.inputs:
 - type: log
   enabled: true
@@ -194,7 +198,7 @@ output.elasticsearch: #指定ES的配置
 ```
 
 #### 2.6 读取Nginx日志文件
-``` yml
+``` bash
 filebeat.inputs:
 - type: log
   enabled: true
@@ -210,7 +214,8 @@ output.elasticsearch: #指定ES的配置
 
 #### 2.7 Filebeat的Module
 日志数据的读取与处理可以不用手动配置的，在`Filebeat`中，有大量的`Module`，可以直接使用简化配置。
-``` shell
+
+``` bash
 ./filebeat modules list
 Enabled:
   
@@ -251,22 +256,24 @@ zeek
 ```
 
 可以看到，内置了很多的`module`，但都没有启用，如果需要启用需要进行`enable`操作：
-``` shell
+
+``` bash
 /filebeat modules enable nginx #启动
 ./filebeat modules disable nginx #禁用
 ```
 
 #### 2.8 nginx module与filebeat配置
-``` yml
+``` bash
 - module: nginx
   access:      # Access logs
     enabled: true
     var.paths: ["/usr/local/nginx/logs/access.log*"]
   error:       # Error logs
     enabled: true
-    var.paths: ["/usr/local/nginx/logs/error.log*"]```
+    var.paths: ["/usr/local/nginx/logs/error.log*"]
+```
 
-``` yml
+``` bash
 #vim itcast-nginx.yml
 filebeat.inputs:
 #- type: log
@@ -280,7 +287,8 @@ output.elasticsearch:
   hosts: ["192.168.40.133:9200","192.168.40.134:9200","192.168.40.135:9200"]
 filebeat.config.modules:
   path: ${path.config}/modules.d/*.yml
-  reload.enabled: false```
+  reload.enabled: false
+```
 
 若启动报错，需要在`Elasticsearch`中安装`ingest-user-agent、ingest-geoip`插件
 
@@ -298,7 +306,8 @@ filebeat.config.modules:
 
 #### 3.1 安装配置
 安装Metricbeat，根据实际情况配置文件`metricbeat.yml`
-``` yml
+
+``` bash
 metricbeat.config.modules:
   path: ${path.config}/modules.d/*.yml
   reload.enabled: false
@@ -312,7 +321,8 @@ output.elasticsearch:
 
 启动：`./metricbeat -e`
 查看`module`列表：`./metricbeat modules list`
-``` yml
+
+``` bash
 Enabled:
 system #默认启用
   
@@ -326,7 +336,8 @@ redis
 ```
 
 `system module`默认启用的，其配置:
-``` yml
+
+``` bash
 cat system.yml
 # Module: system
 # Docs: https://www.elastic.co/guide/en/beats/metricbeat/6.5/metricbeat-modulesystem.html
@@ -361,7 +372,8 @@ cat system.yml
 
 #### 3.2 Nginx Module
 在nginx中，需要开启状态查询，才能查询到指标数据。
-``` yml
+
+``` bash
 # 配置nginx
 location /nginx-status {
     stub_status on;
@@ -376,7 +388,8 @@ location /nginx-status {
 
 
 配置`Nginx Module（metricbeat/modules.d/nginx.yml）`
-``` yml
+
+``` bash
 - module: nginx
   metricsets: ["stubstatus"]
   period: 10s
@@ -410,7 +423,8 @@ location /nginx-status {
 
 #### 4.3 安装配置
 下载`Logstash`并解压，配置有三部分，如下：
-``` conf
+
+``` bash
 input { #输入
 stdin { ... } #标准输入
 }
@@ -425,7 +439,8 @@ stdout { ... } #标准输出
 #### 4.4 读取自定义日志
 1. 日志结构：`2019-11-23 21:21:21|ERROR|读取数据出错|参数：id=1002`，日志中的内容是使用`“|”`进行分割的，使用，我们在处理的时候，也需要对数据做分割处理。
 2. 编写配置文件
-``` conf
+
+``` bash
 #vim itcast-pipeline.conf
 input {
   file {
@@ -444,7 +459,8 @@ output {
 ```
 
 3. 启动测试
-``` conf
+
+``` bash
 #启动
 ./bin/logstash -f ./itcast-pipeline.conf
 #写日志到文件
@@ -465,7 +481,8 @@ echo "2019-11-23 21:21:21|ERROR|读取数据出错|参数：id=1002" >> app.log
 ```
 
 4. 输出到`Elasticsearch`配置
-``` conf
+
+``` bash
 output {
   elasticsearch {
     hosts => [ "192.168.40.133:9200","192.168.40.134:9200","192.168.40.135:9200"]
@@ -475,14 +492,15 @@ output {
 
 
 ### 5. Elasticsearch + Logstash + Beats + Kibana基础整合
-``` conf
+``` bash
            (读取)          (发送)           (写入)                (读取)
 【日志文件】<----【FileBeat】---->【Logstash】---->【Elasticsearch】<----【Kibana】
 
 ```
 
 1. `Filebeat`配置与启动：
-``` yml
+
+``` bash
 #vim itcast-dashboard.yml
 filebeat.inputs:
 - type: log
@@ -499,7 +517,8 @@ output.logstash:
 ```
 
 2. `Logstash`配置与启动：
-``` conf
+
+``` bash
 #vim itcast-dashboard.conf
 input {
   beats {
@@ -536,7 +555,8 @@ output {
 ```
 
 3. `ElasticSearch`启动与`Kibana`启动：
-``` conf
+
+``` bash
 # ElasticSearch默认端口:9200
 bin/elasticsearch 
 # kibana默认端口:5601

@@ -42,7 +42,7 @@ RDB是一种快照存储持久化方式，具体就是将Redis某一时刻的内
 - 开启RDB持久化方式一：save命令，或bgsave(异步)
 - 开启方式二：在Redis配置文件redis.conf配置，配置完后启动时加载：`redis-server redis.conf`
 
-``` conf
+``` json
 save 900 1     # 900s内至少达到一条写命令
 save 300 10    # 300s内至少达至10条写命令
 save 60 10000  # 60s内至少达到10000条写命令
@@ -62,7 +62,7 @@ save 60 10000  # 60s内至少达到10000条写命令
 与RDB存储某个时刻的快照不同，AOF持久化方式会记录客户端对服务器的每一次写操作命令（以日志的形式），并将这些写操作以Redis协议追加保存到以后缀为aof文件末尾，在Redis服务器重启时，会加载并运行aof文件的命令，以达到恢复数据的目的。
 - 开启方式：在Redis配置文件redis.conf配置
 
-``` conf
+``` json
 appendonly yes                  # 开启aof机制
 appendfilename "appendonly.aof" # aof文件名
 # 写入策略,always表示每个写操作都保存到aof文件中,也可以是everysec(每秒写入一次)或no(操作系统处理)
