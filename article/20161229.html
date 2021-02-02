@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>【Hexo博客折腾】BlueLake博客主题的详细配置 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-【Hexo博客折腾】BlueLake博客主题的详细配置" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      【Hexo博客折腾】BlueLake博客主题的详细配置
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+        <span class='article-top'>【已置顶】</span>
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2016-12-29T03:25:33.000Z" itemprop="datePublished">2016年12月29日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/hexo/">Hexo博客折腾</a>
+  </div>
+
+      <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+<a href="/article/20161229.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3><span id="开始之前">开始之前</span></h3><p><a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake">BlueLake主题</a>写了有一段时间了，经常会有朋友发消息给我问一些配置的问题，这篇博文主要也是为了解决这些问题。主题以简洁轻量自居(实则简陋)，去掉了Jquery和Fancybox,用原生JS实现站内搜索功能。这个主题只是一个小小的雏形，期待您来帮助它成长。</p>
+<a id="more"></a>
+<p>在阅读本文之前，假定您已经成功安装了<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/">Hexo</a>，并使用 Hexo 提供的命令创建了一个静态博客。Hexo是一个快速、简洁且高效的博客框架。Hexo基于Node.js ，使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。</p>
+<blockquote>
+<p>需要特别注意的是Hexo有两个<code>_config.yml</code>配置文件，一份位于站点根目录下，主要包含 Hexo 站点本身的配置，下文中会称为**<code>根_config.yml</code><strong>；另一份位于主题目录下（themes/主题名/_config.yml），这份配置由主题作者提供，主要用于配置主题相关的选项,下文中会称为</strong><code>主题_config.yml</code>**。</p>
+</blockquote>
+<h3><span id="1-安装">1. 安装</span></h3><p>您可以直接到<a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake">BlueLake发布页</a>下载，然后解压拷贝到<code>themes</code>目录下，修改配置即可。<br>不过我还是推荐使用<code>GIT</code>来checkout代码，之后也可以通过<code>git pull</code>来快速更新。</p>
+<h4><span id="11-安装主题">1.1 安装主题</span></h4><p>在根目录下打开终端窗口：</p>
+<figure class="highlight bash"><figcaption><span>git bash</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/chaooo/hexo-theme-BlueLake.git themes/BlueLake</span><br></pre></td></tr></table></figure>
+<h4><span id="12-安装主题渲染器">1.2 安装主题渲染器</span></h4><p>BlueLake是基于<code>jade</code>和<code>stylus</code>写的，所以需要安装<code>hexo-renderer-jade</code>和<code>hexo-renderer-stylus</code>来渲染。</p>
+<figure class="highlight bash"><figcaption><span>git bash</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-renderer-jade@0.3.0 --save</span><br><span class="line">$ npm install hexo-renderer-stylus --save</span><br></pre></td></tr></table></figure>
+<h4><span id="13-启用主题">1.3 启用主题</span></h4><p>打开<code>根_config.yml</code>配置文件，找到theme字段，将其值改为<code>BlueLake</code>(先确认主题文件夹名称是否为BlueLake)。</p>
+<figure class="highlight yml"><figcaption><span>根_config.yml</span><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/configuration.html">_config.yml</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">theme:</span> <span class="string">BlueLake</span></span><br></pre></td></tr></table></figure>
+<h4><span id="14-验证">1.4 验证</span></h4><p>首先启动 Hexo 本地站点，并开启调试模式：</p>
+<figure class="highlight bash"><figcaption><span>git bash</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo s --debug</span><br></pre></td></tr></table></figure>
+<p>在服务启动的过程，注意观察命令行输出是否有任何异常信息，如果你碰到问题，这些信息将帮助他人更好的定位错误。 当命令行输出中提示出：<code>INFO  Hexo is running at http://0.0.0.0:4000/. Press Ctrl+C to stop.</code><br>此时即可使用浏览器访问 <code>http://localhost:4000</code>，检查站点是否正确运行。</p>
+<h4><span id="15-更新主题">1.5 更新主题</span></h4><p>今后若主题添加了新功能正是您需要的，您可以直接<code>git pull</code>来更新主题。</p>
+<figure class="highlight bash"><figcaption><span>git bash</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> themes/BlueLake</span><br><span class="line">git pull</span><br></pre></td></tr></table></figure>
+<h3><span id="2-配置">2. 配置</span></h3><h4><span id="21-配置网站头部显示文字">2.1 配置网站头部显示文字</span></h4><p>打开<code>根_config.yml</code>，找到：</p>
+<figure class="highlight yml"><figcaption><span>根_config.yml</span><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/configuration.html">_config.yml</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">title:</span> </span><br><span class="line"><span class="attr">subtitle:</span> </span><br><span class="line"><span class="attr">description:</span> </span><br><span class="line"><span class="attr">author:</span> </span><br></pre></td></tr></table></figure>
+<p><code>title</code>和<code>subtitle</code>分别是网站主标题和副标题，会显示在网站头部；<code>description</code>在网站界面不会显示，内容会加入网站源码的<code>meta</code>标签中，主要用于SEO；<code>author</code>就填写网站所有者的名字，会在网站底部的<code>Copyright</code>处有所显示。</p>
+<h4><span id="22-设置语言">2.2 设置语言</span></h4><p>该主题目前有七种语言：简体中文（zh-CN），繁体中文（zh-TW），英语（en），法语（fr-FR），德语（de-DE），韩语 （ko）,西班牙语（es-ES）；例如选用简体中文，在<code>根_config.yml</code>配置如下：</p>
+<figure class="highlight yml"><figcaption><span>根_config.yml</span><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/configuration.html">_config.yml</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">language:</span> <span class="string">zh-CN</span></span><br></pre></td></tr></table></figure>
+<h4><span id="23-设置菜单">2.3 设置菜单</span></h4><p>打开<code>主题_config.yml</code>，找到：</p>
+<figure class="highlight yml"><figcaption><span>主题_config.yml</span><a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake/blob/master/_config.yml">themes/BlueLake/_config.yml</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">menu:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">page:</span> <span class="string">home</span></span><br><span class="line">    <span class="attr">directory:</span> <span class="string">.</span></span><br><span class="line">    <span class="attr">icon:</span> <span class="string">fa-home</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">page:</span> <span class="string">archive</span></span><br><span class="line">    <span class="attr">directory:</span> <span class="string">archives/</span></span><br><span class="line">    <span class="attr">icon:</span> <span class="string">fa-archive</span></span><br><span class="line">  <span class="comment"># - page: about</span></span><br><span class="line">  <span class="comment">#   directory: about/</span></span><br><span class="line">  <span class="comment">#   icon: fa-user</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">page:</span> <span class="string">rss</span></span><br><span class="line">    <span class="attr">directory:</span> <span class="string">atom.xml</span></span><br><span class="line">    <span class="attr">icon:</span> <span class="string">fa-rss</span></span><br></pre></td></tr></table></figure>
+<p>主题默认是展示四个菜单，即<code>主页home</code>，<code>归档archive</code>，<code>关于about</code>，<code>订阅RSS</code>；about需要手动添加，RSS需要安装插件，若您并不需要，可以直接注释掉。<br>每个页面底部的<code>footer</code>中<code>联系博主</code>的三个图标分别是<code>邮箱</code>，<code>微博主页链接地址</code>，<code>GitHUb个人页链接地址</code>，直接使用<code>主题_config.yml</code>中<code>about页面</code>的配置，若不需要about页面，只需要如下配置就好：</p>
+<figure class="highlight yml"><figcaption><span>主题_config.yml</span><a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake/blob/master/_config.yml">themes/BlueLake/_config.yml</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># About page </span></span><br><span class="line"><span class="attr">about:</span></span><br><span class="line">  <span class="attr">email:</span> <span class="comment">## 个人邮箱 </span></span><br><span class="line">  <span class="attr">weibo_url:</span> <span class="comment">## 微博主页链接地址</span></span><br><span class="line">  <span class="attr">github_url:</span> <span class="comment">## github主页链接地址</span></span><br></pre></td></tr></table></figure>
+<h5><span id="231-添加about页">2.3.1 添加about页</span></h5><p>此主题默认page页面是关于我页面的布局，在根目录下打开命令行窗口，生成一个关于我页面：</p>
+<figure class="highlight bash"><figcaption><span>git bash</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new page <span class="string">&#x27;about&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>打开<code>主题_config.yml</code>，补全关于我页面的详细信息：</p>
+<figure class="highlight yml"><figcaption><span>主题_config.yml</span><a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake/blob/master/_config.yml">themes/BlueLake/_config.yml</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># About page </span></span><br><span class="line"><span class="attr">about:</span></span><br><span class="line">  <span class="attr">photo_url:</span> <span class="comment">## 头像的链接地址</span></span><br><span class="line">  <span class="attr">email:</span> <span class="comment">## 个人邮箱 </span></span><br><span class="line">  <span class="attr">weibo_url:</span> <span class="comment">## 微博主页链接地址</span></span><br><span class="line">  <span class="attr">weibo_name:</span> <span class="comment">## 微博用户名 </span></span><br><span class="line">  <span class="attr">github_url:</span> <span class="comment">## github主页链接地址</span></span><br><span class="line">  <span class="attr">github_name:</span> <span class="comment">## github用户名</span></span><br></pre></td></tr></table></figure>
+<p>当然您也可以自定义重新布局about页面，只需要修改<code>layout/page.jade</code>模板就好。</p>
+<h5><span id="232-安装-rss订阅-和-sitemap网站地图-插件">2.3.2 安装 RSS(订阅) 和 sitemap(网站地图) 插件</span></h5><p>在根目录下打开命令行窗口：</p>
+<figure class="highlight bash"><figcaption><span>git bash</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-generator-feed --save</span><br><span class="line">$ npm install hexo-generator-sitemap --save</span><br><span class="line">$ npm install hexo-generator-baidu-sitemap --save</span><br></pre></td></tr></table></figure>
+<p>添加<code>主题_config.yml</code>配置：</p>
+<figure class="highlight yml"><figcaption><span>主题_config.yml</span><a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake/blob/master/_config.yml">themes/BlueLake/_config.yml</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">Plugins:</span></span><br><span class="line">  <span class="string">hexo-generator-feed</span></span><br><span class="line">  <span class="string">hexo-generator-sitemap</span></span><br><span class="line">  <span class="string">hexo-generator-baidu-sitemap</span></span><br><span class="line"></span><br><span class="line"><span class="attr">feed:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">atom</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">atom.xml</span></span><br><span class="line">  <span class="attr">limit:</span> <span class="number">20</span></span><br><span class="line"></span><br><span class="line"><span class="attr">sitemap:</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">sitemap.xml</span></span><br><span class="line"><span class="attr">baidusitemap:</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">baidusitemap.xml</span></span><br></pre></td></tr></table></figure>
+<h4><span id="24-添加本地搜索">2.4 添加本地搜索</span></h4><p>默认本地搜索是用原生JS写的，但还需要HEXO插件创建的JSON数据文件配合。安装插件<a target="_blank" rel="noopener" href="https://github.com/alexbruno/hexo-generator-json-content">hexo-generator-json-content</a>来创建JSON数据文件：</p>
+<figure class="highlight bash"><figcaption><span>git bash</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-generator-json-content@2.2.0 --save</span><br></pre></td></tr></table></figure>
+<p>然后在<code>根_config.yml</code>添加配置：</p>
+<figure class="highlight yml"><figcaption><span>根_config.yml</span><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/configuration.html">_config.yml</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">jsonContent:</span></span><br><span class="line">  <span class="attr">meta:</span> <span class="literal">false</span></span><br><span class="line">  <span class="attr">pages:</span> <span class="literal">false</span></span><br><span class="line">  <span class="attr">posts:</span></span><br><span class="line">    <span class="attr">title:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">date:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">path:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">text:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">raw:</span> <span class="literal">false</span></span><br><span class="line">    <span class="attr">content:</span> <span class="literal">false</span></span><br><span class="line">    <span class="attr">slug:</span> <span class="literal">false</span></span><br><span class="line">    <span class="attr">updated:</span> <span class="literal">false</span></span><br><span class="line">    <span class="attr">comments:</span> <span class="literal">false</span></span><br><span class="line">    <span class="attr">link:</span> <span class="literal">false</span></span><br><span class="line">    <span class="attr">permalink:</span> <span class="literal">false</span></span><br><span class="line">    <span class="attr">excerpt:</span> <span class="literal">false</span></span><br><span class="line">    <span class="attr">categories:</span> <span class="literal">false</span></span><br><span class="line">    <span class="attr">tags:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<p>最后在<code>主题_config.yml</code>添加配置：</p>
+<figure class="highlight yml"><figcaption><span>主题_config.yml</span><a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake/blob/master/_config.yml">themes/BlueLake/_config.yml</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">local_search:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<h4><span id="25-修改站点图标">2.5 修改站点图标</span></h4><p>站点图标存放在主题的<code>Source</code>目录下，已经默认为您准备了两张图片。您也可以自己设计站点LOGO。<br>您需要准备一张ico格式并命名为** favicon.ico <strong>，请将其放入hexo目录的<code>source</code>文件夹，建议大小：32px X 32px。<br>您需要为苹果设备添加网站徽标，请命名为</strong> apple-touch-icon.png **的图像放入hexo目录的“source”文件夹中，建议大小为：114px X 114px。<br>(有很多网站都可以在线生成ico格式的图片。)</p>
+<h4><span id="26-添加站点关键字">2.6 添加站点关键字</span></h4><p>请在hexo目录的<code>根_config.yml</code>中添加keywords字段，如：</p>
+<figure class="highlight yml"><figcaption><span>根_config.yml</span><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/configuration.html">_config.yml</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Site</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">Hexo</span></span><br><span class="line"><span class="attr">subtitle:</span> <span class="string">副标题</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">网站简要描述,如：Charles·Zheng&#x27;s</span> <span class="string">blog.</span></span><br><span class="line"><span class="attr">keywords:</span> <span class="string">网站关键字,</span> <span class="string">key,</span> <span class="string">key1,</span> <span class="string">key2,</span> <span class="string">key3</span></span><br><span class="line"><span class="attr">author:</span> <span class="string">Charles</span></span><br><span class="line"><span class="attr">language:</span> <span class="string">zh-CN</span></span><br></pre></td></tr></table></figure>
+<h4><span id="27-首页添加文章置顶">2.7 首页添加文章置顶</span></h4><p>在根目录下打开命令行窗口安装：</p>
+<figure class="highlight bash"><figcaption><span>git bash</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ npm uninstall hexo-generator-index --save</span><br><span class="line">$ npm install hexo-generator-index-pin-top --save</span><br></pre></td></tr></table></figure>
+<p>然后在需要置顶的文章的Front-matter中加上top: true即可。</p>
+<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: BlueLake博客主题的详细配置</span><br><span class="line">tags: [hexo,BlueLake]</span><br><span class="line">categories: Hexo博客折腾</span><br><span class="line">top: true</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+<h4><span id="28-更换主题背景和添加文章版权信息">2.8 更换主题背景和添加文章版权信息</span></h4><p>更换主题背景为深色</p>
+<figure class="highlight yml"><figcaption><span>主题_config.yml</span><a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake/blob/master/_config.yml">themes/BlueLake/_config.yml</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Theme tone</span></span><br><span class="line"><span class="attr">dark:</span> <span class="literal">true</span> <span class="comment">#true/false</span></span><br></pre></td></tr></table></figure>
+<p>添加文章版权信息</p>
+<figure class="highlight yml"><figcaption><span>主题_config.yml</span><a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake/blob/master/_config.yml">themes/BlueLake/_config.yml</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Theme tone</span></span><br><span class="line"><span class="comment">#Copyright</span></span><br><span class="line"><span class="attr">copyright:</span> </span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span> <span class="comment">#true/false  </span></span><br><span class="line">  <span class="attr">describe:</span> <span class="string">转载请注明出处(必须保留原文作者署名原文链接)</span> <span class="comment">#自定义描述替换默认描述</span></span><br></pre></td></tr></table></figure>
+<h4><span id="29-其他配置">2.9 其他配置</span></h4><p><code>主题_config.yml</code>的其他配置</p>
+<ol>
+<li><code>show_category_count</code>——是否显示分类下的文章数。</li>
+<li><code>widgets_on_small_screens</code>——是否在小屏显示侧边栏，若<code>true</code>,则侧边栏挂件将显示在底部。<figure class="highlight yml"><figcaption><span>主题_config.yml</span><a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake/blob/master/_config.yml">themes/BlueLake/_config.yml</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">show_category_count:</span> <span class="literal">true</span> </span><br><span class="line"><span class="attr">widgets_on_small_screens:</span> <span class="literal">true</span> </span><br></pre></td></tr></table></figure>
+<h3><span id="3集成第三方服务">3.集成第三方服务</span></h3></li>
+</ol>
+<h4><span id="31-添加评论">3.1 添加评论</span></h4><p>目前主题集成六种第三方评论，分别是<a target="_blank" rel="noopener" href="http://duoshuo.com/">多说评论</a>、<a target="_blank" rel="noopener" href="https://disqus.com/">Disqus评论</a>、<a target="_blank" rel="noopener" href="https://livere.com/">来必力评论</a>、<a target="_blank" rel="noopener" href="http://www.uyan.cc/">友言评论</a>、<a target="_blank" rel="noopener" href="https://gentie.163.com/info.html">网易云跟帖评论</a>、<a target="_blank" rel="noopener" href="http://changyan.kuaizhan.com/">畅言评论</a>、基于Github Issue的<a target="_blank" rel="noopener" href="https://gitalk.github.io/">GITALK</a>，推荐<a target="_blank" rel="noopener" href="https://gitalk.github.io/">gitalk</a>。</p>
+<ol>
+<li>需要 GitHub Application，如果没有<a target="_blank" rel="noopener" href="https://github.com/settings/applications/new">点击这里申请</a>。</li>
+</ol>
+<ul>
+<li>Application name： 应用名称，随意</li>
+<li>Homepage URL： 网站URL，对应自己博客地址</li>
+<li>Application description ：描述，随意</li>
+<li>Authorization callback URL：# 网站URL，博客地址就好</li>
+<li>点击注册，页面会出现其中<strong>Client ID</strong>和<strong>Client Secret</strong>在后面的配置中需要用到</li>
+</ul>
+<ol start="2">
+<li><p>配置<code>主题_config.yml</code>：</p>
+<figure class="highlight yml"><figcaption><span>主题_config.yml</span><a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake/blob/master/_config.yml">themes/BlueLake/_config.yml</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#Cmments</span></span><br><span class="line"><span class="attr">comment:</span></span><br><span class="line">  <span class="attr">gitalk:</span></span><br><span class="line">    <span class="attr">enable:</span> <span class="literal">true</span> <span class="comment">## 开启gitalk</span></span><br><span class="line">    <span class="attr">owner:</span> <span class="comment">## GitHub的用户名</span></span><br><span class="line">    <span class="attr">repo:</span> <span class="comment">## 此评论存放的GitHub仓库</span></span><br><span class="line">    <span class="attr">client_id:</span> <span class="comment">## 复制刚才生成的clientID，例如. 75752dafe7907a897619</span></span><br><span class="line">    <span class="attr">client_secret:</span> <span class="comment">## 复制刚才生成的clientSecret，例如. ec2fb9054972c891289640354993b662f4cccc50</span></span><br><span class="line">    <span class="attr">admin:</span> <span class="comment">## Github的用户名</span></span><br><span class="line">    <span class="attr">language:</span> <span class="string">zh-CN</span> <span class="comment">## Language</span></span><br><span class="line">    <span class="attr">pagerDirection:</span> <span class="string">last</span> <span class="comment"># Comment sorting direction, available values are last and first.</span></span><br></pre></td></tr></table></figure>
+<h4><span id="32-百度统计">3.2 百度统计</span></h4></li>
+<li><p>登录<a target="_blank" rel="noopener" href="http://tongji.baidu.com/">百度统计</a>，定位到站点的代码获取页面。</p>
+</li>
+<li><p>复制<code>//hm.baidu.com/hm.js?</code>后面那串统计脚本id(假设为：8006843039519956000)</p>
+</li>
+<li><p>配置<code>主题_config.yml</code>:</p>
+<figure class="highlight yml"><figcaption><span>主题_config.yml</span><a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake/blob/master/_config.yml">themes/BlueLake/_config.yml</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">baidu_analytics:</span> <span class="number">8006843039519956000</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意： <code>baidu_analytics</code>不是你的百度<code>id</code>或者百度统计<code>id</code><br>如若使用谷歌统计，配置方法与百度统计类似。</p>
+</blockquote>
+</li>
+</ol>
+<h4><span id="33-卜算子阅读次数统计">3.3 卜算子阅读次数统计</span></h4><figure class="highlight yml"><figcaption><span>主题_config.yml</span><a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake/blob/master/_config.yml">themes/BlueLake/_config.yml</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">busuanzi:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<p>若设置为<code>true</code>将计算文章的阅读量(Hits)，并显示在文章标题下的<code>小手图标</code>旁。</p>
+<h4><span id="34-微博秀">3.4 微博秀</span></h4><p>微博秀挂件的代码放在<code>layout/_widget/weibo.jade</code>下，需要您去<a target="_blank" rel="noopener" href="http://open.weibo.com/">微博开放平台</a>获取您自己的微博秀代码来替换。</p>
+<ol>
+<li>登录<a target="_blank" rel="noopener" href="http://open.weibo.com/">微博开放平台</a>，选择微博秀。</li>
+<li>为了与主题风格统一，作如下配置</li>
+</ol>
+<ul>
+<li>基础设置：高<code>400px</code>；勾选宽度自适应；颜色选择<code>白色</code>；</li>
+<li>样式设置：主字色<code>#333</code>；链接色<code>#40759b</code>；鼠标悬停色<code>#f7f8f8</code>；</li>
+<li>模块设置：去掉<code>标题</code>、<code>边框</code>、<code>粉丝</code>的勾选框，只留<code>微博</code>。</li>
+</ul>
+<ol start="3">
+<li>复制代码里<code>src=&quot;&quot;</code>里引号包裹的内容，替换到<code>layout/_widget/weibo.jade</code><figure class="highlight stylus"><figcaption><span>weibo.jade</span><a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake/blob/master/layout/_widget/weibo.jade">layout/_widget/weibo.jade</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line marked">.widget</span><br><span class="line">  .widget-title</span><br><span class="line">    i(class=<span class="string">&#x27;fa fa-weibo&#x27;</span>)= <span class="string">&#x27; &#x27;</span> + __(<span class="string">&#x27;新浪微博&#x27;</span>)</span><br><span class="line">  iframe(<span class="attribute">width</span>=<span class="string">&quot;100%&quot;</span>,height=<span class="string">&quot;400&quot;</span>,class=<span class="string">&quot;share_self&quot;</span>,frameborder=<span class="string">&quot;0&quot;</span>,scrolling=<span class="string">&quot;no&quot;</span>,src=<span class="string">&quot;http://widget.weibo.com/weiboshow/index.php?language=&amp;width=0&amp;height=400&amp;fansRow=2&amp;ptype=1&amp;speed=0&amp;skin=5&amp;isTitle=0&amp;noborder=0&amp;isWeibo=1&amp;isFans=0&amp;uid=1700139362&amp;verifier=85be6061&amp;colors=d6f3f7,ffffff,333,40759b,f7f8f8&amp;dpc=1&quot;</span>)</span><br></pre></td></tr></table></figure>
+这只是为了和主题的风格统一，当然您也可以自由随意发挥。<blockquote>
+<p>注意：最主要是是要把<code>src</code>里<code>uid=</code>和<code>verifier=</code>后面的字段替换为您自己代码里的就好。</p>
+</blockquote>
+</li>
+</ol>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">开始之前</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">1. 安装</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.1 安装主题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.2 安装主题渲染器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.3 启用主题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.4 验证</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.5 更新主题</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">2. 配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.1 配置网站头部显示文字</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.2 设置语言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.3 设置菜单</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">2.3.1 添加about页</span></a></li><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">2.3.2 安装 RSS(订阅) 和 sitemap(网站地图) 插件</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.4 添加本地搜索</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.5 修改站点图标</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.6 添加站点关键字</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.7 首页添加文章置顶</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.8 更换主题背景和添加文章版权信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.9 其他配置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">3.集成第三方服务</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">3.1 添加评论</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">3.2 百度统计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">3.3 卜算子阅读次数统计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">3.4 微博秀</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/article/20161229.html">http://chaooo.github.io/article/20161229.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+    <div class="article-reward">
+        <a id="reward-btn" href="javascript:;">打赏</a>
+        <div id="reward-content">
+            <h6 class="reward-tit">“感谢你的支持，我会继续努力！”</h6>
+            <div>
+                <div class="reward-code">
+                    <img class="type-code" src="/css/images/wechat.jpg" alt="微信支付">
+                    <img class="er-code" src="/css/images/wechat-pay.jpg" alt="微信收款码">
+                </div>
+                <div class="reward-code">
+                    <img class="type-code" src="/css/images/alipay.jpg" alt="支付宝支付">
+                    <img class="er-code" src="/css/images/alipay-pay.jpg" alt="支付宝收款码">
+                </div>
+            </div>
+            <p class="reward-desc">扫码打赏，感谢支持</p>
+        </div>
+    </div>
+
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/article/20170407.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          【Java教程】语法入门
+        
+      </div>
+    </a>
+  
+  
+    <a href="/article/20161109.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">【Hexo博客折腾】自定义HEXO站内搜索Javascript+json</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+  
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/article/20200211.html">【环境配置】Redis与MySQL多实例配置</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200207.html">【安全认证】基于Shiro前后端分离的认证与授权(三.前端篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200121.html">【安全认证】基于Shiro前后端分离的认证与授权(二.授权篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200118.html">【安全认证】基于Shiro前后端分离的认证与授权(一.认证篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20191222.html">【安全认证】Shiro安全框架入门</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 11.11px;">BlueLake</a> <a href="/tags/ElasticSearch/" style="font-size: 13.33px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 13.33px;">ElasticStack</a> <a href="/tags/Java/" style="font-size: 18.89px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Kibana/" style="font-size: 13.33px;">Kibana</a> <a href="/tags/LogStash/" style="font-size: 13.33px;">LogStash</a> <a href="/tags/Redis/" style="font-size: 12.22px;">Redis</a> <a href="/tags/Spring/" style="font-size: 17.78px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 12.22px;">SpringBoot</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 13.33px;">hexo</a> <a href="/tags/java/" style="font-size: 16.67px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/sublime/" style="font-size: 10px;">sublime</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/ssafe/" style="font-size: 14.44px;">安全认证</a> <a href="/tags/tool/" style="font-size: 11.11px;">工具</a> <a href="/tags/concurrent/" style="font-size: 13.33px;">并发编程</a> <a href="/tags/open-source/" style="font-size: 10px;">开源</a> <a href="/tags/db/" style="font-size: 15.56px;">数据库</a> <a href="/tags/other/" style="font-size: 10px;">杂谈</a> <a href="/tags/env/" style="font-size: 11.11px;">环境配置</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客折腾</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">Java知识梳理</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/other/">杂谈</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年10月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015年12月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sublime/" rel="tag">sublime</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssafe/" rel="tag">安全认证</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tool/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/open-source/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/other/" rel="tag">杂谈</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-link"></i> 友情链接</h3>
+    <div class="widget">
+      <ul>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://github.com/chaooo">chaooo</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake">BlueLake主题</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://weibo.com/zhengchaooo">秋过冬漫长</a>
+        </li>
+      
+      </ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2021 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        
+            <span>Count by <a href="http://busuanzi.ibruce.info/" target="_blank">busuanzi.</a></span>
+        
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'de8b7f88cfa9812e15f93e986181d1c2194ba6e8',
+      repo: 'BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

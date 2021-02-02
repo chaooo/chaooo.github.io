@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>【ElasticStack】Beats+Logstash+Elasticsearch+Kibana基础整合 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-【ElasticStack】Beats-Logstash-Elasticsearch-Kibana基础整合" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      【ElasticStack】Beats+Logstash+Elasticsearch+Kibana基础整合
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2019-11-23T14:29:59.000Z" itemprop="datePublished">2019年11月23日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/ElasticStack/">ElasticStack</a>
+  </div>
+
+      <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+<a href="/article/20191123.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3><span id="1-elasticstack的组成">1. ElasticStack的组成</span></h3><ol>
+<li>**<code>Beats</code>**：数据采集</li>
+<li><strong><code>LogStash</code></strong>: 数据处理</li>
+<li><strong><code>ElasticSearch</code></strong>(核心引擎): 数据存储、查询和分析</li>
+<li><strong><code>Kibana</code></strong>: 数据探索与可视化分析<a id="more"></a>
+
+</li>
+</ol>
+<p><img src="http://cdn.chaooo.top/Java/elastic-stream.jpg"></p>
+<h3><span id="2-filebeat">2. Filebeat</span></h3><p><code>Filebeat</code>是本地文件的轻量型日志数据采集器。<br><code>Beats</code>可以直接（或者通过<code>Logstash</code>）将数据发送到<code>Elasticsearch</code>，在那里你可以进一步处理和增强数据，然后在<code>Kibana</code>中将其可视化。</p>
+<h4><span id="21-filebeat工作原理">2.1 Filebeat工作原理</span></h4><p>Filebeat由两个主要组件组成：<code>prospector</code>和<code>harvester</code>。这些组件一起工作来读取文件（tail file）并将事件数据发送到您指定的输出</p>
+<ul>
+<li>**<code>Harvester</code>**：<ul>
+<li>负责<strong>读取单个文件</strong>的内容</li>
+<li>如果文件在读取时被删除或重命名，<code>Filebeat</code>将继续读取文件</li>
+</ul>
+</li>
+<li>**<code>prospector</code>**：<ul>
+<li><code>prospector</code>负责**管理<code>harvester</code>**并找到所有要读取的文件来源</li>
+<li>如果输入类型为日志，则查找器将查找路径匹配的所有文件，并为每个文件启动一个<code>harvester</code></li>
+<li><code>Filebeat</code>目前支持两种<code>prospector</code>类型：<code>log</code>和<code>stdin</code></li>
+</ul>
+</li>
+</ul>
+<p><img src="http://cdn.chaooo.top/Java/filebeat.jpg"></p>
+<blockquote>
+<ul>
+<li><code>Filebeat</code>如何<strong>保持文件的状态</strong><ul>
+<li><code>Filebeat</code> 保存每个文件的状态并经常将状态刷新到磁盘上的注册文件中</li>
+<li>该状态用于记住<code>harvester</code>正在读取的最后偏移量，并确保发送所有日志行</li>
+<li>如果输出（例如<code>Elasticsearch</code>或<code>Logstash</code>）无法访问，<code>Filebeat</code>会跟踪最后发送的行，并在输出再次可用时继续读取文件。</li>
+<li>在<code>Filebeat</code>运行时，每个<code>prospector</code>内存中也会保存的文件状态信息，当重新启动<code>Filebeat</code>时，将使用注册文件的数据来重建文件状态，<code>Filebeat</code>将每个<code>harvester</code>在从保存的最后偏移量继续读取</li>
+<li><code>Filebeat</code>存储唯一标识符以检测文件是否先前已采集过</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><code>Filebeat</code>如何<strong>确保至少一次交付</strong><ul>
+<li><code>Filebeat</code>保证事件至少会被传送到配置的输出一次，并且不会丢失数据。 <code>Filebeat</code>能够实现此行为，因为它将每个事件的传递状态存储在注册文件中。</li>
+<li>在输出阻塞或未确认所有事件的情况下，<code>Filebeat</code>将继续尝试发送事件，直到接收端确认已收到。</li>
+<li>如果<code>Filebeat</code>在发送事件的过程中关闭，它不会等待输出确认所有收到事件。</li>
+<li>发送到输出但在<code>Filebeat</code>关闭前未确认的任何事件在重新启动<code>Filebeat</code>时会再次发送。</li>
+<li>这可以确保每个事件至少发送一次，但最终会将重复事件发送到输出。</li>
+<li>也可以通过设置<code>shutdown_timeout</code>选项来配置<code>Filebeat</code>以在关闭之前等待特定时间</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4><span id="22-filebeat安装与配置">2.2 Filebeat安装与配置</span></h4><p>安装<code>Filebeat</code>，创建配置文件<code>itcast.yml</code>，控制台运行测试</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#创建如下配置文件 itcast.yml</span></span><br><span class="line">filebeat.inputs:</span><br><span class="line">- <span class="built_in">type</span>: stdin  <span class="comment"># 标准输入</span></span><br><span class="line">  enabled: <span class="literal">true</span></span><br><span class="line">output.console: <span class="comment"># 输出到控制台</span></span><br><span class="line">  pretty: <span class="literal">true</span></span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line">  </span><br><span class="line"><span class="comment">#启动filebeat</span></span><br><span class="line">./filebeat -e -c itcast.yml</span><br></pre></td></tr></table></figure>
+<p>输入hello运行结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">hello</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;@timestamp&quot;</span>: <span class="string">&quot;2019-11-23T09:21:19.213Z&quot;</span>,</span><br><span class="line">  <span class="string">&quot;@metadata&quot;</span>: &#123; <span class="comment">#元数据信息</span></span><br><span class="line">    <span class="string">&quot;beat&quot;</span>: <span class="string">&quot;filebeat&quot;</span>,</span><br><span class="line">    <span class="string">&quot;type&quot;</span>: <span class="string">&quot;_doc&quot;</span>,</span><br><span class="line">    <span class="string">&quot;version&quot;</span>: <span class="string">&quot;7.4.2&quot;</span> <span class="comment"># beat版本</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;host&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;name&quot;</span>: <span class="string">&quot;chaooo&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;agent&quot;</span>: &#123; &#125;,</span><br><span class="line">  <span class="string">&quot;log&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;offset&quot;</span>: 0,</span><br><span class="line">    <span class="string">&quot;file&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;path&quot;</span>: <span class="string">&quot;&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;message&quot;</span>: <span class="string">&quot;hello&quot;</span>, <span class="comment"># 输入的内容</span></span><br><span class="line">  <span class="string">&quot;input&quot;</span>: &#123; <span class="comment"># 控制台标准输入</span></span><br><span class="line">    <span class="string">&quot;type&quot;</span>: <span class="string">&quot;stdin&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;ecs&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;version&quot;</span>: <span class="string">&quot;1.1.0&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4><span id="23-读取文件">2.3 读取文件</span></h4><p>创建配置文件<code>itcast-log.yml</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">filebeat.inputs:</span><br><span class="line">- <span class="built_in">type</span>: <span class="built_in">log</span></span><br><span class="line">  enabled: <span class="literal">true</span></span><br><span class="line">  paths:</span><br><span class="line">    - /<span class="built_in">test</span>/*.<span class="built_in">log</span>   <span class="comment"># 可以使用单个路径</span></span><br><span class="line">output.console: <span class="comment"># 输出到控制台</span></span><br><span class="line">  pretty: <span class="literal">true</span></span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br><span class="line"><span class="comment">#启动filebeat</span></span><br><span class="line">./filebeat -e -c itcast-log.yml</span><br></pre></td></tr></table></figure>
+<p>在<code>/test/</code>下创建<code>a.log</code>文件，并输入如下内容<code>hello world</code>,观察<code>filebeat</code>输出:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;@timestamp&quot;</span>: <span class="string">&quot;2019-11-23T09:45:56.379Z&quot;</span>,</span><br><span class="line">  <span class="string">&quot;@metadata&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;beat&quot;</span>: <span class="string">&quot;filebeat&quot;</span>,</span><br><span class="line">    <span class="string">&quot;type&quot;</span>: <span class="string">&quot;_doc&quot;</span>,</span><br><span class="line">    <span class="string">&quot;version&quot;</span>: <span class="string">&quot;7.4.2&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;log&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;offset&quot;</span>: 0,</span><br><span class="line">    <span class="string">&quot;file&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;path&quot;</span>: <span class="string">&quot;/test/a.log&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;message&quot;</span>: <span class="string">&quot;hello&quot;</span>,</span><br><span class="line">  <span class="string">&quot;input&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;type&quot;</span>: <span class="string">&quot;log&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;ecs&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;version&quot;</span>: <span class="string">&quot;1.1.0&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;host&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;name&quot;</span>: <span class="string">&quot;chaooo&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;agent&quot;</span>: &#123; &#125;</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;@timestamp&quot;</span>: <span class="string">&quot;2019-11-23T09:45:56.379Z&quot;</span>,</span><br><span class="line">  <span class="string">&quot;@metadata&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;beat&quot;</span>: <span class="string">&quot;filebeat&quot;</span>,</span><br><span class="line">    <span class="string">&quot;type&quot;</span>: <span class="string">&quot;_doc&quot;</span>,</span><br><span class="line">    <span class="string">&quot;version&quot;</span>: <span class="string">&quot;7.4.2&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;host&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;name&quot;</span>: <span class="string">&quot;chaooo&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;agent&quot;</span>: &#123; &#125;,</span><br><span class="line">  <span class="string">&quot;log&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;file&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;path&quot;</span>: <span class="string">&quot;/test/a.log&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&quot;offset&quot;</span>: 7</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;message&quot;</span>: <span class="string">&quot;world&quot;</span>,</span><br><span class="line">  <span class="string">&quot;input&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;type&quot;</span>: <span class="string">&quot;log&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;ecs&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;version&quot;</span>: <span class="string">&quot;1.1.0&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4><span id="24-自定义字段">2.4 自定义字段</span></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">filebeat.inputs:</span><br><span class="line">- <span class="built_in">type</span>: <span class="built_in">log</span></span><br><span class="line">  enabled: <span class="literal">true</span></span><br><span class="line">  paths:</span><br><span class="line">    - /<span class="built_in">test</span>/*.<span class="built_in">log</span>   <span class="comment"># 可以使用单个路径</span></span><br><span class="line">  tags: [<span class="string">&quot;web&quot;</span>] <span class="comment">#添加自定义tag，便于后续的处理</span></span><br><span class="line">  fields: <span class="comment">#添加自定义字段</span></span><br><span class="line">    from: itcast-im</span><br><span class="line">  fields_under_root: <span class="literal">true</span> <span class="comment">#true为添加到根节点，false为添加到子节点中</span></span><br><span class="line">output.console: <span class="comment"># 输出到控制台</span></span><br><span class="line">  pretty: <span class="literal">true</span></span><br><span class="line">  <span class="built_in">enable</span>: <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<h4><span id="25-输出到elasticsearch">2.5 输出到Elasticsearch</span></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">filebeat.inputs:</span><br><span class="line">- <span class="built_in">type</span>: <span class="built_in">log</span></span><br><span class="line">  enabled: <span class="literal">true</span></span><br><span class="line">  paths:</span><br><span class="line">    - /<span class="built_in">test</span>/*.<span class="built_in">log</span>   <span class="comment"># 可以使用单个路径</span></span><br><span class="line">  tags: [<span class="string">&quot;web&quot;</span>] <span class="comment">#添加自定义tag，便于后续的处理</span></span><br><span class="line">  fields: <span class="comment">#添加自定义字段</span></span><br><span class="line">    from: itcast-im</span><br><span class="line">  fields_under_root: <span class="literal">false</span></span><br><span class="line">setup.template.settings:</span><br><span class="line">  index.number_of_shards: 3 <span class="comment">#指定索引的分区数</span></span><br><span class="line">output.elasticsearch: <span class="comment">#指定ES的配置</span></span><br><span class="line">  hosts: [<span class="string">&quot;192.168.1.7:9200&quot;</span>,<span class="string">&quot;192.168.1.7:9201&quot;</span>,<span class="string">&quot;192.168.1.7:9202&quot;</span>]</span><br></pre></td></tr></table></figure>
+<h4><span id="26-读取nginx日志文件">2.6 读取Nginx日志文件</span></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">filebeat.inputs:</span><br><span class="line">- <span class="built_in">type</span>: <span class="built_in">log</span></span><br><span class="line">  enabled: <span class="literal">true</span></span><br><span class="line">  paths:</span><br><span class="line">    - /usr/<span class="built_in">local</span>/nginx/logs/*.<span class="built_in">log</span></span><br><span class="line">  tags: [<span class="string">&quot;nginx&quot;</span>] </span><br><span class="line">setup.template.settings:</span><br><span class="line">  index.number_of_shards: 3 <span class="comment">#指定索引的分区数</span></span><br><span class="line">output.elasticsearch: <span class="comment">#指定ES的配置</span></span><br><span class="line">  hosts: [<span class="string">&quot;192.168.1.7:9200&quot;</span>,<span class="string">&quot;192.168.1.7:9201&quot;</span>,<span class="string">&quot;192.168.1.7:9202&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<h4><span id="27-filebeat的module">2.7 Filebeat的Module</span></h4><p>日志数据的读取与处理可以不用手动配置的，在<code>Filebeat</code>中，有大量的<code>Module</code>，可以直接使用简化配置。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">./filebeat modules list</span><br><span class="line">Enabled:</span><br><span class="line">  </span><br><span class="line">Disabled:</span><br><span class="line">apache</span><br><span class="line">auditd</span><br><span class="line">aws</span><br><span class="line">cef</span><br><span class="line">cisco</span><br><span class="line">coredns</span><br><span class="line">elasticsearch</span><br><span class="line">envoyproxy</span><br><span class="line">googlecloud</span><br><span class="line">haproxy</span><br><span class="line">ibmmq</span><br><span class="line">icinga</span><br><span class="line">iis</span><br><span class="line">iptables</span><br><span class="line">kafka</span><br><span class="line">kibana</span><br><span class="line">logstash</span><br><span class="line">mongodb</span><br><span class="line">mssql</span><br><span class="line">mysql</span><br><span class="line">nats</span><br><span class="line">netflow</span><br><span class="line">nginx</span><br><span class="line">osquery</span><br><span class="line">panw</span><br><span class="line">postgresql</span><br><span class="line">rabbitmq</span><br><span class="line">redis</span><br><span class="line">santa</span><br><span class="line">suricata</span><br><span class="line">system</span><br><span class="line">traefik</span><br><span class="line">zeek</span><br></pre></td></tr></table></figure>
+<p>可以看到，内置了很多的<code>module</code>，但都没有启用，如果需要启用需要进行<code>enable</code>操作：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/filebeat modules <span class="built_in">enable</span> nginx <span class="comment">#启动</span></span><br><span class="line">./filebeat modules <span class="built_in">disable</span> nginx <span class="comment">#禁用</span></span><br></pre></td></tr></table></figure>
+<h4><span id="28-nginx-module与filebeat配置">2.8 nginx module与filebeat配置</span></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- module: nginx</span><br><span class="line">  access:      <span class="comment"># Access logs</span></span><br><span class="line">    enabled: <span class="literal">true</span></span><br><span class="line">    var.paths: [<span class="string">&quot;/usr/local/nginx/logs/access.log*&quot;</span>]</span><br><span class="line">  error:       <span class="comment"># Error logs</span></span><br><span class="line">    enabled: <span class="literal">true</span></span><br><span class="line">    var.paths: [<span class="string">&quot;/usr/local/nginx/logs/error.log*&quot;</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#vim itcast-nginx.yml</span></span><br><span class="line">filebeat.inputs:</span><br><span class="line"><span class="comment">#- type: log</span></span><br><span class="line"><span class="comment"># enabled: true</span></span><br><span class="line"><span class="comment"># paths:</span></span><br><span class="line"><span class="comment"># - /usr/local/nginx/logs/*.log</span></span><br><span class="line"><span class="comment"># tags: [&quot;nginx&quot;]</span></span><br><span class="line">setup.template.settings:</span><br><span class="line">  index.number_of_shards: 3</span><br><span class="line">output.elasticsearch:</span><br><span class="line">  hosts: [<span class="string">&quot;192.168.40.133:9200&quot;</span>,<span class="string">&quot;192.168.40.134:9200&quot;</span>,<span class="string">&quot;192.168.40.135:9200&quot;</span>]</span><br><span class="line">filebeat.config.modules:</span><br><span class="line">  path: <span class="variable">$&#123;path.config&#125;</span>/modules.d/*.yml</span><br><span class="line">  reload.enabled: <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<p>若启动报错，需要在<code>Elasticsearch</code>中安装<code>ingest-user-agent、ingest-geoip</code>插件</p>
+<h3><span id="3-metricbeat">3. Metricbeat</span></h3><p>用于从系统和服务<strong>收集指标</strong>。<code>Metricbeat</code>和<code>Filebeat</code>一样，是一个<strong>轻量级的采集器</strong>，<code>Metricbeat</code>由模块(<code>Module</code>)和度量集(<code>Metricset</code>)组成。<code>Metricbeat</code>模块定义了从特定服务（如Redis，MySQL等）收集数据的基本逻辑。该模块指定有关服务的详细信息，包括如何连接，收集指标的频率以及要收集的指标。</p>
+<ul>
+<li><code>Metricbeat</code>有2部分组成，一部分是<code>Module</code>，另一部分为<code>Metricset</code>。</li>
+<li><code>Module</code><ul>
+<li>收集的对象，如：<code>mysql、redis、nginx、操作系统</code>等；</li>
+</ul>
+</li>
+<li><code>Metricset</code><ul>
+<li>收集指标的集合，如：<code>cpu、memory、network</code>等；</li>
+</ul>
+</li>
+<li>以<code>Redis Module</code>为例：<br><img src="http://cdn.chaooo.top/Java/metricbeat.jpg"></li>
+</ul>
+<h4><span id="31-安装配置">3.1 安装配置</span></h4><p>安装Metricbeat，根据实际情况配置文件<code>metricbeat.yml</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">metricbeat.config.modules:</span><br><span class="line">  path: <span class="variable">$&#123;path.config&#125;</span>/modules.d/*.yml</span><br><span class="line">  reload.enabled: <span class="literal">false</span></span><br><span class="line">setup.kibana:</span><br><span class="line">  host: <span class="string">&quot;192.168.56.13:5601&quot;</span></span><br><span class="line">output.elasticsearch:</span><br><span class="line">  hosts: [<span class="string">&quot;192.168.56.13:9200&quot;</span>]</span><br><span class="line">  username: <span class="string">&quot;elastic&quot;</span></span><br><span class="line">  password: <span class="string">&quot;qiuyuetao&quot;</span></span><br></pre></td></tr></table></figure>
+<p>启动：<code>./metricbeat -e</code><br>查看<code>module</code>列表：<code>./metricbeat modules list</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Enabled:</span><br><span class="line">system <span class="comment">#默认启用</span></span><br><span class="line">  </span><br><span class="line">Disabled:</span><br><span class="line">apache</span><br><span class="line">elasticsearch</span><br><span class="line">nginx</span><br><span class="line">mysql</span><br><span class="line">redis</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p><code>system module</code>默认启用的，其配置:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">cat system.yml</span><br><span class="line"><span class="comment"># Module: system</span></span><br><span class="line"><span class="comment"># Docs: https://www.elastic.co/guide/en/beats/metricbeat/6.5/metricbeat-modulesystem.html</span></span><br><span class="line">- module: system</span><br><span class="line">  period: 10s</span><br><span class="line">  metricsets:</span><br><span class="line">    - cpu</span><br><span class="line">    - load</span><br><span class="line">    - memory</span><br><span class="line">    - network</span><br><span class="line">    - process</span><br><span class="line">    - process_summary</span><br><span class="line">    <span class="comment">#- core</span></span><br><span class="line">    <span class="comment">#- diskio</span></span><br><span class="line">    <span class="comment">#- socket</span></span><br><span class="line">  process.include_top_n:</span><br><span class="line">    by_cpu: 5 <span class="comment"># include top 5 processes by CPU</span></span><br><span class="line">    by_memory: 5 <span class="comment"># include top 5 processes by memory</span></span><br><span class="line">- module: system</span><br><span class="line">  period: 1m</span><br><span class="line">  metricsets:</span><br><span class="line">    - filesystem</span><br><span class="line">    - fsstat</span><br><span class="line">  processors:</span><br><span class="line">  - drop_event.when.regexp:</span><br><span class="line">    system.filesystem.mount_point: <span class="string">&#x27;^/(sys|cgroup|proc|dev|etc|host|lib)($|/)&#x27;</span></span><br><span class="line">- module: system</span><br><span class="line">  period: 15m</span><br><span class="line">  metricsets:</span><br><span class="line">    - uptime</span><br></pre></td></tr></table></figure>
+<h4><span id="32-nginx-module">3.2 Nginx Module</span></h4><p>在nginx中，需要开启状态查询，才能查询到指标数据。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置nginx</span></span><br><span class="line">location /nginx-status &#123;</span><br><span class="line">    stub_status on;</span><br><span class="line">    access_log off;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>通过<code>192.168.56.13/nginx-status</code>查看<code>nginx-status</code><ul>
+<li><code>Active connections</code>：正在处理的活动连接数</li>
+<li><code>server accepts handled requests</code>（连接数，握手数，处理请求总数）</li>
+<li><code>Reading: 0 Writing: 1 Waiting: 1</code>（ 读取到客户端的Header信息数，返回给客户端Header信息数，已经处理完正在等候下一次请求指令的驻留链接）</li>
+</ul>
+</li>
+</ul>
+<p>配置<code>Nginx Module（metricbeat/modules.d/nginx.yml）</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- module: nginx</span><br><span class="line">  metricsets: [<span class="string">&quot;stubstatus&quot;</span>]</span><br><span class="line">  period: 10s</span><br><span class="line">  <span class="comment"># Nginx hosts</span></span><br><span class="line">  hosts: [<span class="string">&quot;http://192.168.56.11&quot;</span>]</span><br><span class="line">  <span class="comment"># Path to server status. Default server-status</span></span><br><span class="line"> server_status_path: <span class="string">&quot;nginx_status&quot;</span></span><br></pre></td></tr></table></figure>
+<p>启动：<code>./metricbeat -e</code></p>
+<h3><span id="4-logstash">4. Logstash</span></h3><p><code>Logstash</code>是<code>ElasticStack</code>中的实时数据采集引擎，可以采集来自不同数据源的数据，并对数据进行处理后输出到多种输出源，是<code>Elastic Stack</code>的重要组成部分。<br><img src="http://cdn.chaooo.top/Java/elastic-logstash.jpg"></p>
+<h4><span id="41-logstash的数据处理过程">4.1 Logstash的数据处理过程</span></h4><ul>
+<li><code>Inputs(Codecs)--&gt;Filters--&gt;Outputs(Codecs)</code><ul>
+<li>用户通过定义<code>pipeline</code>配置文件，设置需要使用的<code>input</code>，<code>filter</code>，<code>output</code>, <code>codec</code>插件，以实现特定的数据采集，数据处理，数据输出等功能</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><code>Inputs</code>：用于从数据源获取数据，常见的插件如<code>file, syslog, redis, beats</code>等</li>
+<li><code>Filters</code>：用于处理数据如格式转换，数据派生等，常见的插件如<code>grok, mutate, drop, clone, geoip</code>等</li>
+<li><code>Outputs</code>：用于数据输出，常见的插件如<code>elastcisearch，file, graphite, statsd</code>等</li>
+<li><code>Codecs</code>：<code>Codecs</code>不是一个单独的流程，而是在输入和输出等插件中用于数据转换的模块，用于对数据进行编码处理，常见的插件如<code>json，multiline</code></li>
+</ol>
+<h4><span id="42-执行模型">4.2 执行模型</span></h4><ol>
+<li>每个<code>Input</code>启动一个线程，从对应数据源获取数据 </li>
+<li><code>Input</code>会将数据写入一个队列：默认为内存中的有界队列（意外停止会导致数据丢失）。为了防止数丢失<code>Logstash</code>提供了两个特性：<ul>
+<li><code>Persistent Queues</code>：通过磁盘上的<code>queue</code>来防止数据丢失</li>
+<li><code>Dead Letter Queues</code>：保存无法处理的<code>event</code>（仅支持<code>Elasticsearch</code>作为输出源）  </li>
+</ul>
+</li>
+<li><code>Logstash</code>会有多个<code>pipeline worker</code>, 每一个<code>pipeline worker</code>会从队列中取一批数据，然后执行<code>filter</code>和<code>output</code>（<code>worker</code>数目及每次处理的数据量均由配置确定）</li>
+</ol>
+<h4><span id="43-安装配置">4.3 安装配置</span></h4><p>下载<code>Logstash</code>并解压，配置有三部分，如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">input &#123; <span class="comment">#输入</span></span><br><span class="line">stdin &#123; ... &#125; <span class="comment">#标准输入</span></span><br><span class="line">&#125;</span><br><span class="line">filter &#123; <span class="comment">#过滤，对数据进行分割、截取等处理</span></span><br><span class="line">...</span><br><span class="line">&#125;</span><br><span class="line">output &#123; <span class="comment">#输出</span></span><br><span class="line">stdout &#123; ... &#125; <span class="comment">#标准输出</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4><span id="44-读取自定义日志">4.4 读取自定义日志</span></h4><ol>
+<li>日志结构：<code>2019-11-23 21:21:21|ERROR|读取数据出错|参数：id=1002</code>，日志中的内容是使用<code>“|”</code>进行分割的，使用，我们在处理的时候，也需要对数据做分割处理。</li>
+<li>编写配置文件</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#vim itcast-pipeline.conf</span></span><br><span class="line">input &#123;</span><br><span class="line">  file &#123;</span><br><span class="line">    path =&gt; <span class="string">&quot;/itcast/logstash/logs/app.log&quot;</span></span><br><span class="line">    start_position =&gt; <span class="string">&quot;beginning&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">filter &#123;</span><br><span class="line">  mutate &#123;</span><br><span class="line">    split =&gt; &#123;<span class="string">&quot;message&quot;</span>=&gt;<span class="string">&quot;|&quot;</span>&#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">output &#123;</span><br><span class="line">  stdout &#123; codec =&gt; rubydebug &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>启动测试</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#启动</span></span><br><span class="line">./bin/logstash -f ./itcast-pipeline.conf</span><br><span class="line"><span class="comment">#写日志到文件</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;2019-11-23 21:21:21|ERROR|读取数据出错|参数：id=1002&quot;</span> &gt;&gt; app.log</span><br><span class="line"><span class="comment">#输出的结果</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;@timestamp&quot;</span> =&gt; 2019-03-15T08:44:04.749Z,</span><br><span class="line">        <span class="string">&quot;path&quot;</span> =&gt; <span class="string">&quot;/itcast/logstash/logs/app.log&quot;</span>,</span><br><span class="line">    <span class="string">&quot;@version&quot;</span> =&gt; <span class="string">&quot;1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;host&quot;</span> =&gt; <span class="string">&quot;node01&quot;</span>,</span><br><span class="line">     <span class="string">&quot;message&quot;</span> =&gt; [</span><br><span class="line">        [0] <span class="string">&quot;2019-11-23 21:21:21&quot;</span>,</span><br><span class="line">        [1] <span class="string">&quot;ERROR&quot;</span>,</span><br><span class="line">        [2] <span class="string">&quot;读取数据出错&quot;</span>,</span><br><span class="line">        [3] <span class="string">&quot;参数：id=1002&quot;</span></span><br><span class="line">     ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>输出到<code>Elasticsearch</code>配置</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">output &#123;</span><br><span class="line">  elasticsearch &#123;</span><br><span class="line">    hosts =&gt; [ <span class="string">&quot;192.168.40.133:9200&quot;</span>,<span class="string">&quot;192.168.40.134:9200&quot;</span>,<span class="string">&quot;192.168.40.135:9200&quot;</span>]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3><span id="5-elasticsearch-logstash-beats-kibana基础整合">5. Elasticsearch + Logstash + Beats + Kibana基础整合</span></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">           (读取)          (发送)           (写入)                (读取)</span><br><span class="line">【日志文件】&lt;----【FileBeat】----&gt;【Logstash】----&gt;【Elasticsearch】&lt;----【Kibana】</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol>
+<li><code>Filebeat</code>配置与启动：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#vim itcast-dashboard.yml</span></span><br><span class="line">filebeat.inputs:</span><br><span class="line">- <span class="built_in">type</span>: <span class="built_in">log</span></span><br><span class="line">  enabled: <span class="literal">true</span></span><br><span class="line">  paths:</span><br><span class="line">    - /itcast/logs/*.<span class="built_in">log</span></span><br><span class="line">setup.template.settings:</span><br><span class="line">  index.number_of_shards: 3</span><br><span class="line">output.logstash:</span><br><span class="line">  hosts: [<span class="string">&quot;192.168.40.133:5044&quot;</span>] <span class="comment">#Logstash端口号</span></span><br><span class="line">  </span><br><span class="line"><span class="comment">#启动</span></span><br><span class="line">./filebeat -e -c itcast-dashboard.yml</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li><code>Logstash</code>配置与启动：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#vim itcast-dashboard.conf</span></span><br><span class="line">input &#123;</span><br><span class="line">  beats &#123;</span><br><span class="line">    port =&gt; <span class="string">&quot;5044&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">filter &#123;</span><br><span class="line">  mutate &#123;</span><br><span class="line">    split =&gt; &#123;<span class="string">&quot;message&quot;</span>=&gt;<span class="string">&quot;|&quot;</span>&#125;</span><br><span class="line">  &#125;</span><br><span class="line">  mutate &#123;</span><br><span class="line">    add_field =&gt; &#123;</span><br><span class="line">      <span class="string">&quot;userId&quot;</span> =&gt; <span class="string">&quot;%&#123;message[1]&#125;&quot;</span></span><br><span class="line">      <span class="string">&quot;visit&quot;</span> =&gt; <span class="string">&quot;%&#123;message[2]&#125;&quot;</span></span><br><span class="line">      <span class="string">&quot;date&quot;</span> =&gt; <span class="string">&quot;%&#123;message[3]&#125;&quot;</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    mutate &#123;</span><br><span class="line">      convert =&gt; &#123;</span><br><span class="line">        <span class="string">&quot;userId&quot;</span> =&gt; <span class="string">&quot;integer&quot;</span></span><br><span class="line">        <span class="string">&quot;visit&quot;</span> =&gt; <span class="string">&quot;string&quot;</span></span><br><span class="line">        <span class="string">&quot;date&quot;</span> =&gt; <span class="string">&quot;string&quot;</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">output &#123;</span><br><span class="line">  elasticsearch &#123;</span><br><span class="line">    hosts =&gt; [ <span class="string">&quot;192.168.40.133:9200&quot;</span>,<span class="string">&quot;192.168.40.134:9200&quot;</span>,<span class="string">&quot;192.168.40.135:9200&quot;</span>]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">  </span><br><span class="line"><span class="comment">#启动</span></span><br><span class="line">./bin/logstash -f itcast-dashboard.conf</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><code>ElasticSearch</code>启动与<code>Kibana</code>启动：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ElasticSearch默认端口:9200</span></span><br><span class="line">bin/elasticsearch </span><br><span class="line"><span class="comment"># kibana默认端口:5601</span></span><br><span class="line">bin/kibana</span><br><span class="line"><span class="comment">#通过浏览器进行访问,添加Logstash索引到Kibana中</span></span><br><span class="line">http://192.168.40.133:5601</span><br></pre></td></tr></table></figure>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">1. ElasticStack的组成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">2. Filebeat</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.1 Filebeat工作原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.2 Filebeat安装与配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.3 读取文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.4 自定义字段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.5 输出到Elasticsearch</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.6 读取Nginx日志文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.7 Filebeat的Module</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.8 nginx module与filebeat配置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">3. Metricbeat</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">3.1 安装配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">3.2 Nginx Module</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">4. Logstash</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">4.1 Logstash的数据处理过程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">4.2 执行模型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">4.3 安装配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">4.4 读取自定义日志</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">5. Elasticsearch + Logstash + Beats + Kibana基础整合</span></a></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/article/20191123.html">http://chaooo.github.io/article/20191123.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+    <div class="article-reward">
+        <a id="reward-btn" href="javascript:;">打赏</a>
+        <div id="reward-content">
+            <h6 class="reward-tit">“感谢你的支持，我会继续努力！”</h6>
+            <div>
+                <div class="reward-code">
+                    <img class="type-code" src="/css/images/wechat.jpg" alt="微信支付">
+                    <img class="er-code" src="/css/images/wechat-pay.jpg" alt="微信收款码">
+                </div>
+                <div class="reward-code">
+                    <img class="type-code" src="/css/images/alipay.jpg" alt="支付宝支付">
+                    <img class="er-code" src="/css/images/alipay-pay.jpg" alt="支付宝收款码">
+                </div>
+            </div>
+            <p class="reward-desc">扫码打赏，感谢支持</p>
+        </div>
+    </div>
+
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/article/20191208.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          【Redis】基于Redis的分布式锁实现
+        
+      </div>
+    </a>
+  
+  
+    <a href="/article/20191121.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">【ElasticStack】ElasticSearch聚合分析与数据建模</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+  
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/article/20200211.html">【环境配置】Redis与MySQL多实例配置</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200207.html">【安全认证】基于Shiro前后端分离的认证与授权(三.前端篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200121.html">【安全认证】基于Shiro前后端分离的认证与授权(二.授权篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200118.html">【安全认证】基于Shiro前后端分离的认证与授权(一.认证篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20191222.html">【安全认证】Shiro安全框架入门</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 11.11px;">BlueLake</a> <a href="/tags/ElasticSearch/" style="font-size: 13.33px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 13.33px;">ElasticStack</a> <a href="/tags/Java/" style="font-size: 18.89px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Kibana/" style="font-size: 13.33px;">Kibana</a> <a href="/tags/LogStash/" style="font-size: 13.33px;">LogStash</a> <a href="/tags/Redis/" style="font-size: 12.22px;">Redis</a> <a href="/tags/Spring/" style="font-size: 17.78px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 12.22px;">SpringBoot</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 13.33px;">hexo</a> <a href="/tags/java/" style="font-size: 16.67px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/sublime/" style="font-size: 10px;">sublime</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/ssafe/" style="font-size: 14.44px;">安全认证</a> <a href="/tags/tool/" style="font-size: 11.11px;">工具</a> <a href="/tags/concurrent/" style="font-size: 13.33px;">并发编程</a> <a href="/tags/open-source/" style="font-size: 10px;">开源</a> <a href="/tags/db/" style="font-size: 15.56px;">数据库</a> <a href="/tags/other/" style="font-size: 10px;">杂谈</a> <a href="/tags/env/" style="font-size: 11.11px;">环境配置</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客折腾</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">Java知识梳理</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/other/">杂谈</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年10月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015年12月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sublime/" rel="tag">sublime</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssafe/" rel="tag">安全认证</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tool/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/open-source/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/other/" rel="tag">杂谈</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-link"></i> 友情链接</h3>
+    <div class="widget">
+      <ul>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://github.com/chaooo">chaooo</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake">BlueLake主题</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://weibo.com/zhengchaooo">秋过冬漫长</a>
+        </li>
+      
+      </ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2021 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        
+            <span>Count by <a href="http://busuanzi.ibruce.info/" target="_blank">busuanzi.</a></span>
+        
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'de8b7f88cfa9812e15f93e986181d1c2194ba6e8',
+      repo: 'BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

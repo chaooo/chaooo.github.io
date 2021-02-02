@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>【Redis】基于Redis的分布式锁实现 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-【Redis】基于Redis的分布式锁实现" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      【Redis】基于Redis的分布式锁实现
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2019-12-08T08:04:23.000Z" itemprop="datePublished">2019年12月08日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/Redis/">Redis</a>
+  </div>
+
+      <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+<a href="/article/20191208.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3><span id="setnx命令简介">SETNX命令简介</span></h3><ul>
+<li><code>SETNX key value</code>返回(<code>1:key</code>的值被设置，<code>0:key</code>的值没被设置)，将<code>key</code>的值设为<code>value</code>，并且仅当<code>key</code>不存在。</li>
+<li>锁的<code>key</code>为目标数据的唯一键，<code>value</code>为锁的期望超时时间点；</li>
+<li>基于<code>Redis</code>实现的分布式锁，主要基于<code>redis</code>的<code>setnx（set if not exist）</code>命令；<a id="more"></a>
+
+</li>
+</ul>
+<h3><span id="1-jedis实现分布式锁">1. jedis实现分布式锁</span></h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>redis.clients<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jedis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.0.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4><span id="11-实现示例">1.1 实现示例:</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">correctGetLock</span><span class="params">(String lockKey, String requestId, <span class="keyword">int</span> expireTime)</span> </span>&#123;</span><br><span class="line">    String result = jedis.set(lockKey, requestId, <span class="string">&quot;NX&quot;</span>, <span class="string">&quot;PX&quot;</span>, expireTime);</span><br><span class="line">    <span class="keyword">if</span> (<span class="string">&quot;OK&quot;</span>.equals(result)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>jedis.set(String key, String value, String nxxx, String expx, int time)</code><br>    - **<code>key</code>**：保证唯一，用来当锁（<code>redis</code>记录的<code>key</code>）<br>    - **<code>value</code>**：<code>redis</code>记录的<code>value</code>，目的是为了标志锁的所有者（竞争锁的客户端），保证解锁时只能解自己加的锁。<code>requestId</code>可以使用<code>UUID.randomUUID().toString()</code>方法生成<br>    - **<code>nxxx</code>**：<code>&quot;NX&quot;</code>意思是<code>SET IF NOT EXIST</code>，即当<code>key</code>不存在时，我们进行<code>set</code>操作，若<code>key</code>已经存在，则不做任何操作<br>    - **<code>expx</code>**：<code>&quot;PX&quot;</code>意思是要给这个<code>key</code>加一个过期的设置（单位毫秒），过期时间由第五个参数决定<br>    - **<code>time</code>**：<code>expx</code>设置为<code>&quot;PX&quot;</code>时，<code>redis key</code>的过期时间</p>
+<h4><span id="12-解锁示例">1.2 解锁示例:</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">correctReleaseLock</span><span class="params">(String lockKey, String requestId)</span> </span>&#123;</span><br><span class="line">    String script = <span class="string">&quot;if redis.call(&#x27;get&#x27;, KEYS[1]) == ARGV[1] then return redis.call(&#x27;del&#x27;, KEYS[1]) else return 0 end&quot;</span>;</span><br><span class="line">    Object result = jedis.eval(script, Collections.singletonList(lockKey), Collections.singletonList(requestId));</span><br><span class="line">    <span class="keyword">if</span> (RELEASE_SUCCESS.equals(result)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>eval</code>命令执行<code>Lua</code>代码的时候，<code>Lua</code>代码将被当成一个命令去执行，并且直到<code>eval</code>命令执行完成，<code>Redis</code>才会执行其他命令，所以保证了检查和删除操作都是原子的。</p>
+<h4><span id="13-这类琐最大的缺点">1.3 这类琐最大的缺点</span></h4><p>加锁时只作用在一个<code>Redis</code>节点上，即使<code>Redis</code>通过<code>sentinel</code>保证高可用，如果这个<code>master</code>节点由于某些原因发生了主从切换，那么就会出现锁丢失的情况：</p>
+<ol>
+<li>在<code>Redis</code>的<code>master</code>节点上拿到了锁；</li>
+<li>但是这个加锁的<code>key</code>还没有同步到<code>slave</code>节点；</li>
+<li><code>master</code>故障，发生故障转移，<code>slave</code>节点升级为<code>master</code>节点；</li>
+<li>导致锁丢失。</li>
+</ol>
+<blockquote>
+<p>因此，<code>Redis</code>作者antirez基于分布式环境下提出了一种更高级的分布式锁的实现方式：<code>Redlock</code>。基于<code>Redis</code>的<code>Redisson</code>实现了<code>Redlock</code>。</p>
+</blockquote>
+<h3><span id="2-redisson实现普通分布式锁">2. Redisson实现普通分布式锁</span></h3><p>普通分布式实现非常简单，无论是那种架构，向<code>Redis</code>通过<code>EVAL</code>命令执行<code>LUA脚本</code>即可。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.redisson<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>redisson<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.3.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>单机模式:</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 构造redisson实现分布式锁必要的Config</span></span><br><span class="line">Config config = <span class="keyword">new</span> Config();</span><br><span class="line">config.useSingleServer().setAddress(<span class="string">&quot;redis://172.29.1.180:5379&quot;</span>)</span><br><span class="line">                        .setPassword(<span class="string">&quot;a123456&quot;</span>).setDatabase(<span class="number">0</span>);</span><br><span class="line"><span class="comment">// 构造RedissonClient</span></span><br><span class="line">RedissonClient redissonClient = Redisson.create(config);</span><br><span class="line"><span class="comment">// 设置锁定资源名称, 还可以getFairLock(), getReadWriteLock()</span></span><br><span class="line">RLock lock = redissonClient.getLock(<span class="string">&quot;DISLOCK&quot;</span>);</span><br><span class="line"><span class="keyword">boolean</span> isLock;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 尝试获取分布式锁</span></span><br><span class="line">    <span class="comment">// 500ms拿不到锁, 就认为获取锁失败。10000ms即10s是锁失效时间。</span></span><br><span class="line">    isLock = lock.tryLock(<span class="number">500</span>, <span class="number">10000</span>, TimeUnit.MILLISECONDS);</span><br><span class="line">    <span class="keyword">if</span> (isLock) &#123;</span><br><span class="line">        <span class="comment">//TODO if get lock success, do something;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    <span class="comment">// 无论如何, 最后都要解锁</span></span><br><span class="line">    lock.unlock();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>哨兵模式:</strong><br>即<code>Sentinel</code>模式，实现代码和单机模式几乎一样，唯一的不同就是<code>Config</code>的构造：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Config config = <span class="keyword">new</span> Config();</span><br><span class="line">config.useSentinelServers().addSentinelAddress(</span><br><span class="line">        <span class="string">&quot;redis://172.29.3.245:26378&quot;</span>,<span class="string">&quot;redis://172.29.3.245:26379&quot;</span>, <span class="string">&quot;redis://172.29.3.245:26380&quot;</span>)</span><br><span class="line">      .setMasterName(<span class="string">&quot;mymaster&quot;</span>).setPassword(<span class="string">&quot;a123456&quot;</span>).setDatabase(<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>集群模式:</strong><br>即<code>Cluster</code>模式，集群模式构造<code>Config</code>如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">Config config = <span class="keyword">new</span> Config();</span><br><span class="line">config.useClusterServers().addNodeAddress(</span><br><span class="line">        <span class="string">&quot;redis://172.29.3.245:6375&quot;</span>,<span class="string">&quot;redis://172.29.3.245:6376&quot;</span>, <span class="string">&quot;redis://172.29.3.245:6377&quot;</span>,</span><br><span class="line">        <span class="string">&quot;redis://172.29.3.245:6378&quot;</span>,<span class="string">&quot;redis://172.29.3.245:6379&quot;</span>, <span class="string">&quot;redis://172.29.3.245:6380&quot;</span>)</span><br><span class="line">      .setPassword(<span class="string">&quot;a123456&quot;</span>).setScanInterval(<span class="number">5000</span>);```</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### 3. Redisson实现Redlock分布式锁</span><br><span class="line">#### 3.1 Redlock算法大概原理：</span><br><span class="line">- 在`Redis`的分布式环境中，我们假设有`N`个`Redis master`。这些节点**完全互相独立，不存在主从复制或者其他集群协调机制**。我们确保将在`N`个实例上使用与在`Redis`单实例下相同方法获取和释放锁。</span><br><span class="line">- 为了取到锁，客户端应该执行以下操作:</span><br><span class="line">    - 获取当前`Unix`时间，以毫秒为单位。</span><br><span class="line">    - 依次尝试从`N`个实例，使用相同的`key`和具有唯一性的`value`（例如UUID）获取锁。</span><br><span class="line">    - 客户端使用当前时间减去开始获取锁时间（步骤<span class="number">1</span>记录的时间）就得到获取锁使用的时间。</span><br><span class="line">    - **当且仅当(N/<span class="number">2</span>+<span class="number">1</span>)的Redis节点都取到锁，并且使用的时间小于锁失效时间时，锁才算获取成功**，例如<span class="number">3</span>个节点至少需要`<span class="number">3</span>/<span class="number">2</span>+<span class="number">1</span>=<span class="number">2</span>`<span class="number">2</span>个。</span><br><span class="line">    - 如果取到了锁，key的真正有效时间等于有效时间减去获取锁所使用的时间（步骤<span class="number">3</span>计算的结果）。</span><br><span class="line">    - 若获取锁失败，客户端应该在**所有的Redis实例上进行解锁**（即便某些Redis实例根本就没有加锁成功）。</span><br><span class="line"></span><br><span class="line">#### 3.2 使用`Redlock`</span><br><span class="line">单机模式`Redis`为例:</span><br><span class="line">``` java</span><br><span class="line">Config config = <span class="keyword">new</span> Config();</span><br><span class="line">config.useClusterServers().addNodeAddress(</span><br><span class="line">        <span class="string">&quot;redis://127.0.0.1:6379&quot;</span>,<span class="string">&quot;redis://127.0.0.1:6369&quot;</span>, <span class="string">&quot;redis://127.0.0.1:6359&quot;</span>,</span><br><span class="line">        <span class="string">&quot;redis://127.0.0.1:6349&quot;</span>,<span class="string">&quot;redis://127.0.0.1:6339&quot;</span>)</span><br><span class="line">        .setPassword(<span class="string">&quot;******&quot;</span>);</span><br><span class="line"><span class="comment">// 节点1</span></span><br><span class="line">Config config1 = <span class="keyword">new</span> Config();</span><br><span class="line">config1.useSingleServer().setAddress(<span class="string">&quot;redis://127.0.0.1:6379&quot;</span>);</span><br><span class="line">RedissonClient redissonClient1 = Redisson.create(config1);</span><br><span class="line"><span class="comment">// 节点2</span></span><br><span class="line">Config config2 = <span class="keyword">new</span> Config();</span><br><span class="line">config2.useSingleServer().setAddress(<span class="string">&quot;redis://127.0.0.1:6378&quot;</span>);</span><br><span class="line">RedissonClient redissonClient2 = Redisson.create(config2);</span><br><span class="line"><span class="comment">// 节点3</span></span><br><span class="line">Config config3 = <span class="keyword">new</span> Config();</span><br><span class="line">config3.useSingleServer().setAddress(<span class="string">&quot;redis://127.0.0.1:6377&quot;</span>);</span><br><span class="line">RedissonClient redissonClient3 = Redisson.create(config3);</span><br><span class="line"><span class="comment">// 设置锁定资源名称</span></span><br><span class="line">String resourceName = <span class="string">&quot;REDLOCK&quot;</span>;</span><br><span class="line">RLock lock1 = redissonClient1.getLock(resourceName);</span><br><span class="line">RLock lock2 = redissonClient2.getLock(resourceName);</span><br><span class="line">RLock lock3 = redissonClient3.getLock(resourceName);</span><br><span class="line"><span class="comment">// 实例化RedissonRedLock</span></span><br><span class="line">RedissonRedLock redLock = <span class="keyword">new</span> RedissonRedLock(lock1, lock2, lock3);</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">boolean</span> isLock = redLock.tryLock(<span class="number">500</span>, <span class="number">30000</span>, TimeUnit.MILLISECONDS);</span><br><span class="line">    <span class="keyword">if</span> (isLock) &#123;</span><br><span class="line">        <span class="comment">//TODO if get lock success, do something;</span></span><br><span class="line">        Thread.sleep(<span class="number">30000</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    <span class="comment">//解锁</span></span><br><span class="line">    redLock.unlock();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最核心的变化就是 <code>RedissonRedLock redLock</code>=**<code>new RedissonRedLock(lock1,lock2,lock3)</code>;**，因为我这里是以三个节点为例。</p>
+<ul>
+<li>如果是主从<code>Redis</code>架构、哨兵<code>Redis</code>架构、集群<code>Redis</code>架构实现<code>Redlock</code>，只需要改变上述<code>config1</code>、<code>config2</code>、<code>config3</code>为主从模式、哨兵模式、集群模式配置即可，但相应需要<code>3</code>个独立的<code>Redis</code>主从集群、<code>3</code>个<code>Redis</code>独立的哨兵集群、<code>3</code>个独立的<code>Cluster</code>集群。</li>
+<li>以<code>sentinel</code>模式架构为例，<code>3</code>个<code>sentinel</code>模式集群，如果要获取分布式锁，那么需要向这<code>3</code>个<code>sentinel</code>集群通过<code>EVAL</code>命令执行<code>LUA</code>脚本，需要<code>3/2+1=2</code>，即至少2个<code>sentinel</code>集群响应成功，才算成功的以<code>Redlock</code>算法获取到分布式锁。</li>
+</ul>
+<h3><span id="4-redlock问题合集">4. Redlock问题合集</span></h3><h4><span id="41-n个节点的理解">4.1 N个节点的理解</span></h4><p>假设我们用<code>N(&gt;=3)</code>个节点实现<code>Redlock</code>算法的分布式锁。<strong>不是</strong>一个有<code>N</code>个主节点的cluster集群；而是<strong>要么是<code>N</code>个redis单实例，要么是<code>N</code>个sentinel集群，要么是<code>N</code>个cluster集群</strong>。</p>
+<h4><span id="42-失效时间如何设置">4.2 失效时间如何设置</span></h4><p>这个问题的场景是，假设设置失效时间10秒，如果由于某些原因导致10秒还没执行完任务，这时候锁自动失效，导致其他线程也会拿到分布式锁。<br>这确实是Redis分布式最大的问题，不管是普通分布式锁，还是Redlock算法分布式锁，都没有解决这个问题。也有一些文章提出了对失效时间续租，即延长失效时间，很明显这又提升了分布式锁的复杂度（没有现成的框架有实现）。</p>
+<h4><span id="43-redis分布式锁的高可用">4.3 redis分布式锁的高可用</span></h4><p>关于Redis分布式锁的安全性问题，在分布式系统专家Martin Kleppmann和Redis的作者Antirez之间已经发生过一场争论。有兴趣的同学，搜索”基于Redis的分布式锁到底安全吗”就能得到你想要的答案，需要注意的是，有上下两篇（这应该就是传说中的神仙打架吧）。</p>
+<h4><span id="44-使用zookeeper还是redis实现分布式锁">4.4 使用Zookeeper还是Redis实现分布式锁</span></h4><p>没有绝对的好坏，只有更适合自己的业务。<br>就<strong>性能</strong>而言，<code>Redis</code>很明显优于<code>Zookeeper</code>；就分布式锁实现的健壮性(<strong>高可用</strong>)而言，<code>Zookeeper</code>很明显优于<code>Redis</code>。至于如何选择，还要看具体业务场景。</p>
+<blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/8uhYult2h_YUHT7q7YCKYQ">https://mp.weixin.qq.com/s/8uhYult2h_YUHT7q7YCKYQ</a></p>
+</blockquote>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">SETNX命令简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">1. jedis实现分布式锁</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.1 实现示例:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.2 解锁示例:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.3 这类琐最大的缺点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">2. Redisson实现普通分布式锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">4. Redlock问题合集</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">4.1 N个节点的理解</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">4.2 失效时间如何设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">4.3 redis分布式锁的高可用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">4.4 使用Zookeeper还是Redis实现分布式锁</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/article/20191208.html">http://chaooo.github.io/article/20191208.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+    <div class="article-reward">
+        <a id="reward-btn" href="javascript:;">打赏</a>
+        <div id="reward-content">
+            <h6 class="reward-tit">“感谢你的支持，我会继续努力！”</h6>
+            <div>
+                <div class="reward-code">
+                    <img class="type-code" src="/css/images/wechat.jpg" alt="微信支付">
+                    <img class="er-code" src="/css/images/wechat-pay.jpg" alt="微信收款码">
+                </div>
+                <div class="reward-code">
+                    <img class="type-code" src="/css/images/alipay.jpg" alt="支付宝支付">
+                    <img class="er-code" src="/css/images/alipay-pay.jpg" alt="支付宝收款码">
+                </div>
+            </div>
+            <p class="reward-desc">扫码打赏，感谢支持</p>
+        </div>
+    </div>
+
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/article/20191222.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          【安全认证】Shiro安全框架入门
+        
+      </div>
+    </a>
+  
+  
+    <a href="/article/20191123.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">【ElasticStack】Beats+Logstash+Elasticsearch+Kibana基础整合</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+  
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/article/20200211.html">【环境配置】Redis与MySQL多实例配置</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200207.html">【安全认证】基于Shiro前后端分离的认证与授权(三.前端篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200121.html">【安全认证】基于Shiro前后端分离的认证与授权(二.授权篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200118.html">【安全认证】基于Shiro前后端分离的认证与授权(一.认证篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20191222.html">【安全认证】Shiro安全框架入门</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 11.11px;">BlueLake</a> <a href="/tags/ElasticSearch/" style="font-size: 13.33px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 13.33px;">ElasticStack</a> <a href="/tags/Java/" style="font-size: 18.89px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Kibana/" style="font-size: 13.33px;">Kibana</a> <a href="/tags/LogStash/" style="font-size: 13.33px;">LogStash</a> <a href="/tags/Redis/" style="font-size: 12.22px;">Redis</a> <a href="/tags/Spring/" style="font-size: 17.78px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 12.22px;">SpringBoot</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 13.33px;">hexo</a> <a href="/tags/java/" style="font-size: 16.67px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/sublime/" style="font-size: 10px;">sublime</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/ssafe/" style="font-size: 14.44px;">安全认证</a> <a href="/tags/tool/" style="font-size: 11.11px;">工具</a> <a href="/tags/concurrent/" style="font-size: 13.33px;">并发编程</a> <a href="/tags/open-source/" style="font-size: 10px;">开源</a> <a href="/tags/db/" style="font-size: 15.56px;">数据库</a> <a href="/tags/other/" style="font-size: 10px;">杂谈</a> <a href="/tags/env/" style="font-size: 11.11px;">环境配置</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客折腾</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">Java知识梳理</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/other/">杂谈</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年10月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015年12月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sublime/" rel="tag">sublime</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssafe/" rel="tag">安全认证</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tool/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/open-source/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/other/" rel="tag">杂谈</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-link"></i> 友情链接</h3>
+    <div class="widget">
+      <ul>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://github.com/chaooo">chaooo</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake">BlueLake主题</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://weibo.com/zhengchaooo">秋过冬漫长</a>
+        </li>
+      
+      </ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2021 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        
+            <span>Count by <a href="http://busuanzi.ibruce.info/" target="_blank">busuanzi.</a></span>
+        
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'de8b7f88cfa9812e15f93e986181d1c2194ba6e8',
+      repo: 'BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

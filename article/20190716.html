@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>【数据库】嵌入式SQL语言 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-【数据库】嵌入式SQL语言" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      【数据库】嵌入式SQL语言
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2019-07-16T06:32:28.000Z" itemprop="datePublished">2019年07月16日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/db/">数据库</a>
+  </div>
+
+      <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+<a href="/article/20190716.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3><span id="概述">概述</span></h3><ul>
+<li>交互式SQL语言有很多优点：记录集合操作、非过程性操作、一条语句就可实现复杂查询的结果，</li>
+<li>然而，交互式SQL本身也有很多局限：<a id="more"></a><ul>
+<li>从使用者角度：专业人员可熟练写出SQL语句，但大部分的普通用户并非可以</li>
+<li>从SQL本身角度：特别复杂的检索结果难以用一条交互式SQL语句完成，此时需要结合高级语言中经常出现的顺序、分支和循环结构来帮助处理</li>
+</ul>
+</li>
+<li>因此，高级语言+SQL语言：<ul>
+<li>既继承高级语言的过程控制性</li>
+<li>又结合SQL语言的复杂结果集操作的非过程性</li>
+<li>同时又为数据库操作者提供安全可靠的操作方式：通过应用程序进行操作</li>
+</ul>
+</li>
+<li>嵌入式SQL语言<ul>
+<li>将SQL语言嵌入到某一种高级语言中使用</li>
+<li>这种高级语言，如C/C++, Java, PowerBuilder等，又称宿主语言(Host Language)</li>
+<li>嵌入在宿主语言中的SQL与前面介绍的交互式SQL有一些不同的操作方式</li>
+</ul>
+</li>
+</ul>
+<h4><span id="目录">目录：</span></h4><ol>
+<li><a href="#id1">变量声明与数据库连接</a></li>
+<li><a href="#id2">事务Transaction</a></li>
+<li><a href="#id3">数据集与游标</a></li>
+<li><a href="#id4">状态捕获及错误处理机制</a></li>
+<li><a href="#id5">动态SQL</a></li>
+<li><a href="#id6">数据字典与SQLDA</a></li>
+<li><a href="#id7">ODBC简介</a></li>
+<li><a href="#id8">JDBC简介</a></li>
+<li><a href="#id9">嵌入式SQL-ODBC-JDBC三者比较</a></li>
+</ol>
+<p><span id="id1"><span></span></span></p>
+<h3><span id="1-变量声明与数据库连接">1. 变量声明与数据库连接</span></h3><ol>
+<li>以宿主语言<strong>C语言</strong>为例，对比交互式SQL语言与嵌入式SQL语言<ul>
+<li>交互式SQL:<code>select Sname, Sage from Student where Sname=&#39;张三&#39;;</code></li>
+<li>嵌入式SQL:<code>exec sql select Sname, Sage into :vSname, :vSage from Student where Sname=&#39;张三&#39;;</code></li>
+</ul>
+</li>
+<li>典型特点<ul>
+<li><strong>exec sql</strong>引导SQL语句: 提供给C编译器，以便对SQL语句预编译成C编译器可识别的语句</li>
+<li>增加一 <strong>into子句</strong>: 该子句用于指出接收SQL语句检索结果的程序变量</li>
+<li>由冒号引导的<strong>程序变量</strong>,如: ‘:vSname’, ‘:vSage’</li>
+</ul>
+</li>
+</ol>
+<h4><span id="11-变量的声明与使用">1.1 变量的声明与使用</span></h4><ul>
+<li>在嵌入式SQL语句中可以出现宿主语言语句所使用的变量，这些变量需要特殊的声明：<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">begin</span> <span class="keyword">declare</span> section;</span><br><span class="line">    <span class="type">char</span> vSname[<span class="number">10</span>], specName[<span class="number">10</span>]<span class="operator">=</span>&quot;张三&quot;;</span><br><span class="line">    <span class="type">int</span> vSage;</span><br><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">end</span> <span class="keyword">declare</span> section;</span><br></pre></td></tr></table></figure></li>
+<li>变量声明和赋值中，要注意：<ul>
+<li>宿主程序的字符串变量长度应比字符型字段的长度多1个。因宿主程序的字符串尾部多一个终止符为’\0’，而程序中用双引号来描述。</li>
+<li>宿主程序变量类型与数据库字段类型之间有些是有差异的,有些DBMS可支持自动转换，有些不能。</li>
+</ul>
+</li>
+<li>声明的变量，可以在宿主程序中赋值，然后传递给SQL语句的where等子句中，以使SQL语句能够按照指定的要求(可变化的)进行检索。</li>
+<li>嵌入式比交互式SQL语句灵活了一些：只需改一下变量值，SQL语句便可反复使用，以检索出不同结果。</li>
+<li>示例：<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">begin</span> <span class="keyword">declare</span> section;</span><br><span class="line">    <span class="type">char</span> vSname[<span class="number">10</span>], specName[<span class="number">10</span>]<span class="operator">=</span>&quot;张三&quot;;</span><br><span class="line">    <span class="type">int</span> vSage;</span><br><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">end</span> <span class="keyword">declare</span> section;</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span>用户可在此处基于键盘输入给specName赋值</span><br><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">select</span> Sname, Sage <span class="keyword">into</span> :vSname, :vSage <span class="keyword">from</span> Student <span class="keyword">where</span> Sname <span class="operator">=</span> :specName;</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span>比较相应的交互式<span class="keyword">SQL</span>语句：</span><br><span class="line"><span class="keyword">select</span> Sname, Sage <span class="keyword">from</span> Student <span class="keyword">where</span> Sname <span class="operator">=</span> <span class="string">&#x27;张三&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4><span id="12-程序与数据库的连接和断开">1.2 程序与数据库的连接和断开</span></h4><h5><span id="121-数据库的连接connect">1.2.1 数据库的连接connect</span></h5><p>在嵌入式SQL程序执行之前，首先要与数据库进行连接, 不同DBMS，具体连接语句的语法略有差异</p>
+<ol>
+<li>SQL标准中建议的连接语法为：<ul>
+<li><code>execsql connecttotarget-server asconnect-name useruser-name;</code></li>
+<li>或 <code>execsql connecttodefault;</code></li>
+</ul>
+</li>
+<li>Oracle中数据库连接:<ul>
+<li><code>execsql connect:user_name identified by :user_pwd;</code></li>
+</ul>
+</li>
+<li>DB2 UDB中数据库连接:<ul>
+<li><code>execsql connecttomydb user:user_name using:user_pwd;</code></li>
+</ul>
+</li>
+</ol>
+<h5><span id="121-数据库的断开disconnect">1.2.1 数据库的断开disconnect</span></h5><p>在嵌入式SQL程序执行之后，需要与数据库断开连接</p>
+<ol>
+<li>SQL标准中建议的断开连接的语法为：<ul>
+<li><code>exec sql disconnect connect-name;</code></li>
+<li>或 <code>exec sql disconnect current;</code></li>
+</ul>
+</li>
+<li>Oracle中断开连接:<ul>
+<li><code>exec sql commit release;</code></li>
+<li>或 <code>exec sql rollback release;</code></li>
+</ul>
+</li>
+<li>DB2 UDB中断开连接:<ul>
+<li><code>exec sql connect reset;</code></li>
+<li><code>exec sql disconnect current;</code></li>
+</ul>
+</li>
+</ol>
+<h4><span id="13-sql执行的提交与撤消">1.3 SQL执行的提交与撤消</span></h4><p>SQL语句在执行过程中，必须有提交和撤消语句才能确认其操作结果</p>
+<ol>
+<li>SQL执行的提交：<ul>
+<li><code>execsql commitwork;</code></li>
+</ul>
+</li>
+<li>SQL执行的撤消：<ul>
+<li><code>execsql rollbackwork;</code></li>
+</ul>
+</li>
+<li>为此，很多DBMS都设计了捆绑提交/撤消与断开连接在一起的语句,以保证在断开连接之前使用户确认提交或撤消先前的工作，例如Oracle中：<ul>
+<li><code>execsql commitrelease;</code></li>
+<li>或 <code>execsql rollbackrelease;</code></li>
+</ul>
+</li>
+</ol>
+<p><span id="id2"><span></span></span></p>
+<h3><span id="2-事务transaction">2. 事务Transaction</span></h3><ol>
+<li>从应用程序员角度：事务是一个存取或改变数据库内容的程序的一次执行，或者说一条或多条SQL语句的一次执行被看作一个事务</li>
+<li>从微观角度，或者从DBMS角度：事务是数据库管理系统提供的控制数据操作的一种手段，通过这一手段，应用程序员将一系列的数据库操作组合在一起作为一个整体进行操作和控制，以便数据库管理系统能够提供一致性状态转换的保证。</li>
+<li>简单来说：事务是作为单个逻辑工作单元执行的一系列操作；多个操作作为一个整体向系统提交，要么都执行，要么都不执行；<strong>事务是一个不可分割的工作逻辑单元</strong>。</li>
+</ol>
+<h4><span id="21-事务的特性-acid">2.1 事务的特性: ACID</span></h4><ol>
+<li><strong>原子性</strong>Atomicity : DBMS能够保证事务的一组更新操作是原子不可分的，即对DB而言，要么都执行，要么都不执行</li>
+<li><strong>一致性</strong>Consistency: DBMS保证事务的操作状态是正确的，符合一致性的操作规则，它是进一步由隔离性来保证的</li>
+<li><strong>隔离性</strong>Isolation: DBMS保证并发执行的多个事务之间互相不受影响。例如两个事务T1和T2, 即使并发执行，也相当于或者先执行了T1,再执行T2;或者先执行了T2, 再执行T1。</li>
+<li><strong>持久性</strong>Durability: DBMS保证已提交事务的影响是持久的，被撤销事务的影响是可恢复的。</li>
+</ol>
+<blockquote>
+<p>换句话说：具有ACID特性的若干数据库基本操作的组合体被称为事务。</p>
+</blockquote>
+<p><span id="id3"><span></span></span></p>
+<h3><span id="3-数据集与游标">3. 数据集与游标</span></h3><p>读取单行结果处理与多行结果处理的差异：Into子句与游标(Cursor)</p>
+<ol>
+<li>检索单行结果，可将结果直接传送到宿主程序的变量中(Into)<ul>
+<li>示例：<code>exec sql select Sname,Sage into :vSname,:vSage from Student where Sname = :specName;</code></li>
+</ul>
+</li>
+<li>检索多行结果，则需使用游标(Cursor)<ul>
+<li>游标是指向某检索记录集的指针</li>
+<li>通过这个指针的移动，每次读一行，处理一行，再读一行… , 直至处理完毕</li>
+<li>读一行操作是通过Fetch…into语句实现的：每一次Fetch, 都是先向下移动指针，然后再读取</li>
+<li>记录集有结束标识EOF, 用来标记后面已没有记录了</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>游标(Cursor)的使用需要先定义、再打开(执行)、接着一条接一条处理，最后再关闭</li>
+<li>游标可以定义一次，多次打开(多次执行)，多次关闭</li>
+</ul>
+<h4><span id="31-游标的使用方法">3.1 游标的使用方法</span></h4><ol>
+<li><p>Cursor的定义：declare cursor</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">EXEC</span> <span class="keyword">SQL</span> <span class="keyword">DECLARE</span> cursor_name <span class="keyword">CURSOR</span> <span class="keyword">FOR</span></span><br><span class="line">    Subquery</span><br><span class="line">    [<span class="keyword">ORDER</span> <span class="keyword">BY</span> result_column [<span class="keyword">ASC</span> <span class="operator">|</span> <span class="keyword">DESC</span>][, result_column …]</span><br><span class="line">    [<span class="keyword">FOR</span> [ READ <span class="keyword">ONLY</span> <span class="operator">|</span> <span class="keyword">UPDATE</span> [<span class="keyword">OF</span> columnname [, columnname…]]]];</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span>示例:</span><br><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">declare</span> cur_student <span class="keyword">cursor</span> <span class="keyword">for</span></span><br><span class="line">    <span class="keyword">select</span> Sno, Sname, Sclass <span class="keyword">from</span> Student <span class="keyword">where</span> Sclass<span class="operator">=</span> :vClass</span><br><span class="line">    <span class="keyword">order</span> <span class="keyword">by</span> Sno</span><br><span class="line">    <span class="keyword">for</span> read <span class="keyword">only</span> ;</span><br></pre></td></tr></table></figure></li>
+<li><p>Cursor的打开和关闭：open cursor //close cursor</p>
+<ul>
+<li>EXEC SQL OPEN cursor_name;</li>
+<li>EXEC SQL CLOSE cursor_name;</li>
+</ul>
+</li>
+<li><p>Cursor的数据读取：Fetch</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">EXEC</span> <span class="keyword">SQL</span> <span class="keyword">FETCH</span> cursor_name</span><br><span class="line">    <span class="keyword">INTO</span> host<span class="operator">-</span>variable , [host<span class="operator">-</span>variable, …];</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span>示例:</span><br><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">declare</span> cur_student <span class="keyword">cursor</span> <span class="keyword">for</span></span><br><span class="line">    <span class="keyword">select</span> Sno, Sname, Sclass <span class="keyword">from</span> Student <span class="keyword">where</span> Sclass<span class="operator">=</span> :vClass</span><br><span class="line">    <span class="keyword">order</span> <span class="keyword">by</span> Sno <span class="keyword">for</span> read <span class="keyword">only</span> ;</span><br><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">open</span> cur_student;</span><br><span class="line">…</span><br><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">fetch</span> cur_student <span class="keyword">into</span> :vSno, :vSname, :vSage</span><br><span class="line">…</span><br><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">close</span> cur_student;</span><br></pre></td></tr></table></figure>
+<h4><span id="32-可滚动游标">3.2 可滚动游标</span></h4></li>
+<li><p>ODBC支持的可滚动Cursor</p>
+<ul>
+<li>标准的游标始终是自开始向结束方向移动的，每fetch一次，向结束方向移动一次；一条记录只能被访问一次；再次访问该记录只能关闭游标后重新打开</li>
+<li>ODBC(OpenDataBase Connectivity)是一种跨DBMS的DB操作平台，它在应用程序与实际的DBMS之间提供了一种通用接口</li>
+<li>许多实际的DBMS并不支持可滚动游标，但通过ODBC可以使用该功能</li>
+</ul>
+</li>
+<li><p>可滚动游标是可使游标指针在记录集之间灵活移动、使每条记录可以反复被访问的一种游标</p>
+<ul>
+<li>可滚动游标移动时需判断是否到结束位置，或到起始位置<ul>
+<li>可通过判断是否到EOF位置(最后一条记录的后面),或BOF位置(起始记录的前面)</li>
+<li>如果不需区分，可通过whenevernotfound语句设置来检测</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">EXEC</span> <span class="keyword">SQL</span> <span class="keyword">DECLARE</span> cursor_name [<span class="keyword">INSENSITIVE</span>] [<span class="keyword">SCROLL</span>] <span class="keyword">CURSOR</span></span><br><span class="line">[<span class="keyword">WITH</span> <span class="keyword">HOLD</span>] <span class="keyword">FOR</span> Subquery</span><br><span class="line">[<span class="keyword">ORDER</span> <span class="keyword">BY</span> result_column [<span class="keyword">ASC</span> <span class="operator">|</span> <span class="keyword">DESC</span>][, result_column …]</span><br><span class="line">[<span class="keyword">FOR</span> READ <span class="keyword">ONLY</span> <span class="operator">|</span> <span class="keyword">FOR</span> <span class="keyword">UPDATE</span> <span class="keyword">OF</span> columnname [,</span><br><span class="line">columnname ]…];</span><br><span class="line"><span class="keyword">EXEC</span> <span class="keyword">SQL</span> <span class="keyword">FETCH</span></span><br><span class="line">[ NEXT <span class="operator">|</span> PRIOR <span class="operator">|</span> <span class="keyword">FIRST</span> <span class="operator">|</span> <span class="keyword">LAST</span></span><br><span class="line"><span class="operator">|</span> [ABSOLUTE <span class="operator">|</span> RELATIVE] value_spec ]</span><br><span class="line"><span class="keyword">FROM</span> cursor_name <span class="keyword">INTO</span> host<span class="operator">-</span>variable [, host<span class="operator">-</span>variable …];</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>NEXT</code>向结束方向移动一条；</li>
+<li><code>PRIOR</code>向开始方向移动一条；</li>
+<li><code>FIRST</code>回到第一条；</li>
+<li><code>LAST</code>移动到最后一条；</li>
+<li><code>ABSOLUTvalue_spec</code>定向检索指定位置的行,value_spec由1至当前记录集最大值；</li>
+<li><code>RELATIVEvalue_spec</code>相对当前记录向前或向后移动，value_spec为正数向结束方向移动，为负数向开始方向移动</li>
+</ul>
+<h4><span id="33-数据库记录的增删改">3.3 数据库记录的增删改</span></h4><ol>
+<li>数据库记录的删除<ul>
+<li>一种是查找删除(与交互式DELETE语句相同)，一种是定位删除</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">EXEC</span> <span class="keyword">SQL</span> <span class="keyword">DELETE</span> <span class="keyword">FROM</span> tablename [corr_name]</span><br><span class="line">    <span class="keyword">WHERE</span> search_condition <span class="operator">|</span> <span class="keyword">WHERE</span> <span class="keyword">CURRENT</span> <span class="keyword">OF</span> cursor_name;</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span>示例：查找删除</span><br><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">delete</span> <span class="keyword">from</span> customers c <span class="keyword">where</span> c.city <span class="operator">=</span> ‘Harbin’ <span class="keyword">and</span></span><br><span class="line">    <span class="keyword">not</span> <span class="keyword">exists</span> ( <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> orders o <span class="keyword">where</span> o.cid <span class="operator">=</span> c.cid);</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span>示例：定位删除</span><br><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">declare</span> delcust <span class="keyword">cursor</span> <span class="keyword">for</span></span><br><span class="line">    <span class="keyword">select</span> cid <span class="keyword">from</span> customers c <span class="keyword">where</span> c.city <span class="operator">=</span>‘harbin’ <span class="keyword">and</span></span><br><span class="line">    <span class="keyword">not</span> <span class="keyword">exists</span> ( <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> orders o <span class="keyword">where</span> o.cid <span class="operator">=</span> c.cid)</span><br><span class="line">    <span class="keyword">for</span> <span class="keyword">update</span> <span class="keyword">of</span> cid;</span><br><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">open</span> delcust</span><br><span class="line">While (TRUE) &#123;</span><br><span class="line">    <span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">fetch</span> delcust <span class="keyword">into</span> :cust_id;</span><br><span class="line">    exec sql delete from customers where current of delcust ; &#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>数据库记录的更新<ul>
+<li>一种是查找更新(与交互式Update语句相同)，一种是定位更新</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">EXEC</span> <span class="keyword">SQL</span> <span class="keyword">UPDATE</span> tablename [corr_name]</span><br><span class="line">    <span class="keyword">SET</span> columnname <span class="operator">=</span> expr [, columnname <span class="operator">=</span> expr …]</span><br><span class="line">    [ <span class="keyword">WHERE</span> search_condition ] <span class="operator">|</span> <span class="keyword">WHERE</span> <span class="keyword">CURRENT</span> <span class="keyword">OF</span> cursor_name;</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span>示例：查找更新</span><br><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">update</span> student s <span class="keyword">set</span> sclass <span class="operator">=</span> ‘<span class="number">035102</span>’</span><br><span class="line">    <span class="keyword">where</span> s.sclass <span class="operator">=</span> ‘<span class="number">034101</span>’</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> 示例：定位更新</span><br><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">declare</span> stud <span class="keyword">cursor</span> <span class="keyword">for</span></span><br><span class="line">    <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student s <span class="keyword">where</span> s.sclass <span class="operator">=</span>‘<span class="number">034101</span>’</span><br><span class="line">    <span class="keyword">for</span> <span class="keyword">update</span> <span class="keyword">of</span> sclass;</span><br><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">open</span> stud</span><br><span class="line">While (TRUE) &#123;</span><br><span class="line">    <span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">fetch</span> stud <span class="keyword">into</span> :vSno, :vSname, :vSclass;</span><br><span class="line">    exec sql update student set sclass = ‘035102’ where current of stud ; &#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>数据库记录的插入<ul>
+<li>只有一种类型的插入语句</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">EXEC</span> <span class="keyword">SQL</span> <span class="keyword">INSERT</span> <span class="keyword">INTO</span> tablename [ (columnname [,columnname, …] )]</span><br><span class="line">    [ <span class="keyword">VALUES</span> (expr [ , expr , …] ) <span class="operator">|</span> subqurey ] ;</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span>示例：插入语句</span><br><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">insert</span> <span class="keyword">into</span> student ( sno, sname, sclass)</span><br><span class="line">    <span class="keyword">values</span> (‘<span class="number">03510128</span>’, ‘张三’, ‘<span class="number">035101</span>’) ;</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span>示例：插入语句</span><br><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">insert</span> <span class="keyword">into</span> masterstudent ( sno, sname, sclass)</span><br><span class="line">    <span class="keyword">select</span> sno, sname, sclass <span class="keyword">from</span> student;</span><br></pre></td></tr></table></figure>
+
+
+<p><span id="id4"><span></span></span></p>
+<h3><span id="4-状态捕获及错误处理机制">4. 状态捕获及错误处理机制</span></h3><h4><span id="41-基本机制">4.1 基本机制</span></h4><ul>
+<li>状态，是嵌入式SQL语句的执行状态，尤其指一些出错状态；有时程序需要知道这些状态并对这些状态进行处理</li>
+<li>嵌入式 SQL程序中，状态捕获及处理有三部分构成<ol>
+<li>设置SQL通信区:一般在嵌入式SQL程序的开始处便设置<ul>
+<li><code>exec sql include sqlca;</code></li>
+</ul>
+</li>
+<li>设置状态捕获语句:在嵌入式SQL程序的任何位置都可设置；可多次设置；但有作用域<ul>
+<li><code>exec sql whenever sqlerror goto report_error;</code></li>
+</ul>
+</li>
+<li>状态处理语句:某一段程序以应对SQL操作的某种状态<ul>
+<li><code>report_error: exec sql rollback;</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>SQL通信区: SQLCA<ol>
+<li>SQLCA是一个已被声明过的具C语言的结构形式的内存信息区，其中的成员变量用来记录SQL语句执行的状态，便于宿主程序读取与处理</li>
+<li>SQLCA是DBMS(执行SQL语句)与宿主程序之间交流的桥梁之一</li>
+</ol>
+</li>
+<li>状态捕获语句: <code>exec sql whenever condition action;</code><ul>
+<li>Whenever语句的作用是设置一个“条件陷阱”, 该条语句会对其后面的所有由Exec SQL语句所引起的对数据库系统的调用自动检查它是否满足条件(由condition指出).<ul>
+<li>SQLERROR: 检测是否有SQL语句出错。其具体意义依赖于特定的DBMS</li>
+<li>NOT FOUND: 执行某一SQL语句后，没有相应的结果记录出现</li>
+<li>SQLWARNING: 不是错误，但应引起注意的条件</li>
+</ul>
+</li>
+<li>如果满足condition, 则要采取一些动作(由action指出)<ul>
+<li>CONTINUE: 忽略条件或错误，继续执行</li>
+<li>GOTO 标号: 转移到标号所指示的语句，去进行相应的处理</li>
+<li>STOP: 终止程序运行、撤消当前的工作、断开数据库的连接</li>
+<li>DO函数或 CALL函数: 调用宿主程序的函数进行处理，函数返回后从引发该condition的Exec SQL语句之后的语句继续进行</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>状态捕获语句Whenever的作用范围是其后的所有Exec SQL语句，一直到程序中出现另一条相同条件的Whenever语句为止，后面的将覆盖前面的。<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">int main() &#123;</span><br><span class="line">    <span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">whenever</span> sqlerror stop;</span><br><span class="line">    … …</span><br><span class="line">    goto s1</span><br><span class="line">    … …</span><br><span class="line">    <span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">whenever</span> sqlerror continue;</span><br><span class="line">    s1: <span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">update</span> agents <span class="keyword">set</span> <span class="keyword">percent</span> <span class="operator">=</span> <span class="keyword">percent</span> <span class="operator">+</span> <span class="number">1</span>;</span><br><span class="line">    … …</span><br><span class="line">&#125;</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span>S1标号指示的语句受第二个<span class="keyword">Whenever</span>语句约束。</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span>注意：作用域是语句在程序中的位置，而不是控制流程(因是预编译程序处理条件陷阱)</span><br></pre></td></tr></table></figure></li>
+<li>状态捕获语句Whenever的使用容易引发无限循环<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">int main() &#123;</span><br><span class="line">    <span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">whenever</span> sqlerror goto handle_error;</span><br><span class="line">    <span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">create</span> <span class="keyword">table</span> customers(cid <span class="type">char</span>(<span class="number">4</span>) <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    cname <span class="type">varchar</span>(<span class="number">13</span>), … … );</span><br><span class="line">    … …</span><br><span class="line">    handle_error:</span><br><span class="line">        <span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">whenever</span> sqlerror continue;<span class="operator">/</span><span class="operator">/</span> 控制是否无限循环：无，则可能；有，则不会</span><br><span class="line">        <span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">drop</span> customers;</span><br><span class="line">        <span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">disconnect</span>;</span><br><span class="line">        fprintf(stderr,”could <span class="keyword">not</span> <span class="keyword">create</span> customers <span class="keyword">table</span>\n”);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4><span id="42-状态信息">4.2 状态信息</span></h4>典型DBMS系统记录状态信息的三种方法</li>
+<li>状态记录:<ol>
+<li><code>sqlcode</code>: 典型DBMS都提供一个sqlcode变量来记录其执行sql语句的状态，但不同DBMS定义的sqlcode值所代表的状态意义可能是不同的。<ul>
+<li>sqlcode== 0, successful call;</li>
+<li>sqlcode &lt; 0, error, e.g., from connect, database does not exist , –16;</li>
+<li>sqlcode &gt; 0, warning, e.g., no rows retrieved from fetch</li>
+</ul>
+</li>
+<li><code>sqlca.sqlcode</code>: 支持SQLCA的产品一般要在SQLCA中填写sqlcode来记录上述信息; 除此而外，sqlca还有其他状态信息的记录</li>
+<li><code>sqlstate</code>: 有些DBMS提供的记录状态信息的变量是sqlstate或sqlca.sqlstate</li>
+</ol>
+</li>
+<li>当我们不需明确知道错误类型，而只需知道发生错误与否，则我们只要使用前述的状态捕获语句即可，而无需关心状态记录变量(隐式状态处理)</li>
+<li>但我们程序中如要自行处理不同状态信息时，则需要知道以上信息，但也需知道正确的操作方法(显式状态处理)</li>
+</ul>
+<h4><span id="43-程序自身进行错误信息的处理">4.3 程序自身进行错误信息的处理</span></h4><p>正确的显式状态处理示例:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">begin</span> declar section;</span><br><span class="line">    <span class="type">char</span> <span class="keyword">SQLSTATE</span>[<span class="number">6</span>];</span><br><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">end</span> <span class="keyword">declare</span> section;</span><br><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">whenever</span> sqlerror goto handle_error;</span><br><span class="line">… …</span><br><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">whenever</span> sqlerror continue;</span><br><span class="line"><span class="keyword">exec</span> <span class="keyword">sql</span> <span class="keyword">create</span> <span class="keyword">table</span> custs</span><br><span class="line">    (cid <span class="type">char</span>(<span class="number">4</span>) <span class="keyword">not</span> <span class="keyword">null</span>, cname <span class="type">varchar</span>(<span class="number">13</span>), … … );</span><br><span class="line">if (strcmp(<span class="keyword">SQLSTATE</span>, “<span class="number">82100</span>”)<span class="operator">=</span><span class="operator">=</span><span class="number">0</span>)</span><br><span class="line">    <span class="operator">&lt;</span>处理<span class="number">82100</span>错误的程序<span class="operator">&gt;</span></span><br><span class="line">    … …</span><br></pre></td></tr></table></figure>
+<p>上述的if语句是能被执行的，因为createtable发生错误时是继续向下执行的。</p>
+<p><span id="id5"><span></span></span></p>
+<h3><span id="5-动态sql">5. 动态SQL</span></h3><h4><span id="51-动态sql的概念">5.1 动态SQL的概念</span></h4><p>动态SQL是相对于静态SQL而言的</p>
+<ul>
+<li>静态SQL特点：SQL语句在程序中已经按要求写好，只需要把一些参数通过变量(高级语言程序语句中不带冒号) 传送给嵌入式SQL语句即可(嵌入式SQL语句中带冒号)</li>
+<li>动态SQL特点：SQL语句可以在程序中动态构造，形成一个字符串，然后再交给DBMS执行，交给DBMS执行时仍旧可以传递变量</li>
+</ul>
+<h4><span id="52-动态sql的两种执行方式">5.2 动态SQL的两种执行方式</span></h4><p>如SQL语句已经被构造在host-variable字符串变量中,则：</p>
+<ol>
+<li><strong>立即执行语句</strong>: 运行时编译并执行<ul>
+<li><code>EXEC SQL EXECUTE IMMEDIATE :host-variable;</code></li>
+</ul>
+</li>
+<li><strong>Prepare-Execute-Using语句</strong>:PREPARE语句先编译，编译后的SQL语句允许动态参数，EXECUTE语句执行，用USING语句将动态参数值传送给编译好的SQL语句<ul>
+<li><code>EXEC SQL PREPARE sql_temp FROM :host-variable;</code></li>
+<li><code>EXEC SQL EXECUTE sql_temp USING :cond-variable</code></li>
+</ul>
+</li>
+</ol>
+<p><span id="id6"><span></span></span></p>
+<h3><span id="6-数据字典与sqlda">6. 数据字典与SQLDA</span></h3><h4><span id="61-数据字典的概念">6.1 数据字典的概念</span></h4><p>数据字典(Data dictionary)，又称为系统目录(System Catalogs)</p>
+<ul>
+<li>是系统维护的一些表或视图的集合，这些表或视图存储了数据库中各类对象的定义信息，这些对象包括用Create语句定义的表、列、索引、视图、权限、约束等,这些信息又称数据库的元数据–关于数据的数据。</li>
+<li>不同DBMS术语不一样：数据字典(DataDictionary(Oracle))、目录表(DB2UDB)、系统目录(INFORMIX)、系统视图(X/Open)</li>
+<li>不同DBMS中系统目录存储方式可能是不同的,但会有一些信息对DBA公开。这些公开的信息,DBA可以使用一些特殊的SQL命令来检索。</li>
+</ul>
+<h4><span id="62-数据字典的内容构成">6.2 数据字典的内容构成</span></h4><p>数据字典通常存储的是数据库和表的元数据，即模式本身的信息：</p>
+<ol>
+<li>与关系相关的信息<ul>
+<li>关系名字</li>
+<li>每一个关系的属性名及其类型</li>
+<li>视图的名字及其定义</li>
+<li>完整性约束</li>
+</ul>
+</li>
+<li>用户与账户信息，包括密码</li>
+<li>统计与描述性数据：如每个关系中元组的数目</li>
+<li>物理文件组织信息：<ul>
+<li>关系是如何存储的(顺序/无序/散列等)</li>
+<li>关系的物理位置</li>
+</ul>
+</li>
+<li>索引相关的信息</li>
+</ol>
+<h4><span id="63-数据字典的结构">6.3 数据字典的结构</span></h4><ol>
+<li>也是存储在磁盘上的关系</li>
+<li>专为内存高效访问设计的特定的数据结构</li>
+</ol>
+<ul>
+<li>可能的字典数据结构<ul>
+<li><code>Relation_metadata</code> = <code>(relation_name, number_of_attributes, storage_organization, location)</code></li>
+<li><code>Attribute_metadata</code> = <code>(attribute_name, relation_name, domain_type, position, length)</code></li>
+<li><code>User_metadata</code> = <code>(user_name, encrypted_password, group)</code></li>
+<li><code>Index_metadata</code> = <code>(index_name, relation_name, index_type, index_attributes)</code></li>
+<li><code>View_metadata</code> = <code>(view_name, definition)</code></li>
+</ul>
+</li>
+</ul>
+<h4><span id="64-xopen标准的系统目录">6.4 X/Open标准的系统目录</span></h4><ol>
+<li>X/Open标准中有一个目录表Info_Schem.Tables, 该表中的一行是一个已经定义的表的有关信息<ul>
+<li><code>Table_Schem</code>：表的模式名(通常是表所有者的用户名)</li>
+<li><code>Table_Name</code>：表名</li>
+<li><code>Table_Type</code>：<code>&#39;Base_Table&#39;</code>或<code>&#39;View&#39;</code></li>
+</ul>
+</li>
+<li>可以使用SQL语句来访问这个表中的信息，比如了解已经定义了哪些表，可如下进行：<ul>
+<li><code>Select Table_Name From Tables;</code></li>
+</ul>
+</li>
+<li>模式的含义是指某一用户所设计和使用的表、索引及其他与数据库有关的对象的集合，因此表的完整名应是：模式名.表名。这样做可允许不同用户使用相同的表名，而不混淆。</li>
+<li>一般而言，一个用户有一个模式。可以使用CreateSchema语句来创建模式(用法参见相关文献)，在CreateTable等语句可以使用所定义的模式名称。</li>
+</ol>
+<h4><span id="65-oracle的数据字典">6.5 Oracle的数据字典</span></h4><ol>
+<li>Oracle数据字典由视图组成，分为三种不同形式，由不同的前缀标识<ul>
+<li><code>USER_</code> :用户视图，用户所拥有的对象，在用户模式中</li>
+<li><code>ALL_</code>  :扩展的用户视图，用户可访问的对象</li>
+<li><code>DBA_</code>  :DBA视图(所有用户都可访问的DBA对象的子集)</li>
+</ul>
+</li>
+<li>Oracle数据字典中定义了三个视图<code>USER_Tables</code>,<code>ALL_Tables</code>,和<code>DBA_Tables</code>供DBA和用户使用数据字典中关于<strong>表的信息</strong></li>
+<li>同样,Oracle数据字典中也定义了三个视图<code>USER_TAB_Columns</code>,<code>ALL_TAB_Columns</code>(<code>Accessible_Columns</code>),和<code>DBA_TAB_Columns</code>供DBA和用户使用数据字典中关于表的<strong>列的信息</strong></li>
+<li>可以使用SQL语句来访问这些表中的信息：<ul>
+<li><code>Select Column_Name From ALL_TAB_Columns Where Table_Name = ‘STUDENT’;</code></li>
+</ul>
+</li>
+<li>Oracle数据字典中还定义了其他视图<ul>
+<li><code>TABLE_PRIVILEDGE</code>(或<code>ALL_TAB_GRANTS</code>)</li>
+<li><code>COLUMN_PRIVILEDGE</code>(或<code>ALL_COL_GRANTS</code>)可访问表的权限，列的权限</li>
+<li><code>CONSTRAINT_DEFS</code>(或<code>ALL_CONSTRAINTS</code>)可访问表的各种约束</li>
+</ul>
+</li>
+<li>可以使用下述命令获取Oracle定义的所有视图信息<ul>
+<li><code>Select view_name from all_views where owner = ‘SYS’ and view_name like ‘ALL_%’ or view_name like ‘USER_%’;</code></li>
+</ul>
+</li>
+<li>如果用户使用Oracle,可使用其提供的<code>SQL*PLUS</code>进行交互式访问</li>
+<li>动态SQL: 表和列都已知，动态构造检索条件。</li>
+<li>动态SQL:检索条件可动态构造，表和列也可动态构造。</li>
+</ol>
+<h4><span id="66-sqlda">6.6 SQLDA</span></h4><p>构造复杂的动态SQL需要了解数据字典及SQLDA，已获知关系模式信息</p>
+<ol>
+<li>SQLDA: SQLDescriptorArea,SQL描述符区域。<ul>
+<li>SQLDA是一个内存数据结构，内可装载关系模式的定义信息，如列的数目，每一列的名字和类型等等</li>
+<li>通过读取SQLDA信息可以进行更为复杂的动态SQL的处理</li>
+<li>不同DBMS提供的SQLDA格式并不是一致的。</li>
+</ul>
+</li>
+</ol>
+<p><span id="id7"><span></span></span></p>
+<h3><span id="7-odbc简介">7. ODBC简介</span></h3><h4><span id="71-odbc定义">7.1 ODBC定义</span></h4><p>ODBC：Open DataBase Connection，ODBC是一种标准—不同语言的应用程序与不同数据库服务器之间通讯的标准。</p>
+<ul>
+<li>一组API(应用程序接口)，支持应用程序与数据库服务器的交互</li>
+<li>应用程序通过调用ODBC API, 实现<ol>
+<li>与数据服务器的连接</li>
+<li>向数据库服务器发送SQL命令</li>
+<li>一条一条的提取数据库检索结果中的元组传递给应用程序的变量</li>
+</ol>
+</li>
+<li>具体的DBMS提供一套驱动程序，即Driver库函数，供ODBC调用，以便实现数据库与应用程序的连接。</li>
+<li>ODBC可以配合很多高级语言来使用，如C,C++, C#, Visual Basic, PowerBuilder等等；</li>
+</ul>
+<h4><span id="72-通过odbc连接数据库">7.2 通过ODBC连接数据库</span></h4><ol>
+<li>ODBC应用前，需要确认具体DBMS Driver被安装到ODBC环境中</li>
+<li>当应用程序调用ODBC API时，ODBC API会调用具体DBMS Driver库函数，DBMS Driver库函数则与数据库服务器通讯，执行相应的请求动作并返回检索结果</li>
+<li>ODBC应用程序首先要分配一个SQL环境，再产生一个数据库连接句柄</li>
+<li>应用程序使用SQLConnect()，打开一个数据库连接，SQLConnect()的具体参数:<ul>
+<li><code>connection handle</code>, 连接句柄</li>
+<li><code>the server</code>，要连接的数据库服务器</li>
+<li><code>the user identifier</code>，用户</li>
+<li><code>password</code> ，密码</li>
+<li><code>SQL_NTS</code> 类型说明前面的参数是空终止的字符串</li>
+</ul>
+</li>
+<li>示例<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">int ODBCexample()&#123;</span><br><span class="line">    RETCODE error; <span class="comment">/* 返回状态吗 */</span></span><br><span class="line">    HENV env; <span class="comment">/* 环境变量 */</span></span><br><span class="line">    HDBC conn; <span class="comment">/* 连接句柄 */</span></span><br><span class="line">    SQLAllocEnv(<span class="operator">&amp;</span>env);</span><br><span class="line">    SQLAllocConnect(env, <span class="operator">&amp;</span>conn);</span><br><span class="line">    <span class="operator">/</span><span class="operator">/</span>分配数据库连接环境</span><br><span class="line">    SQLConnect(conn, &quot;aura.bell-labs.com&quot;, SQL_NTS, &quot;avi&quot;, SQL_NTS, avipasswd&quot;, SQL_NTS);</span><br><span class="line">    //打开一个数据库连接</span><br><span class="line">    &#123; …. Do actual work … &#125;</span><br><span class="line">    //与数据库通讯</span><br><span class="line">    SQLDisconnect(conn);</span><br><span class="line">    SQLFreeConnect(conn);</span><br><span class="line">    SQLFreeEnv(env);</span><br><span class="line">    //断开连接与释放环境</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4><span id="73-通过odbc与数据库服务器进行通讯">7.3 通过ODBC与数据库服务器进行通讯</span></h4></li>
+<li>应用程序使用SQLExecDirect()向数据库发送SQL命令；</li>
+<li>使用SQLFetch()获取产生的结果元组；</li>
+<li>使用SQLBindCol()绑定C语言变量与结果中的属性<ul>
+<li>当获取一个元组时，属性值会自动地传送到相应的C语言变量中</li>
+</ul>
+</li>
+<li>SQLBindCol()的参数：<ul>
+<li>ODBC定义的stmt变量,查询结果中的属性位置</li>
+<li>SQL到C的类型变换,变量的地址.</li>
+<li>对于类似字符数组一样的可变长度类型，应给出<ul>
+<li>•变量的最大长度</li>
+<li>•当获取到一个元组后，实际长度的存储位置.</li>
+<li>•注:当返回实际长度为负数，说明是一个空值。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>示例<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">char</span> branchname[<span class="number">80</span>]; <span class="type">float</span> balance;</span><br><span class="line"><span class="type">int</span> lenOut1, lenOut2;</span><br><span class="line">HSTMT stmt;</span><br><span class="line">SQLAllocStmt(conn, <span class="operator">&amp;</span>stmt);</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span>分配一个与指定数据库连接的新的语句句柄</span><br><span class="line"><span class="type">char</span> <span class="operator">*</span> sqlquery <span class="operator">=</span> &quot;select branch_name, sum (balance)</span><br><span class="line">    from account</span><br><span class="line">    group by branch_name&quot;;</span><br><span class="line">error <span class="operator">=</span> SQLExecDirect(stmt, sqlquery, SQL_NTS);</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span>执行查询，stmt句柄指向结果集合</span><br><span class="line">if (error == SQL_SUCCESS) &#123;</span><br><span class="line">SQLBindCol(stmt, <span class="number">1</span>, SQL_C_CHAR, branchname , <span class="number">80</span>, <span class="operator">&amp;</span>lenOut1);</span><br><span class="line">SQLBindCol(stmt, <span class="number">2</span>, SQL_C_FLOAT, <span class="operator">&amp;</span>balance, <span class="number">0</span> , <span class="operator">&amp;</span>lenOut2);</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span>绑定高级语言变量与stmt句柄中的属性</span><br><span class="line">while (SQLFetch(stmt) &gt;= SQL_SUCCESS) &#123;</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span>提取一条记录，结果数据被存入高级语言变量中</span><br><span class="line">    printf (&quot; %s %g\n&quot;, branchname, balance);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">SQLFreeStmt(stmt, SQL_DROP);</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span>释放语句句柄</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h4><span id="74-odbc的其他功能">7.4 ODBC的其他功能</span></h4><ol>
+<li>动态SQL语句的预编译-动态参数传递功能</li>
+<li>获取元数据特性<ul>
+<li>发现数据库中的所有关系的特性 以及</li>
+<li>发现每一个查询结果的列的名字和类型等；</li>
+</ul>
+</li>
+<li>默认, 每一条SQL语句都被作为一个独立的能够自动提交的事务来处理。<ul>
+<li>应用程序可以关闭一个连接的自动提交特性<ul>
+<li><code>SQLSetConnectOption(conn, SQL_AUTOCOMMIT, 0)&#125;</code></li>
+</ul>
+</li>
+<li>此时事务要显式地给出提交和撤销的命令<ul>
+<li><code>SQLTransact(conn, SQL_COMMIT)</code> or <code>SQLTransact(conn, SQL_ROLLBACK)</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><span id="id8"><span></span></span></p>
+<h3><span id="8-jdbc简介">8. JDBC简介</span></h3><h4><span id="81-jdbc定义">8.1 JDBC定义</span></h4><p>JDBC：Java DataBase Connection，JDBC是一组Java版的应用程序接口API，提供了Java应用程序与数据库服务器的连接和通讯能力。</p>
+<ul>
+<li>JDBCAPI分成两个程序包：<ul>
+<li>Java.sql 核心API –J2SE(Java2标准版)的一部分。使用<code>java.sql.DriverManager</code>类、<code>java.sql.Driver</code>和<code>java.sql.Connection</code>接口连接到数据库</li>
+<li>Javax.sql 可选扩展API–J2EE(Java2企业版)的一部分。包含了基于<code>JNDI(JavaNamingandDirectoryInterface,Java命名和目录接口)</code>的资源，以及管理连接池、分布式事务等，使用DataSource接口连接到数据库。</li>
+</ul>
+</li>
+</ul>
+<h4><span id="82-jdbc的功能">8.2 JDBC的功能</span></h4><ol>
+<li><code>java.sql.DriverManager</code>——处理驱动的调入并且对产生新数据库连接提供支持</li>
+<li><code>Java.sql.Driver</code>——通过驱动进行数据库访问，连接到数据库的应用程序必须具备该数据库的特定驱动。</li>
+<li><code>java.sql.Connection</code>——代表对特定数据库的连接。</li>
+<li><code>Try &#123;…&#125; Catch &#123;…&#125;</code> ——异常捕获及其处理</li>
+<li><code>java.sql.Statement</code>——对特定的数据库执行SQL语句</li>
+<li><code>java.sql.PreparedStatement</code> —— 用于执行预编译的SQL语句</li>
+<li><code>java.sql.CallableStatement</code> ——用于执行对数据库内嵌过程的调用。</li>
+<li><code>java.sql.ResultSet</code>——从当前执行的SQL语句中返回结果数据。</li>
+</ol>
+<h4><span id="83-使用jdbc-api访问数据库的过程">8.3 使用JDBC API访问数据库的过程</span></h4><ol>
+<li>概念性的基本过程<ul>
+<li>打开一个连接；创建“Statement”对象，并设置查询语句；使用Statement对象执行查询，发送查询给数据库服务器和返回结果给应用程序；处理错误的例外机制</li>
+</ul>
+</li>
+<li>具体实施过程<ol>
+<li>•传递一个Driver给DriverManager，加载数据库驱动。<ul>
+<li><code>Class.forName()</code></li>
+</ul>
+</li>
+<li>•通过URL得到一个Connection对象, 建立数据库连接<ul>
+<li><code>DriverManager.getConnection(sDBUrl)</code></li>
+<li><code>DriverManager.getConnection(sDBUrl,sDBUserID,sDBPassword)</code></li>
+</ul>
+</li>
+<li>•接着创建一个Statement对象(PreparedStatement或CallableStatement)，用来查询或者修改数据库。<ul>
+<li><code>Statement stmt=con.createStatement()</code></li>
+</ul>
+</li>
+<li>•查询返回一个ResultSet。<ul>
+<li><code>ResultSet rs=stmt.executeQuery(sSQL)</code></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>示例：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">JDBCexample</span><span class="params">(String dbid, String userid, String passwd)</span></span></span><br><span class="line"><span class="function"></span>&#123; <span class="keyword">try</span> &#123; <span class="comment">//错误捕获</span></span><br><span class="line">    Class.forName (<span class="string">&quot;oracle.jdbc.driver.OracleDriver&quot;</span>);</span><br><span class="line">    Connection conn = DriverManager.getConnection(</span><br><span class="line">        <span class="string">&quot;jdbc:oracle:thin:@db.yale.edu:1521:univdb&quot;</span>, userid, passwd);</span><br><span class="line">    <span class="comment">//加载数据库驱动，建立数据库连接</span></span><br><span class="line">    Statement stmt = conn.createStatement();</span><br><span class="line">    <span class="comment">//创建一个语句对象</span></span><br><span class="line">    … Do Actual Work ….</span><br><span class="line">    <span class="comment">//进行SQL语句的执行与处理工作</span></span><br><span class="line">    stmt.close();</span><br><span class="line">    conn.close();</span><br><span class="line">    <span class="comment">//关闭语句对象，关闭连接</span></span><br><span class="line">&#125; <span class="keyword">catch</span> (SQLException sqle) &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;SQLException : &quot;</span> + sqle); &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>完整的示例程序<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">JDBCexample</span><span class="params">(String dbid, String userid, String passwd)</span></span></span><br><span class="line"><span class="function"></span>&#123; <span class="keyword">try</span> &#123;</span><br><span class="line">    Class.forName (<span class="string">&quot;oracle.jdbc.driver.OracleDriver&quot;</span>);</span><br><span class="line">    Connection conn = DriverManager.getConnection(</span><br><span class="line">        <span class="string">&quot;jdbc:oracle:thin:@db.yale.edu:1521:univdb&quot;</span>, userid, passwd);</span><br><span class="line">    Statement stmt = conn.createStatement();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        stmt.executeUpdate( <span class="string">&quot;insert into instructor values</span></span><br><span class="line"><span class="string">        (‘77987&#x27;, ‘Kim&#x27;, ‘Physics’,98000)&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (SQLException sqle) &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;插入错误:&quot;</span> + sqle);</span><br><span class="line">    &#125;</span><br><span class="line">    ResultSet rset = stmt.executeQuery(</span><br><span class="line">        <span class="string">&quot;select dept_name, avg(salary) from instructor group by dept_name&quot;</span>);</span><br><span class="line">    <span class="keyword">while</span> ( rset.next() ) &#123;</span><br><span class="line">        System.out.println(rset.getString(“dept_name<span class="string">&quot;) + &quot;</span> <span class="string">&quot; + rset.getFloat(2));</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">    stmt.close();</span></span><br><span class="line"><span class="string">    conn.close();</span></span><br><span class="line"><span class="string">&#125; catch (SQLException sqle) &#123;</span></span><br><span class="line"><span class="string">    System.out.println(&quot;</span>SQLException:<span class="string">&quot; + sqle);</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p><span id="id9"><span></span></span></p>
+<h3><span id="9-嵌入式sql-odbc-jdbc三者比较">9. 嵌入式SQL-ODBC-JDBC三者比较</span></h3><p>执行一条SQL语句，读取执行的结果集合</p>
+<ol>
+<li>嵌入式SQL的思维模式<ol>
+<li>建立数据库连接</li>
+<li>声明一个游标</li>
+<li>打开游标</li>
+<li>读取一条记录(循环)</li>
+<li>关闭游标</li>
+<li>断开数据库连接</li>
+</ol>
+</li>
+<li>ODBC的思维模式<ol>
+<li>建立数据库连接</li>
+<li>分配语句句柄</li>
+<li>用句柄执行SQL</li>
+<li>建立高级语言变量与句柄属性的对应</li>
+<li>读取一条记录(循环)</li>
+<li>释放语句句柄</li>
+<li>断开数据库连接</li>
+</ol>
+</li>
+<li>JDBC的思维模式<ol>
+<li>建立数据库连接</li>
+<li>创建语句对象</li>
+<li>用语句对象执行SQL，并返回结果对象</li>
+<li>从结果对象获取一条记录</li>
+<li>提取对象的属性值传给高级语言变量(返回上一步)</li>
+<li>释放语句对象</li>
+<li>断开数据库连接</li>
+</ol>
+</li>
+</ol>
+<ul>
+<li>相同点: 都是建立数据库连接, 执行sql, 处理结果, 释放连接, 流程基本一致</li>
+<li>不同点, 操作方式的不同:<ul>
+<li>嵌入式SQL按照语句进行操作</li>
+<li>ODBC按照函数来进行操作</li>
+<li>JDBC按照对象来进行操作</li>
+</ul>
+</li>
+</ul>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">概述</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">目录：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">1. 变量声明与数据库连接</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.1 变量的声明与使用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.2 程序与数据库的连接和断开</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">1.2.1 数据库的连接connect</span></a></li><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">1.2.1 数据库的断开disconnect</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.3 SQL执行的提交与撤消</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">2. 事务Transaction</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.1 事务的特性: ACID</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">3. 数据集与游标</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">3.1 游标的使用方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">3.2 可滚动游标</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">3.3 数据库记录的增删改</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">4. 状态捕获及错误处理机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">4.1 基本机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">4.2 状态信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">4.3 程序自身进行错误信息的处理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">5. 动态SQL</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">5.1 动态SQL的概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">5.2 动态SQL的两种执行方式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">6. 数据字典与SQLDA</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">6.1 数据字典的概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">6.2 数据字典的内容构成</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">6.3 数据字典的结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">6.4 X&#x2F;Open标准的系统目录</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">6.5 Oracle的数据字典</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">6.6 SQLDA</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">7. ODBC简介</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">7.1 ODBC定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">7.2 通过ODBC连接数据库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">7.3 通过ODBC与数据库服务器进行通讯</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">7.4 ODBC的其他功能</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">8. JDBC简介</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">8.1 JDBC定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">8.2 JDBC的功能</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">8.3 使用JDBC API访问数据库的过程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">9. 嵌入式SQL-ODBC-JDBC三者比较</span></a></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/article/20190716.html">http://chaooo.github.io/article/20190716.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+    <div class="article-reward">
+        <a id="reward-btn" href="javascript:;">打赏</a>
+        <div id="reward-content">
+            <h6 class="reward-tit">“感谢你的支持，我会继续努力！”</h6>
+            <div>
+                <div class="reward-code">
+                    <img class="type-code" src="/css/images/wechat.jpg" alt="微信支付">
+                    <img class="er-code" src="/css/images/wechat-pay.jpg" alt="微信收款码">
+                </div>
+                <div class="reward-code">
+                    <img class="type-code" src="/css/images/alipay.jpg" alt="支付宝支付">
+                    <img class="er-code" src="/css/images/alipay-pay.jpg" alt="支付宝收款码">
+                </div>
+            </div>
+            <p class="reward-desc">扫码打赏，感谢支持</p>
+        </div>
+    </div>
+
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/db/" rel="tag">数据库</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/article/20190728.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          【安全认证】MD5算法加盐实现用户密码加密
+        
+      </div>
+    </a>
+  
+  
+    <a href="/article/20190701.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">【数据库】数据库语言SQL</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+  
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/article/20200211.html">【环境配置】Redis与MySQL多实例配置</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200207.html">【安全认证】基于Shiro前后端分离的认证与授权(三.前端篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200121.html">【安全认证】基于Shiro前后端分离的认证与授权(二.授权篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200118.html">【安全认证】基于Shiro前后端分离的认证与授权(一.认证篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20191222.html">【安全认证】Shiro安全框架入门</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 11.11px;">BlueLake</a> <a href="/tags/ElasticSearch/" style="font-size: 13.33px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 13.33px;">ElasticStack</a> <a href="/tags/Java/" style="font-size: 18.89px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Kibana/" style="font-size: 13.33px;">Kibana</a> <a href="/tags/LogStash/" style="font-size: 13.33px;">LogStash</a> <a href="/tags/Redis/" style="font-size: 12.22px;">Redis</a> <a href="/tags/Spring/" style="font-size: 17.78px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 12.22px;">SpringBoot</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 13.33px;">hexo</a> <a href="/tags/java/" style="font-size: 16.67px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/sublime/" style="font-size: 10px;">sublime</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/ssafe/" style="font-size: 14.44px;">安全认证</a> <a href="/tags/tool/" style="font-size: 11.11px;">工具</a> <a href="/tags/concurrent/" style="font-size: 13.33px;">并发编程</a> <a href="/tags/open-source/" style="font-size: 10px;">开源</a> <a href="/tags/db/" style="font-size: 15.56px;">数据库</a> <a href="/tags/other/" style="font-size: 10px;">杂谈</a> <a href="/tags/env/" style="font-size: 11.11px;">环境配置</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客折腾</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">Java知识梳理</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/other/">杂谈</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年10月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015年12月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sublime/" rel="tag">sublime</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssafe/" rel="tag">安全认证</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tool/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/open-source/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/other/" rel="tag">杂谈</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-link"></i> 友情链接</h3>
+    <div class="widget">
+      <ul>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://github.com/chaooo">chaooo</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake">BlueLake主题</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://weibo.com/zhengchaooo">秋过冬漫长</a>
+        </li>
+      
+      </ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2021 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        
+            <span>Count by <a href="http://busuanzi.ibruce.info/" target="_blank">busuanzi.</a></span>
+        
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'de8b7f88cfa9812e15f93e986181d1c2194ba6e8',
+      repo: 'BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

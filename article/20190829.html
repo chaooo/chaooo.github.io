@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>【数据库优化】MySQL慢日志查询分析 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-【数据库优化】MySQL慢日志查询分析" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      【数据库优化】MySQL慢日志查询分析
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2019-08-28T16:26:43.000Z" itemprop="datePublished">2019年08月29日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/db/">数据库</a>
+  </div>
+
+      <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+<a href="/article/20190829.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>同大多数关系型数据库一样，日志文件是MySQL数据库的重要组成部分。MySQL有几种不同的日志文件，通常包括错误日志文件，二进制日志，通用日志，慢查询日志，等等。这些日志可以帮助我们定位mysqld内部发生的事件，数据库性能故障，记录数据的变更历史，用户恢复数据库等等。<a id="more"></a></p>
+<ul>
+<li>错误日志：记录启动、运行或停止mysqld时出现的问题。</li>
+<li>通用日志：记录建立的客户端连接和执行的语句。</li>
+<li>更新日志：记录更改数据的语句。该日志在MySQL 5.1中已不再使用。</li>
+<li>二进制日志：记录所有更改数据的语句。还用于复制。</li>
+<li>慢查询日志：记录所有执行时间超过long_query_time秒的所有查询或不使用索引的查询</li>
+<li>Innodb日志：InnoDB redo log(记录了事务的行为，可以很好的通过其对页进行“重做”操作)</li>
+</ul>
+<h3><span id="1-开启慢查询日志">1. 开启慢查询日志</span></h3><p>开启慢查询日志，可以让MySQL记录下查询超过指定时间的语句，通过定位分析性能的瓶颈，才能更好的优化数据库系统的性能。<br>通过<code>show variables like &#39;slow_query%&#39;;</code>查询是否开了慢查询(默认禁用OFF)</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> variables <span class="keyword">like</span> <span class="string">&#x27;%slow_query_log%&#x27;</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">---------------------+------------------------------------------------------+</span></span><br><span class="line"><span class="operator">|</span> Variable_name       <span class="operator">|</span> <span class="keyword">Value</span>                                                <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">---------------------+------------------------------------------------------+</span></span><br><span class="line"><span class="operator">|</span> slow_query_log      <span class="operator">|</span> OFF                                                  <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> slow_query_log_file <span class="operator">|</span> D:\mysql<span class="number">-5.7</span><span class="number">.27</span><span class="operator">-</span>winx64\data\DESKTOP<span class="operator">-</span>E9F062A<span class="operator">-</span>slow.log <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">---------------------+------------------------------------------------------+</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>slow_query_log</code> 慢查询开启状态  OFF 未开启 ON 为开启<br><code>slow_query_log_file</code> 慢查询日志存放的位置（这个目录需要MySQL的运行帐号的可写权限，一般设置为MySQL的数据存放目录）</p>
+</blockquote>
+<p>开启慢查询，需要设置<code>slow_query_log</code>参数。当然，如果不是调优需要的话，一般不建议开启该参数，因为开启慢查询日志会或多或少带来一定的性能影响。慢查询日志支持将日志写入文件。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">set</span> <span class="keyword">global</span> slow_query_log <span class="operator">=</span> <span class="number">1</span>; <span class="operator">/</span><span class="operator">/</span>设置开启或者关闭，<span class="number">0</span>为关闭，<span class="number">1</span>为开启</span><br><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">set</span> <span class="keyword">global</span> long_query_time <span class="operator">=</span> <span class="number">3</span>;  <span class="operator">/</span><span class="operator">/</span>设置慢的阙值时间，默认<span class="number">10</span>秒</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>如果通过终端命令设定的话，需要重新连接或新开一个会话才能看到修改值</p>
+</blockquote>
+<p>使用set global slow_query_log 命令开启慢查询日志，只对当前数据库生效，如果Mysql重启后则会失效。如果要永久生效，必须修改my.cnf配置文件(其他系统变量也是如此)</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">slow_query_log <span class="operator">=</span> <span class="number">1</span> #开启</span><br><span class="line">slow_query_log_file <span class="operator">=</span> <span class="operator">/</span>mysql<span class="number">-5.7</span><span class="number">.27</span><span class="operator">-</span>winx64<span class="operator">/</span>data<span class="operator">/</span>mysql<span class="operator">-</span>slow.log #默认host_name_show.log</span><br><span class="line">long_query_time <span class="operator">=</span> <span class="number">3</span> #默认<span class="number">10</span>秒（查询超过多少秒才记录）</span><br><span class="line">log<span class="operator">-</span>queries<span class="operator">-</span><span class="keyword">not</span><span class="operator">-</span><span class="keyword">using</span><span class="operator">-</span>indexes <span class="operator">=</span> <span class="keyword">on</span> #如果值设置为<span class="keyword">ON</span>，则会记录所有没有利用索引的查询，一般在性能调优的时候会暂时开启。</span><br><span class="line">log_output <span class="operator">=</span> <span class="string">&#x27;FILE,TABLE&#x27;</span> #输出的格式(FILE:文本, <span class="keyword">TABLE</span>:表中, FILE,<span class="keyword">TABLE</span>:同时输出到文本和表中)</span><br></pre></td></tr></table></figure>
+<p>插入一条测试慢查询</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> sleep(<span class="number">5</span>);</span><br></pre></td></tr></table></figure>
+<p>通过MySQL命令查看有多少慢查询</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> <span class="keyword">global</span> status <span class="keyword">like</span> <span class="string">&#x27;%Slow_queries%&#x27;</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">---------------+-------+</span></span><br><span class="line"><span class="operator">|</span> Variable_name <span class="operator">|</span> <span class="keyword">Value</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">---------------+-------+</span></span><br><span class="line"><span class="operator">|</span> Slow_queries  <span class="operator">|</span> <span class="number">1</span>     <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">---------------+-------+</span></span><br></pre></td></tr></table></figure>
+
+<h3><span id="2-慢查询日志分析工具">2. 慢查询日志分析工具</span></h3><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>一般统计</th>
+<th>高级统计</th>
+<th>语言</th>
+<th>优势</th>
+<th>针对log</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>mysqldumpslow</td>
+<td><code>√</code></td>
+<td><code>×</code></td>
+<td>perl</td>
+<td>mysql官方自带</td>
+<td>slow</td>
+</tr>
+<tr>
+<td>myprofi</td>
+<td><code>√</code></td>
+<td><code>×</code></td>
+<td>php</td>
+<td>简单</td>
+<td>slow</td>
+</tr>
+<tr>
+<td>mysql-log-filter</td>
+<td><code>√</code></td>
+<td>部分<code>√</code></td>
+<td>python</td>
+<td>简单</td>
+<td>slow</td>
+</tr>
+<tr>
+<td>mysql-explain-slow-log</td>
+<td><code>√</code></td>
+<td><code>×</code></td>
+<td>perl</td>
+<td>无</td>
+<td>slow</td>
+</tr>
+<tr>
+<td>mysqlbinlog</td>
+<td><code>√</code></td>
+<td><code>×</code></td>
+<td>二进制</td>
+<td>mysql官方自带</td>
+<td>binary log</td>
+</tr>
+<tr>
+<td>mysqlsla</td>
+<td><code>√</code></td>
+<td><code>√</code></td>
+<td>perl</td>
+<td>总能强大，使用简单，自定义能力强</td>
+<td>所有日志，包括自定义日志</td>
+</tr>
+<tr>
+<td>pt-query-digest</td>
+<td><code>√</code></td>
+<td><code>√</code></td>
+<td>perl</td>
+<td>总能强大，使用简单，自定义能力强</td>
+<td>所有日志，包括自定义日志</td>
+</tr>
+</tbody></table>
+<h4><span id="21-mysqldumpslow">2.1 mysqldumpslow</span></h4><ul>
+<li>MySQL自带的慢查询日志分析工具mysqldumpslow主要功能是, 统计不同慢sql的:<ul>
+<li>出现次数(Count),</li>
+<li>执行最长时间(Time), </li>
+<li>累计总耗费时间(Time),</li>
+<li>等待锁的时间(Lock), </li>
+<li>发送给客户端的行总数(Rows),</li>
+<li>扫描的行总数(Rows), </li>
+<li>用户以及sql语句本身(抽象了一下格式, 比如 limit 1, 20 用 limit N,N 表示).<br>安装后基本使用：<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mysqldumpslow <span class="operator">-</span>s r <span class="operator">-</span>t <span class="number">10</span> <span class="operator">/</span>data<span class="operator">/</span>mysql<span class="operator">/</span>mysql<span class="operator">-</span>slow.log  <span class="operator">/</span><span class="operator">/</span>得到返回记录集最多的<span class="number">10</span>个<span class="keyword">SQL</span></span><br><span class="line">mysqldumpslow <span class="operator">-</span>s c <span class="operator">-</span>t <span class="number">10</span> <span class="operator">/</span>data<span class="operator">/</span>mysql<span class="operator">/</span>mysql<span class="operator">-</span>slow.log <span class="operator">/</span><span class="operator">/</span>得到访问次数最多的<span class="number">10</span>个<span class="keyword">SQL</span> </span><br><span class="line">mysqldumpslow <span class="operator">-</span>s t <span class="operator">-</span>t <span class="number">10</span> <span class="operator">-</span>g &quot;left join&quot; <span class="operator">/</span>data<span class="operator">/</span>mysql<span class="operator">/</span>mysql<span class="operator">-</span>slow.log  <span class="operator">/</span><span class="operator">/</span>得到按照时间排序的前<span class="number">10</span>条里面含有做了连接的查询<span class="keyword">SQL</span></span><br><span class="line">mysqldumpslow <span class="operator">-</span>s r <span class="operator">-</span>t <span class="number">10</span> <span class="operator">/</span>data<span class="operator">/</span>mysql<span class="operator">/</span>mysql<span class="operator">-</span>slow.log <span class="operator">|</span> more  <span class="operator">/</span><span class="operator">/</span>另外建议在使用这些命令时结合<span class="operator">|</span>和more使用，否则有可能出现爆屏情况</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ul>
+<h4><span id="22-mysqlsla">2.2 mysqlsla</span></h4><p>hackmysql.com推出的一款日志分析工具(该网站还维护了 mysqlreport, mysqlidxchk 等比较实用的mysql工具)</p>
+<ul>
+<li>整体来说, 功能非常强大. 数据报表,非常有利于分析慢查询的原因, 包括执行频率, 数据量, 查询消耗等.</li>
+</ul>
+<p>安装后基本使用方法：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqlsla <span class="operator">-</span>lt slow <span class="operator">-</span>sort t_sum <span class="operator">-</span>top <span class="number">1000</span>  <span class="operator">/</span>tmp<span class="operator">/</span>slow_query.log</span><br></pre></td></tr></table></figure>
+<ul>
+<li>结果选项说明：<ul>
+<li>总查询次数 (queries total),</li>
+<li>去重后的sql数量 (unique),</li>
+<li>输出报表的内容排序(sorted by),</li>
+<li>最重大的慢sql统计信息(包括 平均执行时间, 等待锁时间, 结果行的总数, 扫描的行总数)</li>
+<li>Count, sql的执行次数及占总的slow log数量的百分比.</li>
+<li>Time, 执行时间, 包括总时间, 平均时间, 最小, 最大时间, 时间占到总慢sql时间的百分比.</li>
+<li>95% of Time, 去除最快和最慢的sql, 覆盖率占95%的sql的执行时间.</li>
+<li>Lock Time, 等待锁的时间.</li>
+<li>95% of Lock , 95%的慢sql等待锁时间.</li>
+<li>Rows sent, 结果行统计数量, 包括平均, 最小, 最大数量.</li>
+<li>Rows examined, 扫描的行数量.</li>
+<li>Database, 属于哪个数据库</li>
+<li>Users, 哪个用户,IP, 占到所有用户执行的sql百分比</li>
+<li>Query abstract, 抽象后的sql语句</li>
+<li>Query sample, sql语句</li>
+</ul>
+</li>
+<li>mysqlsla常用参数说明：<ol>
+<li><code>-log-type (-lt) type logs</code>:通过这个参数来制定log的类型，主要有slow, general, binary, msl, udl,分析slow log时通过制定为slow</li>
+<li><code>-sort</code>:t_sum:按总时间排序(默认)，c_sum:按总次数排序c_sum_p: sql语句执行次数占总执行次数的百分比。</li>
+<li><code>-top</code>:显示sql的数量，默认是10,表示按规则取排序的前多少条</li>
+<li><code>–statement-filter (-sf) [+-][TYPE]</code>:过滤sql语句的类型，比如select、update、drop，[TYPE] 有SELECT, CREATE, DROP, UPDATE, INSERT，例如”+SELECT,INSERT”，不出现的默认是-，即不包括。</li>
+<li><code>-db</code>：要处理哪个库的日志：</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 举个例子，只取funsion数据库的<span class="keyword">select</span>语句，并按照总时间排序，取前<span class="number">1000</span>条数据</span><br><span class="line"># 保存到当前目录下的 slow_query.pretty.log文件中</span><br><span class="line">mysqlsla <span class="operator">-</span>lt slow  <span class="operator">-</span>sort t_sum  <span class="operator">-</span>sf &quot;+select&quot;  <span class="operator">-</span>db funsion  <span class="operator">-</span>top <span class="number">1000</span>  <span class="operator">/</span>tmp<span class="operator">/</span>slow_query.log <span class="operator">&gt;</span> .<span class="operator">/</span>slow_query.pretty.log</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>深度使用可参考： <a target="_blank" rel="noopener" href="https://yq.aliyun.com/articles/59260">MySQL日志分析神器之mysqlsla</a></p>
+</blockquote>
+<h4><span id="23-pt-query-digest">2.3 pt-query-digest</span></h4><p>pt-query-digest是用于分析mysql慢查询的一个工具，它可以分析binlog、General log、slowlog，也可以通过SHOWPROCESSLIST或者通过tcpdump抓取的MySQL协议数据来进行分析。可以把分析结果输出到文件中，分析过程是先对查询语句的条件进行参数化，然后对参数化以后的查询进行分组统计，统计出各查询的执行时间、次数、占比等，可以借助分析结果找出问题进行优化。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 分析最近<span class="number">12</span>小时内的查询：</span><br><span class="line">pt<span class="operator">-</span>query<span class="operator">-</span>digest  <span class="comment">--since=12h  slow.log &gt; slow_report2.log</span></span><br></pre></td></tr></table></figure>
+<ol>
+<li>pt-query-digest语法及重要选项<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">pt<span class="operator">-</span>query<span class="operator">-</span>digest [OPTIONS] [FILES] [DSN]</span><br><span class="line">    <span class="comment">--create-review-table  当使用--review参数把分析结果输出到表中时，如果没有表就自动创建。</span></span><br><span class="line">    <span class="comment">--create-history-table  当使用--history参数把分析结果输出到表中时，如果没有表就自动创建。</span></span><br><span class="line">    <span class="comment">--filter  对输入的慢查询按指定的字符串进行匹配过滤后再进行分析</span></span><br><span class="line">    <span class="comment">--limit    限制输出结果百分比或数量，默认值是20,即将最慢的20条语句输出，如果是50%则按总响应时间占比从大到小排序，输出到总和达到50%位置截止。</span></span><br><span class="line">    <span class="comment">--host  mysql服务器地址</span></span><br><span class="line">    <span class="comment">--user  mysql用户名</span></span><br><span class="line">    <span class="comment">--password  mysql用户密码</span></span><br><span class="line">    <span class="comment">--history 将分析结果保存到表中，分析结果比较详细，下次再使用--history时，如果存在相同的语句，且查询所在的时间区间和历史表中的不同，则会记录到数据表中，可以通过查询同一CHECKSUM来比较某类型查询的历史变化。</span></span><br><span class="line">    <span class="comment">--review 将分析结果保存到表中，这个分析只是对查询条件进行参数化，一个类型的查询一条记录，比较简单。当下次使用--review时，如果存在相同的语句分析，就不会记录到数据表中。</span></span><br><span class="line">    <span class="comment">--output 分析结果输出类型，值可以是report(标准分析报告)、slowlog(Mysql slow log)、json、json-anon，一般使用report，以便于阅读。</span></span><br><span class="line">    <span class="comment">--since 从什么时间开始分析，值为字符串，可以是指定的某个”yyyy-mm-dd [hh:mm:ss]”格式的时间点，也可以是简单的一个时间值：s(秒)、h(小时)、m(分钟)、d(天)，如12h就表示从12小时前开始统计。</span></span><br><span class="line">    <span class="comment">--until 截止时间，配合—since可以分析一段时间内的慢查询。</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>分析pt-query-digest输出结果</p>
+<ol>
+<li>总体统计结果<ul>
+<li>Overall：总共有多少条查询</li>
+<li>Time range：查询执行的时间范围</li>
+<li>unique：唯一查询数量，即对查询条件进行参数化以后，总共有多少个不同的查询</li>
+<li>total：总计   min：最小   max：最大  avg：平均</li>
+<li>95%：把所有值从小到大排列，位置位于95%的那个数，这个数一般最具有参考价值</li>
+<li>median：中位数，把所有值从小到大排列，位置位于中间那个数</li>
+</ul>
+</li>
+<li>查询分组统计结果<ul>
+<li>Rank：所有语句的排名，默认按查询时间降序排列，通过–order-by指定</li>
+<li>Query ID：语句的ID，（去掉多余空格和文本字符，计算hash值）</li>
+<li>Response：总的响应时间</li>
+<li>time：该查询在本次分析中总的时间占比</li>
+<li>calls：执行次数，即本次分析总共有多少条这种类型的查询语句</li>
+<li>R/Call：平均每次执行的响应时间</li>
+<li>V/M：响应时间Variance-to-mean的比率</li>
+<li>Item：查询对象</li>
+</ul>
+</li>
+<li>每一种查询的详细统计结果<ul>
+<li>由下面查询的详细统计结果，最上面的表格列出了执行次数、最大、最小、平均、95%等各项目的统计。</li>
+<li>ID：查询的ID号，和上图的Query ID对应</li>
+<li>Databases：数据库名</li>
+<li>Users：各个用户执行的次数（占比）</li>
+<li>Query_time distribution ：查询时间分布, 长短体现区间占比，本例中1s-10s之间查询数量是10s以上的两倍。</li>
+<li>Tables：查询中涉及到的表</li>
+<li>Explain：SQL语句</li>
+</ul>
+</li>
+</ol>
+<h3><span id="3-explain查看执行计划">3. explain查看执行计划</span></h3><p>在上面的慢查询中，我们已经将查询时间超过阀值的sql语句过滤了出来，<code>explain+查询语句</code>具体分析是哪里出了问题。<br>MySQL 提供了一个 <code>Explain</code> 命令, 它可以对 select 语句进行分析, 并输出 select 执行的详细信息, 以供开发人员针对性优化.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> user_info <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">2</span>\G</span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> <span class="number">1.</span> <span class="type">row</span> <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span></span><br><span class="line">           id: <span class="number">1</span></span><br><span class="line">  select_type: SIMPLE</span><br><span class="line">        <span class="keyword">table</span>: user_info</span><br><span class="line">   partitions: <span class="keyword">NULL</span></span><br><span class="line">         type: const</span><br><span class="line">possible_keys: <span class="keyword">PRIMARY</span></span><br><span class="line">          key: <span class="keyword">PRIMARY</span></span><br><span class="line">      key_len: <span class="number">8</span></span><br><span class="line">          <span class="keyword">ref</span>: const</span><br><span class="line">         <span class="keyword">rows</span>: <span class="number">1</span></span><br><span class="line">     filtered: <span class="number">100.00</span></span><br><span class="line">        Extra: <span class="keyword">NULL</span></span><br><span class="line"><span class="number">1</span> <span class="type">row</span> <span class="keyword">in</span> <span class="keyword">set</span>, <span class="number">1</span> warning (<span class="number">0.06</span> sec)</span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>各列的含义如下:</p>
+<ul>
+<li><code>id</code>: SELECT 查询的标识符. 每个 SELECT 都会自动分配一个唯一的标识符.</li>
+<li><code>select_type</code>: SELECT 查询的类型.<ul>
+<li>SIMPLE, 表示此查询不包含 UNION 查询或子查询</li>
+<li>PRIMARY, 表示此查询是最外层的查询</li>
+<li>UNION, 表示此查询是 UNION 的第二或随后的查询</li>
+<li>DEPENDENT UNION, UNION 中的第二个或后面的查询语句, 取决于外面的查询</li>
+<li>UNION RESULT, UNION 的结果</li>
+<li>SUBQUERY, 子查询中的第一个 SELECT</li>
+<li>DEPENDENT SUBQUERY: 子查询中的第一个 SELECT, 取决于外面的查询. 即子查询依赖于外层查询的结果.</li>
+</ul>
+</li>
+<li><code>table</code>: 查询的是哪个表</li>
+<li><code>partitions</code>: 匹配的分区</li>
+<li><code>type</code>: join 类型<ul>
+<li>type字段比较重要, 它提供了判断查询是否高效的重要依据依据. 通过<code>type</code>字段, 我们判断此次查询是 <code>全表扫描</code> 还是 <code>索引扫描</code> 等.</li>
+<li>system: 表中只有一条数据. 这个类型是特殊的 const 类型.</li>
+<li>const: 针对主键或唯一索引的等值查询扫描, 最多只返回一行数据. const 查询速度非常快, 因为它仅仅读取一次即可.</li>
+<li>eq_ref: 此类型通常出现在多表的 join 查询, 表示对于前表的每一个结果, 都只能匹配到后表的一行结果. 并且查询的比较操作通常是 =, 查询效率较高. </li>
+<li>ref: 此类型通常出现在多表的 join 查询, 针对于非唯一或非主键索引, 或者是使用了 最左前缀 规则索引的查询.</li>
+<li>range: 表示使用索引范围查询, 通过索引字段范围获取表中部分数据记录. 这个类型通常出现在 =, &lt;&gt;, &gt;, &gt;=, &lt;, &lt;=, IS NULL, &lt;=&gt;, BETWEEN, IN() 操作中.</li>
+<li>index: 表示全索引扫描(full index scan), 和 ALL 类型类似, 只不过 ALL 类型是全表扫描, 而 index 类型则仅仅扫描所有的索引, 而不扫描数据.</li>
+<li>ALL: 表示全表扫描, 这个类型的查询是性能最差的查询之一. 通常来说, 我们的查询不应该出现 ALL 类型的查询, 因为这样的查询在数据量大的情况下, 对数据库的性能是巨大的灾难.</li>
+</ul>
+</li>
+<li><code>possible_keys</code>: 此次查询中可能选用的索引<ul>
+<li>表示 MySQL 在查询时, 能够使用到的索引. 注意, 即使有些索引在 possible_keys 中出现, 但是并不表示此索引会真正地被 MySQL 使用到. MySQL 在查询时具体使用了哪些索引, 由 key 字段决定.</li>
+</ul>
+</li>
+<li><code>key</code>: 此字段是 MySQL 在当前查询时所真正使用到的索引.</li>
+<li><code>key_len</code>: 表示查询优化器使用了索引的字节数. 这个字段可以评估组合索引是否完全被使用, 或只有最左部分字段被使用到.</li>
+<li><code>ref</code>: 哪个字段或常数与 key 一起被使用</li>
+<li><code>rows</code>: 显示此查询一共扫描了多少行. 这个是一个估计值.<ul>
+<li>rows 也是一个重要的字段. MySQL 查询优化器根据统计信息, 估算 SQL 要查找到结果集需要扫描读取的数据行数, 这个值非常直观显示 SQL 的效率好坏, 原则上 rows 越少越好.</li>
+</ul>
+</li>
+<li><code>filtered</code>: 表示此查询条件所过滤的数据的百分比</li>
+<li><code>extra</code>: EXplain 中的很多额外的信息会在 Extra 字段显示<ul>
+<li>Using filesort: 当 Extra 中有 Using filesort 时, 表示 MySQL 需额外的排序操作, 不能通过索引顺序达到排序效果. 一般有 Using filesort, 都建议优化去掉, 因为这样的查询 CPU 资源消耗大.</li>
+<li>Using index: “覆盖索引扫描”, 表示查询在索引树中就可查找所需数据, 不用扫描表数据文件, 往往说明性能不错</li>
+<li>Using temporary: 查询有使用临时表, 一般出现于排序, 分组和多表 join 的情况, 查询效率不高, 建议优化.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>type 类型的性能比较<br>通常来说, 不同的 type 类型的性能关系如下:</p>
+</li>
+</ol>
+<ul>
+<li><code>ALL &lt; index &lt; range ~ index_merge &lt; ref &lt; eq_ref &lt; const &lt; system</code><ul>
+<li>ALL 类型因为是全表扫描, 因此在相同的查询条件下, 它是速度最慢的.</li>
+<li>而 index 类型的查询虽然不是全表扫描, 但是它扫描了所有的索引, 因此比 ALL 类型的稍快.</li>
+<li>后面的几种类型都是利用了索引来查询数据, 因此可以过滤部分或大部分数据, 因此查询效率就比较高了.</li>
+</ul>
+</li>
+</ul>
+<h3><span id="4-mysql性能分析语句show-profile">4. MySQL性能分析语句show profile</span></h3><p>Query Profile是MySQL自带的一种Query诊断分析工具，可以完整的显示一条sql执行的各方面的详细信息，默认关闭;</p>
+<ol>
+<li>看看当前的MySQL版本是否支持: <code>show variables like &#39;profiling&#39;;</code>或<code>show variables like &#39;profiling%&#39;;</code><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> variables <span class="keyword">like</span> <span class="string">&#x27;profiling%&#x27;</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">------------------------+-------+</span></span><br><span class="line"><span class="operator">|</span> Variable_name          <span class="operator">|</span> <span class="keyword">Value</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------------------------+-------+</span></span><br><span class="line"><span class="operator">|</span> profiling              <span class="operator">|</span> OFF   <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> profiling_history_size <span class="operator">|</span> <span class="number">15</span>    <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------------------------+-------+</span></span><br></pre></td></tr></table></figure></li>
+<li>使用前需要开启: <code>set profiling = 1; (1:开 / 0:关)</code><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">set</span> profiling <span class="operator">=</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure></li>
+<li><strong>运行sql后</strong>，查询结果<code>show profiles;</code><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">SHOW</span> PROFILES\G</span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> <span class="number">1.</span> <span class="type">row</span> <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span></span><br><span class="line">Query_ID: <span class="number">1</span></span><br><span class="line">Duration: <span class="number">0.02949950</span></span><br><span class="line">   Query: explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> <span class="keyword">user</span></span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> <span class="number">2.</span> <span class="type">row</span> <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span></span><br><span class="line">Query_ID: <span class="number">2</span></span><br><span class="line">Duration: <span class="number">0.03405350</span></span><br><span class="line">   Query: <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> housedemo</span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> <span class="number">3.</span> <span class="type">row</span> <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span></span><br><span class="line">Query_ID: <span class="number">3</span></span><br><span class="line">Duration: <span class="number">0.07813800</span></span><br><span class="line">   Query: <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> house</span><br><span class="line"><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> <span class="number">4.</span> <span class="type">row</span> <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span></span><br><span class="line">Query_ID: <span class="number">4</span></span><br><span class="line">Duration: <span class="number">0.00018150</span></span><br><span class="line">   Query: <span class="keyword">show</span> prifiles</span><br></pre></td></tr></table></figure></li>
+<li>诊断SQL, show profile <code>Type</code> io for query <code>Query_ID</code><ul>
+<li>LIMIT部分的用法与SELECT中LIMIT子句一致，不赘述。</li>
+<li>Type是可选的，取值范围可以如下：<ul>
+<li><code>ALL</code> 显示所有性能信息</li>
+<li><code>BLOCK IO</code> 显示块IO操作的次数</li>
+<li><code>CONTEXT SWITCHES</code> 显示上下文切换次数，不管是主动还是被动</li>
+<li><code>CPU</code> 显示用户CPU时间、系统CPU时间</li>
+<li><code>IPC</code> 显示发送和接收的消息数量</li>
+<li><code>MEMORY</code> [暂未实现]</li>
+<li><code>PAGE FAULTS</code> 显示页错误数量</li>
+<li><code>SOURCE</code> 显示源码中的函数名称与位置</li>
+<li><code>SWAPS</code> 显示SWAP的次数</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">show</span> profile cpu,block io <span class="keyword">for</span> query <span class="number">3</span>;</span><br><span class="line"><span class="operator">+</span><span class="comment">----------------------+----------+----------+------------+--------------+---------------+</span></span><br><span class="line"><span class="operator">|</span> Status               <span class="operator">|</span> Duration <span class="operator">|</span> CPU_user <span class="operator">|</span> CPU_system <span class="operator">|</span> Block_ops_in <span class="operator">|</span> Block_ops_out <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------------------+----------+----------+------------+--------------+---------------+</span></span><br><span class="line"><span class="operator">|</span> starting             <span class="operator">|</span> <span class="number">0.000077</span> <span class="operator">|</span> <span class="number">0.000000</span> <span class="operator">|</span>   <span class="number">0.000000</span> <span class="operator">|</span>         <span class="keyword">NULL</span> <span class="operator">|</span>          <span class="keyword">NULL</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> checking permissions <span class="operator">|</span> <span class="number">0.000013</span> <span class="operator">|</span> <span class="number">0.000000</span> <span class="operator">|</span>   <span class="number">0.000000</span> <span class="operator">|</span>         <span class="keyword">NULL</span> <span class="operator">|</span>          <span class="keyword">NULL</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Opening tables       <span class="operator">|</span> <span class="number">0.031992</span> <span class="operator">|</span> <span class="number">0.000000</span> <span class="operator">|</span>   <span class="number">0.000000</span> <span class="operator">|</span>         <span class="keyword">NULL</span> <span class="operator">|</span>          <span class="keyword">NULL</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> init                 <span class="operator">|</span> <span class="number">0.000059</span> <span class="operator">|</span> <span class="number">0.000000</span> <span class="operator">|</span>   <span class="number">0.000000</span> <span class="operator">|</span>         <span class="keyword">NULL</span> <span class="operator">|</span>          <span class="keyword">NULL</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="keyword">System</span> lock          <span class="operator">|</span> <span class="number">0.000016</span> <span class="operator">|</span> <span class="number">0.000000</span> <span class="operator">|</span>   <span class="number">0.000000</span> <span class="operator">|</span>         <span class="keyword">NULL</span> <span class="operator">|</span>          <span class="keyword">NULL</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> optimizing           <span class="operator">|</span> <span class="number">0.000007</span> <span class="operator">|</span> <span class="number">0.000000</span> <span class="operator">|</span>   <span class="number">0.000000</span> <span class="operator">|</span>         <span class="keyword">NULL</span> <span class="operator">|</span>          <span class="keyword">NULL</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> statistics           <span class="operator">|</span> <span class="number">0.000017</span> <span class="operator">|</span> <span class="number">0.000000</span> <span class="operator">|</span>   <span class="number">0.000000</span> <span class="operator">|</span>         <span class="keyword">NULL</span> <span class="operator">|</span>          <span class="keyword">NULL</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> preparing            <span class="operator">|</span> <span class="number">0.008535</span> <span class="operator">|</span> <span class="number">0.000000</span> <span class="operator">|</span>   <span class="number">0.000000</span> <span class="operator">|</span>         <span class="keyword">NULL</span> <span class="operator">|</span>          <span class="keyword">NULL</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> executing            <span class="operator">|</span> <span class="number">0.000016</span> <span class="operator">|</span> <span class="number">0.000000</span> <span class="operator">|</span>   <span class="number">0.000000</span> <span class="operator">|</span>         <span class="keyword">NULL</span> <span class="operator">|</span>          <span class="keyword">NULL</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> Sending data         <span class="operator">|</span> <span class="number">0.037234</span> <span class="operator">|</span> <span class="number">0.000000</span> <span class="operator">|</span>   <span class="number">0.000000</span> <span class="operator">|</span>         <span class="keyword">NULL</span> <span class="operator">|</span>          <span class="keyword">NULL</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> <span class="keyword">end</span>                  <span class="operator">|</span> <span class="number">0.000011</span> <span class="operator">|</span> <span class="number">0.000000</span> <span class="operator">|</span>   <span class="number">0.000000</span> <span class="operator">|</span>         <span class="keyword">NULL</span> <span class="operator">|</span>          <span class="keyword">NULL</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> query <span class="keyword">end</span>            <span class="operator">|</span> <span class="number">0.000012</span> <span class="operator">|</span> <span class="number">0.000000</span> <span class="operator">|</span>   <span class="number">0.000000</span> <span class="operator">|</span>         <span class="keyword">NULL</span> <span class="operator">|</span>          <span class="keyword">NULL</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> closing tables       <span class="operator">|</span> <span class="number">0.000014</span> <span class="operator">|</span> <span class="number">0.000000</span> <span class="operator">|</span>   <span class="number">0.000000</span> <span class="operator">|</span>         <span class="keyword">NULL</span> <span class="operator">|</span>          <span class="keyword">NULL</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> freeing items        <span class="operator">|</span> <span class="number">0.000108</span> <span class="operator">|</span> <span class="number">0.000000</span> <span class="operator">|</span>   <span class="number">0.000000</span> <span class="operator">|</span>         <span class="keyword">NULL</span> <span class="operator">|</span>          <span class="keyword">NULL</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> cleaning up          <span class="operator">|</span> <span class="number">0.000030</span> <span class="operator">|</span> <span class="number">0.000000</span> <span class="operator">|</span>   <span class="number">0.000000</span> <span class="operator">|</span>         <span class="keyword">NULL</span> <span class="operator">|</span>          <span class="keyword">NULL</span> <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">----------------------+----------+----------+------------+--------------+---------------+</span></span><br></pre></td></tr></table></figure>
+<p>从图中可以看到开始，打开表，加载，关闭表，释放资源、记录日志，清理的你工作，在这完全可以看到一条SQL的完整生命周期。</p>
+<ol start="5">
+<li>日常开发需要注意<ul>
+<li>如果show profile … for query id；出现了如下四个，则必须优化这条sql。<ol>
+<li><code>converting HEAP to MyISAM</code> 查询结果太大， 内存都不够用了网磁盘上搬了</li>
+<li><code>Creating tmp table</code> 创建临时表</li>
+<li>拷贝数据到临时表：假设要查询两百万数据，刚好匹配的条件有一百万，恰巧要把这一百万的数据拷贝到临时表，然后再把数据推送给用户，最后再把临时表删掉，这个时候就是导致SQL变慢的罪魁祸首</li>
+<li>用完再删除</li>
+<li><code>Copying to tmp table on disk</code> 把内存中临时表复制到磁盘，危险！！！</li>
+<li><code>locked</code></li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+<h3><span id="5-全局查询日志">5. 全局查询日志</span></h3><p>切记：<strong>永远不要再生产环境开启这个功能</strong>。<br>全局查询日志有时也能帮助我们来调SQL。但是，切记，这家伙只能在测试环境使用，绝不可以在生产环境使用。</p>
+<ol>
+<li>命令启用<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">set</span> <span class="keyword">global</span> general_log<span class="operator">=</span><span class="number">1</span>; #开启后会把所有的<span class="keyword">SQL</span>偷偷的记录</span><br><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">set</span> <span class="keyword">global</span> log_output<span class="operator">=</span><span class="string">&#x27;TABLE&#x27;</span>;</span><br></pre></td></tr></table></figure></li>
+<li>配置启用,  在MySQL的my.cnf中，设置如下：<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#开启</span><br><span class="line">general_log<span class="operator">=</span><span class="number">1</span></span><br><span class="line">#记录日志文件的路径</span><br><span class="line">general_log_file<span class="operator">=</span><span class="operator">/</span>path<span class="operator">/</span>logfile</span><br><span class="line">#输出格式</span><br><span class="line">log_output<span class="operator">=</span>file</span><br></pre></td></tr></table></figure></li>
+<li>此后，你所编写的SQL语句，将会记录到MySQL库里的general_log表，可以用下面的命令查看。<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> mysql.general_log;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>场景：如果需要做系统的定案分析(今天下午2点-3点出的故障），如果要观察和复现的话，可以在测试环境下模拟一遍，然后把所有的问题复现一下。那么用general_log这个表来收集什么时间段发生了什么样的SQL，帮助我们定位收集。</p>
+</blockquote>
+</li>
+</ol>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">1. 开启慢查询日志</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">2. 慢查询日志分析工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.1 mysqldumpslow</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.2 mysqlsla</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.3 pt-query-digest</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">3. explain查看执行计划</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">4. MySQL性能分析语句show profile</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">5. 全局查询日志</span></a></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/article/20190829.html">http://chaooo.github.io/article/20190829.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+    <div class="article-reward">
+        <a id="reward-btn" href="javascript:;">打赏</a>
+        <div id="reward-content">
+            <h6 class="reward-tit">“感谢你的支持，我会继续努力！”</h6>
+            <div>
+                <div class="reward-code">
+                    <img class="type-code" src="/css/images/wechat.jpg" alt="微信支付">
+                    <img class="er-code" src="/css/images/wechat-pay.jpg" alt="微信收款码">
+                </div>
+                <div class="reward-code">
+                    <img class="type-code" src="/css/images/alipay.jpg" alt="支付宝支付">
+                    <img class="er-code" src="/css/images/alipay-pay.jpg" alt="支付宝收款码">
+                </div>
+            </div>
+            <p class="reward-desc">扫码打赏，感谢支持</p>
+        </div>
+    </div>
+
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/db/" rel="tag">数据库</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/article/20190901.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          【数据库优化】MySQL性能优化基础
+        
+      </div>
+    </a>
+  
+  
+    <a href="/article/20190827.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">【Java知识梳理】深入JVM(三)-内存模型JMM 与 锁机制</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+  
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/article/20200211.html">【环境配置】Redis与MySQL多实例配置</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200207.html">【安全认证】基于Shiro前后端分离的认证与授权(三.前端篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200121.html">【安全认证】基于Shiro前后端分离的认证与授权(二.授权篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200118.html">【安全认证】基于Shiro前后端分离的认证与授权(一.认证篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20191222.html">【安全认证】Shiro安全框架入门</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 11.11px;">BlueLake</a> <a href="/tags/ElasticSearch/" style="font-size: 13.33px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 13.33px;">ElasticStack</a> <a href="/tags/Java/" style="font-size: 18.89px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Kibana/" style="font-size: 13.33px;">Kibana</a> <a href="/tags/LogStash/" style="font-size: 13.33px;">LogStash</a> <a href="/tags/Redis/" style="font-size: 12.22px;">Redis</a> <a href="/tags/Spring/" style="font-size: 17.78px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 12.22px;">SpringBoot</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 13.33px;">hexo</a> <a href="/tags/java/" style="font-size: 16.67px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/sublime/" style="font-size: 10px;">sublime</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/ssafe/" style="font-size: 14.44px;">安全认证</a> <a href="/tags/tool/" style="font-size: 11.11px;">工具</a> <a href="/tags/concurrent/" style="font-size: 13.33px;">并发编程</a> <a href="/tags/open-source/" style="font-size: 10px;">开源</a> <a href="/tags/db/" style="font-size: 15.56px;">数据库</a> <a href="/tags/other/" style="font-size: 10px;">杂谈</a> <a href="/tags/env/" style="font-size: 11.11px;">环境配置</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客折腾</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">Java知识梳理</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/other/">杂谈</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年10月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015年12月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sublime/" rel="tag">sublime</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssafe/" rel="tag">安全认证</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tool/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/open-source/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/other/" rel="tag">杂谈</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-link"></i> 友情链接</h3>
+    <div class="widget">
+      <ul>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://github.com/chaooo">chaooo</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake">BlueLake主题</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://weibo.com/zhengchaooo">秋过冬漫长</a>
+        </li>
+      
+      </ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2021 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        
+            <span>Count by <a href="http://busuanzi.ibruce.info/" target="_blank">busuanzi.</a></span>
+        
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'de8b7f88cfa9812e15f93e986181d1c2194ba6e8',
+      repo: 'BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>【并发编程】阻塞队列 与 线程池 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-【并发编程】阻塞队列与线程池" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      【并发编程】阻塞队列 与 线程池
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2019-10-14T15:04:54.000Z" itemprop="datePublished">2019年10月14日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/concurrent/">并发编程</a>
+  </div>
+
+      <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+<a href="/article/20191014.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>池和队列的关系<ul>
+<li>线程池或者数据库连接池，都有最大限制。如果超出了限制数量，则新进来的申请连接都要放入额外的<strong>队列里</strong>，等到池空出来时，从队列中取出连接放进池里。<a id="more"></a></li>
+</ul>
+</li>
+</ul>
+<h3><span id="1-blockingqueue阻塞队列">1. BlockingQueue（阻塞队列）</span></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Queue接口</span><br><span class="line">    |———— BlockingQueue接口</span><br><span class="line">        |———— ArrayBlockingQueue类</span><br><span class="line">        |———— DelayQueue类</span><br><span class="line">        |———— LinkedBlockingQueue类</span><br><span class="line">        |———— PriorityBlockingQueue类</span><br><span class="line">        |———— SynchronousQueue类</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>BlockingQueue</code>继承了<code>Queue</code>接口，提供了一些阻塞方法，主要作用如下：<ul>
+<li>当线程向队列中插入元素时，如果队列已满，则阻塞线程，直到队列有空闲位置（非满）；</li>
+<li>当线程从队列中取元素（删除队列元素）时，如果队列为空，则阻塞线程，直到队列有元素；</li>
+</ul>
+</li>
+<li><code>BlockingQueue</code>在<code>Queue</code>方法基础上增加了两类和阻塞相关的方法：<code>put(e)</code>、<code>take()</code>；<code>offer(e, time, unit)</code>、<code>poll(time, unit)</code>。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>操作类型</th>
+<th>抛出异常</th>
+<th>返回特殊值</th>
+<th>阻塞线程</th>
+<th>超时</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>插入</td>
+<td>add(e)</td>
+<td>offer(e)</td>
+<td>put(e)</td>
+<td>offer(e, time, unit)</td>
+</tr>
+<tr>
+<td>删除</td>
+<td>remove()</td>
+<td>poll()</td>
+<td>take()</td>
+<td>poll(time, unit)</td>
+</tr>
+<tr>
+<td>读取</td>
+<td>element()</td>
+<td>peek()</td>
+<td>/</td>
+<td>/</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong><code>put(e)</code>**和</strong><code>take()</code>**方法会一直阻塞调用线程，直到线程被中断或队列状态可用；</li>
+<li><strong><code>offer(e, time, unit)</code>**和</strong><code>poll(time, unit)</code>**方法会限时阻塞调用线程，直到超时或线程被中断或队列状态可用。</li>
+<li>阻塞队列主要用在生产者/消费者的场景</li>
+</ul>
+<h4><span id="11-arrayblockingqueue">1.1 ArrayBlockingQueue</span></h4><p><code>ArrayBlockingQueue</code>是一个有边界的阻塞队列，它的内部实现是一个数组。</p>
+<ul>
+<li>有边界的意思是它的容量是有限的，我们必须在其初始化的时候指定它的容量大小，容量大小一旦指定就不可改变。</li>
+<li><code>ArrayBlockingQueue</code>是以先进先出的方式存储数据，最新插入的对象是尾部，最新移出的对象是头部。</li>
+</ul>
+<h4><span id="12-delayqueue">1.2 DelayQueue</span></h4><p><code>DelayQueue</code>阻塞的是其内部元素，<code>DelayQueue</code>中的元素必须实现<code>java.util.concurrent.Delayed</code>接口，<code>Delayed</code>接口继承了<code>Comparable</code>接口，这是因为<code>DelayedQueue</code>中的元素需要进行排序，一般情况，我们都是按元素过期时间的优先级进行排序。</p>
+<ul>
+<li><code>DelayQueue</code>应用场景：定时关闭连接、缓存对象，超时处理等</li>
+</ul>
+<h4><span id="13-linkedblockingqueue">1.3 LinkedBlockingQueue</span></h4><p><code>LinkedBlockingQueue</code>阻塞队列大小的配置是可选的，如果我们初始化时指定一个大小，它就是有边界的，如果不指定，它就是无边界的。</p>
+<ul>
+<li>说是无边界，其实是采用了默认大小为<code>Integer.MAX_VALUE</code>的容量 。它的内部实现是一个链表。</li>
+<li>和<code>ArrayBlockingQueue</code>一样，<code>LinkedBlockingQueue</code> 也是以先进先出的方式存储数据，最新插入的对象是尾部，最新移出的对象是头部。</li>
+</ul>
+<h4><span id="14-priorityblockingqueue">1.4 PriorityBlockingQueue</span></h4><p><code>PriorityBlockingQueue</code>是一个没有边界的队列，它的排序规则和<code>java.util.PriorityQueue</code>一样。需要注意，<code>PriorityBlockingQueue</code>中允许插入null对象。</p>
+<ul>
+<li>所有插入<code>PriorityBlockingQueue</code>的对象必须实现<code>java.lang.Comparable</code>接口，队列优先级的排序规则就是按照我们对这个接口的实现来定义的。</li>
+<li>从<code>PriorityBlockingQueue</code>获得一个迭代器<code>Iterator</code>，但这个迭代器并不保证按照优先级顺序进行迭代。</li>
+</ul>
+<h4><span id="15-synchronousqueue">1.5 SynchronousQueue</span></h4><p><code>SynchronousQueue</code>队列内部仅允许容纳一个元素。</p>
+<ul>
+<li>当一个线程插入一个元素后会被阻塞，除非这个元素被另一个线程消费。</li>
+</ul>
+<h3><span id="2-callable-amp-future">2. Callable &amp; Future</span></h3><p><code>Callable</code>与<code>Runnable</code>的功能大致相似，<code>Callable</code>功能强大一些，就是被线程执行后，可以返回值，并且能抛出异常。</p>
+<ul>
+<li><code>Runnable</code>接口只有一个<code>run()</code>方法，实现类重写<code>run</code>方法，把一些费时操作写在其中，然后使用某个线程去执行该<code>Runnable</code>实现类即可实现多线程。</li>
+<li><code>Callable</code>是一个泛型接口只有一个<code>call()</code>方法，返回的类型就是创建<code>Callable</code>传进来的V类型。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Callable</span>&lt;<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function">V <span class="title">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>Callable</code>一般是和<code>ExecutorService</code>配合来使用的，在<code>ExecutorService</code>接口中声明了若干个<code>submit</code>方法的重载版本</p>
+</blockquote>
+<h4><span id="21-future-amp-futuretask">2.1 Future &amp; FutureTask</span></h4><p><code>Future</code>就是对于具体的<code>Runnable</code>或者<code>Callable</code>任务的<strong>执行结果</strong>进行取消、查询是否完成、获取结果。必要时可以通过<code>get</code>方法获取执行结果，该方法会阻塞直到任务返回结果。</p>
+<ul>
+<li>也就是说<code>Future</code>提供了三种功能：<ol>
+<li>判断任务是否完成；</li>
+<li>能够中断任务；</li>
+<li>能够获取任务执行结果。</li>
+</ol>
+</li>
+<li>在<code>Future</code>接口中声明了5个方法：**<code>cancel</code><strong>、</strong><code>isCancelled</code><strong>、</strong><code>isDone</code><strong>、</strong><code>get</code>**<ul>
+<li><code>boolean</code> <strong><code>cancel(boolean mayInterruptIfRunning)</code></strong>;//用来取消任务，参数<code>mayInterruptIfRunning</code>表示是否允许取消正在执行却没有执行完毕的任务。<ul>
+<li>如果取消已经完成的任务会返回<code>false</code>；如果任务还没有执行会返回<code>true</code>；</li>
+<li>如果任务正在执行，则返回<code>mayInterruptIfRunning</code>设置的值(<code>true/false</code>)；</li>
+</ul>
+</li>
+<li><code>boolean</code> <strong><code>isCancelled()</code></strong>;//任务是否被取消成功，如果在任务正常完成前被取消成功，则返回 true。</li>
+<li><code>boolean</code> <strong><code>isDone()</code></strong>;//任务是否已经完成，若任务完成，则返回true；</li>
+<li><code>V</code> <strong><code>get()</code></strong>;//获取执行结果，这个方法会产生阻塞，会一直等到任务执行完毕才返回；</li>
+<li><code>V</code> <strong><code>get(long timeout, TimeUnit unit)</code></strong>;//获取执行结果，如果在指定时间内，还没获取到结果，就直接返回null。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><code>Future</code>可以得到别的线程任务方法的返回值。<code>Future</code>是一个接口,引用对象指向的实际是<strong>FutureTask</strong>。</p>
+</blockquote>
+<h3><span id="3-futuretask">3. FutureTask</span></h3><p>**<code>FutureTask</code>**的父类是<code>RunnableFuture</code>，而<code>RunnableFuture</code>继承了<code>Runnbale</code>和<code>Futrue</code>这两个接口</p>
+<ul>
+<li>从<code>FutureTask</code>构造方法可以了解到：<ol>
+<li><code>FutureTask</code>最终都是执行<code>Callable</code>类型的任务。</li>
+<li>如果构造函数参数是<code>Runnable</code>，会被<code>Executors.callable</code>方法转换为<code>Callable</code>类型。</li>
+<li><code>Executors.callable</code>方法直接返回一个<code>RunnableAdapter</code>实例。</li>
+<li><code>RunnableAdapter</code>是<code>FutureTask</code>的一个静态内部类并且实现了<code>Callable</code>，也就是说<code>RunnableAdapter</code>是<code>Callable</code>子类。</li>
+<li><code>RunnableAdapter</code>的<code>call</code>方法实现代码是，执行<code>Runnable</code>的<code>run</code>方法，并返回构造<code>FutureTask</code>传入<code>result</code>参数。</li>
+</ol>
+</li>
+<li><code>FutureTask</code>总结：<ul>
+<li><code>FutureTask</code>实现了两个接口，<code>Runnable</code>和<code>Future</code>，所以它既可以作为<code>Runnable</code>被线程执行，又可以作为<code>Future</code>得到<code>Callable</code>的返回值，这个组合的好处：假设有一个很费时逻辑需要计算并且返回这个值，同时这个值不是马上需要，那么就可以使用这个组合，用另一个线程去计算返回值，而当前线程在使用这个返回值之前可以做其它的操作，等到需要这个返回值时，再通过<code>Future</code>得到！</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>注意：</p>
+</blockquote>
+<ul>
+<li>通过<code>Executor</code>执行线程任务都是以<code>Callable</code>形式，如果传入<code>Runnable</code>都会转化为<code>Callable</code>。</li>
+<li>通过<code>new Thread(runnable)</code>，只能是<code>Runnable</code>子类形式。</li>
+</ul>
+<h3><span id="4-forkjoin">4. Fork/Join</span></h3><p>从<code>JDK1.7</code>开始，Java提供<code>Fork/Join</code>框架用于并行执行任务，它的思想就是讲一个大任务分割成若干小任务，最终汇总每个小任务的结果得到这个大任务的结果。</p>
+<ul>
+<li>主要有两步：任务切分 -&gt; 结果合并<ol>
+<li>第一步**<code>分割任务</code>**。首先我们需要有一个 <code>fork</code> 类来把大任务分割成子任务，有可能子任务还是很大，所以还需要不停的分割，直到分割出的子任务足够小。</li>
+<li>第二步执行任务并**<code>合并结果</code><strong>。分割的子任务分别放在</strong>双端队列**里，然后几个启动线程分别从双端队列里获取任务执行。子任务执行完的结果都统一放在一个队列里，启动一个线程从队列里拿数据，然后合并这些数据。</li>
+</ol>
+</li>
+<li>工作窃取算法（<code>work-stealing</code>）是指某个线程从其他队列里窃取任务来执行。</li>
+<li><code>Fork/Join</code> 使用两个类来完成以上两个步骤：<ol>
+<li>**<code>ForkJoinTask</code>**：我们要使用 <code>ForkJoin</code> 框架，必须首先创建一个 <code>ForkJoin</code> 任务。它提供在任务中执行 <code>fork()</code> 和 <code>join()</code> 操作的机制，通常情况下我们不需要直接继承 <code>ForkJoinTask</code> 类，而只需要继承它的子类，<code>Fork/Join</code> 框架提供了以下两个子类：<ul>
+<li><code>RecursiveAction</code>：用于没有返回结果的任务。</li>
+<li><code>RecursiveTask</code>：用于有返回结果的任务。</li>
+</ul>
+</li>
+<li>**<code>ForkJoinPool</code>**：<code>ForkJoinTask</code> 需要通过 <code>ForkJoinPool</code> 来执行，任务分割出的子任务会添加到当前工作线程所维护的双端队列中，进入队列的头部。当一个工作线程的队列里暂时没有任务时，它会随机从其他工作线程的队列的尾部获取一个任务。</li>
+</ol>
+</li>
+</ul>
+<h3><span id="5-线程池">5. 线程池</span></h3><p>线程池可以看作是一个资源集，任何池的作用都大同小异，主要是用来减少资源创建、初始化的系统开销。</p>
+<ul>
+<li>一个线程池包括以下四个基本组成部分：<ol>
+<li>线程池管理器（<code>ThreadPool</code>）：用于创建并管理线程池，包括 创建线程池，销毁线程池，添加新任务；</li>
+<li>工作线程（<code>PoolWorker</code>）：线程池中线程，在没有任务时处于等待状态，可以循环的执行任务；</li>
+<li>任务接口（<code>Task</code>）：每个任务必须实现的接口，以供工作线程调度任务的执行，它主要规定了任务的入口，任务执行完后的收尾工作，任务的执行状态等；</li>
+<li>任务队列（<code>taskQueue</code>）：用于存放没有处理的任务。提供一种缓冲机制。</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Executor接口</span><br><span class="line">    |———— ExecutorService接口</span><br><span class="line">        |———— AbstractExecutorService抽象类</span><br><span class="line">            |———— ForkJoinPool类</span><br><span class="line">            |———— ThreadPoolExecutor类</span><br><span class="line">        |———— ScheduledExecutorService接口</span><br><span class="line">            |———— ScheduledThreadPoolExecutor类</span><br><span class="line">Executors类</span><br></pre></td></tr></table></figure>
+<h4><span id="51-通过executors工厂类中的六个静态方法创建线程池">5.1 通过Executors工厂类中的六个静态方法创建线程池</span></h4><p>六大静态方法创建的<code>ThreadPoolExecutor</code>对象，返回的父接口的引用，即返回的<code>ExecutorService</code>的引用。六大静态方法内部都是直接或间接调用<code>ThreadPoolExecutor</code>类的构造方法创建线程池对象。</p>
+<ol>
+<li><code>newCachedThreadPool(ThreadPoolExecutor)</code>：创建一个可缓存的线程池<ul>
+<li>如果线程池的大小超过了处理任务所需要的线程,那么就会回收部分空闲（60秒不执行任务）的线程，当任务数增加时，此线程池又可以智能的添加新线程来处理任务。此线程池不会对线程池大小做限制，线程池大小完全依赖于操作系统（或者说JVM）,<code>maximumPoolSize</code>最大可以至(<code>Integer.MAX_VALUE</code>),若达到该上限,直接OOM。</li>
+</ul>
+</li>
+<li><code>newFixedThreadPool(ThreadPoolExecutor)</code>：创建固定大小的线程池。<ul>
+<li>每次提交一个任务就创建一个线程，直到线程达到线程池的最大大小。线程池的大小一旦达到最大值就会保持不变，如果某个线程因为执行异常而结束，那么线程池会补充一个新线程。</li>
+</ul>
+</li>
+<li><code>newSingleThreadExecutor(ThreadPoolExecutor)</code>：创建一个单线程的线程池。<ul>
+<li>这个线程池只有一个线程在工作，也就是相当于单线程串行执行所有任务,保证按任务的提交顺序依次执行。如果这个唯一的线程因为异常结束，那么会有一个新的线程来替代它。此线程池保证所有任务的执行顺序按照任务的提交顺序执行。</li>
+</ul>
+</li>
+<li><code>newScheduledThreadPool(ScheduledThreadPoolExecutor)</code>：创建一个支持定时及周期性任务执行的线程池。<ul>
+<li>线程数最大至<code>Integer.MAX_ VALUE</code>,存在OOM风险,不回收工作线程.</li>
+</ul>
+</li>
+<li><code>newSingleThreadScheduledExecutor(ScheduledThreadPoolExecutor)</code>：创建一个单线程用于定时以及周期性执行任务的需求。</li>
+<li><code>newWorkStealingPool(ForkJoinPool)</code>：创建一个工作窃取<ul>
+<li>JDK8 引入,创建持有足够线程的线程池支持给定的并行度;并通过使用多个队列减少竞争;</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>Executors返回的线程池对象的弊端：</p>
+<ol>
+<li><code>FixedThreadPool</code>和<code>SingleThreadExecutor</code>：<ul>
+<li>允许的<strong>请求队列长度</strong>为<code>Integer.MAX_VALUE</code>，可能会<strong>堆积大量的请求</strong>，从而导致OOM。</li>
+</ul>
+</li>
+<li><code>CachedThreadPool</code>：<ul>
+<li>允许的<strong>创建线程数量</strong>为<code>Integer.MAX_VALUE</code>，可能会<strong>创建大量的线程</strong>，从而导致OOM。</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<h4><span id="52-通过threadpoolexecutor构造方法创建线程池">5.2 通过<code>ThreadPoolExecutor</code>构造方法创建线程池</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ThreadPoolExecutor</span><span class="params">(<span class="keyword">int</span> corePoolSize,   //核心线程数，包括空闲线程</span></span></span><br><span class="line"><span class="function"><span class="params">                          <span class="keyword">int</span> maximumPoolSize,//最大线程数</span></span></span><br><span class="line"><span class="function"><span class="params">                          <span class="keyword">long</span> keepAliveTime, //线程空闲时间</span></span></span><br><span class="line"><span class="function"><span class="params">                          TimeUnit unit,      //时间单位</span></span></span><br><span class="line"><span class="function"><span class="params">                          BlockingQueue&lt;Runnable&gt; workQueue,//缓存队列</span></span></span><br><span class="line"><span class="function"><span class="params">                          ThreadFactory threadFactory,      //线程工厂</span></span></span><br><span class="line"><span class="function"><span class="params">                          RejectedExecutionHandler handler  //拒绝策略</span></span></span><br><span class="line"><span class="function"><span class="params">)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (corePoolSize &lt; <span class="number">0</span> ||</span><br><span class="line">        maximumPoolSize &lt;= <span class="number">0</span> ||</span><br><span class="line">        maximumPoolSize &lt; corePoolSize ||</span><br><span class="line">        keepAliveTime &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</span><br><span class="line">    <span class="keyword">if</span> (workQueue == <span class="keyword">null</span> || threadFactory == <span class="keyword">null</span> || handler == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    <span class="keyword">this</span>.acc = System.getSecurityManager() == <span class="keyword">null</span> ? </span><br><span class="line">        <span class="keyword">null</span> : AccessController.getContext();</span><br><span class="line">    <span class="keyword">this</span>.corePoolSize = corePoolSize;</span><br><span class="line">    <span class="keyword">this</span>.maximumPoolSize = maximumPoolSize;</span><br><span class="line">    <span class="keyword">this</span>.workQueue = workQueue;</span><br><span class="line">    <span class="keyword">this</span>.keepAliveTime = unit.toNanos(keepAliveTime);</span><br><span class="line">    <span class="keyword">this</span>.threadFactory = threadFactory;</span><br><span class="line">    <span class="keyword">this</span>.handler = handler;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5><span id="521-corepoolsize核心线程数量">5.2.1 corePoolSize(核心线程数量)</span></h5><ul>
+<li><code>corePoolSize</code>的设置非常关键：<ul>
+<li><code>=0</code>：则任务执行完之后,没有任何请求进入时销毁线程池的线程</li>
+<li><code>&gt;0</code>：即使本地任务执行完毕,核心线程也不会被销毁</li>
+<li>设置过大会浪费资源; 设置过小会导致线程频繁地创建或销毁</li>
+</ul>
+</li>
+<li>若设置了<code>allowCoreThreadTimeOut</code>这个参数,当提交一个任务到线程池时,若<code>线程数量(包括空闲线程)小于corePoolSize</code>,线程池会创建一个新线程放入<code>works(一个HashSet)</code>中执行任务,等到需要执行的任务数大于线程池基本大小时就不再创建,会尝试放入等待队列<code>workQueue</code>；如果调用线程池的<code>prestartAllCoreThreads()</code>,线程池会提前创建并启动所有核心线程</li>
+</ul>
+<h5><span id="522-maximumpoolsize线程池最大线程数">5.2.2 maximumPoolSize（线程池最大线程数）</span></h5><ul>
+<li><code>maximumPoolSize</code>表示线程池能够容纳同时执行的最大线程数,必须&gt;=1.</li>
+<li>若队列满,并且已创建的线程数小于最大线程数,则线程池会再创建新的线程放入<code>works</code>中执行任务,<code>CashedThreadPool</code>的关键,固定线程数的线程池无效</li>
+<li>如果<code>maximumPoolSize = corePoolSize</code>,即是固定大小线程池.</li>
+<li>若使用了无界任务队列,这个参数就没什么效果</li>
+</ul>
+<h5><span id="523-keepalivetime线程池中的线程空闲时间">5.2.3 keepAliveTime（线程池中的线程空闲时间）</span></h5><ul>
+<li>线程没有任务执行时最多保持多久时间终止（线程池的工作线程空闲后，保持存活的时间)</li>
+<li>如果任务很多，并且每个任务执行的时间比较短，可以调大时间，提高线程的利用率</li>
+<li>当空闲时间达到<code>keepAliveTime</code>时,线程会被销毁,直到只剩下<code>corePoolSize</code>个线程;避免浪费内存和句柄资源.</li>
+<li>在默认情况下,当线程池的线程数大于<code>corePoolSize</code>时,<code>keepAliveTime</code>才起作用.</li>
+<li>但是当<code>ThreadPoolExecutor</code>的<code>allowCoreThreadTimeOut=true</code>时,核心线程超时后也会被回收.</li>
+</ul>
+<h5><span id="524-timeunit时间单位">5.2.4 TimeUnit（时间单位）</span></h5><ul>
+<li>keepAliveTime的时间单位通常是<code>TimeUnit.SECONDS</code></li>
+<li>可选的单位：天(<code>DAYS</code>)、小时(<code>HOURS</code>)、分钟(<code>MINUTES</code>)、毫秒(<code>MILLISECONDS</code>)、微秒(<code>MICROSECONDS</code>，千分之一毫秒) 和 纳秒(<code>NANOSECONDS</code>，千分之一微秒)</li>
+</ul>
+<h5><span id="525-workqueue缓存队列">5.2.5 workQueue（缓存队列）</span></h5><ul>
+<li>存储待执行任务的阻塞队列，这些任务必须是<code>Runnable</code>的对象（如果是<code>Callable</code>对象，会在<code>submit</code>内部转换为<code>Runnable</code>对象） </li>
+<li>当请求的线程数大于<code>maximumPoolSize</code>时,线程进入<code>BlockingQueue</code>.</li>
+<li>可以选择以下几个阻塞队列:<ul>
+<li><code>LinkedBlockingQueue</code>:一个基于链表结构的阻塞队列,此队列按<code>FIFO</code>排序元素,吞吐量通常要高于<code>ArrayBlockingQueue</code>.静态工厂方法<code>Executors.newFixedThreadPool()</code>使用了这个队列</li>
+<li><code>SynchronousQueue</code>:一个不存储元素的阻塞队列.每个插入操作必须等到另一个线程调用移除操作,否则插入操作一直处于阻塞状态,吞吐量通常要高于<code>LinkedBlockingQueue</code>,静态工厂方法<code>Executors.newCachedThreadPoo</code>l使用了这个队列</li>
+</ul>
+</li>
+</ul>
+<h5><span id="526-threadfactory-线程工厂">5.2.6 threadFactory （线程工厂）</span></h5><ul>
+<li>用于设置创建线程的工厂;</li>
+<li>线程池的命名是通过增加组名前缀来实现的，可以通过线程工厂给每个创建出来的线程设置更有意义的名字</li>
+<li>在虚拟机栈分析时,就可以知道线程任务是由哪个线程工厂产生的.</li>
+</ul>
+<h5><span id="527-rejectedexecutionhandler拒绝策略">5.2.7 RejectedExecutionHandler（拒绝策略）</span></h5><ul>
+<li>当队列和线程池都满,说明线程池饱和,必须采取一种策略处理提交的新任务；策略默认**<code>AbortPolicy</code>**,表无法处理新任务时抛出异常</li>
+<li>当超过参数<code>workQueue</code>的任务缓存区上限的时候,就可以通过该策略处理请求,这是一种简单的限流保护.</li>
+<li>友好的拒绝策略可以是如下三种:<ol>
+<li>保存到数据库进行削峰填谷;在空闲时再提取出来执行</li>
+<li>转向某个提示页面</li>
+<li>打印日志</li>
+</ol>
+</li>
+<li><code>AbortPolicy</code>：丢弃任务，抛出<code>RejectedExecutionException</code></li>
+<li><code>CallerRunsPolicy</code>：只用调用者所在线程来运行任务,有反馈机制，使任务提交的速度变慢）。</li>
+<li><code>DiscardOldestPolicy</code>：若没有发生shutdown,尝试丢弃队列里最近的一个任务,并执行当前任务, 丢弃任务缓存队列中最老的任务，并且尝试重新提交新的任务</li>
+<li><code>DiscardPolicy</code>:不处理,丢弃掉, 拒绝执行，不抛异常 </li>
+<li>当然,也可以根据应用场景需要来实现<code>RejectedExecutionHandler</code>接口自定义策略.如记录日志或持久化存储不能处理的任务</li>
+</ul>
+<h4><span id="53-自定义一个threadpoolexecutor线程池">5.3 自定义一个ThreadPoolExecutor线程池</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">ThreadPoolExecutor pool = <span class="keyword">new</span> ThreadPoolExecutor(</span><br><span class="line">    <span class="number">5</span>, <span class="comment">//核心线程数</span></span><br><span class="line">    Runtime.getRuntime().availableProcessors() * <span class="number">2</span>,<span class="comment">//最大线程数</span></span><br><span class="line">    <span class="number">60</span>,<span class="comment">//线程空闲时间</span></span><br><span class="line">    TimeUnit.SECONDS,</span><br><span class="line">    <span class="keyword">new</span> ArrayBlockingQueue&lt;&gt;(<span class="number">200</span>),</span><br><span class="line">    <span class="keyword">new</span> ThreadFactory() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Thread <span class="title">newThread</span><span class="params">(Runnable r)</span> </span>&#123;</span><br><span class="line">            Thread t = <span class="keyword">new</span> Thread(r);</span><br><span class="line">            t.setName(<span class="string">&quot;order-thread&quot;</span>);<span class="comment">//设置有意义的线程名字</span></span><br><span class="line">            <span class="keyword">if</span>(t.isDaemon()) &#123;<span class="comment">//若是守护线程将其释放</span></span><br><span class="line">                t.setDaemon(<span class="keyword">false</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(Thread.NORM_PRIORITY != t.getPriority()) &#123;</span><br><span class="line">                <span class="comment">//恢复线程优先级</span></span><br><span class="line">                t.setPriority(Thread.NORM_PRIORITY);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> t;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="keyword">new</span> RejectedExecutionHandler() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">rejectedExecution</span><span class="params">(Runnable r, ThreadPoolExecutor executor)</span> </span>&#123;</span><br><span class="line">            System.err.println(<span class="string">&quot;拒绝策略:&quot;</span> + r);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"> );</span><br></pre></td></tr></table></figure>
+<h4><span id="531-线程池执行流程">5.3.1 线程池执行流程</span></h4><ul>
+<li>要求 线程池有上限，使用有限队列</li>
+</ul>
+<ol>
+<li>当线程池核心线程数量用完，先扔进队列</li>
+<li>队列也用完后，看最大线程数量</li>
+<li>最大线程数量用完后，走拒绝策略</li>
+<li>拒绝策略可以打印一些日志，做一些补偿</li>
+<li>线程池用完一定要优雅的关闭</li>
+</ol>
+<blockquote>
+<p>线程池要统一管理，不要用Executors工厂类，要用ThreadPoolExecutor自定义线程池</p>
+</blockquote>
+<h4><span id="532-线程池配置-核心线程数量">5.3.2 线程池配置-核心线程数量</span></h4><p>线程CPU时间所占比例越高，需要越少线程(CPU密集)。线程等待时间所占比例越高，需要越多线程(IO密集)。</p>
+<ol>
+<li><strong>CPU密集型</strong>：内存运算、不涉及IO操作等<ul>
+<li>设置线程数为：<code>CPU核数+1</code> </li>
+</ul>
+</li>
+<li><strong>IO密集型</strong>：数据读取、存取、数据库操作、持久化操作等<ul>
+<li>最佳线程数目：<code>CPU核数/(1-阻塞系数)</code> 这个阻塞系数一般为0.8~0.9之间，也可以取0.8或者0.9。</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>java.lang.<code>Runtime.availableProcessors()</code> 方法返回到Java虚拟机的可用的处理器数量(CPU核数)。此值可能会改变在一个特定的虚拟机调用。应用程序可用处理器的数量是敏感的，因此偶尔查询该属性，并适当地调整自己的资源使用情况.</p>
+</blockquote>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">1. BlockingQueue（阻塞队列）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.1 ArrayBlockingQueue</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.2 DelayQueue</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.3 LinkedBlockingQueue</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.4 PriorityBlockingQueue</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.5 SynchronousQueue</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">2. Callable &amp; Future</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.1 Future &amp; FutureTask</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">3. FutureTask</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">4. Fork&#x2F;Join</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">5. 线程池</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">5.1 通过Executors工厂类中的六个静态方法创建线程池</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">5.2 通过ThreadPoolExecutor构造方法创建线程池</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">5.2.1 corePoolSize(核心线程数量)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">5.2.2 maximumPoolSize（线程池最大线程数）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">5.2.3 keepAliveTime（线程池中的线程空闲时间）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">5.2.4 TimeUnit（时间单位）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">5.2.5 workQueue（缓存队列）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">5.2.6 threadFactory （线程工厂）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">5.2.7 RejectedExecutionHandler（拒绝策略）</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">5.3 自定义一个ThreadPoolExecutor线程池</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">5.3.1 线程池执行流程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">5.3.2 线程池配置-核心线程数量</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/article/20191014.html">http://chaooo.github.io/article/20191014.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+    <div class="article-reward">
+        <a id="reward-btn" href="javascript:;">打赏</a>
+        <div id="reward-content">
+            <h6 class="reward-tit">“感谢你的支持，我会继续努力！”</h6>
+            <div>
+                <div class="reward-code">
+                    <img class="type-code" src="/css/images/wechat.jpg" alt="微信支付">
+                    <img class="er-code" src="/css/images/wechat-pay.jpg" alt="微信收款码">
+                </div>
+                <div class="reward-code">
+                    <img class="type-code" src="/css/images/alipay.jpg" alt="支付宝支付">
+                    <img class="er-code" src="/css/images/alipay-pay.jpg" alt="支付宝收款码">
+                </div>
+            </div>
+            <p class="reward-desc">扫码打赏，感谢支持</p>
+        </div>
+    </div>
+
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/article/20191020.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          【并发编程】NIO、Netty及websocket实现
+        
+      </div>
+    </a>
+  
+  
+    <a href="/article/20191010.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">【并发编程】AQS框架 与 锁框架（JUC.locks）</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+  
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/article/20200211.html">【环境配置】Redis与MySQL多实例配置</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200207.html">【安全认证】基于Shiro前后端分离的认证与授权(三.前端篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200121.html">【安全认证】基于Shiro前后端分离的认证与授权(二.授权篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200118.html">【安全认证】基于Shiro前后端分离的认证与授权(一.认证篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20191222.html">【安全认证】Shiro安全框架入门</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 11.11px;">BlueLake</a> <a href="/tags/ElasticSearch/" style="font-size: 13.33px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 13.33px;">ElasticStack</a> <a href="/tags/Java/" style="font-size: 18.89px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Kibana/" style="font-size: 13.33px;">Kibana</a> <a href="/tags/LogStash/" style="font-size: 13.33px;">LogStash</a> <a href="/tags/Redis/" style="font-size: 12.22px;">Redis</a> <a href="/tags/Spring/" style="font-size: 17.78px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 12.22px;">SpringBoot</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 13.33px;">hexo</a> <a href="/tags/java/" style="font-size: 16.67px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/sublime/" style="font-size: 10px;">sublime</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/ssafe/" style="font-size: 14.44px;">安全认证</a> <a href="/tags/tool/" style="font-size: 11.11px;">工具</a> <a href="/tags/concurrent/" style="font-size: 13.33px;">并发编程</a> <a href="/tags/open-source/" style="font-size: 10px;">开源</a> <a href="/tags/db/" style="font-size: 15.56px;">数据库</a> <a href="/tags/other/" style="font-size: 10px;">杂谈</a> <a href="/tags/env/" style="font-size: 11.11px;">环境配置</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客折腾</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">Java知识梳理</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/other/">杂谈</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年10月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015年12月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sublime/" rel="tag">sublime</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssafe/" rel="tag">安全认证</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tool/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/open-source/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/other/" rel="tag">杂谈</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-link"></i> 友情链接</h3>
+    <div class="widget">
+      <ul>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://github.com/chaooo">chaooo</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake">BlueLake主题</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://weibo.com/zhengchaooo">秋过冬漫长</a>
+        </li>
+      
+      </ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2021 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        
+            <span>Count by <a href="http://busuanzi.ibruce.info/" target="_blank">busuanzi.</a></span>
+        
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'de8b7f88cfa9812e15f93e986181d1c2194ba6e8',
+      repo: 'BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

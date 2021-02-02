@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>【并发编程】JUC并发容器类 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-【并发编程】JUC并发容器类" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      【并发编程】JUC并发容器类
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2019-10-06T15:04:22.000Z" itemprop="datePublished">2019年10月06日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/concurrent/">并发编程</a>
+  </div>
+
+      <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+<a href="/article/20191006.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在<code>java.util.concurrent</code>包中，提供了两种类型的并发集合：一种是阻塞式，另一种是非阻塞式。</p>
+<ul>
+<li>阻塞式集合：当集合已满或为空时，被调用的添加（满）、移除（空）方法就不能立即被执行，调用这个方法的线程将被阻塞，一直等到该方法可以被成功执行</li>
+<li>非阻塞式集合：当集合已满或为空时，被调用的添加（满）、移除（空）方法就不能立即被执行，调用这个方法的线程不会被阻塞，而是直接则返回null或抛出异常。<a id="more"></a></li>
+</ul>
+<h3><span id="1-线程安全相关容器">1. 线程安全相关容器</span></h3><h4><span id="11-线程安全-同步容器">1.1 线程安全-同步容器：</span></h4><ol>
+<li><code>ArrayList</code> –&gt; <code>Vector,Stack</code></li>
+<li><code>HashMap</code> –&gt; <code>HashTable</code>(key、value不能为null)</li>
+<li><code>Collections.synchronizedXXX</code>(List/Set/Map) //本质是对相应的容器进行包装，通过在方法中加synchronized同步锁来实现</li>
+</ol>
+<ul>
+<li>同步容器的同步原理就是在方法上用<code>synchronized</code>修饰。<strong>性能开销大</strong>。</li>
+<li>在<strong>单独</strong>使用里面的方法的时候，可以保证线程安全，但是，<strong>复合操作需要额外加锁</strong>来保证线程安全。</li>
+</ul>
+<h4><span id="12-线程安全-并发容器">1.2 线程安全-并发容器：</span></h4><ol>
+<li><code>ArrayList</code> –&gt; <strong><code>CopyOnWriteArrayList</code>**：保证</strong><code>最终一致性</code><strong>，写时复制，适用于</strong><code>读多写少</code>**的并发场景</li>
+<li><code>HashSet</code>、<code>TreeSet</code> –&gt; <code>CopyOnWriteArraySet</code>、<code>ConcurrentSkipListSet</code>：</li>
+<li><code>HashMap</code>、<code>TreeMap</code> –&gt; **<code>ConcurrentHashMap</code>**、<code>ConcurrentSkipListMap</code>：</li>
+</ol>
+<h4><span id="13-安全共享对象策略">1.3 安全共享对象策略</span></h4><ol>
+<li>线程限制：一个被线程限制的对象，由线程独占，并且只能被占有者修改</li>
+<li>共享只读：一个共享只读的对象，在没有额外同步的情况下，可以被多个线程并发访问，但不能修改</li>
+<li>线程安全对象：一个线程安全的对象或者容器，在内部通过同步机制来保证线程安全，其他线程无需额外的同步就可以通过公共接口随意访问它</li>
+<li>被守护对象：被守护对象只能通过获取特定的锁来访问</li>
+</ol>
+<h3><span id="2-copyonwrite机制">2. CopyOnWrite机制</span></h3><p><code>CopyOnWrite</code>（简称COW），是计算机程序设计领域中的一种优化策略，也是一种思想–即<strong>写入时复制思想</strong>。</p>
+<ul>
+<li>在<code>CopyOnWrite</code>中，对容器的修改操作加锁后，通过copy一个新的容器副本来进行修改，修改完毕后将容器替换为新的容器即可。<ul>
+<li>这种方式的好处显而易见：通过copy一个新的容器来进行修改，这样读操作就不需要加锁，可以并发读，因为在读的过程中是采用的旧的容器，即使新容器做了修改对旧容器也没有影响，同时也很好的解决了迭代过程中其他线程修改导致的并发问题。</li>
+</ul>
+</li>
+<li>从JDK1.5开始，<code>java.util.concurrent</code>包中提供了两个<code>CopyOnWrite</code>机制容器，分别为**<code>CopyOnWriteArrayList</code><strong>和</strong><code>CopyOnWriteArraySet</code>**</li>
+<li><code>CopyOnWriteArrayList</code>通过使用**<code>ReentrantLock</code>锁**来实现线程安全：<ul>
+<li>在添加、获取元素时，使用<code>getArray()</code>获取底层数组对象，获取此时集合中的数组对象；使用<code>setArray()</code>设置底层数组，将原有数组对象指针指向新的数组对象—-实以此来实现<code>CopyOnWrite</code>副本概念</li>
+<li><strong>添加元素</strong>: 在添加元素之前进行加锁操作，保证数据的原子性。在添加过程中，进行数组复制，修改操作，再将新生成的数组复制给集合中的<code>array</code>属性。最后，释放锁；<ul>
+<li>由于<code>array</code>属性被<code>volatile</code>修饰，所以当添加完成后，其他线程就可以立刻查看到被修改的内容。</li>
+</ul>
+</li>
+<li><strong>获取元素</strong>：在获取元素时，由于<code>array</code>属性被<code>volatile</code>修饰，所以每当获取线程执行时，都会拿到最新的数据。此外，添加线程在进行添加元素时，会将新的数组赋值给<code>array</code>属性，所以在获取线程中并不会因为元素的添加而导致本线程的执行异常。因为获取线程中的<code>array</code>和被添加后的<code>array</code>指向了不同的内存区域。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>在执行<code>add()</code>时，为什么还要在加锁的同时又copy了一分新的数组对象?</p>
+<ul>
+<li>因为，在<code>add()</code>时候加了锁，首先不会有多个线程同时进到<code>add</code>中去，这一点保证了数组的安全。当在一个线程执行<code>add</code>时，又进行了数组的复制操作，生成了一个新的数组对象，在<code>add</code>后又将新数组对象的指针指向了旧的数组对象指针，注意此时是指针的替换，原来旧的数组对象还存在。这样就实现了，添加方法无论如何操作数组对象，获取方法在获取到集合后，都不会受到其他线程添加元素的影响。</li>
+</ul>
+</blockquote>
+<ul>
+<li><code>CopyOnWrite</code>机制的优缺点<ul>
+<li>优点: <code>CopyOnWriteArrayList</code>保证了数据在多线程操作时的<strong>最终一致性</strong>。</li>
+<li>缺点: 缺点也同样显著，那就是内存空间的浪费：因为在写操作时，进行数组复制，在内存中产生了两份相同的数组。如果数组对象比较大，那么就会造成频繁的GC操作，进而影响到系统的性能；</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>适用场景：<strong>读多写少</strong>的并发场景</p>
+</blockquote>
+<h3><span id="3-concurrenthashmap">3. ConcurrentHashMap</span></h3><p><code>ConcurrentHashMap</code>容器相较于CopyOnWrite容器在并发加锁粒度上有了更大一步的优化，它通过修改对<strong>单个hash桶元素加锁</strong>的达到了更细粒度的并发控制。</p>
+<ul>
+<li>在底层数据结构上，<code>ConcurrentHashMap</code>和<code>HashMap</code>都使用了数组+链表+红黑树的方式，只是在HashMap的基础上添加了并发相关的一些控制。</li>
+<li>JDK1.8中<strong>取消</strong>了segment分段锁，而采用<code>CAS和synchronized</code>来保证并发安全。<code>synchronized</code>只锁定当前链表或红黑二叉树的首节点，这样只要hash不冲突，就不会产生并发，效率又提升N倍。并且初始化操作大大简化，修改为<code>lazy-load</code>形式。</li>
+</ul>
+<h4><span id="31-put方法过程">3.1 put方法过程</span></h4><p>put方法内部是一个 <code>putVal</code> 的调用：</p>
+<ol>
+<li>判断键值是否为<code>null</code>，为null抛出异常</li>
+<li>调用<code>spread()</code>方法计算key的<code>hashCode()</code>获得哈希地址</li>
+<li>判断<code>Node[]</code>数组(<code>table</code>)是否为空，若空则进行初始化操作<ul>
+<li>需要注意的是这里并没有加<code>synchronized</code>，也就是允许多个线程去**<code>尝试</code>**初始化<code>table</code>，但是在初始化函数里面使用了<code>CAS</code>保证只有一个线程去执行初始化过程</li>
+</ul>
+</li>
+<li>使用<code>(容量大小-1 &amp; 哈希地址)</code>计算下标，如果没有碰撞，使用<code>CAS</code>原子性操作放入桶中；插入失败(被别的线程抢先插入了)则进入下次循环。</li>
+<li>如果该下标上的节点(头节点)的哈希地址为<code>-1</code>，代表需要扩容，该线程执行<code>helpTransfer()</code>方法协助扩容。</li>
+<li>如果碰撞了(<code>bucket</code>不为空)且又不需要扩容，则进入到<code>bucket</code>中，且锁住该<code>bucket</code>，其他<code>bucket</code>不影响。</li>
+<li>进入到<code>bucket</code>里面，首先判断这个<code>bucket</code>存储的是红黑树(哈希地址小于0)还是链表。</li>
+<li>如果是链表，则遍历链表，若节点已经存在(<code>key</code>相同)就覆盖旧值，没有找到相同的节点就将新增的节点插入到链表尾部。如果是红黑树，则将节点插入。到这里释放锁。</li>
+<li>判断该<code>bucket</code>上的链表长度是否链表长度超过阀值<code>（TREEIFY_THRESHOLD==8）</code>，大于则调用<code>treeifyBin()</code>方法将链表转成红黑树。</li>
+<li>调用<code>addCount()</code>方法，作用是将<code>ConcurrentHashMap</code>的键值对数量+1，还有另一个作用是检查<code>ConcurrentHashMap</code>是否需要扩容。</li>
+</ol>
+<blockquote>
+<p>总结：</p>
+</blockquote>
+<ul>
+<li>JDK8中的实现也是锁分离的思想，它把锁分的比<code>segment（JDK1.5）</code>更细一些，只要hash不冲突，就不会出现并发获得锁的情况。它首先使用无锁操作<code>CAS</code>插入头结点，如果插入失败，说明已经有别的线程插入头结点了，再次循环进行操作。如果头结点已经存在，则通过<code>synchronized</code>获得头结点锁，进行后续的操作。<strong>性能比segment分段锁又再次提升</strong>。</li>
+</ul>
+<h4><span id="32-concurrenthashmap多线程环境下扩容">3.2 ConcurrentHashMap多线程环境下扩容</span></h4><ul>
+<li><code>transfer()</code>方法为<code>ConcurrentHashMap</code>扩容操作的核心方法。由于<code>ConcurrentHashMap</code>支持<strong>多线程扩容</strong>，而且也<strong>没有进行加锁</strong>，所以实现会变得有点儿复杂。整个扩容操作分为两步：<ul>
+<li>构建一个<code>nextTable</code>，其大小为原来大小的两倍，这个步骤是在单线程环境下完成的</li>
+<li>将原来<code>table</code>里面的内容复制到<code>nextTable</code>中，这个步骤是允许多线程操作的，所以性能得到提升，减少了扩容的时间消耗。</li>
+</ul>
+</li>
+<li>扩容的时机：<ol>
+<li>如果新增节点之后，所在链表的元素个数达到了阈值 8，则会调用treeifyBin方法把链表转换成红黑树，不过在结构转换之前，会对数组长度进行判断：<ul>
+<li>如果数组长度n小于阈值<code>MIN_TREEIFY_CAPACITY</code>，默认是64，则会调用<code>tryPresize</code>方法把数组长度扩大到原来的两倍，并触发<code>transfer</code>方法，重新调整节点的位置。</li>
+</ul>
+</li>
+<li>新增节点之后，会调用<code>addCount</code>方法记录元素个数，并检查是否需要进行扩容，当数组元素个数达到阈值时，会触发<code>transfer</code>方法，重新调整节点的位置。</li>
+</ol>
+</li>
+<li>JDK8的源码里面就引入了一个**<code>ForwardingNode</code>**类，在一个线程发起扩容的时候，就会改变<code>sizeCtl</code>这个值，其含义如下： <ul>
+<li><code>sizeCtl</code> ：默认为0，用来控制<code>table</code>的初始化和扩容操作，具体应用在后续会体现出来。</li>
+<li><code>-1</code> 代表<code>table</code>正在初始化</li>
+<li><code>-N</code> 表示有<code>N-1</code>个线程正在进行扩容操作</li>
+<li>其余情况：  <ol>
+<li>如果<code>table</code>未初始化，表示<code>table</code>需要初始化的大小。  </li>
+<li>如果<code>table</code>初始化完成，表示<code>table</code>的容量，默认是<code>table</code>大小的<code>0.75</code>倍</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>扩容时候会判断<code>sizeCtl</code>的值，如果超过阈值就要扩容，首先根据运算得到需要遍历的次数i，然后利用<code>tabAt</code>方法获得i位置的元素f，初始化一个<code>forwardNode</code>实例<code>fwd</code>，如果<code>f == null</code>，则在<code>table</code>中的i位置放入<code>fwd</code>，否则采用头插法的方式把当前旧<code>table</code>数组的指定任务范围的数据给迁移到新的数组中，然后给旧<code>table</code>原位置赋值<code>fwd</code>。直到遍历过所有的节点以后就完成了复制工作，把<code>table</code>指向<code>nextTable</code>，并更新<code>sizeCtl</code>为新数组大小的<code>0.75</code>倍 ，扩容完成。在此期间如果其他线程的有读写操作都会判断<code>head</code>节点是否为<code>forwardNode</code>节点，如果是就<strong>帮助扩容</strong>。</li>
+<li>在<strong>扩容时读写操作</strong>如何进行<ol>
+<li>对于<code>get</code>读操作，如果当前节点有数据，还没迁移完成，此时不影响读，能够正常进行。如果当前链表已经迁移完成，那么头节点会被设置成<code>fwd</code>节点，此时<code>get</code>线程会帮助扩容。</li>
+<li>对于<code>put</code>/<code>remove</code>写操作，如果当前链表已经迁移完成，那么头节点会被设置成<code>fwd</code>节点，此时写线程会帮助扩容，如果扩容没有完成，当前链表的头节点会被锁住，所以写线程会被阻塞，直到扩容完成。 </li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<p>总结: <code>ConcurrentHashMap</code>扩容的原理是新生成原来<code>2倍</code>的数组，然后拷贝旧数组数据到新的数组里面，在多线程情况下，这里面如果注意线程安全问题，在解决安全问题的同时，我们也要关注其效率，这才是并发容器类的最出色的地方。 </p>
+</blockquote>
+<h4><span id="33-size-mappingcount方法">3.3 size、mappingCount方法</span></h4><ul>
+<li><code>size</code>和<code>mappingCount</code>方法都是用来统计table的<code>size</code>的</li>
+<li>这两者不同的地方在<code>size</code>返回的是一个<code>int类型</code>，即可以表示<code>size</code>的范围是<code>[-2^31，2^31-1]</code>，超过这个范围就返回int能表示的最大值</li>
+<li><code>mappingCount</code>返回的是一个<code>long类型</code>，即可以表示<code>size</code>的范围是<code>[-2^63，2^63-1]</code>。</li>
+<li>这两个方法都是调用的<code>sumCount()</code>方法实现统计。</li>
+<li><strong>对于<code>size</code>和迭代器是弱一致性</strong><ul>
+<li><code>volatile</code>修饰的数组引用是强可见的，但是其元素却不一定，所以，这导致<code>size</code>的根据<code>sumCount</code>的方法<strong>并不准确</strong>。</li>
+<li>同理<code>Iteritor</code>的迭代器也一样，并不能准确反映最新的实际情况 </li>
+</ul>
+</li>
+</ul>
+<h3><span id="4-concurrentskiplistmap">4. ConcurrentSkipListMap</span></h3><p><code>ConcurrentSkipListMap</code>内部使用<strong>跳表（<code>SkipList</code>）</strong>这种数据结构来实现，他的结构相对红黑树来说非常简单理解，实现起来也相对简单，而且在理论上它的查找、插入、删除时间复杂度都为<code>log(n)</code>。在并发上，<code>ConcurrentSkipListMap</code>采用无锁的**<code>CAS+自旋</code>**来控制。</p>
+<ul>
+<li>跳表简单来说就是一个多层的链表，底层是一个普通的链表，然后逐层减少，通常通过一个简单的算法实现每一层元素是下一层的元素的二分之一，这样当搜索元素时从最顶层开始搜索，可以说是另一种形式的二分查找。</li>
+<li><code>ConcurrentSkipListMap</code>的**<code>put</code>**(插入)：<ul>
+<li>调用<code>doPut()</code>方法，可以分为3大步来理解：</li>
+<li>第一步获取前继节点后通过<code>CAS</code>来插入节点；</li>
+<li>第二步对<code>level</code>层数进行判断，如果大于最大层数，则插入一层；</li>
+<li>第三步插入对应层的数据。整个插入过程全部通过<code>CAS</code>自旋的方式保证并发情况下的数据正确性。</li>
+</ul>
+</li>
+</ul>
+<h3><span id="5-volatile-amp-atmoic-amp-unsafe">5. volatile &amp; Atmoic &amp; UnSafe</span></h3><ul>
+<li>**<code>volatile</code>**作用：①多线程间的可见性、②阻止指令重排序</li>
+<li>**<code>Atmoic系列类</code>**提供了原子性操作，保障多线程下的安全</li>
+<li>**<code>UnSafe类</code>**的作用：①内存操作、②字段的定位与修改(底层)、③线程挂起与恢复、④<code>CAS</code>操作(乐观锁)</li>
+</ul>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">1. 线程安全相关容器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.1 线程安全-同步容器：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.2 线程安全-并发容器：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.3 安全共享对象策略</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">2. CopyOnWrite机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">3. ConcurrentHashMap</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">3.1 put方法过程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">3.2 ConcurrentHashMap多线程环境下扩容</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">3.3 size、mappingCount方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">4. ConcurrentSkipListMap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">5. volatile &amp; Atmoic &amp; UnSafe</span></a></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/article/20191006.html">http://chaooo.github.io/article/20191006.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+    <div class="article-reward">
+        <a id="reward-btn" href="javascript:;">打赏</a>
+        <div id="reward-content">
+            <h6 class="reward-tit">“感谢你的支持，我会继续努力！”</h6>
+            <div>
+                <div class="reward-code">
+                    <img class="type-code" src="/css/images/wechat.jpg" alt="微信支付">
+                    <img class="er-code" src="/css/images/wechat-pay.jpg" alt="微信收款码">
+                </div>
+                <div class="reward-code">
+                    <img class="type-code" src="/css/images/alipay.jpg" alt="支付宝支付">
+                    <img class="er-code" src="/css/images/alipay-pay.jpg" alt="支付宝收款码">
+                </div>
+            </div>
+            <p class="reward-desc">扫码打赏，感谢支持</p>
+        </div>
+    </div>
+
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/article/20191010.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          【并发编程】AQS框架 与 锁框架（JUC.locks）
+        
+      </div>
+    </a>
+  
+  
+    <a href="/article/20191003.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">【Java知识梳理】常见集合类 的 数据结构</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+  
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/article/20200211.html">【环境配置】Redis与MySQL多实例配置</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200207.html">【安全认证】基于Shiro前后端分离的认证与授权(三.前端篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200121.html">【安全认证】基于Shiro前后端分离的认证与授权(二.授权篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20200118.html">【安全认证】基于Shiro前后端分离的认证与授权(一.认证篇)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20191222.html">【安全认证】Shiro安全框架入门</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 11.11px;">BlueLake</a> <a href="/tags/ElasticSearch/" style="font-size: 13.33px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 13.33px;">ElasticStack</a> <a href="/tags/Java/" style="font-size: 18.89px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Kibana/" style="font-size: 13.33px;">Kibana</a> <a href="/tags/LogStash/" style="font-size: 13.33px;">LogStash</a> <a href="/tags/Redis/" style="font-size: 12.22px;">Redis</a> <a href="/tags/Spring/" style="font-size: 17.78px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 12.22px;">SpringBoot</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 13.33px;">hexo</a> <a href="/tags/java/" style="font-size: 16.67px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/sublime/" style="font-size: 10px;">sublime</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/ssafe/" style="font-size: 14.44px;">安全认证</a> <a href="/tags/tool/" style="font-size: 11.11px;">工具</a> <a href="/tags/concurrent/" style="font-size: 13.33px;">并发编程</a> <a href="/tags/open-source/" style="font-size: 10px;">开源</a> <a href="/tags/db/" style="font-size: 15.56px;">数据库</a> <a href="/tags/other/" style="font-size: 10px;">杂谈</a> <a href="/tags/env/" style="font-size: 11.11px;">环境配置</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客折腾</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">Java知识梳理</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/other/">杂谈</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年10月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015年12月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sublime/" rel="tag">sublime</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssafe/" rel="tag">安全认证</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tool/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/open-source/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/other/" rel="tag">杂谈</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-link"></i> 友情链接</h3>
+    <div class="widget">
+      <ul>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://github.com/chaooo">chaooo</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake">BlueLake主题</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://weibo.com/zhengchaooo">秋过冬漫长</a>
+        </li>
+      
+      </ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2021 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        
+            <span>Count by <a href="http://busuanzi.ibruce.info/" target="_blank">busuanzi.</a></span>
+        
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'de8b7f88cfa9812e15f93e986181d1c2194ba6e8',
+      repo: 'BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>
