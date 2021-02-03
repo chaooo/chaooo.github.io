@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>CentOS 8 常用软件安装(MySQL Nginx SVN Redis) | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-CentOS-8-常用软件安装-MySQL-Nginx-SVN-Redis" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      CentOS 8 常用软件安装(MySQL Nginx SVN Redis)
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2020-12-09T08:00:56.000Z" itemprop="datePublished">2020年12月09日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/linux-learn/">Linux入门</a>
+  </div>
+
+      
+        <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/article/20201209.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3><span id="1-centos-8-安装mysql80mysql57">1. CentOS 8 安装（MySQL8.0/MySQL5.7)</span></h3><h4><span id="11-安装-mysql-80">1.1 安装 MySQL 8.0</span></h4><h5><span id="111-使用最新的包管理器安装mysql">1.1.1 使用最新的包管理器安装MySQL</span></h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf install @mysql</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h5><span id="112-配置表大小写不敏感">1.1.2 配置表大小写不敏感</span></h5><p>在首次启动之前要配置表大小写不敏感，这是和 MySQL 7 不一样的地方。</p>
+<p>mysql的配置文件是 /etc/my.cnf，它 include 了 /etc/my.cnf.d 目录下的配置，所以在 /etc/my.cnf.d/mysql-server.cnf 配置文件里<code>[mysqld]</code>下面的配置<code>lower_case_table_names=1</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">lower_case_table_names&#x3D;1</span><br></pre></td></tr></table></figure>
+
+<h5><span id="113-设置开机启动">1.1.3 设置开机启动</span></h5><p>安装完成后，运行以下命令来启动MySQL服务并使它在开机时自动启动：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable --now mysqld</span><br></pre></td></tr></table></figure>
+<p>检查MySQL服务器是否正在运行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl status mysqld</span><br></pre></td></tr></table></figure>
+<h5><span id="114-添加密码及安全设置">1.1.4 添加密码及安全设置</span></h5><p>运行mysql_secure_installation脚本，该脚本执行一些与安全性相关的操作并设置MySQL根密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql_secure_installation</span><br></pre></td></tr></table></figure>
+<p>步骤如下：</p>
+<ol>
+<li>要求你配置VALIDATE PASSWORD component（验证密码组件）： 输入y ，回车进入该配置<ul>
+<li>  选择密码验证策略等级， 我这里选择0 （low），回车</li>
+<li>  输入新密码两次</li>
+<li>  确认是否继续使用提供的密码？输入y ，回车</li>
+<li>  移除匿名用户？ 输入y ，回车</li>
+<li>  不允许root远程登陆？ 我这里需要远程登陆，所以输入n ，回车</li>
+</ul>
+</li>
+<li> 移除test数据库？ 输入y ，回车</li>
+<li> 重新载入权限表？ 输入y ，回车</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# mysql_secure_installation</span><br><span class="line"></span><br><span class="line">Securing the MySQL server deployment.</span><br><span class="line">Connecting to MySQL using a blank password.</span><br><span class="line"></span><br><span class="line">VALIDATE PASSWORD COMPONENT can be used to test passwords</span><br><span class="line">and improve security. It checks the strength of password</span><br><span class="line">and allows the users to set only those passwords which are</span><br><span class="line">secure enough. Would you like to setup VALIDATE PASSWORD component?</span><br><span class="line"></span><br><span class="line">Press y|Y for Yes, any other key for No: y</span><br><span class="line"></span><br><span class="line">There are three levels of password validation policy:</span><br><span class="line">LOW    Length &gt;= 8</span><br><span class="line">MEDIUM Length &gt;= 8, numeric, mixed case, and special characters</span><br><span class="line">STRONG Length &gt;= 8, numeric, mixed case, special characters and dictionary                  file</span><br><span class="line"></span><br><span class="line">Please enter 0 = LOW, 1 = MEDIUM and 2 = STRONG: 0</span><br><span class="line">Please set the password for root here.</span><br><span class="line"></span><br><span class="line">New password: </span><br><span class="line">Re-enter new password: </span><br><span class="line"></span><br><span class="line">Estimated strength of the password: 100 </span><br><span class="line">Do you wish to continue with the password provided?(Press y|Y for Yes, any other key for No) : y</span><br><span class="line">By default, a MySQL installation has an anonymous user,</span><br><span class="line">allowing anyone to log into MySQL without having to have</span><br><span class="line">a user account created for them. This is intended only for</span><br><span class="line">testing, and to make the installation go a bit smoother.</span><br><span class="line">You should remove them before moving into a production</span><br><span class="line">environment.</span><br><span class="line"></span><br><span class="line">Remove anonymous users? (Press y|Y for Yes, any other key for No) : y</span><br><span class="line">Success.</span><br><span class="line"></span><br><span class="line">Normally, root should only be allowed to connect from</span><br><span class="line">&#x27;localhost&#x27;. This ensures that someone cannot guess at</span><br><span class="line">the root password from the network.</span><br><span class="line"></span><br><span class="line">Disallow root login remotely? (Press y|Y for Yes, any other key for No) : n</span><br><span class="line"></span><br><span class="line"> ... skipping.</span><br><span class="line">By default, MySQL comes with a database named &#x27;test&#x27; that</span><br><span class="line">anyone can access. This is also intended only for testing,</span><br><span class="line">and should be removed before moving into a production</span><br><span class="line">environment.</span><br><span class="line"></span><br><span class="line">Remove test database and access to it? (Press y|Y for Yes, any other key for No) : n</span><br><span class="line"></span><br><span class="line"> ... skipping.</span><br><span class="line">Reloading the privilege tables will ensure that all changes</span><br><span class="line">made so far will take effect immediately.</span><br><span class="line"></span><br><span class="line">Reload privilege tables now? (Press y|Y for Yes, any other key for No) : y</span><br><span class="line">Success.</span><br><span class="line"></span><br><span class="line">All done! </span><br></pre></td></tr></table></figure>
+<h5><span id="115-配置远程登陆用户">1.1.5 配置远程登陆用户</span></h5><ol>
+<li>本机登录MySQL:</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -uroot -p&lt;上面步骤中设置的密码&gt;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>创建用户和授权</li>
+</ol>
+<p>在mysql8.0创建用户和授权和之前不太一样了，其实严格上来讲，也不能说是不一样,只能说是更严格,mysql8.0需要先创建用户和设置密码,然后才能授权；<br>将root用户的host字段设为’%’，意为接受root所有IP地址的登录请求：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#先创建一个用户</span><br><span class="line">use mysql;</span><br><span class="line">create user &#39;developer&#39;@&#39;%&#39; identified by &#39;05bZ&#x2F;OxTB:X+yd%1&#39;;</span><br><span class="line"> </span><br><span class="line">#再进行授权</span><br><span class="line">grant all privileges on *.* to &#39;developer&#39;@&#39;%&#39; with grant option;</span><br><span class="line">flush privileges;</span><br><span class="line"># 若用SQLyog连接MySQL8.0出现错误2058，执行如下命令</span><br><span class="line">ALTER USER &#39;developer&#39;@&#39;%&#39; IDENTIFIED WITH mysql_native_password BY &#39;05bZ&#x2F;OxTB:X+yd%1&#39;;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>开放防火墙端口3306</li>
+</ol>
+<p>MySQL默认监听3306端口，设置完成后输入exit退出mysql，回到终端shell界面，接着开启系统防火墙的3306端口：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --add-port&#x3D;3306&#x2F;tcp --permanent</span><br><span class="line">firewall-cmd --reload</span><br></pre></td></tr></table></figure>
+<h5><span id="116-关闭mysql主机查询dns">1.1.6 关闭MySQL主机查询dns</span></h5><p>MySQL会反向解析远程连接地址的dns记录，如果MySQL主机无法连接外网，则dns可能无法解析成功，导致第一次连接MySQL速度很慢，所以在配置中可以关闭该功能。<br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/liruning/p/7111015.html">参考文档</a><br>打开<code>/etc/my.cnf</code>文件，添加以下配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">skip-name-resolve</span><br></pre></td></tr></table></figure>
+<h5><span id="117-重启服务">1.1.7 重启服务</span></h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart mysqld</span><br></pre></td></tr></table></figure>
+<p>本机测试安装后，MySQL8.0默认已经是utf8mb4字符集，所以字符集不再修改。</p>
+<h4><span id="12-centos-8-安装配置-mysql-57">1.2 CentOS 8 安装配置 MySQL 5.7</span></h4><h5><span id="121-添加mysql存储库">1.2.1 添加MySQL存储库</span></h5><p>禁用MySQL默认的存储库：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dnf remove @mysql</span><br><span class="line">dnf module reset mysql &amp;&amp;  dnf module disable mysql</span><br></pre></td></tr></table></figure>
+<p>CentOS 8没有MySQL5.7存储库，创建一个新的存储库文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi &#x2F;etc&#x2F;yum.repos.d&#x2F;mysql-community.repo</span><br></pre></td></tr></table></figure>
+<p>将以下数据粘贴到文件中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[mysql57-community]</span><br><span class="line">name&#x3D;MySQL 5.7 Community Server</span><br><span class="line">baseurl&#x3D;http:&#x2F;&#x2F;repo.mysql.com&#x2F;yum&#x2F;mysql-5.7-community&#x2F;el&#x2F;7&#x2F;$basearch&#x2F;</span><br><span class="line">enabled&#x3D;1</span><br><span class="line">gpgcheck&#x3D;0</span><br><span class="line"></span><br><span class="line">[mysql-connectors-community]</span><br><span class="line">name&#x3D;MySQL Connectors Community</span><br><span class="line">baseurl&#x3D;http:&#x2F;&#x2F;repo.mysql.com&#x2F;yum&#x2F;mysql-connectors-community&#x2F;el&#x2F;7&#x2F;$basearch&#x2F;</span><br><span class="line">enabled&#x3D;1</span><br><span class="line">gpgcheck&#x3D;0</span><br><span class="line"></span><br><span class="line">[mysql-tools-community]</span><br><span class="line">name&#x3D;MySQL Tools Community</span><br><span class="line">baseurl&#x3D;http:&#x2F;&#x2F;repo.mysql.com&#x2F;yum&#x2F;mysql-tools-community&#x2F;el&#x2F;7&#x2F;$basearch&#x2F;</span><br><span class="line">enabled&#x3D;1</span><br><span class="line">gpgcheck&#x3D;0</span><br></pre></td></tr></table></figure>
+<h5><span id="122-在centos-8-上安装mysql-57">1.2.2 在CentOS 8 上安装MySQL 5.7</span></h5><p>禁用MySQL 8 存储库：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf config-manager --disable mysql80-community</span><br></pre></td></tr></table></figure>
+<p>然后启用MySQL 5.7存储库：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf config-manager --enable mysql57-community</span><br></pre></td></tr></table></figure>
+<p>然后在CentOS 8 上安装MySQL 5.7：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dnf install mysql-community-server</span><br></pre></td></tr></table></figure>
+<p>按y开始安装。</p>
+<p>安装完成后检查软件包的转速详细信息，以确认它是5.7。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -qi mysql-community-server </span><br></pre></td></tr></table></figure>
+
+<h5><span id="123-在centos-8-rhel-8上配置mysql-57">1.2.3 在CentOS 8 / RHEL 8上配置MySQL 5.7</span></h5><p>安装后，启动mysqld服务。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable --now mysqld.service</span><br></pre></td></tr></table></figure>
+<p>2.2 –复制为root用户生成的随机密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep &#39;A temporary password&#39;  &#x2F;var&#x2F;log&#x2F;mysqld.log</span><br></pre></td></tr></table></figure>
+<p>若没有生成临时密码，执行下面命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">rm -rf /var/lib/mysql</span><br><span class="line">systemctl restart mysqld</span><br><span class="line">grep &#x27;temporary password&#x27; /var/log/mysqld.log</span><br><span class="line">2020-12-11T09:41:41.459519Z 1 [Note] A temporary password is generated for root@localhost: #4q0R3/#qmC0</span><br></pre></td></tr></table></figure>
+<p>运行mysql_secure_installation脚本，该脚本执行一些与安全性相关的操作并设置MySQL根密码，<br>可以参考【**<em>1.1.3 添加密码及安全设置**</em>】及之后的操作。</p>
+<h3><span id="2-centos-8-安装配置-nginx">2. CentOS 8 安装配置 Nginx</span></h3><h4><span id="21-下载安装">2.1 下载安装</span></h4><p>官网下载：<a target="_blank" rel="noopener" href="http://nginx.org/en/download.html">http://nginx.org/en/download.html</a><br>或者直接在linux执行命令：<code>wget http://nginx.org/download/nginx-1.18.0.tar.gz</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 安装依赖</span></span><br><span class="line">yum -y install gcc zlib zlib-devel pcre-devel openssl openssl-devel</span><br><span class="line"><span class="meta">#</span><span class="bash"> 解压缩</span></span><br><span class="line">tar -zxvf nginx-1.18.0.tar.gz</span><br><span class="line">cd nginx-1.18.0/</span><br><span class="line"><span class="meta">#</span><span class="bash"> 执行配置【没有SSL证书】</span></span><br><span class="line">./configure</span><br><span class="line"><span class="meta">#</span><span class="bash">  执行配置【有SSL证书】</span></span><br><span class="line">./configure --prefix=/usr/local/nginx --with-http_ssl_module</span><br><span class="line"><span class="meta">#</span><span class="bash"> 编译安装(默认安装在/usr/<span class="built_in">local</span>/nginx)</span></span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<p>防火墙配置，nginx默认监听80端口</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --zone=public --add-port=80/tcp --permanent</span><br><span class="line">firewall-cmd --reload</span><br></pre></td></tr></table></figure>
+<h4><span id="22-nginx验证与配置">2.2 Nginx验证与配置</span></h4><ul>
+<li>测试配置文件：<code>/usr/local/nginx/sbin/nginx -t</code></li>
+<li>nginx主配置文件：<code>/usr/local/nginx/conf/nginx.conf</code></li>
+<li>nginx日志文件：<code>/usr/local/nginx/logs/access.log</code></li>
+<li>启动Nginx：<code>/usr/local/nginx/sbin/nginx</code></li>
+</ul>
+<p>加入环境变量</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/profile</span><br></pre></td></tr></table></figure>
+<p>最尾输入以下内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PATH=$PATH:$JAVA_HOME/bin:/usr/local/nginx/sbin</span><br></pre></td></tr></table></figure>
+<p>使用<code>source /etc/profile</code>命令使配置文件生效。</p>
+<h4><span id="23-centos-8-配置nginx开机自启动">2.3 Centos 8 配置Nginx开机自启动</span></h4><ol>
+<li>进入到/lib/systemd/system/目录，编辑nginx.service</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# cd &#x2F;lib&#x2F;systemd&#x2F;system&#x2F;</span><br><span class="line">[root@localhost system]# vim nginx.service</span><br><span class="line"></span><br><span class="line">[Unit]</span><br><span class="line">Description&#x3D;nginx service</span><br><span class="line">After&#x3D;network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type&#x3D;forking</span><br><span class="line">ExecStart&#x3D;&#x2F;usr&#x2F;local&#x2F;nginx&#x2F;sbin&#x2F;nginx</span><br><span class="line">ExecReload&#x3D;&#x2F;usr&#x2F;local&#x2F;nginx&#x2F;sbin&#x2F;nginx -s reload</span><br><span class="line">ExecStop&#x3D;&#x2F;usr&#x2F;local&#x2F;nginx&#x2F;sbin&#x2F;nginx -s stop</span><br><span class="line">PrivateTmp&#x3D;yes</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy&#x3D;multi-user.target</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li><code>[Unit]</code>:服务的说明：<pre><code> - Description:描述服务
+ - After:描述服务类别
+</code></pre>
+</li>
+<li><code>[Service]</code>服务运行参数的设置：<pre><code> - Type=forking是后台运行的形式
+ - ExecStart为服务的具体运行命令
+ - ExecReload为重启命令
+ - ExecStop为停止命令
+ - PrivateTmp=True表示给服务分配独立的临时空间
+ - 注意：`[Service]`的启动、重启、停止命令全部要求使用绝对路径
+</code></pre>
+</li>
+<li><code>[Install]</code>运行级别下服务安装的相关设置，可设置为多用户，即系统运行级别为3</li>
+</ul>
+</blockquote>
+<ol start="2">
+<li>加入开机自启动</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable nginx.service</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>常用命令<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 启动nginx服务</span></span><br><span class="line">systemctl start nginx.service</span><br><span class="line"><span class="meta">#</span><span class="bash"> 停止服务</span></span><br><span class="line">systemctl stop nginx.service</span><br><span class="line"><span class="meta">#</span><span class="bash"> 重新启动服务</span></span><br><span class="line">systemctl restart nginx.service</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看所有已启动的服务</span></span><br><span class="line">systemctl list-units --type=service</span><br><span class="line"><span class="meta">#</span><span class="bash"> 查看服务当前状态</span></span><br><span class="line">systemctl status nginx.service</span><br><span class="line"><span class="meta">#</span><span class="bash"> 设置开机自启动</span></span><br><span class="line">systemctl enable nginx.service</span><br><span class="line"><span class="meta">#</span><span class="bash"> 停止开机自启动</span></span><br><span class="line">systemctl disable nginx.service</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<h3><span id="3-centos-8-安装配置-svn">3. CentOS 8 安装配置 SVN</span></h3><ol>
+<li>安装<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 安装SVN</span></span><br><span class="line">[root@localhost ~]# yum -y install subversion</span><br><span class="line"><span class="meta">#</span><span class="bash"> 创建目录</span></span><br><span class="line">[root@localhost ~]# mkdir -p /var/svn/svnrepos</span><br><span class="line"><span class="meta">#</span><span class="bash"> 创建版本库(codes为自定义仓库目录)</span></span><br><span class="line">[root@localhost ~]# svnadmin create /var/svn/svnrepos/codes</span><br></pre></td></tr></table></figure></li>
+<li>配置<ul>
+<li>authz：负责账号权限的管理，控制账号是否读写权限</li>
+<li>passwd：负责账号和密码的用户名单管理</li>
+<li>svnserve.conf：svn服务器配置文件<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# cd /var/svn/svnrepos/codes/conf</span><br><span class="line">[root@localhost conf]# ls</span><br><span class="line">authz  passwd  svnserve.conf</span><br></pre></td></tr></table></figure>
+添加账户，并赋予读写权限，在authz末尾加入：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost conf]# vim authz</span><br><span class="line">[/]</span><br><span class="line">admin=rw</span><br><span class="line">test1=rw</span><br><span class="line">test2=rw</span><br></pre></td></tr></table></figure>
+设置账户密码：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost conf]# vim passwd</span><br><span class="line">[users]</span><br><span class="line"><span class="meta">#</span><span class="bash"> harry = harryssecret</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> sally = sallyssecret</span></span><br><span class="line">admin = 123456</span><br><span class="line">test1 = 123456</span><br><span class="line">test2 = 123456</span><br></pre></td></tr></table></figure>
+设置svn服务器配置文件<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost conf]# vim svnserve.conf</span><br><span class="line">[general]</span><br><span class="line">anon-access = read</span><br><span class="line">auth-access = write</span><br><span class="line"></span><br><span class="line">password-db = passwd</span><br><span class="line"></span><br><span class="line">authz-db = authz</span><br><span class="line"></span><br><span class="line">realm = My First Repository</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>设置开机自启<br>修改/etc/sysconfig/svnserve 将OPTIONS修改为自己的库版本保存目录（保留引号和-r）<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;sysconfig&#x2F;svnserve</span><br><span class="line">OPTIONS&#x3D;&quot;-r &#x2F;var&#x2F;svn&#x2F;svnrepos&quot;</span><br></pre></td></tr></table></figure>
+开机自启<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable svnserve.service</span><br></pre></td></tr></table></figure></li>
+<li>启动服务<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">svnserve -d -r /var/svn/svnrepos</span><br></pre></td></tr></table></figure>
+默认端口是3690<br>需要修改监听端口或者监听IP可以通过修改–listen-port和 –listen-host来进行修改</li>
+</ol>
+<p>可以通过svn协议进行访问：<code>svn://[ip]:[port]/codes</code></p>
+<h1><span id="5-centos-8-安装和配置-redis">5. CentOS 8 安装和配置 Redis</span></h1><ol>
+<li>Redis版本5.0.x包含在默认的CentOS 8存储库中，查询可用的redis安装包：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# dnf list redis</span><br><span class="line">上次元数据过期检查：3:04:47 前，执行于 2020年12月21日 星期一 23时03分10秒。</span><br><span class="line">可安装的软件包</span><br><span class="line">redis.x86_64      5.0.3-2.module_el8.2.0+318+3d7e67ea     AppStream</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>执行安装：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# dnf install redis</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>安装完成后，启用并启动Redis服务：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# systemctl enable --now redis</span><br><span class="line">Created symlink /etc/systemd/system/multi-user.target.wants/redis.service → /usr/lib/systemd/system/redis.service.</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>检查Redis服务器是否正在运行<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# systemctl status redis</span><br></pre></td></tr></table></figure></li>
+<li>配置Redis远程访问</li>
+</ol>
+<p>修改Redis配置文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~] vim /etc/redis.conf</span><br><span class="line"><span class="comment"># 查找 /bind 找到：bind 127.0.0.1并注释，使其它ip地址也可访问</span></span><br><span class="line"><span class="comment"># bind 127.0.0.1</span></span><br><span class="line"><span class="comment"># </span></span><br><span class="line"><span class="comment"># 查找 /requirepass 去掉注释#，并把foobared 替换为密码，例如：qwe123</span></span><br><span class="line"><span class="comment"># requirepass foobared</span></span><br><span class="line">requirepass qwe123</span><br></pre></td></tr></table></figure>
+<p>防火墙配置，Redis默认监听6379端口</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --zone=public --add-port=6379/tcp --permanent &amp;&amp; firewall-cmd --reload</span><br></pre></td></tr></table></figure>
+<p>重新启动Redis服务以使更改生效：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~] systemctl restart redis</span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li>其他服务器远程访问测试</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">redis-cli -h 192.168.2.100 -p 6379 -a qwe123</span><br><span class="line">192.168.2.100:6379&gt;</span><br></pre></td></tr></table></figure>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">1. CentOS 8 安装（MySQL8.0&#x2F;MySQL5.7)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.1 安装 MySQL 8.0</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">1.1.1 使用最新的包管理器安装MySQL</span></a></li><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">1.1.2 配置表大小写不敏感</span></a></li><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">1.1.3 设置开机启动</span></a></li><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">1.1.4 添加密码及安全设置</span></a></li><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">1.1.5 配置远程登陆用户</span></a></li><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">1.1.6 关闭MySQL主机查询dns</span></a></li><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">1.1.7 重启服务</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">1.2 CentOS 8 安装配置 MySQL 5.7</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">1.2.1 添加MySQL存储库</span></a></li><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">1.2.2 在CentOS 8 上安装MySQL 5.7</span></a></li><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-text">1.2.3 在CentOS 8 &#x2F; RHEL 8上配置MySQL 5.7</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">2. CentOS 8 安装配置 Nginx</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.1 下载安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.2 Nginx验证与配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">2.3 Centos 8 配置Nginx开机自启动</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">3. CentOS 8 安装配置 SVN</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">5. CentOS 8 安装和配置 Redis</span></a>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/article/20201209.html">http://chaooo.github.io/article/20201209.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+    <div class="article-reward">
+        <a id="reward-btn" href="javascript:;">打赏</a>
+        <div id="reward-content">
+            <h6 class="reward-tit">“感谢你的支持，我会继续努力！”</h6>
+            <div>
+                <div class="reward-code">
+                    <img class="type-code" src="/css/images/wechat.jpg" alt="微信支付">
+                    <img class="er-code" src="/css/images/wechat-pay.jpg" alt="微信收款码">
+                </div>
+                <div class="reward-code">
+                    <img class="type-code" src="/css/images/alipay.jpg" alt="支付宝支付">
+                    <img class="er-code" src="/css/images/alipay-pay.jpg" alt="支付宝收款码">
+                </div>
+            </div>
+            <p class="reward-desc">扫码打赏，感谢支持</p>
+        </div>
+    </div>
+
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SVN/" rel="tag">SVN</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/article/20201215.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          Centos8 安装 FastDFS 6.06
+        
+      </div>
+    </a>
+  
+  
+    <a href="/article/20201205.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">Jenkins入门（二）声明式流水线Jenkins Pipeline</div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/article/20210102.html">Nginx常用配置详解</a>
+          </li>
+        
+          <li>
+            <a href="/article/20201225.html">使用Nexus搭建Maven私服（CentOS 8）</a>
+          </li>
+        
+          <li>
+            <a href="/article/20201222.html">Centos 8 私人Git服务器搭建(Gogs)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20201221.html">Tomcat9安装及多实例多应用配置(CentOS 8)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20201218.html">CentOS 8 安装和配置 NFS 服务器</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 11px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 18px;">CentOS</a> <a href="/tags/Docker/" style="font-size: 11px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12px;">ElasticStack</a> <a href="/tags/FastDFS/" style="font-size: 11px;">FastDFS</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/Java/" style="font-size: 18px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 19px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 11px;">Nginx</a> <a href="/tags/Redis/" style="font-size: 12px;">Redis</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Shell/" style="font-size: 14px;">Shell</a> <a href="/tags/Spring/" style="font-size: 17px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 12px;">SpringBoot</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 12px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/sublime/" style="font-size: 10px;">sublime</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/ssafe/" style="font-size: 13px;">安全认证</a> <a href="/tags/tool/" style="font-size: 11px;">工具</a> <a href="/tags/concurrent/" style="font-size: 12px;">并发编程</a> <a href="/tags/open-source/" style="font-size: 10px;">开源</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/other/" style="font-size: 10px;">杂谈</a> <a href="/tags/env/" style="font-size: 11px;">环境配置</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/docker-learn/">Docker入门</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客折腾</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">Java知识梳理</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jenkins-learn/">Jenkins入门</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux-learn/">Linux入门</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/nginx/">Nginx配置</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/shell/">shell编程</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/other/">杂谈</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">25</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年10月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015年12月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat/" rel="tag">Tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sublime/" rel="tag">sublime</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssafe/" rel="tag">安全认证</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tool/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/open-source/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/other/" rel="tag">杂谈</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-link"></i> 友情链接</h3>
+    <div class="widget">
+      <ul>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://github.com/chaooo">chaooo</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake">BlueLake主题</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://weibo.com/zhengchaooo">秋过冬漫长</a>
+        </li>
+      
+      </ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2021 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        
+            <span>Count by <a href="http://busuanzi.ibruce.info/" target="_blank">busuanzi.</a></span>
+        
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?cd92a502fdfe53acccbd238129f12e5c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'de8b7f88cfa9812e15f93e986181d1c2194ba6e8',
+      repo: 'BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

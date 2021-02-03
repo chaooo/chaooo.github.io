@@ -94,7 +94,7 @@
 
       <div class="outer">
         <section id="main">
-  <article id="post-【并发编程】阻塞队列与线程池" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <article id="post-shell编程入门（五）shell脚本部署Java应用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-inner">
     
     
@@ -102,7 +102,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/article/20191014.html">【并发编程】阻塞队列 与 线程池</a>
+      <a class="p-name article-title" href="/article/20201119.html">shell编程入门（五）shell脚本部署Java应用</a>
     </h1>
   
 
@@ -113,23 +113,17 @@
       
       <span class="article-date">
   <i class="fa fa-date"></i>
-  <time class="dt-published" datetime="2019-10-14T15:04:54.000Z" itemprop="datePublished">2019年10月14日</time>
+  <time class="dt-published" datetime="2020-11-19T07:28:30.000Z" itemprop="datePublished">2020年11月19日</time>
 </span>
       
   <div class="article-category">
     <i class="fa fa-classify"></i>
-    <a class="article-category-link" href="/categories/concurrent/">并发编程</a>
+    <a class="article-category-link" href="/categories/shell/">shell编程</a>
   </div>
 
-      <span class="article-views">
-  <i class="fa fa-views"></i>
-  <i id="busuanzi_container_page_pv">
-      <i id="busuanzi_value_page_pv"></i>
-  </i>
-</span>
-
       
-<a href="/article/20191014.html#comments" class="article-comment-link">
+      
+<a href="/article/20201119.html#comments" class="article-comment-link">
   
   <i class="fa fa-commt"></i>
   留言
@@ -139,636 +133,29 @@
     </div>
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <ul>
-<li>池和队列的关系<ul>
-<li>线程池或者数据库连接池，都有最大限制。如果超出了限制数量，则新进来的申请连接都要放入额外的<strong>队列里</strong>，等到池空出来时，从队列中取出连接放进池里。
-      
-    </div>
-    <footer class="article-footer">
-      
-        
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a></li></ul>
+        <a id="more"></a>
 
-        <p class="article-more-link">
-          <a href="/article/20191014.html#more">Read More</a>
-        </p>
-      
-      
-      
-    </footer>
-  </div>
-</article>
-
-
-  <article id="post-【并发编程】AQS框架与锁框架" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/article/20191010.html">【并发编程】AQS框架 与 锁框架（JUC.locks）</a>
-    </h1>
-  
-
-
-      </header>
-    
-    <div class="article-meta">
-      
-      <span class="article-date">
-  <i class="fa fa-date"></i>
-  <time class="dt-published" datetime="2019-10-10T15:00:24.000Z" itemprop="datePublished">2019年10月10日</time>
-</span>
-      
-  <div class="article-category">
-    <i class="fa fa-classify"></i>
-    <a class="article-category-link" href="/categories/concurrent/">并发编程</a>
-  </div>
-
-      <span class="article-views">
-  <i class="fa fa-views"></i>
-  <i id="busuanzi_container_page_pv">
-      <i id="busuanzi_value_page_pv"></i>
-  </i>
-</span>
-
-      
-<a href="/article/20191010.html#comments" class="article-comment-link">
-  
-  <i class="fa fa-commt"></i>
-  留言
-</a>
-
-
-    </div>
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h3 id="1-AQS（队列同步器）"><a href="#1-AQS（队列同步器）" class="headerlink" title="1. AQS（队列同步器）"></a>1. AQS（队列同步器）</h3><p><code>AbstractQueuedSynchronizer</code>：队列同步器，简称<code>AQS</code>。</p>
-<ul>
-<li><code>AQS</code>维护了一个<code>volatile int </code><strong><code>state</code></strong>(代表资源共享变量) 和一个**<code>FIFO</code>线程等待队列**(多线程争用资源被阻塞时会进入此队列)。</li>
-<li><code>AQS</code>定义了两种资源共享方式：<code>Exclusive</code>(独占)，<code>Share</code>(共享)
-      
-    </div>
-    <footer class="article-footer">
-      
-        
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a></li></ul>
-
-        <p class="article-more-link">
-          <a href="/article/20191010.html#more">Read More</a>
-        </p>
-      
-      
-      
-    </footer>
-  </div>
-</article>
-
-
-  <article id="post-【并发编程】JUC并发容器类" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/article/20191006.html">【并发编程】JUC并发容器类</a>
-    </h1>
-  
-
-
-      </header>
-    
-    <div class="article-meta">
-      
-      <span class="article-date">
-  <i class="fa fa-date"></i>
-  <time class="dt-published" datetime="2019-10-06T15:04:22.000Z" itemprop="datePublished">2019年10月06日</time>
-</span>
-      
-  <div class="article-category">
-    <i class="fa fa-classify"></i>
-    <a class="article-category-link" href="/categories/concurrent/">并发编程</a>
-  </div>
-
-      <span class="article-views">
-  <i class="fa fa-views"></i>
-  <i id="busuanzi_container_page_pv">
-      <i id="busuanzi_value_page_pv"></i>
-  </i>
-</span>
-
-      
-<a href="/article/20191006.html#comments" class="article-comment-link">
-  
-  <i class="fa fa-commt"></i>
-  留言
-</a>
-
-
-    </div>
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>在<code>java.util.concurrent</code>包中，提供了两种类型的并发集合：一种是阻塞式，另一种是非阻塞式。</p>
-<ul>
-<li>阻塞式集合：当集合已满或为空时，被调用的添加（满）、移除（空）方法就不能立即被执行，调用这个方法的线程将被阻塞，一直等到该方法可以被成功执行</li>
-<li>非阻塞式集合：当集合已满或为空时，被调用的添加（满）、移除（空）方法就不能立即被执行，调用这个方法的线程不会被阻塞，而是直接则返回null或抛出异常。
-      
-    </div>
-    <footer class="article-footer">
-      
-        
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a></li></ul>
-
-        <p class="article-more-link">
-          <a href="/article/20191006.html#more">Read More</a>
-        </p>
-      
-      
-      
-    </footer>
-  </div>
-</article>
-
-
-  <article id="post-【Java知识梳理】常见集合类-的-底层分析" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/article/20191003.html">【Java知识梳理】常见集合类 的 数据结构</a>
-    </h1>
-  
-
-
-      </header>
-    
-    <div class="article-meta">
-      
-      <span class="article-date">
-  <i class="fa fa-date"></i>
-  <time class="dt-published" datetime="2019-10-03T14:53:06.000Z" itemprop="datePublished">2019年10月03日</time>
-</span>
-      
-  <div class="article-category">
-    <i class="fa fa-classify"></i>
-    <a class="article-category-link" href="/categories/java/">Java知识梳理</a>
-  </div>
-
-      <span class="article-views">
-  <i class="fa fa-views"></i>
-  <i id="busuanzi_container_page_pv">
-      <i id="busuanzi_value_page_pv"></i>
-  </i>
-</span>
-
-      
-<a href="/article/20191003.html#comments" class="article-comment-link">
-  
-  <i class="fa fa-commt"></i>
-  留言
-</a>
-
-
-    </div>
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h3><span id="集合collectionmap">集合(Collection/Map)</span></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Collection接口</span><br><span class="line">    |———— List接口</span><br><span class="line">        |———— ArrayList类</span><br><span class="line">        |———— Vector类</span><br><span class="line">        |———— LinkedList类</span><br><span class="line">        |———— Stack类</span><br><span class="line">    |———— Set接口</span><br><span class="line">        |———— HashSet类</span><br><span class="line">        |———— TreeSet类</span><br><span class="line">        |———— LinkedHashSet类</span><br><span class="line">    |———— Queue接口</span><br><span class="line">        |———— LinkedList类</span><br><span class="line">Map接口</span><br><span class="line">    |———— HashMap类</span><br><span class="line">    |———— TreeMap类</span><br><span class="line">    |———— LinkedHashMap类</span><br><span class="line">    |———— Hashtable类</span><br></pre></td></tr></table></figure>
-<h4><span id="01-list">0.1 List</span></h4><ul>
-<li><strong>Arraylist</strong>： 动态数组</li>
-<li>Vector： 动态数组(线程安全)</li>
-<li><strong>LinkedList</strong>： 双向链表(JDK1.6之前为循环链表，JDK1.7取消了循环)</li>
-</ul>
-<h4><span id="02-set">0.2 Set</span></h4><ul>
-<li>HashSet（无序，唯一）：基于 HashMap 实现的，底层采用 HashMap 来保存元素</li>
-<li>LinkedHashSet： LinkedHashSet 继承于 HashSet，并且其内部是通过 LinkedHashMap 来实现的。</li>
-<li>TreeSet（有序，唯一）：红黑树(自平衡的排序二叉树)</li>
-</ul>
-<h4><span id="03-map">0.3 Map</span></h4><ul>
-<li><strong>HashMap</strong>： JDK1.8之前HashMap由数组+链表组成的，数组是HashMap的主体，链表则是主要为了解决哈希冲突而存在的（“拉链法”解决冲突）。JDK1.8以后在解决哈希冲突时有了较大的变化，当链表长度大于阈值（默认为8）时，将链表转化为<strong>红黑树</strong>，以减少搜索时间</li>
-<li>LinkedHashMap： LinkedHashMap 继承自 HashMap，所以它的底层仍然是基于拉链式散列结构即由数组和链表或红黑树组成。另外，LinkedHashMap 在上面结构的基础上，<strong>增加了一条双向链表</strong>，使得上面的结构可以保持键值对的插入顺序。同时通过对链表进行相应的操作，实现了访问顺序相关逻辑。</li>
-<li>Hashtable： 数组+链表(线程安全)，数组是 HashMap 的主体，链表则是主要为了解决哈希冲突而存在的</li>
-<li>TreeMap： 红黑树（自平衡的排序二叉树）</li>
-</ul>
-<h4><span id="04-如何选用集合">0.4 如何选用集合</span></h4><p>主要根据集合的特点来选用：</p>
-<ul>
-<li>键值对就选用Map接口下的集合，需要排序时选择TreeMap，不需要排序时就选择HashMap,需要保证线程安全就选用ConcurrentHashMap.</li>
-<li>只需要存放元素值时，就选用Collection接口下的集合，需要保证元素唯一时选择实现Set接口的集合（TreeSet或HashSet），不需要就选择实现List接口的ArrayList或LinkedList</li>
-</ul>
-<h4><span id="05-对数公式log-与-时空复杂度">0.5 对数公式log 与 时空复杂度</span></h4><ul>
-<li>若<code>a^n = b</code> (a&gt;0,a≠1) 则 <code>n = log(a)b</code> , 如<code>log(2)8 = 3</code>; Java数据结构中log默认以2为底(个人理解,有待考证)</li>
-<li>常用O(1), O(n), O(logn)表示对应算法的时间复杂度, 也用于表示空间复杂度。<ul>
-<li><strong><code>O(1)</code></strong>: 最低的时空复杂度, 无论数据规模多大，都可以在一次计算后找到目标</li>
-<li><strong><code>O(n)</code></strong>: 数据量增大n倍时，耗时增大n倍; 比如常见的遍历算法</li>
-<li><strong><code>O(n^2)</code></strong>: 数据量增大n倍时，耗时增大n的平方倍; 比如冒泡排序，对n个数排序，需要扫描n×n次</li>
-<li><strong><code>o(logn)</code></strong>: 当数据增大n倍时，耗时增大logn倍; 二分查找就是O(logn)的算法，每找一次排除一半的可能，256个数据中查找只要找8次就可以找到目标(2^8=256)</li>
-<li><strong><code>O(nlogn)</code></strong>: 同理，就是n乘以logn，当数据增大256倍时，耗时增大256*8=2048倍。这个复杂度高于线性低于平方。归并排序就是O(nlogn)的时间复杂度</li>
-</ul>
-</li>
-</ul>
-<h4><span id="06-移位运算符">0.6  移位运算符</span></h4><p>按照平移的方向和填充数字的规则分为三种:&lt;&lt;(左移)、&gt;&gt;(带符号右移) 和 &gt;&gt;&gt;(无符号右移)</p>
-<ul>
-<li><code>左移 &lt;&lt;</code> : 丢弃最高位,0补最低位；左移n位就相当于乘以2的n次方</li>
-<li><code>右移 &gt;&gt;</code> : 符号位不变,高位补上符号位(正数0, 负数1)；右移n位相当于除以2的n次方</li>
-<li><code>无符号右移 &gt;&gt;&gt;</code> : 忽略符号位，0补最高位(补码移位所得)</li>
-</ul>
+<h3><span id="1-根据pid获取进程信息">1. 根据PID获取进程信息</span></h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="bash"><span class="comment"># Function: 根据用户输入的PID，过滤出该PID所有的信息</span></span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"></span><br><span class="line"><span class="bash"><span class="built_in">read</span> -p <span class="string">&quot;请输入要查询的PID: &quot;</span> P</span></span><br><span class="line">n=`ps -aux| awk &#x27;$2~/^&#x27;$P&#x27;$/&#123;print $11&#125;&#x27;|wc -l`</span><br><span class="line">if [ $n -eq 0 ];then</span><br><span class="line"> echo &quot;该PID不存在！&quot;</span><br><span class="line"> exit</span><br><span class="line">fi</span><br><span class="line">echo &quot;--------------------------------&quot;</span><br><span class="line">echo &quot;进程PID: $P&quot;</span><br><span class="line">echo &quot;进程命令：`ps -aux| awk &#x27;$2~/^&#x27;$P&#x27;$/&#123;print $11&#125;&#x27;`&quot;</span><br><span class="line">echo &quot;进程所属用户: `ps -aux| awk &#x27;$2~/^&#x27;$P&#x27;$/&#123;print $1&#125;&#x27;`&quot;</span><br><span class="line">echo &quot;CPU占用率：`ps -aux| awk &#x27;$2~/^&#x27;$P&#x27;$/&#123;print $3&#125;&#x27;`%&quot;</span><br><span class="line">echo &quot;内存占用率：`ps -aux| awk &#x27;$2~/^&#x27;$P&#x27;$/&#123;print $4&#125;&#x27;`%&quot;</span><br><span class="line">echo &quot;进程开始运行的时刻：`ps -aux| awk &#x27;$2~/^&#x27;$P&#x27;$/&#123;print $9&#125;&#x27;`&quot;</span><br><span class="line">echo &quot;进程运行的时间：`ps -aux| awk &#x27;$2~/^&#x27;$P&#x27;$/&#123;print $10&#125;&#x27;`&quot;</span><br><span class="line">echo &quot;进程状态：`ps -aux| awk &#x27;$2~/^&#x27;$P&#x27;$/&#123;print $8&#125;&#x27;`&quot;</span><br><span class="line">echo &quot;进程虚拟内存：`ps -aux| awk &#x27;$2~/^&#x27;$P&#x27;$/&#123;print $5&#125;&#x27;`&quot;</span><br><span class="line">echo &quot;进程共享内存：`ps -aux| awk &#x27;$2~/^&#x27;$P&#x27;$/&#123;print $6&#125;&#x27;`&quot;</span><br><span class="line">echo &quot;--------------------------------&quot;</span><br></pre></td></tr></table></figure>
 <blockquote>
-<ul>
-<li>正数的左移与右移，负数的无符号右移，就是相应的补码移位所得，在高位补0即可。</li>
-<li>负数的右移，就是补码高位补1,然后按位取反加1即可。</li>
-</ul>
+<p>若执行出现权限不够，为shell文件增加执行权限:<code>chmod +x test.sh</code></p>
 </blockquote>
+<h3><span id="2-使用shell脚本部署jar包">2. 使用Shell脚本部署Jar包</span></h3><p>将跳板机上(或本地服务器)的jar包文件拷贝到发布服务器，然后通过发布服务器上的脚本实现旧jar包的备份，新jar包的启动。</p>
 <ul>
-<li>运算规则：<ul>
-<li>左移：高位移出(舍弃)，低位的空位补零；int类型时，每移动1位它的第31位就要被移出并且丢弃；long类型时，每移动1位它的第63位就要被移出并且丢弃；byte和short类型时，将自动把这些类型扩大为int型。</li>
-<li>右移：低位移出(舍弃)，高位的空位补符号位，即正数补0，负数补1；当右移的运算数是byte 和short类型时，将自动把这些类型扩大为 int 型。</li>
-<li>无符号右移：补码移位，高位补0；正数和右移表现一致，负数变成了很大的正数；</li>
+<li>实现部署的操作：拷贝jar包到服务器 -&gt; 备份旧服务jar包 -&gt; 启动新服务jar包</li>
+<li>使用命令：<code>./begin.sh demo-0.0.1-SNAPSHOT.jar</code></li>
 </ul>
-</li>
-</ul>
-<h3><span id="1-arraylist">1. Arraylist</span></h3><p>ArrayList的底层是数组队列，相当于<strong>动态数组</strong>。与数组相比，它的容量能动态增长。在添加大量元素前，应用程序使用ensureCapacity操作来增加 ArrayList 实例的容量。这可以减少递增式再分配的数量。<br>它继承于 AbstractList，实现了 List, RandomAccess, Cloneable, java.io.Serializable 这些接口。</p>
-<ul>
-<li><strong>数组</strong>时间复杂度: <strong>插入/删除:O(n)**，</strong>增加(末尾)/随机访问: O(1)**</li>
-<li>ArrayList 继承了AbstractList，实现了List。它是一个数组队列，提供了相关的<strong>添加、删除、修改、遍历</strong>等功能</li>
-<li>ArrayList 实现了RandomAccess 接口， RandomAccess 是一个标志接口，表明实现这个这个接口的 List 集合是支持快速随机访问的。在 ArrayList 中，我们即可以通过元素的序号快速获取元素对象，这就是<strong>快速随机访问</strong></li>
-<li>ArrayList 实现了Cloneable 接口，即覆盖了函数 clone()，<strong>能被克隆</strong>。</li>
-<li>ArrayList 实现java.io.Serializable 接口，这意味着ArrayList<strong>支持序列化</strong>，能通过序列化去传输。</li>
-<li>和 Vector 不同，ArrayList 中的操作<strong>不是线程安全的</strong>！所以，建议在单线程中才使用 ArrayList，而在多线程中可以选择 Vector 或者 CopyOnWriteArrayList。</li>
-</ul>
-<h4><span id="11-arraylist扩容机制重点">1.1 ArrayList扩容机制*（重点）</span></h4><ul>
-<li>以无参数构造方法创建ArrayList时，实际上初始化赋值的是一个空数组；当add第一个元素时，才真正分配容量(<strong>默认10</strong>)</li>
-<li>ArrayList在每次增加元素(1个或一组)时，都要调用<code>ensureCapacityInternal()</code>方法来确保足够的容量</li>
-<li>当容量不足以容纳当前的元素个数时，进入<code>grow()</code>方法进行扩容，首先设置新的容量为旧容量的<strong>1.5倍</strong></li>
-<li>若设置后的新容量还不够，则设置新容量为<code>minCapacity</code>(所需最小容量)</li>
-<li>比较新容量是否大于<code>MAX_ARRAY_SIZE</code>(Integer最大值减8)，若大于，再比较<code>minCapacity</code>是否大于<code>MAX_ARRAY_SIZE</code>，若大于，设置新的容量为<code>Integer.MAX_VALUE</code>(Integer最大值)，否则设置新的容量为<code>MAX_ARRAY_SIZE</code>(Integer最大值减8)</li>
-<li>最后用<code>Arrays.copyof()</code>方法将元素拷贝到新的数组</li>
-<li>(第<code>Integer.MAX_VALUE+1</code>次添加元素时，抛出<code>OutOfMemoryError</code>异常)</li>
-</ul>
-<blockquote>
-<p><strong>System.arraycopy()和Arrays.copyOf()方法</strong><br>通过源码发现这两个实现数组复制的方法被广泛使用, 比如插入操作add(int index, E element)方法就很巧妙的用到了 System.arraycopy()方法让数组自己复制自己实现让index开始之后的所有成员后移一个位置</p>
-<ul>
-<li>Arrays.copyOf()内部也是调用了System.arraycopy()方法 </li>
-<li>Arrays.copyOf()是系统自动在内部新建一个数组，并返回该数组</li>
-<li>System.arraycopy()需要目标数组，将原数组拷贝到你自己定义的数组里，而且可以选择拷贝的起点和长度以及放入新数组中的位置</li>
-</ul>
-</blockquote>
-<h4><span id="12-ensurecapacity">1.2 ensureCapacity</span></h4><p>ArrayList对外提供了一个<code>ensureCapacity(int n)</code>方法</p>
-<ul>
-<li>最好在<code>add</code>大量元素之前用ensureCapacity方法，以<strong>减少增量重新分配的次数</strong></li>
-<li>ensureCapacity一次性扩容到位，否则在添加大量元素的过程中，一点一点的进行扩容</li>
-</ul>
-<h4><span id="13-内部类">1.3 内部类</span></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">Itr</span> <span class="keyword">implements</span> <span class="title">Iterator</span>&lt;<span class="title">E</span>&gt;</span>&#123;...&#125;</span><br><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">ListItr</span> <span class="keyword">extends</span> <span class="title">Itr</span> <span class="keyword">implements</span> <span class="title">ListIterator</span>&lt;<span class="title">E</span>&gt;</span>&#123;...&#125;</span><br><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">SubList</span> <span class="keyword">extends</span> <span class="title">AbstractList</span>&lt;<span class="title">E</span>&gt; <span class="keyword">implements</span> <span class="title">RandomAccess</span></span>&#123;...&#125;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ArrayListSpliterator</span>&lt;<span class="title">E</span>&gt; <span class="keyword">implements</span> <span class="title">Spliterator</span>&lt;<span class="title">E</span>&gt;</span>&#123;...&#125;</span><br></pre></td></tr></table></figure>
-<p>ArrayList有四个内部类</p>
-<ul>
-<li>Itr 实现了Iterator接口，同时重写了里面的hasNext()， next()， remove() 等方法；</li>
-<li>ListItr 继承 Itr，实现了ListIterator接口，同时重写了hasPrevious()， nextIndex()， previousIndex()， previous()， set(E e)， add(E e) 等方法</li>
-<li>Iterator和ListIterator的区别: <ul>
-<li>ListIterator在Iterator的基础上增加了添加对象，修改对象，逆向遍历等方法，这些是Iterator不能实现的。</li>
-</ul>
-</li>
-</ul>
-<h3><span id="2-linkedlist">2. LinkedList</span></h3><p>LinkedList是基于<strong>双向链表</strong>实现的, 可以在任何位置进行高效地插入和移除操作的有序序列。</p>
-<ul>
-<li>复杂度: <strong>增加(末尾)/删除:O(1)**，</strong>插入/获取: O(n)**</li>
-<li>LinkedList 继承AbstractSequentialList的<strong>双向链表</strong>。它也可以被当作堆栈、队列或双端队列进行操作。</li>
-<li>LinkedList 实现 List 接口，能对它进行<strong>队列操作</strong>。</li>
-<li>LinkedList 实现 Deque 接口，即能将LinkedList当作<strong>双端队列</strong>使用。</li>
-<li>LinkedList 实现了Cloneable接口，即覆盖了函数clone()，<strong>能克隆</strong>。</li>
-<li>LinkedList 实现java.io.Serializable接口，这意味着LinkedList<strong>支持序列化</strong>，能通过序列化去传输。</li>
-<li>LinkedList <strong>不是线程安全的</strong>，如果想使LinkedList变成线程安全的，可以调用静态类Collections类中的synchronizedList方法</li>
-</ul>
-<h4><span id="21-linkedlist底层分析">2.1 LinkedList底层分析:</span></h4><p>LinkedList的底层是一个双向链表，链表中挂载着一个个的Node元素；可以从LinkedList的Node内部类看出奥秘：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">transient</span> Node&lt;E&gt; first; <span class="comment">//头指针</span></span><br><span class="line"><span class="keyword">transient</span> Node&lt;E&gt; last; <span class="comment">//尾指针</span></span><br><span class="line"><span class="comment">//内部类</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    E item; <span class="comment">// 数据域（当前节点的值）</span></span><br><span class="line">    Node&lt;E&gt; next; <span class="comment">// 后继（指向当前一个节点的后一个节点）</span></span><br><span class="line">    Node&lt;E&gt; prev; <span class="comment">// 前驱（指向当前节点的前一个节点）</span></span><br><span class="line">    <span class="comment">// 构造函数，赋值前驱后继</span></span><br><span class="line">    Node(Node&lt;E&gt; prev, E element, Node&lt;E&gt; next) &#123;</span><br><span class="line">        <span class="keyword">this</span>.item = element;</span><br><span class="line">        <span class="keyword">this</span>.next = next;</span><br><span class="line">        <span class="keyword">this</span>.prev = prev;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>LinkedList 是基于链表结构实现，所以在类中包含了 first 和 last 两个指针(Node)。</li>
-<li>Node 中包含了上一个节点和下一个节点的引用，这样就构成了双向的链表。</li>
-</ul>
-<h4><span id="22-linkedlist增删改查">2.2 LinkedList增删改查</span></h4><ul>
-<li>链表批量增加，是靠for循环遍历原数组，依次执行插入节点操作。增加一定会修改modCount。</li>
-<li>通过下标获取某个node的时候(add select)，会根据index处于前半段还是后半段<strong>进行一个折半</strong>，以提升查询效率</li>
-<li>删也一定会修改modCount。 <ul>
-<li>按下标删，也是先根据index找到Node，然后去链表上unlink掉这个Node。 </li>
-<li>按元素删，会先去遍历链表寻找是否有该Node，如果有，去链表上unlink掉这个Node。</li>
-</ul>
-</li>
-<li>改也是先根据index找到Node，然后替换值。不修改modCount。</li>
-<li>CRUD操作里，都涉及到根据index去找到Node的操作。</li>
-</ul>
-<h4><span id="22-unlink原理">2.2 unlink原理</span></h4><ul>
-<li>先判断该节点是否存在上一个节点，即是否有前驱节点。<ul>
-<li>无前驱节点则说明要删除的节点为链表的第一节点，那么只需要把该节点的下一个节点设置为链表的第一个节点。</li>
-<li>有前驱节点则需要把前驱节点的尾部引用指向该节点的下一个节点。</li>
-</ul>
-</li>
-<li>再判断该节点是否存在下一个节点，即是否有后继节点。<ul>
-<li>无后继节点则说明该节点是链表的最后一个节点，那么只需要把该节点前驱节点设置成链表的最后一个节点即可。</li>
-<li>有后继节点则需要把后继节点的头部引用指向该节点的上一个节点。</li>
-</ul>
-</li>
-<li>核心就是在于将要删除的节点的前驱节点尾部指向该节点的后继节点，将要删除的节点的后继节点的头部指向该节点的前驱节点。这样便完成了链表的删除操作。</li>
-</ul>
-<blockquote>
-<p>删除和新增方法的实现基本是对该节点的上一个节点和下一个节点的引用设置，不需要操作其他节点，效率相对较高</p>
-</blockquote>
-<h4><span id="23-offer与add的区别">2.3 offer与add的区别</span></h4><ul>
-<li>offer属于 offer in interface <strong>Deque</strong>。</li>
-<li>add 属于 add in interface <strong>Collection</strong>。</li>
-<li>当队列为空时候，使用add方法会报错，而offer方法会返回false。</li>
-<li>作为List使用时,一般采用add / get方法来 压入/获取对象。</li>
-<li>作为Queue使用时,才会采用 offer/poll/take等方法作为链表对象时,offer等方法相对来说没有什么意义这些方法是用于支持队列应用的。</li>
-</ul>
-<h4><span id="22-对比vector-arraylist-linkedlist有何区别">2.2 对比Vector、ArrayList、LinkedList有何区别</span></h4><p>这三者都是实现集合框架中的 List，也就是所谓的有序集合，因此具体功能也比较近似，比如都提供按照位置进行定位、添加或者删除的操作，都提供迭代器以遍历其内容等。但因为具体的设计区别，在行为、性能、线程安全等方面，表现又有很大不同。</p>
-<ul>
-<li>Vector 是 Java 早期提供的<strong>线程安全</strong>的动态数组，如果不需要线程安全，并不建议选择，毕竟同步是有额外开销的。Vector 内部是使用对象数组来保存数据，可以根据需要自动的增加容量，当数组已满时，会创建新的数组，并拷贝原有数组数据扩容为旧容量的<strong>2倍</strong>。</li>
-<li>ArrayList 是应用更加广泛的动态数组实现，它本身不是线程安全的，所以性能要好很多。ArrayList 也是可以根据需要调整容量，在扩容为旧容量的<strong>1.5倍</strong>。</li>
-<li>LinkedList 顾名思义是 Java 提供的双向链表，<strong>不需要扩容</strong>，它也不是线程安全的。LinkedList不支持高效的随机元素访问。</li>
-</ul>
-<h3><span id="3-hashmap">3. HashMap</span></h3><p>HashMap是<strong>数组+链表+红黑树</strong>（JDK1.8增加了红黑树部分）实现的, 用于存储Key-Value键值对的集合，每一个键值对也叫做一个Entry。这些Entry分散存储在一个数组当中，这个数组就是HashMap的主干。</p>
-<ul>
-<li>HashMap继承了AbstractMap类，实现了Map，Cloneable，Serializable接口</li>
-<li>继承 abstractMap，也就是用来减轻实现Map接口的编写负担。</li>
-<li>实现 Cloneable：能够使用Clone()方法，在HashMap中，实现的是<strong>浅层次拷贝</strong>，即对拷贝对象的改变会影响被拷贝的对象。</li>
-<li>实现 Serializable：能够使之<strong>序列化</strong>，即可以将HashMap对象保存至本地，之后可以恢复状态。</li>
-</ul>
-<blockquote>
-<p>JDK1.8 之前 HashMap 由 数组+链表 组成的，数组是 HashMap 的主体，链表则是主要为了解决哈希冲突而存在的（“拉链法”解决冲突）.JDK1.8 以后在解决哈希冲突时有了较大的变化，<strong>当链表长度大于阈值（默认为 8）时，将链表转化为红黑树</strong>，以实现O(logn)时间复杂读查找。</p>
-</blockquote>
-<p>HashMap类中有一个非常重要的字段，就是 Node[] table，即<strong>哈希桶数组</strong>，明显它是一个Node的数组。</p>
-<ul>
-<li>HashMap的实例有两个参数影响其性能:<ul>
-<li>初始容量(默认16)：哈希表中桶的数量</li>
-<li>加载因子(默认0.75)：哈希表在其容量自动增加之前可以达到多满的一种尺度</li>
-</ul>
-</li>
-<li>当哈希表中条目数超出了当前容量*加载因子(其实就是HashMap的实际容量)时，则对该哈希表进行rehash操作，将哈希表扩充至两倍的桶数。</li>
-</ul>
-<h4><span id="31-hashmap的-put-方法过程重点">3.1 HashMap的 put 方法过程*（重点）</span></h4><p>put方法内部是一个 <code>putVal</code> 的调用：</p>
-<ol>
-<li>对 Key 求 Hash 值，然后再计算下标。</li>
-<li>如果没有碰撞，直接放入桶中，</li>
-<li>如果碰撞了，若是树节点，就<code>putTreeVal</code>添加元素，若不是就遍历链表插入。</li>
-<li>如果链表长度超过阀值（TREEIFY_THRESHOLD==8），就把链表转成红黑树。</li>
-<li>如果节点已经存在就替换旧值，若未找到则继续</li>
-<li>如果桶满了（容量 * 加载因子），就需要 resize(扩容为原来2倍并重新散列,元素的下标要么不变，要么变为【原下标+原容量】)。</li>
+<ol start="2">
+<li>跳板机(本地服务器)的脚本begin.sh</li>
 </ol>
-<h4><span id="32-hashmap-桶下标计算">3.2 HashMap 桶下标计算</span></h4><ul>
-<li><strong>下标</strong>：<code>hash(key) &amp; (table.length - 1)</code></li>
-<li>扰动函数**hash(key)**：(key==null) ? 0 : <code>(key.hashCode()^(key.hashCode() &gt;&gt;&gt; 16))</code></li>
-<li>低16位 和 高 16位 做了一个<strong>异或</strong>得到 hash值 与 (容器长度-1)进行**取模(%)**运算,得到下标。<ul>
-<li>利用位运算代替取模运算，提高程序的计算效率：（当 b=2^n 时，a%b = a &amp; (b-1) ），也是因此，HashMap 才将初始长度设置为 16，且扩容只能是以 2 的倍数（2^n）扩容。</li>
-</ul>
-</li>
-<li>有些数据计算出的哈希值差异主要在高位，而HashMap里的哈希寻址是忽略容量以上的高位的，那么这种处理就可以尽可能有效的避免哈希碰撞。</li>
-</ul>
-<blockquote>
-<p>HashMap 的性能表现非常依赖于哈希码的有效性: equals相等，hashCode一定要相等。重写了 hashCode 也要重写 equals。hashCode 需要保持一致性，状态改变返回的哈希值仍然要一致。</p>
-</blockquote>
-<h4><span id="33-hashmap-容量-负载因子和树化">3.3 HashMap 容量、负载因子和树化</span></h4><ul>
-<li>容量和负载系数决定了可用的桶的数量，空桶太多会浪费空间，如果使用的太满则会严重影响操作的性能。</li>
-<li>如果能够知道 HashMap 要存取的键值对数量，可以考虑预先设置合适的容量大小。</li>
-<li>计算条件：*<em>负载因子 * 容量 &gt; 元素数量*</em>；所以，预先设置的容量需要满足，大于“预估元素数量/负载因子”，同时它是<strong>2的幂数</strong></li>
-<li>容量理论最大极限由 MAXIMUM_CAPACITY 指定，数值为 <strong>1&lt;&lt;30</strong>，也就是2的30次方</li>
-</ul>
-<h5><span id="331-hashmap-负载因子loadfactor">3.3.1 HashMap 负载因子loadFactor</span></h5><ul>
-<li>loadFactor加载因子是控制数组存放数据的疏密程度，越大越密，越小越稀疏。</li>
-<li>loadFactor太大导致查找元素效率低，太小导致数组的利用率低，存放的数据会很分散。loadFactor的<strong>默认值为0.75f</strong>是官方给出的一个比较好的临界值。</li>
-<li>给定的默认容量为16，负载因子为0.75。当数量达到了 16*0.75 = 12 就需要将当前16的容量进行扩容，而扩容这个过程涉及到 rehash、复制数据等操作，所以非常消耗性能。</li>
-<li>而对于负载因子，建议：<ul>
-<li>如果没有特别需求，不要轻易进行更改，因为 JDK 自身的默认负载因子是非常符合通用场景的需求的。</li>
-<li>如果确实需要调整，建议不要设置超过 0.75 的数值，因为会显著增加冲突，降低 HashMap 的性能。</li>
-<li>如果使用太小的负载因子，按照上面的公式，预设容量值也进行调整，否则可能会导致更加频繁的扩容，增加无谓的开销，本身访问性能也会受影响。</li>
-</ul>
-</li>
-</ul>
-<h5><span id="332-hashmap-门限值threshold">3.3.2 HashMap 门限值threshold</span></h5><p><code>threshold = capacity * loadFactor</code>，当<code>Size&gt;=threshold</code>的时候，那么就要考虑对数组的扩增了，也就是说，这个的意思就是 衡量数组是否需要扩增的一个标准。</p>
-<ul>
-<li>门限值等于(负载因子 x 容量)，如果构建 HashMap 的时候没有指定它们，那么就是依据相应的默认常量值。</li>
-<li>门限通常是以倍数进行调整 （newThr = oldThr &lt;&lt; 1），根据 putVal 中的逻辑，当元素个数超过门限大小时，则调整 Map 大小。</li>
-<li>扩容后，需要将老的数组中的元素重新放置到新的数组，这是扩容的一个主要开销来源。</li>
-</ul>
-<h5><span id="332-hashmap-树化改造">3.3.2 HashMap 树化改造</span></h5><p>树化改造逻辑主要在 putVal 和 <code>treeifyBin</code> 中。</p>
-<ul>
-<li>链表结构（这里叫 bin）的数量大于 <code>TREEIFY_THRESHOLD</code>(默认为8) 时：<ul>
-<li>如果容量小于 <code>MIN_TREEIFY_CAPACITY</code>(默认为64) ，只会进行简单的扩容。</li>
-<li>如果容量大于 <code>MIN_TREEIFY_CAPACITY</code>(默认为64)，则会进行树化改造。</li>
-</ul>
-</li>
-</ul>
-<h4><span id="34-hashmap-扩容resize">3.4 HashMap 扩容resize</span></h4><ul>
-<li>HashMap扩容条件：<ul>
-<li>元素个数超出了加载因子与当前容量的乘积，并且发生了Hash碰撞</li>
-</ul>
-</li>
-<li>HashMap扩容步骤：<ol>
-<li>创建一个新的Entry空数组，长度是原来的2倍。</li>
-<li>遍历原Entry数组，把所有的Entry重新Hash到新数组里。</li>
-<li>重新散列的元素下标要么【不变】，要么变为【原下标+原容量】，取决于位运算((n - 1) &amp; hash)</li>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">fileName=$1</span><br><span class="line">if [ -z &quot;$fileName&quot; ]; then</span><br><span class="line">    echo &quot;文件名不能为空&quot;</span><br><span class="line">    exit 0</span><br><span class="line">fi</span><br><span class="line">echo &quot;开始拷贝jar文件【$fileName】到192.168.2.100&quot;</span><br><span class="line">scp $fileName cmuser@192.168.2.100:/usr/local/test/$fileName.prev</span><br><span class="line">echo &quot;文件传输结束，准备启动192.168.2.100的部署脚本&quot;</span><br><span class="line">ssh cmuser@192.168.2.100 /usr/local/test/demo-deploy.sh $fileName</span><br></pre></td></tr></table></figure>
+<p>通过上面的跳板机上的代码，我们知道跳板机最终会调用发布服务器上<code>/usr/local/test/demo-deploy.sh</code>这个shell脚本命令。</p>
+<ol start="3">
+<li>发布服务器脚本demo-deploy.sh</li>
 </ol>
-</li>
-</ul>
-<blockquote>
-<p>经过一次扩容处理后，元素会更加均匀的分布在各个桶中，会提升访问效率。<br>但会遍历所有的元素，时间复杂度很高；遍历元素所带来的坏处大于元素在桶中均匀分布所带来的好处。<br>尽量避免进行扩容处理。</p>
-</blockquote>
-<h4><span id="35-常见的hash算法及冲突的解决">3.5 常见的hash算法及冲突的解决</span></h4><p>hash函数，即散列函数。它可以将不定长的输入，通过散列算法转换成一个定长的输出，这个输出就是散列值(不保证唯一)。</p>
-<ul>
-<li>常见Hash算法：<ol>
-<li>直接定址法：直接以关键字k或者k加上某个常数（k+c）作为哈希地址（H(k)=ak+b）。</li>
-<li>数字分析法：提取关键字中取值比较均匀的数字作为哈希地址（如一组出生日期，相较于年-月，月-日的差别要大得多，可以降低冲突概率）</li>
-<li>分段叠加法：按照哈希表地址位数将关键字分成位数相等的几部分，其中最后一部分可以比较短。然后将这几部分相加，舍弃最高进位后的结果就是该关键字的哈希地址。</li>
-<li>平方取中法：如果关键字各个部分分布都不均匀的话，可以先求出它的平方值，然后按照需求取中间的几位作为哈希地址。</li>
-<li>伪随机数法：选择一随机函数，取关键字的随机值作为散列地址，通常用于关键字长度不同的场合。</li>
-<li>除留余数法：用关键字k除以某个不大于哈希表长度m的数p，将所得余数作为哈希表地址（H(k)=k%p, p&lt;=m; p一般取m或素数）。</li>
-</ol>
-</li>
-<li>常见解决hash冲突的方法<ol>
-<li>链地址法：将哈希表的每个单元作为链表的头结点，所有哈希地址为 i 的元素构成一个同义词链表。即发生冲突时就把该关键字链在以该单元为头结点的链表的尾部。</li>
-<li>开放定址法：即发生冲突时，去寻找下一个空的哈希地址。只要哈希表足够大，总能找到空的哈希地址。</li>
-<li>再哈希法：即发生冲突时，由其他的函数再计算一次哈希值。</li>
-<li>建立公共溢出区：将哈希表分为基本表和溢出表，发生冲突时，将冲突的元素放入溢出表。</li>
-</ol>
-</li>
-</ul>
-<blockquote>
-<p>HashMap就是使用链地址法来解决冲突的（JDK1.8增加了红黑树）</p>
-</blockquote>
-<h4><span id="36-对比hashtable-hashmap-treemap有什么不同">3.6 对比Hashtable、HashMap、TreeMap有什么不同</span></h4><p>Hashtable、HashMap、TreeMap 都是最常见的一些 Map 实现，是以键值对的形式存储和操作数据的容器类型。</p>
-<ul>
-<li>Hashtable 是早期 Java 类库提供的一个哈希表实现，本身是同步的，不支持 null 键和值，由于同步导致的性能开销，所以已经很少被推荐使用。</li>
-<li>HashMap 是应用更加广泛的哈希表实现，行为上大致上与 HashTable 一致，主要区别在于 HashMap 不是同步的，支持 null 键和值等。通常情况下，HashMap 进行 put 或者 get 操作，可以达到常数时间的性能，所以它是绝大部分利用键值对存取场景的首选，比如，实现一个用户 ID 和用户信息对应的运行时存储结构。</li>
-<li>TreeMap 则是基于红黑树的一种提供顺序访问的 Map，和 HashMap 不同，它的 get、put、remove 之类操作都是 O(log(n))的时间复杂度，具体顺序可以由指定的 Comparator 来决定，或者根据键的自然顺序来判断。</li>
-</ul>
-
-        
-        
-          <blockquote id="copyright">
-              <p>原文链接: <a href="http://chaooo.github.io/page/3/index.html">http://chaooo.github.io/page/3/index.html</a></p>
-              <p>版权声明: 转载请注明出处.</p>
-          </blockquote>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <div class="article-tag-wrap">
-          
-    <div class="article-reward">
-        <a id="reward-btn" href="javascript:;">打赏</a>
-        <div id="reward-content">
-            <h6 class="reward-tit">“感谢你的支持，我会继续努力！”</h6>
-            <div>
-                <div class="reward-code">
-                    <img class="type-code" src="/css/images/wechat.jpg" alt="微信支付">
-                    <img class="er-code" src="/css/images/wechat-pay.jpg" alt="微信收款码">
-                </div>
-                <div class="reward-code">
-                    <img class="type-code" src="/css/images/alipay.jpg" alt="支付宝支付">
-                    <img class="er-code" src="/css/images/alipay-pay.jpg" alt="支付宝收款码">
-                </div>
-            </div>
-            <p class="reward-desc">扫码打赏，感谢支持</p>
-        </div>
-    </div>
-
-
-          
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li></ul>
-
-          
-    <div class="social-share">
-      <span>分享到:</span>
-    </div>
-
-
-
-        </div>
-      
-      
-      
-    </footer>
-  </div>
-</article>
-
-
-  <article id="post-【Redis】Redis穿透、击穿、雪崩和数据一致性" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/article/20190927.html">【Redis】Redis穿透、击穿、雪崩和数据一致性</a>
-    </h1>
-  
-
-
-      </header>
-    
-    <div class="article-meta">
-      
-      <span class="article-date">
-  <i class="fa fa-date"></i>
-  <time class="dt-published" datetime="2019-09-27T11:15:31.000Z" itemprop="datePublished">2019年09月27日</time>
-</span>
-      
-  <div class="article-category">
-    <i class="fa fa-classify"></i>
-    <a class="article-category-link" href="/categories/Redis/">Redis</a>
-  </div>
-
-      <span class="article-views">
-  <i class="fa fa-views"></i>
-  <i id="busuanzi_container_page_pv">
-      <i id="busuanzi_value_page_pv"></i>
-  </i>
-</span>
-
-      
-<a href="/article/20190927.html#comments" class="article-comment-link">
-  
-  <i class="fa fa-commt"></i>
-  留言
-</a>
-
-
-    </div>
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h3><span id="1-缓存穿透">1. 缓存穿透</span></h3><p>访问一个不存在的key，缓存不起作用，请求会穿透到DB，流量大时DB会挂掉。</p>
-<ul>
-<li>解决方案：<ol>
-<li>采用布隆过滤器（bloomfilter就类似于一个hash set），使用一个足够大的bitmap，用于存储可能访问的key，不存在的key直接被过滤；</li>
-<li>访问key未在DB查询到值，也将空值写进缓存，但可以设置较短过期时间。</li>
-<li>接口限流与熔断、降级</li>
-<li>使用互斥锁排队（分布式环境中要使用分布式锁，单机的话用普通的锁（synchronized、Lock））</li>
-</ol>
-</li>
-</ul>
-<h3><span id="2-缓存雪崩">2. 缓存雪崩</span></h3><p>大量的key设置了相同的过期时间，导致在缓存在同一时刻全部失效，造成瞬时DB请求量大、压力骤增，引起雪崩。</p>
-<ul>
-<li>解决方案<ol>
-<li>可以给缓存设置过期时间时加上一个随机值时间，使得每个key的过期时间分布开来，不会集中在同一时刻失效。</li>
-<li>建立备份缓存，缓存A和缓存B，A设置超时时间，B不设值超时时间，先从A读缓存，A没有读B，并且更新A缓存和B缓存;</li>
-<li>加锁排队，实现同上;</li>
-</ol>
-</li>
-</ul>
-<h3><span id="3-缓存击穿">3. 缓存击穿</span></h3><p>一个存在的key，在缓存过期的一刻，同时有大量的请求，这些请求都会击穿到DB，造成瞬时DB请求量大、压力骤增。</p>
-<ul>
-<li>解决方案<ul>
-<li>在访问key之前，采用SETNX（set if not exists）来设置另一个短期key来锁住当前key的访问，访问结束再删除该短期key。</li>
-</ul>
-</li>
-</ul>
-<h3><span id="4-缓存并发竞争">4. 缓存并发竞争</span></h3><p>多个redis的client同时set key引起的并发问题（例如：多客户端同时并发写一个key，一个key的值是1，本来按顺序修改为2,3,4，最后是4，但是顺序变成了4,3,2，最后变成了2）</p>
-<ul>
-<li>解决方案<ol>
-<li>如果对这个key操作，不要求顺序：准备一个分布式锁，大家去抢锁，抢到锁就做set操作即可。</li>
-<li>如果对这个key操作，要求顺序：<ol>
-<li>分布式锁+时间戳（假设系统B先抢到锁，将key1设置为{ValueB 7:05}。接下来系统A抢到锁，发现自己的key1的时间戳早于缓存中的时间戳（7:00&lt;7:05），那就不做set操作了）</li>
-<li>利用消息队列（把Redis.set操作放在队列中使其串行化,必须的一个一个执行）</li>
-</ol>
-</li>
-</ol>
-</li>
-</ul>
-<h3><span id="5-缓存和数据库一致性解决方案">5. 缓存和数据库一致性解决方案</span></h3><h4><span id="51-并发量-一致性要求都不是很高的场景">5.1 并发量、一致性要求都不是很高的场景</span></h4><ul>
-<li>写流程：<strong>先淘汰缓存，再写数据库</strong>，之后再<strong>异步将数据刷回缓存</strong></li>
-<li>读流程：先读缓存，如果缓存没读到，则去读DB，之后再异步将数据刷回缓存</li>
-</ul>
-<ol>
-<li>优点：实现起来简单，异步刷新，补缺补漏</li>
-<li>缺点：容灾不足，并发问题，一个比较大的缺陷在于刷新缓存有可能会失败，而失败之后缓存中数据就一直会处于错误状态，所以它并不能保证数据的最终一致性</li>
-</ol>
-<h4><span id="52-业务简单读写qps比较低的场景qps每秒查询率query-per-second">5.2 业务简单，读写QPS比较低的场景（QPS每秒查询率(Query Per Second)）</span></h4><ul>
-<li>写流程：<strong>先淘汰缓存，再写数据库</strong>，监听从库binlog，通过<strong>解析binlog来刷新缓存</strong></li>
-<li>读流程：第一步先读缓存，如果缓存没读到，则去读DB，之后再异步将数据刷回缓存</li>
-</ul>
-<ol>
-<li>优点：容灾</li>
-<li>缺点：只适合简单业务，复杂业务容易发生并发问题（例如：读/写的时候，缓存中的数据已失效，此时又发生了更新）</li>
-</ol>
-<h4><span id="53-业务只需要达到最终一致性要求的场景">5.3 业务只需要达到“最终一致性”要求的场景</span></h4><ul>
-<li>写流程：<strong>先淘汰缓存，再写数据库，监听从库binlog</strong>，通过分析binlog我们解析出需要需要刷新的<strong>数据标识</strong>，然后将<strong>数据标识写入MQ</strong>，接下来就消费MQ，解析MQ消息来读库获取相应的数据刷新缓存。</li>
-<li>读流程：第一步先读缓存，如果缓存没读到，则去读DB，之后再异步将数据标识写入MQ（这里MQ与写流程的MQ是同一个），接下来就消费MQ，解析MQ消息来读库获取相应的数据刷新缓存。</li>
-</ul>
-<ol>
-<li>优点：容灾完善，无并发问题</li>
-<li>缺点：只能达到”最终一致性”</li>
-</ol>
-<h4><span id="54-强一致性的场景">5.4 强一致性的场景</span></h4><ul>
-<li>写流程：我们把<strong>修改的数据通过Cache_0标记</strong>“正在被修改”，如果<strong>标记成功，写数据库，删除缓存，监听从库binlog</strong>，通过分析binlog我们解析出需要需要刷新的数据标识，然后将数据标识<strong>写入MQ</strong>，接下来就消费MQ，解析MQ消息来读库获取相应的数据刷新缓存； 那如果标记失败，则要放弃这次修改。</li>
-<li>读流程：先读Cache_0，看看要读的数据是否被标记，如果被标记，则直接读主库；如果没有被标记，读缓存，如果缓存没读到，则去读DB，之后再异步将数据标识写入MQ（这里MQ与写流程的MQ是同一个），接下来就消费MQ，解析MQ消息来读库获取相应的数据刷新缓存。</li>
-</ul>
-<ol>
-<li>优点：容灾完善，无并发问题</li>
-<li>缺点：增加Cache_0强依赖，复杂度是比较高的（涉及到Databus、MQ、定时任务等等组件）</li>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/usr/bin/env bash</span></span><br><span class="line">echo &quot;服务器开始部署服务&quot;</span><br><span class="line">projectname=&quot;demo&quot;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 打开文件所属的目录，不然远程执行会找不到当前目录</span></span><br><span class="line">cd /usr/local/test</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 新的jar包会当成参数传过来</span></span><br><span class="line">newJar=$1</span><br><span class="line">echo &quot;新的jar为：$newJar&quot; </span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果新的jar包为空则退出</span></span><br><span class="line">if [ -z &quot;$newJar&quot; ]; then</span><br><span class="line">    echo &quot;新的jar不能为空&quot;</span><br><span class="line">    exit 0</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 获取旧的jar包名称，当然可能是空的，也可能跟当前名称一致</span></span><br><span class="line">oldJar=$(ps -ef | grep $&#123;projectname&#125;|grep -v &#x27;demo-deploy.sh&#x27;|grep -v grep|awk &#x27;&#123;print $10&#125;&#x27;|cut -d &#x27;/&#x27; -f 2)</span><br><span class="line">echo &quot;当前运行的旧的jar包为：$oldJar&quot; </span><br><span class="line"><span class="meta">#</span><span class="bash">如果新的jar包为空则退出</span></span><br><span class="line">if [ -z &quot;$oldJar&quot; ]; then</span><br><span class="line">    echo &quot;没有启动的demo服务&quot;</span><br><span class="line">else</span><br><span class="line">    # 如果旧的进程还在就将旧的进程杀掉</span><br><span class="line">    oldId=`ps -ef|grep $&#123;projectname&#125;|grep -v &quot;$0&quot;|grep -v &quot;grep&quot;|awk &#x27;&#123;print $2&#125;&#x27;`</span><br><span class="line">    echo &quot;$oldId&quot;</span><br><span class="line">    echo &quot;kill old process start ...&quot;</span><br><span class="line">    for id in $oldId</span><br><span class="line">    do</span><br><span class="line">        kill -9 $id</span><br><span class="line">        echo &quot;killed $id&quot;</span><br><span class="line">    done</span><br><span class="line">    echo &quot;kill old process end&quot;</span><br><span class="line">    # 获取当前时间戳</span><br><span class="line">    suffix=&quot;.bak-&quot;`date &#x27;+%s%3N&#x27;`;</span><br><span class="line">    echo $suffix;</span><br><span class="line">    # 将旧的jar包进行备份</span><br><span class="line">    mv $oldJar $&#123;oldJar&#125;$&#123;suffix&#125;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 开始启动新的进程</span></span><br><span class="line">mv $&#123;1&#125;.prev $&#123;1&#125;</span><br><span class="line">nohup java -jar $&#123;1&#125; &gt; run.txt 2&gt;&amp;1 &amp;</span><br><span class="line">echo &quot;服务启动查看进程:&quot;</span><br><span class="line">echo `ps -ef | grep $&#123;projectname&#125;|grep -v &#x27;demo-deploy.sh&#x27;|grep -v grep`</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>演示<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 跳板机</span></span><br><span class="line">[cmuser@localhost test]$ ./begin.sh demo-0.0.1-SNAPSHOT.jar</span><br><span class="line">开始拷贝jar文件【demo-0.0.1-SNAPSHOT.jar】到192.168.2.100</span><br><span class="line">cmuser@192.168.2.100&#x27;s password: </span><br><span class="line">demo-0.0.1-SNAPSHOT.jar                                                                                                                                                                                 100%   20MB  11.2MB/s   00:01    </span><br><span class="line">文件传输结束，准备启动192.168.2.100的部署脚本</span><br><span class="line">cmuser@192.168.2.100&#x27;s password: </span><br><span class="line">服务器开始部署服务</span><br><span class="line">新的jar为：demo-0.0.1-SNAPSHOT.jar</span><br><span class="line">当前运行的旧的jar包为：demo-0.0.1-SNAPSHOT.jar</span><br><span class="line">2581</span><br><span class="line">kill old process start ...</span><br><span class="line">killed 2581</span><br><span class="line">kill old process end</span><br><span class="line">.bak-20201117</span><br><span class="line">服务启动查看进程:</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 发布服务器(部署前pid:2581)</span></span><br><span class="line">[cmuser@192.168.2.100 test]$ ps -ef | grep demo</span><br><span class="line">cmuser    2581     1 16 17:03 ?        00:00:06 java -jar demo-0.0.1-SNAPSHOT.jar</span><br><span class="line"></span><br><span class="line">[cmuser@192.168.2.100 test]$ ll</span><br><span class="line">total 40260</span><br><span class="line">-rw-rw-r--. 1 cmuser  cmuser  20606107 Nov 18 15:45 demo-0.0.1-SNAPSHOT.jar</span><br><span class="line">-rw-rw-r--. 1 cmuser  cmuser  20606111 Nov 18 15:06 demo-0.0.1-SNAPSHOT.jar.bak-1605685530423</span><br><span class="line">-rwxrwxr-x. 1 jenkins jenkins     1356 Nov 17 17:56 demo-deploy.sh</span><br><span class="line">-rwxrwxrwx. 1 jenkins jenkins     1207 Nov 18 15:45 run.txt</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 发布服务器(部署后:2653)</span></span><br><span class="line">[cmuser@192.168.2.100 test]$ ps -ef | grep demo</span><br><span class="line">cmuser    2653     1 59 17:04 ?        00:00:07 java -jar demo-0.0.1-SNAPSHOT.jar</span><br></pre></td></tr></table></figure></li>
 </ol>
 
         
@@ -804,7 +191,7 @@
 
 
           
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li></ul>
 
           
     <div class="social-share">
@@ -822,7 +209,7 @@
 </article>
 
 
-  <article id="post-【Redis】深入学习Redis及集群" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <article id="post-shell编程入门（四）文本处理" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-inner">
     
     
@@ -830,7 +217,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/article/20190920.html">【Redis】深入学习Redis及集群</a>
+      <a class="p-name article-title" href="/article/20201118.html">shell编程入门（四）文本处理</a>
     </h1>
   
 
@@ -841,23 +228,17 @@
       
       <span class="article-date">
   <i class="fa fa-date"></i>
-  <time class="dt-published" datetime="2019-09-20T08:19:26.000Z" itemprop="datePublished">2019年09月20日</time>
+  <time class="dt-published" datetime="2020-11-18T02:22:01.000Z" itemprop="datePublished">2020年11月18日</time>
 </span>
       
   <div class="article-category">
     <i class="fa fa-classify"></i>
-    <a class="article-category-link" href="/categories/Redis/">Redis</a>
+    <a class="article-category-link" href="/categories/shell/">shell编程</a>
   </div>
 
-      <span class="article-views">
-  <i class="fa fa-views"></i>
-  <i id="busuanzi_container_page_pv">
-      <i id="busuanzi_value_page_pv"></i>
-  </i>
-</span>
-
       
-<a href="/article/20190920.html#comments" class="article-comment-link">
+      
+<a href="/article/20201118.html#comments" class="article-comment-link">
   
   <i class="fa fa-commt"></i>
   留言
@@ -867,16 +248,294 @@
     </div>
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <p>Redis本质上是一个Key-Value类型的<strong>内存数据库</strong>，整个数据库统统加载在内存当中进行操作，定期通过异步操作把数据库数据flush到硬盘上进行保存。因为是纯内存操作，Redis的性能非常出色，每秒可以处理超过10万次读写操作，是已知性能最快的Key-Value DB。
+        <h3 id="1-文件查找命令"><a href="#1-文件查找命令" class="headerlink" title="1. 文件查找命令"></a>1. 文件查找命令</h3><h4 id="1-1-find命令"><a href="#1-1-find命令" class="headerlink" title="1.1 find命令"></a>1.1 find命令</h4><p>语法格式：<code>find 搜索路径 [选项] 搜索内容</code></p>
       
     </div>
     <footer class="article-footer">
       
         
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li></ul>
 
         <p class="article-more-link">
-          <a href="/article/20190920.html#more">Read More</a>
+          <a href="/article/20201118.html#more">Read More</a>
+        </p>
+      
+      
+      
+    </footer>
+  </div>
+</article>
+
+
+  <article id="post-shell编程入门（三）函数的用法" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/article/20201117.html">shell编程入门（三）函数的用法</a>
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2020-11-17T04:22:01.000Z" itemprop="datePublished">2020年11月17日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/shell/">shell编程</a>
+  </div>
+
+      
+      
+<a href="/article/20201117.html#comments" class="article-comment-link">
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="1-Shell-函数定义"><a href="#1-Shell-函数定义" class="headerlink" title="1. Shell 函数定义"></a>1. Shell 函数定义</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function name() &#123;</span><br><span class="line">    # 函数要执行的代码</span><br><span class="line">    [return value]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>函数的简化写法可以省略<code>function</code>或<code>()</code>之一，不过还是推荐标准写法，才能做到做到“见名知意”。</p>
+      
+    </div>
+    <footer class="article-footer">
+      
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li></ul>
+
+        <p class="article-more-link">
+          <a href="/article/20201117.html#more">Read More</a>
+        </p>
+      
+      
+      
+    </footer>
+  </div>
+</article>
+
+
+  <article id="post-shell编程入门（二）变量的用法与数学运算" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/article/20201116.html">shell编程入门（二）变量的用法与数学运算</a>
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2020-11-16T02:32:01.000Z" itemprop="datePublished">2020年11月16日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/shell/">shell编程</a>
+  </div>
+
+      
+      
+<a href="/article/20201116.html#comments" class="article-comment-link">
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="1-变量替换"><a href="#1-变量替换" class="headerlink" title="1. 变量替换"></a>1. 变量替换</h3><table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>$&#123;变量#匹配规则&#125;</code></td>
+<td>从变量<strong>开头</strong>进行规则匹配，将符合<strong>最短</strong>的数据删除</td>
+</tr>
+<tr>
+<td><code>$&#123;变量##匹配规则&#125;</code></td>
+<td>从变量<strong>开头</strong>进行规则匹配，将符合<strong>最长</strong>的数据删除【贪婪模式】</td>
+</tr>
+<tr>
+<td><code>$&#123;变量%匹配规则&#125;</code></td>
+<td>从变量<strong>尾部</strong>进行规则匹配，将符合<strong>最短</strong>的数据删除</td>
+</tr>
+<tr>
+<td><code>$&#123;变量%%匹配规则&#125;</code></td>
+<td>从变量<strong>尾部</strong>进行规则匹配，将符合<strong>最长</strong>的数据删除【贪婪模式】</td>
+</tr>
+<tr>
+<td><code>$&#123;变量/旧字符串/新字符串&#125;</code></td>
+<td>变量内容符合旧字符串，则<strong>第一个</strong>旧字符串会被新字符串取代</td>
+</tr>
+<tr>
+<td><code>$&#123;变量//旧字符串/新字符串&#125;</code></td>
+<td>变量内容符合旧字符串，则<strong>全部的</strong>旧字符串会被新字符串取代</td>
+</tr>
+</tbody></table>
+      
+    </div>
+    <footer class="article-footer">
+      
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li></ul>
+
+        <p class="article-more-link">
+          <a href="/article/20201116.html#more">Read More</a>
+        </p>
+      
+      
+      
+    </footer>
+  </div>
+</article>
+
+
+  <article id="post-shell编程入门（一）初识Shell编程" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/article/20201115.html">shell编程入门（一）初识Shell编程</a>
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2020-11-15T01:16:56.000Z" itemprop="datePublished">2020年11月15日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/shell/">shell编程</a>
+  </div>
+
+      
+      
+<a href="/article/20201115.html#comments" class="article-comment-link">
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="1-Shell概述"><a href="#1-Shell概述" class="headerlink" title="1. Shell概述"></a>1. Shell概述</h3><ol>
+<li>Shell简介<ul>
+<li>shell是操作系统提供给我们用户来访问系统资源的一个<strong>接口</strong>。</li>
+<li>shell同时还是一个Linux下的<strong>命令行解释器</strong>，类似Windows下的cmd。</li>
+<li>shell 同时还是解释型的脚本语言：运行时翻译，执行一条语句翻译一条，每次执行程序都需要进行解释。</li>
+</ul>
+</li>
+<li>Shell的发展<ul>
+<li>shell有多个版本：Bourne Shell，C Shell，Korn Shell，Bash Shell。现在广泛使用的是 Bash Shell，也就是Linux中默认内嵌的Shell。</li>
+</ul>
+</li>
+<li>Shell脚本<ul>
+<li><code>Shell脚本</code>(shell script)，是一种为Shell编写的脚本程序。
+      
+    </div>
+    <footer class="article-footer">
+      
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li></ul>
+
+        <p class="article-more-link">
+          <a href="/article/20201115.html#more">Read More</a>
+        </p>
+      
+      
+      
+    </footer>
+  </div>
+</article>
+
+
+  <article id="post-Linux常用命令整理" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/article/20201114.html">Linux常用命令整理</a>
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2020-11-14T03:16:56.000Z" itemprop="datePublished">2020年11月14日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/linux-learn/">Linux入门</a>
+  </div>
+
+      
+      
+<a href="/article/20201114.html#comments" class="article-comment-link">
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="1-常用基础命令"><a href="#1-常用基础命令" class="headerlink" title="1. 常用基础命令"></a>1. 常用基础命令</h3><ol>
+<li><p>文件管理</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ls          # 显示指定工作目录下的内容及属性信息</span><br><span class="line">cp          # 复制文件或目录</span><br><span class="line">mkdir       # 创建目录</span><br><span class="line">mv          # 移动或改名文件</span><br><span class="line">pwd         # 显示当前路径</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li></ul>
+
+        <p class="article-more-link">
+          <a href="/article/20201114.html#more">Read More</a>
         </p>
       
       
@@ -889,7 +548,7 @@
 
     <nav id="page-nav">
 
-<a class="extend prev" rel="prev" href="/page/2/">上一页</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/4/">下一页</a>
+<a class="extend prev" rel="prev" href="/page/2/">上一页</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="extend next" rel="next" href="/page/4/">下一页</a>
 </nav>
 
 
@@ -904,23 +563,23 @@
       <ul>
         
           <li>
-            <a href="/article/20200211.html">【环境配置】Redis与MySQL多实例配置</a>
+            <a href="/article/20210102.html">Nginx常用配置详解</a>
           </li>
         
           <li>
-            <a href="/article/20200207.html">【安全认证】基于Shiro前后端分离的认证与授权(三.前端篇)</a>
+            <a href="/article/20201225.html">使用Nexus搭建Maven私服（CentOS 8）</a>
           </li>
         
           <li>
-            <a href="/article/20200121.html">【安全认证】基于Shiro前后端分离的认证与授权(二.授权篇)</a>
+            <a href="/article/20201222.html">Centos 8 私人Git服务器搭建(Gogs)</a>
           </li>
         
           <li>
-            <a href="/article/20200118.html">【安全认证】基于Shiro前后端分离的认证与授权(一.认证篇)</a>
+            <a href="/article/20201221.html">Tomcat9安装及多实例多应用配置(CentOS 8)</a>
           </li>
         
           <li>
-            <a href="/article/20191222.html">【安全认证】Shiro安全框架入门</a>
+            <a href="/article/20201218.html">CentOS 8 安装和配置 NFS 服务器</a>
           </li>
         
       </ul>
@@ -933,7 +592,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/BlueLake/" style="font-size: 11.11px;">BlueLake</a> <a href="/tags/ElasticSearch/" style="font-size: 13.33px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 13.33px;">ElasticStack</a> <a href="/tags/Java/" style="font-size: 18.89px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Kibana/" style="font-size: 13.33px;">Kibana</a> <a href="/tags/LogStash/" style="font-size: 13.33px;">LogStash</a> <a href="/tags/Redis/" style="font-size: 12.22px;">Redis</a> <a href="/tags/Spring/" style="font-size: 17.78px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 12.22px;">SpringBoot</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 13.33px;">hexo</a> <a href="/tags/java/" style="font-size: 16.67px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/sublime/" style="font-size: 10px;">sublime</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/ssafe/" style="font-size: 14.44px;">安全认证</a> <a href="/tags/tool/" style="font-size: 11.11px;">工具</a> <a href="/tags/concurrent/" style="font-size: 13.33px;">并发编程</a> <a href="/tags/open-source/" style="font-size: 10px;">开源</a> <a href="/tags/db/" style="font-size: 15.56px;">数据库</a> <a href="/tags/other/" style="font-size: 10px;">杂谈</a> <a href="/tags/env/" style="font-size: 11.11px;">环境配置</a>
+      <a href="/tags/BlueLake/" style="font-size: 11px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 18px;">CentOS</a> <a href="/tags/Docker/" style="font-size: 11px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12px;">ElasticStack</a> <a href="/tags/FastDFS/" style="font-size: 11px;">FastDFS</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/Java/" style="font-size: 18px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 19px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 11px;">Nginx</a> <a href="/tags/Redis/" style="font-size: 12px;">Redis</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Shell/" style="font-size: 14px;">Shell</a> <a href="/tags/Spring/" style="font-size: 17px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 12px;">SpringBoot</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 12px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/sublime/" style="font-size: 10px;">sublime</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/ssafe/" style="font-size: 13px;">安全认证</a> <a href="/tags/tool/" style="font-size: 11px;">工具</a> <a href="/tags/concurrent/" style="font-size: 12px;">并发编程</a> <a href="/tags/open-source/" style="font-size: 10px;">开源</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/other/" style="font-size: 10px;">杂谈</a> <a href="/tags/env/" style="font-size: 11px;">环境配置</a>
     </div>
   </div>
 
@@ -942,7 +601,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客折腾</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">Java知识梳理</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/other/">杂谈</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">2</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/docker-learn/">Docker入门</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客折腾</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">Java知识梳理</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jenkins-learn/">Jenkins入门</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux-learn/">Linux入门</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/nginx/">Nginx配置</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/shell/">shell编程</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/other/">杂谈</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -952,7 +611,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年02月</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年10月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015年12月</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">25</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年10月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015年12月</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -962,7 +621,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sublime/" rel="tag">sublime</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssafe/" rel="tag">安全认证</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tool/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/open-source/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/other/" rel="tag">杂谈</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">2</span></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat/" rel="tag">Tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sublime/" rel="tag">sublime</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssafe/" rel="tag">安全认证</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tool/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/open-source/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/other/" rel="tag">杂谈</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">2</span></li></ul>
     </div>
   </div>
 

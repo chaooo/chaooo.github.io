@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>shell编程入门（二）变量的用法与数学运算 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-shell编程入门（二）变量的用法与数学运算" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      shell编程入门（二）变量的用法与数学运算
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2020-11-16T02:32:01.000Z" itemprop="datePublished">2020年11月16日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/shell/">shell编程</a>
+  </div>
+
+      
+        <span class="article-views">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/article/20201116.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3><span id="1-变量替换">1. 变量替换</span></h3><table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>$&#123;变量#匹配规则&#125;</code></td>
+<td>从变量<strong>开头</strong>进行规则匹配，将符合<strong>最短</strong>的数据删除</td>
+</tr>
+<tr>
+<td><code>$&#123;变量##匹配规则&#125;</code></td>
+<td>从变量<strong>开头</strong>进行规则匹配，将符合<strong>最长</strong>的数据删除【贪婪模式】</td>
+</tr>
+<tr>
+<td><code>$&#123;变量%匹配规则&#125;</code></td>
+<td>从变量<strong>尾部</strong>进行规则匹配，将符合<strong>最短</strong>的数据删除</td>
+</tr>
+<tr>
+<td><code>$&#123;变量%%匹配规则&#125;</code></td>
+<td>从变量<strong>尾部</strong>进行规则匹配，将符合<strong>最长</strong>的数据删除【贪婪模式】</td>
+</tr>
+<tr>
+<td><code>$&#123;变量/旧字符串/新字符串&#125;</code></td>
+<td>变量内容符合旧字符串，则<strong>第一个</strong>旧字符串会被新字符串取代</td>
+</tr>
+<tr>
+<td><code>$&#123;变量//旧字符串/新字符串&#125;</code></td>
+<td>变量内容符合旧字符串，则<strong>全部的</strong>旧字符串会被新字符串取代</td>
+</tr>
+</tbody></table>
+<a id="more"></a>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">[chao@localhost ~]$ var1=&quot;I love you, Do you love me&quot;</span><br><span class="line">[chao@localhost ~]$ echo $var1</span><br><span class="line">I love you, Do you love me</span><br><span class="line"><span class="meta">#</span><span class="bash"> 头部匹配删除</span></span><br><span class="line">[chao@localhost ~]$ var2=$&#123;var1#*ov&#125;</span><br><span class="line">[chao@localhost ~]$ echo $var2</span><br><span class="line">e you, Do you love me</span><br><span class="line">[chao@localhost ~]$ var3=$&#123;var1##*ov&#125;  # 贪婪模式</span><br><span class="line">[chao@localhost ~]$ echo $var3</span><br><span class="line">e me</span><br><span class="line"><span class="meta">#</span><span class="bash"> 尾部匹配删除</span></span><br><span class="line">[chao@localhost ~]$ var4=$&#123;var1%ov*&#125;</span><br><span class="line">[chao@localhost ~]$ echo $var4</span><br><span class="line">I love you, Do you l</span><br><span class="line">[chao@localhost ~]$ var5=$&#123;var1%%ov*&#125;  # 贪婪模式</span><br><span class="line">[chao@localhost ~]$ echo $var5</span><br><span class="line">I l</span><br><span class="line"><span class="meta">#</span><span class="bash"> 替换</span></span><br><span class="line">[chao@localhost ~]$ var6=$&#123;var1/love/hate&#125;</span><br><span class="line">[chao@localhost ~]$ echo $var6</span><br><span class="line">I hate you, Do you love me</span><br><span class="line">[chao@localhost ~]$ var7=$&#123;var1//love/hate&#125;</span><br><span class="line">[chao@localhost ~]$ echo $var7</span><br><span class="line">I hate you, Do you hate me</span><br></pre></td></tr></table></figure>
+
+<h3><span id="2-字符串相关操作">2. 字符串相关操作</span></h3><ol>
+<li>计算字符串的长度</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>$&#123;#变量&#125;</code></td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>expr length &quot;$变量&quot;</code></td>
+<td>若字符串变量有空格，则必须加双引号</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[chao@localhost ~]$ echo $&#123;#var1&#125;</span><br><span class="line">21</span><br><span class="line">[chao@localhost ~]$ echo `expr length &quot;$var1&quot;`</span><br><span class="line">21</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>字符串其他操作</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>expr index $变量 $子串(变量或值)</code></td>
+<td>获取字符索引的位置，从字串的第一个字符开始匹配，只要有一个字符匹配到了就返回对应的坐标</td>
+</tr>
+<tr>
+<td><code>expr match $变量 $子串</code></td>
+<td>计算子串长度，从头开始匹配，若从头匹配不上，从中间任何一个位置匹配返回都是0，也就是未匹配到</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[chao@localhost ~]$ echo `expr index &quot;$var1&quot; love`</span><br><span class="line">3</span><br><span class="line">[chao@localhost ~]$ echo `expr match &quot;$var1&quot; &quot;I love&quot;`</span><br><span class="line">6</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>抽取子串</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>$&#123;变量:下标&#125;</code></td>
+<td>从变量中的指定下标开始</td>
+</tr>
+<tr>
+<td><code>$&#123;变量:下标:length&#125;</code></td>
+<td>从指定下标开始，匹配长度为length</td>
+</tr>
+<tr>
+<td><code>$&#123;变量: -下标&#125;</code></td>
+<td>从右边指定下标开始匹配 注意冒号和负号中间有空格</td>
+</tr>
+<tr>
+<td><code>$&#123;变量:(下标)&#125;</code></td>
+<td>从右边指定下标开始匹配</td>
+</tr>
+<tr>
+<td><code>expr substr $变量 $下标 $length</code></td>
+<td>从指定下标开始，匹配长度为length</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[chao@localhost ~]$ echo $&#123;var1:10&#125;</span><br><span class="line">you love me</span><br><span class="line">[chao@localhost ~]$ echo $&#123;var1:10:5&#125;</span><br><span class="line">you l</span><br><span class="line">[chao@localhost ~]$ echo $&#123;var1: -4&#125;</span><br><span class="line">e me</span><br><span class="line">[chao@localhost ~]$ echo $&#123;var1:(-4)&#125;</span><br><span class="line">e me</span><br><span class="line">[chao@localhost ~]$ echo $&#123;var1:(-4):2&#125;</span><br><span class="line">e</span><br><span class="line">[chao@localhost ~]$ echo `expr substr &quot;$var1&quot; 10 5`</span><br><span class="line">you</span><br></pre></td></tr></table></figure>
+
+<h3><span id="3-命令替换">3. 命令替换</span></h3><p>Shell命令替换是指将命令的输出结果赋值给某个变量，有两种方式：一种是反引号<code>`</code>，一种是$()。</p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>变量=`命令`</code></td>
+<td>可以只有一个命令，也可以有多个命令，多个命令之间以分号;分隔</td>
+</tr>
+<tr>
+<td><code>变量=$(命令)</code></td>
+<td>同上</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 根据系统时间计算今年或明年</span></span><br><span class="line">[chao@localhost ~]$ echo &quot;This is $(date +%Y) year&quot;</span><br><span class="line">This is 2020 year</span><br><span class="line">[chao@localhost ~]$ echo &quot;This is $(($(date +%Y) + 1)) year&quot;</span><br><span class="line">This is 2021 year</span><br><span class="line"><span class="meta">#</span><span class="bash"> 注意：$()表示命令替换，仅有()表示计算 加减乘除</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 判定nginx进程是否存在，若不存在则自动拉起该进程</span></span><br><span class="line">ps -ef | grep nginx | grep -v grep | wc -l</span><br><span class="line"><span class="meta">#</span><span class="bash"> 对应脚本</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> !/bin/bash</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="bash">nginx_process_num=$(ps -ef | grep nginx | grep -v grep | wc -l)</span></span><br><span class="line">if [$nginx_process_num -eq 0 ];then</span><br><span class="line">	systemctl start nginx</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<h3><span id="4-设置变量类型">4. 设置变量类型</span></h3><p>declare 和 typeset 都是 Shell 内建命令，它们的用法相同，都用来设置变量的属性。不过 typeset 已经被弃用了，建议使用 declare 代替。<br>declare 命令的用法：<code>declare [+/-] [选项] [变量名=变量值]</code>，其中，<code>-</code>表示设置属性，<code>+</code>表示取消属性，其具体含义如下表：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-f [name]</td>
+<td>列出之前由用户在脚本中定义的函数名称和函数体。</td>
+</tr>
+<tr>
+<td>-F [name]</td>
+<td>仅列出自定义函数名称。</td>
+</tr>
+<tr>
+<td>-g name</td>
+<td>在 Shell 函数内部创建全局变量。</td>
+</tr>
+<tr>
+<td>-p [name]</td>
+<td>显示指定变量的属性和值。</td>
+</tr>
+<tr>
+<td>-a name</td>
+<td>声明变量为普通数组。</td>
+</tr>
+<tr>
+<td>-A name</td>
+<td>声明变量为关联数组（支持索引下标为字符串）。</td>
+</tr>
+<tr>
+<td>-i name</td>
+<td>将变量定义为整数型。</td>
+</tr>
+<tr>
+<td>-r name[=value]</td>
+<td>将变量定义为只读（不可修改和删除），等价于 readonly name。</td>
+</tr>
+<tr>
+<td>-x name[=value]</td>
+<td>将变量设置为环境变量，等价于 export name[=value]。</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">declare</span> -r 将变量设为只读，再赋值就会报错</span></span><br><span class="line">[chao@localhost ~]$ declare -r var=&quot;hello shell&quot;</span><br><span class="line">[chao@localhost ~]$ var=&quot;hello world&quot;</span><br><span class="line">-bash: var: 只读变量</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">declare</span> -a 将变量定义为数组</span></span><br><span class="line">[chao@localhost ~]$ declare -a array</span><br><span class="line">[chao@localhost ~]$ array=(&quot;mike&quot; &quot;lilei&quot; &quot;hanmeimei&quot;)</span><br><span class="line">[chao@localhost ~]$ echo $&#123;array[0]&#125;</span><br><span class="line">mike</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 分片访问</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 从下标为 0 的位置开始，向后取 2个元素，忽略中间的空元素，直到取够 2个元素。如果元素不足2个，则输出后面的所有元素即可。</span></span><br><span class="line">[chao@localhost ~]$ echo $&#123;array[@]:0:2&#125;</span><br><span class="line">mike lilei</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 内容替换</span></span><br><span class="line">[chao@localhost ~]$ array1=$&#123;array[@]/ke/KE&#125;</span><br><span class="line">[chao@localhost ~]$ echo $array1</span><br><span class="line">miKE lilei hanmeimei</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 数组遍历</span></span><br><span class="line">[chao@localhost ~]$ </span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="keyword">for</span> arr <span class="keyword">in</span> <span class="variable">$&#123;array[@]&#125;</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="keyword">do</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">echo</span> <span class="variable">$arr</span></span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="keyword">done</span></span></span><br><span class="line">mike</span><br><span class="line">lilei</span><br><span class="line">hanmeimei</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 给数组某个下标赋值</span></span><br><span class="line">[chao@localhost ~]$ array[2]=&quot;zhangsan&quot;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除元素</span></span><br><span class="line">[chao@localhost ~]$ unset array[1]</span><br><span class="line"><span class="meta">#</span><span class="bash"> 清空整个数组</span></span><br><span class="line">[chao@localhost ~]$ unset array</span><br></pre></td></tr></table></figure>
+
+<h3><span id="5-数学运算">5. 数学运算</span></h3><table>
+<thead>
+<tr>
+<th>算术运算符</th>
+<th>说明/含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>+、-</td>
+<td>加法（或正号）、减法（或负号）</td>
+</tr>
+<tr>
+<td>*、/、%</td>
+<td>乘法、除法、取余（取模）</td>
+</tr>
+<tr>
+<td>**</td>
+<td>幂运算</td>
+</tr>
+<tr>
+<td>++、–</td>
+<td>自增和自减，可以放在变量的前面也可以放在变量的后</td>
+</tr>
+<tr>
+<td>!、&amp;&amp;、&#124;&#124;</td>
+<td>逻辑非（取反）、逻辑与（and）、逻辑或（or）</td>
+</tr>
+<tr>
+<td>&lt;、&lt;=、&gt;、&gt;=</td>
+<td>比较符号（小于、小于等于、大于、大于等于）</td>
+</tr>
+<tr>
+<td>==、!=、=</td>
+<td>比较符号（相等、不相等；对于字符串，= 也可以表示相当于）</td>
+</tr>
+<tr>
+<td>&lt;&lt;、&gt;&gt;</td>
+<td>向左移位、向右移位</td>
+</tr>
+<tr>
+<td>~、&#124;、 &amp;、^</td>
+<td>按位取反、按位或、按位与、按位异或</td>
+</tr>
+<tr>
+<td>=、+=、-=、*=、/=、%=</td>
+<td>赋值运算符，例如 a+=1 相当于 a=a+1，a-=1 相当于 a=a-1</td>
+</tr>
+</tbody></table>
+<p>在Shell中，如果不特别指明，每一个变量的值都是字符串，无论你给变量赋值时有没有使用引号，值都会以字符串的形式存储。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[chao@localhost ~]$ echo 2+8</span><br><span class="line">2+8</span><br><span class="line">[chao@localhost ~]$ a=23</span><br><span class="line">[chao@localhost ~]$ echo $a + 55</span><br><span class="line">23 + 55</span><br></pre></td></tr></table></figure>
+<h4><span id="51-数学运算命令">5.1 数学运算命令</span></h4><p>Shell中常用的六种数学计算方式:</p>
+<table>
+<thead>
+<tr>
+<th>运算操作符/运算命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>(( ))</code></td>
+<td>用于整数运算，效率很高，推荐使用。</td>
+</tr>
+<tr>
+<td><code>let</code></td>
+<td>用于整数运算，和 (()) 类似。</td>
+</tr>
+<tr>
+<td><code>$[]</code></td>
+<td>用于整数运算，不如 (()) 灵活。</td>
+</tr>
+<tr>
+<td><code>expr</code></td>
+<td>可用于整数运算，也可以处理字符串。</td>
+</tr>
+<tr>
+<td><code>bc</code></td>
+<td>Linux下的一个计算器程序，可以处理整数和小数。Shell 本身只支持整数运算，想计算小数就得使用 bc 这个外部的计算器。</td>
+</tr>
+<tr>
+<td><code>declare -i</code></td>
+<td>将变量定义为整数，然后再进行数学运算时就不会被当做字符串了。功能有限，仅支持最基本的数学运算（加减乘除和取余），不支持逻辑运算、自增自减等，所以在实际开发中很少使用。</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> expr 计算，注意&gt;,*等运算需要转义</span></span><br><span class="line">[chao@localhost ~]$ num1=305</span><br><span class="line">[chao@localhost ~]$ num2=50</span><br><span class="line">[chao@localhost ~]$ expr $num1 + $num2</span><br><span class="line">355</span><br><span class="line">[chao@localhost ~]$ expr $num1 \* $num2</span><br><span class="line">15250</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 判断一个变量是一个整数</span></span><br><span class="line">[chao@localhost ~]$ expr $num1 + 1</span><br><span class="line">306</span><br><span class="line">[chao@localhost ~]$ expr $num3 + 1</span><br><span class="line">expr: 非整数参数</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>bc</code>是bash内建的运算器，支持浮点数运算，内建变量scale可以设置精确度(默认为0)，操作符<code>^</code>用于指数运算。</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[chao@localhost ~]$ echo &quot;3*8&quot;|bc</span><br><span class="line">24</span><br><span class="line">[c.biancheng.net]$ echo &quot;scale=4;3*8/7&quot;|bc</span><br><span class="line">3.4285</span><br><span class="line"><span class="meta">#</span><span class="bash">十六进制转十进制</span></span><br><span class="line">[chao@localhost ~]$ m=1E</span><br><span class="line">[chao@localhost ~]$ n=$(echo &quot;obase=10;ibase=16;$m&quot;|bc)</span><br><span class="line">[chao@localhost ~]$ echo $n</span><br><span class="line">30</span><br></pre></td></tr></table></figure>
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">1. 变量替换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">2. 字符串相关操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">3. 命令替换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">4. 设置变量类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">5. 数学运算</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-text">5.1 数学运算命令</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/article/20201116.html">http://chaooo.github.io/article/20201116.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+    <div class="article-reward">
+        <a id="reward-btn" href="javascript:;">打赏</a>
+        <div id="reward-content">
+            <h6 class="reward-tit">“感谢你的支持，我会继续努力！”</h6>
+            <div>
+                <div class="reward-code">
+                    <img class="type-code" src="/css/images/wechat.jpg" alt="微信支付">
+                    <img class="er-code" src="/css/images/wechat-pay.jpg" alt="微信收款码">
+                </div>
+                <div class="reward-code">
+                    <img class="type-code" src="/css/images/alipay.jpg" alt="支付宝支付">
+                    <img class="er-code" src="/css/images/alipay-pay.jpg" alt="支付宝收款码">
+                </div>
+            </div>
+            <p class="reward-desc">扫码打赏，感谢支持</p>
+        </div>
+    </div>
+
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/article/20201117.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          shell编程入门（三）函数的用法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/article/20201115.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">shell编程入门（一）初识Shell编程</div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/article/20210102.html">Nginx常用配置详解</a>
+          </li>
+        
+          <li>
+            <a href="/article/20201225.html">使用Nexus搭建Maven私服（CentOS 8）</a>
+          </li>
+        
+          <li>
+            <a href="/article/20201222.html">Centos 8 私人Git服务器搭建(Gogs)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20201221.html">Tomcat9安装及多实例多应用配置(CentOS 8)</a>
+          </li>
+        
+          <li>
+            <a href="/article/20201218.html">CentOS 8 安装和配置 NFS 服务器</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 11px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 18px;">CentOS</a> <a href="/tags/Docker/" style="font-size: 11px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12px;">ElasticStack</a> <a href="/tags/FastDFS/" style="font-size: 11px;">FastDFS</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/Java/" style="font-size: 18px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 19px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 11px;">Nginx</a> <a href="/tags/Redis/" style="font-size: 12px;">Redis</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Shell/" style="font-size: 14px;">Shell</a> <a href="/tags/Spring/" style="font-size: 17px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 12px;">SpringBoot</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 12px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/sublime/" style="font-size: 10px;">sublime</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/ssafe/" style="font-size: 13px;">安全认证</a> <a href="/tags/tool/" style="font-size: 11px;">工具</a> <a href="/tags/concurrent/" style="font-size: 12px;">并发编程</a> <a href="/tags/open-source/" style="font-size: 10px;">开源</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/other/" style="font-size: 10px;">杂谈</a> <a href="/tags/env/" style="font-size: 11px;">环境配置</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/docker-learn/">Docker入门</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客折腾</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">Java知识梳理</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jenkins-learn/">Jenkins入门</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux-learn/">Linux入门</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/nginx/">Nginx配置</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/shell/">shell编程</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/other/">杂谈</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">25</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年10月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015年12月</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat/" rel="tag">Tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sublime/" rel="tag">sublime</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssafe/" rel="tag">安全认证</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tool/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/open-source/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/other/" rel="tag">杂谈</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-link"></i> 友情链接</h3>
+    <div class="widget">
+      <ul>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://github.com/chaooo">chaooo</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake">BlueLake主题</a>
+        </li>
+      
+        <li>
+          <a target="_blank" rel="noopener" href="http://weibo.com/zhengchaooo">秋过冬漫长</a>
+        </li>
+      
+      </ul>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p>
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2021 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        
+            <span>Count by <a href="http://busuanzi.ibruce.info/" target="_blank">busuanzi.</a></span>
+        
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?cd92a502fdfe53acccbd238129f12e5c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'de8b7f88cfa9812e15f93e986181d1c2194ba6e8',
+      repo: 'BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>
