@@ -7,6 +7,12 @@
   <title>秋过冬漫长</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
     <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
   
   
@@ -154,6 +160,7 @@
   </div>
 </article>
 
+
   <article id="post-【ElasticStack】Beats-Logstash-Elasticsearch-Kibana基础整合" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-inner">
     
@@ -220,6 +227,7 @@
     </footer>
   </div>
 </article>
+
 
   <article id="post-【ElasticStack】ElasticSearch聚合分析与数据建模" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-inner">
@@ -295,6 +303,7 @@
   </div>
 </article>
 
+
   <article id="post-【ElasticStack】ElasticSearch分布式特性与Search机制" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-inner">
     
@@ -366,6 +375,7 @@
   </div>
 </article>
 
+
   <article id="post-【ElasticStack】Elasticsearch入门" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-inner">
     
@@ -431,6 +441,7 @@
     </footer>
   </div>
 </article>
+
 
   <article id="post-【并发编程】NIO、Netty及websocket实现" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-inner">
@@ -675,7 +686,7 @@
 <blockquote>
 <p>resources/application.yml：基础配置信息，包括了；应用端口、netty服务端端口等</p>
 </blockquote>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8080</span></span><br><span class="line"></span><br><span class="line"><span class="attr">netty:</span></span><br><span class="line">  <span class="attr">host:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">7397</span></span><br><span class="line"></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">thymeleaf:</span></span><br><span class="line">    <span class="attr">mode:</span> <span class="string">HTML5</span></span><br><span class="line">    <span class="attr">encoding:</span> <span class="string">UTF-8</span></span><br><span class="line">    <span class="attr">content-type:</span> <span class="string">text/html</span></span><br><span class="line">    <span class="attr">cache:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">server:</span><br><span class="line">  port: 8080</span><br><span class="line"></span><br><span class="line">netty:</span><br><span class="line">  host: 127.0.0.1</span><br><span class="line">  port: 7397</span><br><span class="line"></span><br><span class="line">spring:</span><br><span class="line">  thymeleaf:</span><br><span class="line">    mode: HTML5</span><br><span class="line">    encoding: UTF-8</span><br><span class="line">    content-type: text&#x2F;html</span><br><span class="line">    cache: false</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>server/MyChannelInitializer.java：websocket处理协议</p>
 </blockquote>
@@ -766,6 +777,7 @@
     </footer>
   </div>
 </article>
+
 
 
     <nav id="page-nav">
@@ -926,6 +938,17 @@
 
 
 
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?cd92a502fdfe53acccbd238129f12e5c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
 
   
 <script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -962,7 +985,6 @@
     });
     gitalk.render('comments');
   </script>
-
 
 
 

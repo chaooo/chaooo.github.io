@@ -7,6 +7,12 @@
   <title>【SpringBoot】Boot 入门 | 秋过冬漫长</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
     <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
   
   
@@ -215,7 +221,7 @@
 <h4><span id="23-springboot配置文件">2.3 SpringBoot配置文件</span></h4><p>application.properties</p>
 <figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">spring.datasource.username</span>=<span class="string">root</span></span><br><span class="line"><span class="meta">spring.datasource.password</span>=<span class="string">123456</span></span><br><span class="line"><span class="meta">server.port</span>=<span class="string">8888</span></span><br></pre></td></tr></table></figure>
 <p>application.yml</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line"> <span class="attr">datasource:</span></span><br><span class="line">  <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">  <span class="attr">password:</span> <span class="number">123456</span></span><br><span class="line"><span class="attr">server:</span></span><br><span class="line"> <span class="attr">port:</span> <span class="number">8888</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line"> datasource:</span><br><span class="line">  username: root</span><br><span class="line">  password: 123456</span><br><span class="line">server:</span><br><span class="line"> port: 8888</span><br></pre></td></tr></table></figure>
 
 <h4><span id="24-springboot启动类">2.4 SpringBoot启动类</span></h4><p>定义启动类，通过main方法启动</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Xxxx</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        SpringApplication.run(Xxxx.class);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -406,7 +412,8 @@
       
     </footer>
   </div>
-</article></section>
+</article>
+</section>
         
           <aside id="sidebar">
   
@@ -558,6 +565,17 @@
 
 
 
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?cd92a502fdfe53acccbd238129f12e5c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
 
   
 <script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -594,7 +612,6 @@
     });
     gitalk.render('comments');
   </script>
-
 
 
 
