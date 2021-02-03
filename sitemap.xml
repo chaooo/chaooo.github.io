@@ -627,20 +627,6 @@
   </url>
   
   <url>
-    <loc>http://chaooo.github.io/tags/Gogs/</loc>
-    <lastmod>2021-02-03</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://chaooo.github.io/tags/Git/</loc>
-    <lastmod>2021-02-03</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>http://chaooo.github.io/tags/MySQL/</loc>
     <lastmod>2021-02-03</lastmod>
     <changefreq>daily</changefreq>
@@ -669,6 +655,27 @@
   </url>
   
   <url>
+    <loc>http://chaooo.github.io/tags/Gogs/</loc>
+    <lastmod>2021-02-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://chaooo.github.io/tags/Git/</loc>
+    <lastmod>2021-02-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://chaooo.github.io/tags/FastDFS/</loc>
+    <lastmod>2021-02-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://chaooo.github.io/tags/YApi/</loc>
     <lastmod>2021-02-03</lastmod>
     <changefreq>daily</changefreq>
@@ -677,13 +684,6 @@
   
   <url>
     <loc>http://chaooo.github.io/tags/Docker/</loc>
-    <lastmod>2021-02-03</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://chaooo.github.io/tags/FastDFS/</loc>
     <lastmod>2021-02-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -902,14 +902,14 @@
   </url>
   
   <url>
-    <loc>http://chaooo.github.io/categories/shell/</loc>
+    <loc>http://chaooo.github.io/categories/hexo/</loc>
     <lastmod>2021-02-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://chaooo.github.io/categories/hexo/</loc>
+    <loc>http://chaooo.github.io/categories/shell/</loc>
     <lastmod>2021-02-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -930,14 +930,14 @@
   </url>
   
   <url>
-    <loc>http://chaooo.github.io/categories/Redis/</loc>
+    <loc>http://chaooo.github.io/categories/java/</loc>
     <lastmod>2021-02-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://chaooo.github.io/categories/java/</loc>
+    <loc>http://chaooo.github.io/categories/Redis/</loc>
     <lastmod>2021-02-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
