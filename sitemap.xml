@@ -592,13 +592,6 @@
   </url>
   
   <url>
-    <loc>http://chaooo.github.io/tags/env/</loc>
-    <lastmod>2021-02-03</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>http://chaooo.github.io/tags/other/</loc>
     <lastmod>2021-02-03</lastmod>
     <changefreq>daily</changefreq>
@@ -607,6 +600,13 @@
   
   <url>
     <loc>http://chaooo.github.io/tags/open-source/</loc>
+    <lastmod>2021-02-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://chaooo.github.io/tags/env/</loc>
     <lastmod>2021-02-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
