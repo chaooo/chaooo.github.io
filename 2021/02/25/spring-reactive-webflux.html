@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>「Spring Reactive Stack」Spring WebFlux响应式Web框架入门 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-spring-reactive-webflux" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      「Spring Reactive Stack」Spring WebFlux响应式Web框架入门
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2021-02-25T07:50:42.000Z" itemprop="datePublished">2021年02月25日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/SpringReactive/">SpringReactive</a>
+  </div>
+
+      
+        <span class="article-views" style="display:none;">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2021/02/25/spring-reactive-webflux.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><img src="/2021/02/25/spring-reactive-webflux/up-ee8803006ea5a4169467074917d6fdd0b12.webp"></p>
+<p><code>Spring WebFlux</code>是<code>Spring Framework 5.0</code>中引入的以<code>Reactor</code>为基础的响应式编程<code>Web</code>框架。</p>
+<p><strong>WebFlux</strong> 的异步处理是基于<code>Reactor</code>实现的，是将输入流适配成<code>Mono</code>或<code>Flux</code>进行统一处理。<span id="more"></span></p>
+<h3 id="1-响应式流-Reactive-Streams"><a href="#1-响应式流-Reactive-Streams" class="headerlink" title="1. 响应式流(Reactive Streams)"></a>1. 响应式流(Reactive Streams)</h3><ul>
+<li><p><strong>Reactor</strong> 是一个响应式流，它有对应的发布者(<code>Publisher</code>)，用两个类来表示：</p>
+<ul>
+<li><code>Flux</code>(返回0-n个元素)</li>
+<li><code>Mono</code>(返回0或1个元素)</li>
+</ul>
+</li>
+<li><p><strong>Reactor</strong> 的订阅者(<code>Subscriber</code>)则是由<code>Spring</code>框架去完成。</p>
+</li>
+<li><p><strong>响应式流(Reactive Streams)</strong> 其实就是一个规范，其特点：</p>
+<ul>
+<li>无阻塞；</li>
+<li>一个数据流；</li>
+<li>可以异步执行；</li>
+<li>能够处理背压；</li>
+</ul>
+</li>
+<li><p><strong>背压(Backpressure)</strong> 可以简单理解为 消费决定生产，生产者可以根据消费压力进行动态调节生产速率的机制。</p>
+</li>
+</ul>
+<h3 id="2-发布者-Publisher"><a href="#2-发布者-Publisher" class="headerlink" title="2. 发布者(Publisher)"></a>2. 发布者(Publisher)</h3><p>由于响应流的特点，我们不能再返回一个简单的<code>POJO</code>对象来表示结果了。必须返回一个类似<code>Java</code>中的<code>Future</code>的概念，在有结果可用时通知消费者进行消费响应。</p>
+<p><code>Reactive Stream</code>规范中这种被定义为<code>Publisher</code> ，<code>Publisher</code>是一个可以提供<code>0-N</code>个序列元素的提供者，并根据其订阅者<code>Subscriber</code>的需求推送元素。一个<code>Publisher</code>可以支持多个订阅者，并可以根据订阅者的逻辑进行推送序列元素。</p>
+<p>可以通过下图Excel来理解，<code>1-9</code>行可以看作发布者<code>Publisher</code>提供的元素序列，<code>10-13</code>行的结果计算看作订阅者<code>Subscriber</code>。</p>
+<p><img src="/2021/02/25/spring-reactive-webflux/publisher.gif"></p>
+<p>响应式的一个重要特点：当没有订阅时发布者(<code>Publisher</code>)什么也不做。</p>
+<p>而<code>Flux</code>和<code>Mono</code>都是<code>Publisher</code>在<code>Reactor3</code>实现。<code>Publisher</code>提供了<code>subscribe</code>方法，允许消费者在有结果可用时进行消费。如果没有消费者<code>Publisher</code>不会做任何事情，他根据消费情况进行响应。<code>Publisher</code>可能返回零或者多个，甚至可能是无限的，为了更加清晰表示期待的结果就引入了两个实现模型<code>Mono</code>和<code>Flux</code>。</p>
+<p>在<code>WebFlux</code>中，你的方法只需返回<code>Mono或Flux</code>即可。你的代码基本也只和<code>Mono</code>或<code>Flux</code>打交道。而<code>WebFlux</code>则会实现<code>Subscriber</code> ，<code>onNext</code>时将业务开发人员编写的<code>Mono</code>或<code>Flux</code>转换为<code>HTTP Response</code>返回给客户端。</p>
+<h3 id="3-Mono和Flux的抽象模型"><a href="#3-Mono和Flux的抽象模型" class="headerlink" title="3. Mono和Flux的抽象模型"></a>3. Mono和Flux的抽象模型</h3><p>Mono和Flux都是Publisher(发布者)的实现模型。</p>
+<h4 id="3-1-Flux"><a href="#3-1-Flux" class="headerlink" title="3.1 Flux"></a>3.1 Flux</h4><p><code>Flux</code>是一个发出(<code>emit</code>)<code>0-N</code>个元素组成的异步序列的<code>Publisher&lt;T&gt;</code>,可以被<code>onComplete</code>信号或者<code>onError</code>信号所终止。<br>在响应流规范中存在三种给下游消费者调用的方法 <code>onNext</code>, <code>onComplete</code>, 和<code>onError</code>。<br>下面这张图表示了<code>Flux</code>的抽象模型：</p>
+<p><img src="/2021/02/25/spring-reactive-webflux/flux.jpg"></p>
+<h4 id="3-2-Mono"><a href="#3-2-Mono" class="headerlink" title="3.2 Mono"></a>3.2 Mono</h4><p><code>Mono</code>是一个发出(<code>emit</code>)<code>0-1</code>个元素的<code>Publisher&lt;T&gt;</code>,可以被<code>onComplete</code>信号或者<code>onError</code>信号所终止。<br>下面这张图表示了<code>Mono</code>的抽象模型(整体和<code>Flux</code>差不多,只不过这里只会发出<code>0-1</code>个元素)：</p>
+<p><img src="/2021/02/25/spring-reactive-webflux/mono.jpg"></p>
+<h3 id="4-Mono-API"><a href="#4-Mono-API" class="headerlink" title="4. Mono API"></a>4. Mono API</h3><p><code>Mono</code>和<code>Flux</code>都是实现<code>org.reactivestreams.Publisher</code>接口的抽象类。</p>
+<p><code>Mono</code>代表<code>0-1</code>个元素的发布者(<code>Publisher</code>)。</p>
+<ul>
+<li><code>Mono</code>里面有很多<code>API</code>：<ul>
+<li>**just()**：可以指定序列中包含的全部元素。创建出来的 <code>Mono</code>序列在发布这些元素之后会自动结束。</li>
+<li>**empty()**：创建一个不包含任何元素，只发布结束消息的序列。</li>
+<li>**justOrEmpty(Optional&lt;? extends T&gt; data)**：从一个<code>Optional</code>对象或可能为<code>null</code>的对象中创建<code>Mono</code>。只有<code>Optional</code>对象中包含值或对象不为<code>null</code>时，<code>Mono</code>序列才产生对应的元素。</li>
+<li>**error(Throwable error)**：创建一个只包含错误消息的序列。</li>
+<li>**never()**：创建一个不包含任何消息通知的序列。</li>
+<li>**delay(Duration duration)<strong>和</strong>delayMillis(long duration)**：创建一个<code>Mono</code>序列，在指定的延迟时间之后，产生数字 <code>0</code> 作为唯一值。</li>
+<li>**fromCallable()<strong>、</strong>fromCompletionStage()<strong>、</strong>fromFuture()<strong>、</strong>fromRunnable()<strong>和</strong>fromSupplier()**：分别从 <code>Callable</code>、<code>CompletionStage</code>、<code>CompletableFuture</code>、<code>Runnable</code>和<code>Supplier</code>中创建<code>Mono</code>。</li>
+<li>**ignoreElements(Publisher source)**：创建一个<code>Mono</code>序列，忽略作为源的<code>Publisher</code>中的所有元素，只产生结束消息。</li>
+<li>**create()**：通过<code>create()</code>方法来使用<code>MonoSink</code>来创建<code>Mono</code>。</li>
+</ul>
+</li>
+<li><code>API</code>使用案例如下所示。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MonoTest</span> &#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">mono</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 通过just直接赋值</span></span><br><span class="line">        Mono.just(<span class="string">&quot;my name is charles&quot;</span>).subscribe(log::info);</span><br><span class="line">        <span class="comment">// empty 创建空mono</span></span><br><span class="line">        Mono.empty().subscribe();</span><br><span class="line">        <span class="comment">// ustOrEmpty 只有 Optional 对象中包含值或对象不为 null 时，Mono 序列才产生对应的元素。</span></span><br><span class="line">        Mono.justOrEmpty(<span class="literal">null</span>).subscribe(System.out::println);</span><br><span class="line">        Mono.justOrEmpty(<span class="string">&quot;测试justOrEmpty&quot;</span>).subscribe(System.out::println);</span><br><span class="line">        Mono.justOrEmpty(Optional.of(<span class="string">&quot;测试justOrEmpty&quot;</span>)).subscribe(System.out::println);</span><br><span class="line">        <span class="comment">// error 创建一个只包含错误消息的序列。</span></span><br><span class="line">        Mono.error(<span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;error&quot;</span>)).subscribe(System.out::println, System.err::println);</span><br><span class="line">        <span class="comment">// never 创建一个不包含任何消息通知的序列。</span></span><br><span class="line">        Mono.never().subscribe(System.out::println);</span><br><span class="line">        <span class="comment">// 延迟生成0</span></span><br><span class="line">        Mono.delay(Duration.ofMillis(<span class="number">2</span>)).map(String::valueOf).subscribe(log::info);</span><br><span class="line">        <span class="comment">// 通过fromRunnable创建，并实现异常处理</span></span><br><span class="line">        Mono.fromRunnable(() -&gt; &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;thread run&quot;</span>);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;thread run error&quot;</span>);</span><br><span class="line">        &#125;).subscribe(System.out::println, System.err::println);</span><br><span class="line">        <span class="comment">// 通过Callable</span></span><br><span class="line">        Mono.fromCallable(() -&gt; <span class="string">&quot;callback function&quot;</span>).subscribe(log::info);</span><br><span class="line">        <span class="comment">// future</span></span><br><span class="line">        Mono.fromFuture(CompletableFuture.completedFuture(<span class="string">&quot;from future&quot;</span>)).subscribe(log::info);</span><br><span class="line">        <span class="comment">// 通过runnable</span></span><br><span class="line">        Mono&lt;Void&gt; runnableMono = Mono.fromRunnable(() -&gt; log.warn(Thread.currentThread().getName()));</span><br><span class="line">        runnableMono.subscribe();</span><br><span class="line">        <span class="comment">// 通过使用 Supplier</span></span><br><span class="line">        Mono.fromSupplier(() -&gt; <span class="keyword">new</span> <span class="title class_">Date</span>().toString()).subscribe(log::info);</span><br><span class="line">        <span class="comment">// flux中</span></span><br><span class="line">        Mono.from(Flux.just(<span class="string">&quot;from&quot;</span>, <span class="string">&quot;flux&quot;</span>)).subscribe(log::info);  <span class="comment">// 只返回flux第一个</span></span><br><span class="line">        <span class="comment">//通过 create()方法来使用 MonoSink 来创建 Mono。</span></span><br><span class="line">        Mono.create(sink -&gt; sink.success(<span class="string">&quot;测试create&quot;</span>)).subscribe(System.out::println);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<p><img src="/2021/02/25/spring-reactive-webflux/monotest.jpg"></p>
+<h3 id="5-Flux-API"><a href="#5-Flux-API" class="headerlink" title="5. Flux API"></a>5. Flux API</h3><p><code>Mono</code>和<code>Flux</code>都是实现<code>org.reactivestreams.Publisher</code>接口的抽象类。</p>
+<p><code>Flux</code>表示连续序列，和<code>Mono</code>的创建方法有些不同，<code>Mono</code>是<code>Flux</code>的简化版，<code>Flux</code>可以用来表示流。</p>
+<ul>
+<li><code>Flux API</code>：<ul>
+<li>**just()**：可以指定序列中包含的全部元素。</li>
+<li>**range()**：可以用来创建连续数值。</li>
+<li>**empty()**：创建一个不包含任何元素。</li>
+<li>**error(Throwable error)**：创建一个只包含错误消息的序列。</li>
+<li>**fromIterable()**：通过迭代器创建如list，set</li>
+<li>**fromStream()**：通过流创建</li>
+<li>**fromArray(T[])**：通过列表创建 如 String[], Integer[]</li>
+<li>**merge()**：通过将两个flux合并得到新的flux</li>
+<li>**interval()**：每隔一段时间生成一个数字，从1开始递增</li>
+</ul>
+</li>
+<li><code>API</code>使用案例如下所示。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FluxTest</span> &#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">flux</span> <span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        <span class="comment">// 通过just赋值</span></span><br><span class="line">        Flux&lt;Integer&gt; intFlux = Flux.just(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>);</span><br><span class="line">        <span class="comment">// 以6开始，取4个值：6,7,8,9</span></span><br><span class="line">        Flux&lt;Integer&gt; rangeFlux = Flux.range(<span class="number">6</span>, <span class="number">4</span>);</span><br><span class="line">        <span class="comment">// 通过merge合并</span></span><br><span class="line">        Flux&lt;Integer&gt; intMerge = Flux.merge(intFlux, rangeFlux);</span><br><span class="line">        intMerge.subscribe(System.out::print);</span><br><span class="line">        System.out.println();<span class="comment">//换行</span></span><br><span class="line">        <span class="comment">// 通过fromArray构建</span></span><br><span class="line">        Flux.fromArray(<span class="keyword">new</span> <span class="title class_">Integer</span>[]&#123;<span class="number">1</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">7</span>,<span class="number">9</span>&#125;).subscribe(System.out::print);</span><br><span class="line">        System.out.println();<span class="comment">//换行</span></span><br><span class="line">        <span class="comment">// 通过流和迭代器创建</span></span><br><span class="line">        Flux&lt;String&gt; strFluxFromStream = Flux.fromStream(Stream.of(<span class="string">&quot; just&quot;</span>, <span class="string">&quot; test&quot;</span>, <span class="string">&quot; reactor&quot;</span>, <span class="string">&quot; Flux&quot;</span>, <span class="string">&quot; and&quot;</span>, <span class="string">&quot; Mono&quot;</span>));</span><br><span class="line">        Flux&lt;String&gt; strFluxFromList = Flux.fromIterable(Arrays.asList(<span class="string">&quot; just&quot;</span>, <span class="string">&quot; test&quot;</span>, <span class="string">&quot; reactor&quot;</span>, <span class="string">&quot; Flux&quot;</span>, <span class="string">&quot; and&quot;</span>, <span class="string">&quot; Mono&quot;</span>));</span><br><span class="line">        <span class="comment">// 通过merge合并</span></span><br><span class="line">        Flux&lt;String&gt; strMerge = Flux.merge(strFluxFromStream, strFluxFromList);</span><br><span class="line">        strMerge.subscribe(System.out::print);</span><br><span class="line">        System.out.println();</span><br><span class="line">        <span class="comment">// 通过interval创建流数据</span></span><br><span class="line">        Flux.interval(Duration.ofMillis(<span class="number">100</span>)).map(String::valueOf)</span><br><span class="line">            .subscribe(System.out::print);</span><br><span class="line">        Thread.sleep(<span class="number">2000</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">123456789</span><br><span class="line">13579</span><br><span class="line"> just <span class="built_in">test</span> reactor Flux and Mono just <span class="built_in">test</span> reactor Flux and Mono</span><br><span class="line">012345678910111213141516171819</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="6-subscribe方法"><a href="#6-subscribe方法" class="headerlink" title="6. subscribe方法"></a>6. subscribe方法</h3><p>subscribe()方法表示对数据流的订阅动作，subscribe()方法有多个重载的方法，最多可以传入四个参数；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">subscribe</span> <span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    <span class="comment">// 测试Mono</span></span><br><span class="line">    Mono.just(<span class="number">1</span>).subscribe(System.out::println);</span><br><span class="line">    <span class="comment">// 测试Flux</span></span><br><span class="line">    Flux.just(<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>).subscribe(System.out::println);</span><br><span class="line">    <span class="comment">// 测试2个参数的subscribe方法</span></span><br><span class="line">    Flux.just(<span class="string">&#x27;i&#x27;</span>, <span class="string">&#x27;j&#x27;</span>).map(chr -&gt; &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="string">&#x27;j&#x27;</span>== chr) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;test 2 parameters&quot;</span>);</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">return</span> String.valueOf(chr);</span><br><span class="line">        &#125;)</span><br><span class="line">        .subscribe(System.out::println,    <span class="comment">// 参数1,接受内容</span></span><br><span class="line">                   err -&gt; log.error(err.getMessage())); <span class="comment">// 参数2,对err处理的lambda函数</span></span><br><span class="line">    <span class="comment">// 测试3个参数的subscribe方法</span></span><br><span class="line">    Flux.just(<span class="string">&quot;你&quot;</span>, <span class="string">&quot;我&quot;</span>, <span class="string">&quot;他&quot;</span>, <span class="string">&quot;它&quot;</span>, <span class="string">&quot;ta&quot;</span>)</span><br><span class="line">        .subscribe(System.out::print,   <span class="comment">// 参数1,接受内容</span></span><br><span class="line">                   System.err::println, <span class="comment">// 参数2,对err处理的lambda函数</span></span><br><span class="line">                   () -&gt; System.out.println(<span class="string">&quot;complete for 3&quot;</span>));<span class="comment">// 参数3,完成subscribe之后执行的lambda函数</span></span><br><span class="line">    <span class="comment">// 测试4个参数的subscribe方法</span></span><br><span class="line">    Flux.interval(Duration.ofMillis(<span class="number">100</span>))</span><br><span class="line">        .map(i -&gt; &#123;</span><br><span class="line">            <span class="keyword">if</span> (i == <span class="number">3</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;fake a mistake&quot;</span>);</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">return</span> String.valueOf(i);</span><br><span class="line">        &#125;)</span><br><span class="line">        .subscribe(info -&gt; log.info(<span class="string">&quot;info: &#123;&#125;&quot;</span>, info), <span class="comment">// 参数1,接受内容</span></span><br><span class="line">                   err -&gt; log.error(<span class="string">&quot;error: &#123;&#125;&quot;</span>, err.getMessage()),<span class="comment">// 参数2,对err处理的lambda函数</span></span><br><span class="line">                   () -&gt; log.info(<span class="string">&quot;Done&quot;</span>),     <span class="comment">// 参数3,完成subscribe之后执行的lambda函数</span></span><br><span class="line">                   sub -&gt; sub.request(<span class="number">10</span>));  <span class="comment">// 参数4,Subscription操作,设定从源头获取元素的个数</span></span><br><span class="line">    Thread.sleep(<span class="number">2000</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<p><img src="/2021/02/25/spring-reactive-webflux/fluxtest.jpg"></p>
+<h3 id="7-使用StepVerifier测试响应式异步代码"><a href="#7-使用StepVerifier测试响应式异步代码" class="headerlink" title="7. 使用StepVerifier测试响应式异步代码"></a>7. 使用StepVerifier测试响应式异步代码</h3><p>通过expectNext执行类似断言的功能，如果断言不符合实际情况，就会报错。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">StepVerifier</span> <span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 使用StepVerifier测试Flux，正常</span></span><br><span class="line">    <span class="type">Flux</span> <span class="variable">flux</span> <span class="operator">=</span> Flux.just(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>);</span><br><span class="line">    StepVerifier.create(flux)</span><br><span class="line">                <span class="comment">// 测试下一个期望的数据元素</span></span><br><span class="line">                .expectNext(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>)</span><br><span class="line">                <span class="comment">// 测试下一个元素是否为完成信号</span></span><br><span class="line">                .expectComplete()</span><br><span class="line">                .verify();</span><br><span class="line">    <span class="comment">// 使用StepVerifier测试Mono，报错</span></span><br><span class="line">    Mono&lt;String&gt; mono = Mono.just(<span class="string">&quot;charles&quot;</span>).log();</span><br><span class="line">    StepVerifier.create(mono)</span><br><span class="line">                .expectNext(<span class="string">&quot;char&quot;</span>)</span><br><span class="line">                .verifyComplete();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">java.lang.AssertionError: expectation <span class="string">&quot;expectNext(char)&quot;</span> failed (expected value: char; actual value: charles)</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>参考连接：<code>https://mp.weixin.qq.com/s/O1VGS7d1TLQhgrCaQ-UQCw</code></p>
+</blockquote>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%93%8D%E5%BA%94%E5%BC%8F%E6%B5%81-Reactive-Streams"><span class="toc-text">1. 响应式流(Reactive Streams)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%8F%91%E5%B8%83%E8%80%85-Publisher"><span class="toc-text">2. 发布者(Publisher)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Mono%E5%92%8CFlux%E7%9A%84%E6%8A%BD%E8%B1%A1%E6%A8%A1%E5%9E%8B"><span class="toc-text">3. Mono和Flux的抽象模型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-Flux"><span class="toc-text">3.1 Flux</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-Mono"><span class="toc-text">3.2 Mono</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Mono-API"><span class="toc-text">4. Mono API</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Flux-API"><span class="toc-text">5. Flux API</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-subscribe%E6%96%B9%E6%B3%95"><span class="toc-text">6. subscribe方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E4%BD%BF%E7%94%A8StepVerifier%E6%B5%8B%E8%AF%95%E5%93%8D%E5%BA%94%E5%BC%8F%E5%BC%82%E6%AD%A5%E4%BB%A3%E7%A0%81"><span class="toc-text">7. 使用StepVerifier测试响应式异步代码</span></a></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/2021/02/25/spring-reactive-webflux.html">http://chaooo.github.io/2021/02/25/spring-reactive-webflux.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2021/02/17/spring-boot-idempotent.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          Java接口幂等性设计及实例
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/03/02/spring-reactive-exception.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          「Spring Reactive Stack」Reactor异常处理
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/12/30/spring-security-permission.html">「Spring Security」前后端分离权限控制-指令级权限</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/27/spring-security-vue.html">「Spring Security」前后端分离菜单权限控制-前端动态路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/spring-security-rbac.html">「Spring Security」前后端分离后台菜单权限控制</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/10/spring-security-token.html">「Spring Security」基于Redis的Token自动续签优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/09/spring-security-jwt.html">「Spring Security」整合 JWT 实现无状态登录示例</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 10.71px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 16.43px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.71px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12.14px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12.14px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.43px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.43px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 17.14px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12.14px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12.14px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12.14px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.57px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.71px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 14.29px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.71px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.86px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.57px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 14.29px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.86px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.57px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 14.29px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.43px;">hexo</a> <a href="/tags/java/" style="font-size: 15.71px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 17.86px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 12.14px;">并发编程</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 10px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.29px;">环境配置</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年12月</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年11月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p style="display:none;">
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+      repo: 'https://github.com/chaooo/BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

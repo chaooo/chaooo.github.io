@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>「Spring」事务管理 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-spring-transaction" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      「Spring」事务管理
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2018-04-15T14:47:30.000Z" itemprop="datePublished">2018年04月15日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/Spring/">Spring</a>
+  </div>
+
+      
+        <span class="article-views" style="display:none;">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2018/04/15/spring-transaction.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>事务的基本概念：事务指的是逻辑上的一组操作，这组操作要么全部成功，要么全部失败。</p>
+<span id="more"></span>
+
+
+<h3 id="1-事务的特性-ACID"><a href="#1-事务的特性-ACID" class="headerlink" title="1. 事务的特性(ACID)"></a>1. 事务的特性(ACID)</h3><ul>
+<li>事务的特性：<strong>原子性、一致性、隔离性、持久性</strong>。</li>
+<li>原子性（Atomicity）：事务是一个不可分割的工作单位，事务中的操作要么都发生，要么都不发生。</li>
+<li>一致性（Consistency）：事务前后数据的完整性必须保持一致。</li>
+<li>隔离性（Isolation）：多个用户并发访问数据库时，一个用户的事务不能被其他用户的事务所干扰，多个并发事务之间数据要相互隔离（数据库中相应的数据隔离级别，通过它避免事务间的冲突）。</li>
+<li>持久性（Durability）:一个事务一旦被提交，它对数据库中数据的改变是永久性的，即使数据库发生故障也不应该对其有任何影响。</li>
+</ul>
+<h3 id="2-Spring提供事务管理的3个接口："><a href="#2-Spring提供事务管理的3个接口：" class="headerlink" title="2. Spring提供事务管理的3个接口："></a>2. Spring提供事务管理的3个接口：</h3><ol>
+<li><strong>PlatformTransactionManager</strong>：事务管理器，用来管理事务的接口，定义了事务的提交、回滚等方法。</li>
+<li><strong>TransactionDefinition</strong>：事务定义信息（隔离级别、传播行为、是否超时、是否只读）。</li>
+<li><strong>TransactionStatus</strong>：事务具体运行状态（事务是否提交，事务是否有保存点，事务是否是新事物等状态）。</li>
+</ol>
+<blockquote>
+<p>Spring事务管理时，这三个接口是有联系的，Spring首先会根据事务定义信息TransactionDefinition获取信息,然后由事务管理器PlatformTransactionManager进行管理，在事务管理过程中，会产生一个事务的状态，这个状态就保存在事务具体运行状态TransactionStatus中了。</p>
+</blockquote>
+<h3 id="3-TransactionDefinition接口"><a href="#3-TransactionDefinition接口" class="headerlink" title="3. TransactionDefinition接口"></a>3. TransactionDefinition接口</h3><p>TransactionDefinition定义事务隔离级别(Isolation)、定义事务传播行为(Propagation)</p>
+<ul>
+<li>如果不考虑隔离性,就会引发安全问题：脏读、不可重复读、以及虚读或者叫做幻读。</li>
+<li>事务的传播行为：解决业务层方法之间相互调用时,使用何种事务的问题。</li>
+</ul>
+<h4 id="3-1-安全问题"><a href="#3-1-安全问题" class="headerlink" title="3.1 安全问题"></a>3.1 安全问题</h4><ol>
+<li>脏读：一个事务读取了另一个事务改写但还未提交的数据，如果这些数据被回滚，则读到的数据是无效的。</li>
+<li>不可重复读：同一事务中，多次读取同一数据返回的结果有所不同（读取到另一个事务已经提交的更新的数据）。</li>
+<li>幻读：一个事务读取了几行记录后，另一个事务插入一些记录，幻读就发生了。再后来的查询中，第一个事务就会发现有些原来没有的记录。</li>
+</ol>
+<h4 id="3-2-事务的隔离级别-Isolation-："><a href="#3-2-事务的隔离级别-Isolation-：" class="headerlink" title="3.2 事务的隔离级别(Isolation)："></a>3.2 事务的隔离级别(Isolation)：</h4><ol>
+<li><strong><code>READ_UNCOMMITED</code></strong>(读未提交)：允许读取未提交的改变了的数据（最低级别），可能导致脏读、不可重复读、幻读等。</li>
+<li><strong><code>READ_COMMITED</code></strong>(读提交)：允许在并发事务提交后读取，可防止脏读，但可能导致不可重复读、幻读。</li>
+<li><strong><code>REPEATABLE_READ</code></strong>(可重复读)：多次读取相同字段是一致的,除非数据被事务本身改变，可防止脏读、不可重复读，但可能导致幻读。</li>
+<li><strong><code>SERIALIZABLE</code></strong>(序列化)：事务是串行的,完全服从ACID的级别隔离，确保不发生脏读、不可重复读、幻读等。这在所有的隔离基本中是最慢的，它是典型的通过完全锁定在事务中涉及的数据表来完成的。</li>
+<li><code>DEFAULT</code>(Spring提供)：使用数据库默认的隔离级别（Mysql默认采用<code>REPEATABLE_READ</code>隔离级别，Oracle默认采用<code>READ_COMMITTED</code>隔离级别）。</li>
+</ol>
+<h4 id="3-3-事务的传播特性-Propagation-："><a href="#3-3-事务的传播特性-Propagation-：" class="headerlink" title="3.3 事务的传播特性(Propagation)："></a>3.3 事务的传播特性(Propagation)：</h4><ol>
+<li>第一类：运行在同一个事务<ul>
+<li>**<code>REQUIRED</code>**：默认，支持当前事务，如果当前没有事务，就新建一个事务。</li>
+<li><code>SUPPORTS</code>：支持当前事务，如果当前没有事务，就不使用事务(以非事务方式执行)</li>
+<li><code>MANDATORY</code>：支持当前事务，如果当前没有事务，就抛出异常</li>
+</ul>
+</li>
+<li>第二类：运行在不同事务<ul>
+<li>**<code>REQUIRES_NEW</code>**：新建事务，如果当前存在事务，把当前事务挂起</li>
+<li><code>NOT_SUPPORTED</code>：以非事务方式执行操作，如果当前存在事务，就把当前事务挂起</li>
+<li><code>NEVER</code>：以非事务方式执行，如果当前存在事务，则抛出异常</li>
+</ul>
+</li>
+<li>第三类：嵌套执行–即外层事务如果失败，内层事务要么回滚到保存点要么回滚到初始状态<ul>
+<li>**<code>NESTED</code>**：如果当前事务存在，则嵌套事务执行</li>
+</ul>
+</li>
+</ol>
+<h3 id="4-TransactionStatus接口"><a href="#4-TransactionStatus接口" class="headerlink" title="4. TransactionStatus接口"></a>4. TransactionStatus接口</h3><p>平台事务管理器(PlatformTransactionManager)会根据TransactionDefinition中定义的事务信息(包括隔离级别、传播行为)来进行事务的管理,在管理的过程中事务可能产生了保存点或事务是新的事务等情况,那么这些信息都会记录在TransactionStatus的对象中。</p>
+<h3 id="5-PlatformTransactionManager接口（事务管理器）"><a href="#5-PlatformTransactionManager接口（事务管理器）" class="headerlink" title="5. PlatformTransactionManager接口（事务管理器）"></a>5. PlatformTransactionManager接口（事务管理器）</h3><p>该接口有许多实现类例如：DataSourceTransactionManager、HibernateTransactionManager等。</p>
+<h4 id="5-1-Spring支持两种方式事务管理："><a href="#5-1-Spring支持两种方式事务管理：" class="headerlink" title="5.1 Spring支持两种方式事务管理："></a>5.1 Spring支持两种方式事务管理：</h4><ol>
+<li>编程式事务管理<ul>
+<li>手动编写代码进行事务管理，通过TransactionTemlate手动管理事务（很少使用）</li>
+</ul>
+</li>
+<li>声明式事务管理<ul>
+<li>基于TransactionProxyFactoryBean的方式（很少使用）</li>
+<li>基于AspectJ的xml方式，配置稍复杂,但清晰可见事务使用范围（经常使用）</li>
+<li>基于注解的方式，配置简单,需要在使用事务管理的业务层类或方法添加<code>@Transactional</code>注解（经常使用）</li>
+</ul>
+</li>
+</ol>
+<h3 id="6-基于AspectJ的xml方式的声明式事务管理"><a href="#6-基于AspectJ的xml方式的声明式事务管理" class="headerlink" title="6. 基于AspectJ的xml方式的声明式事务管理"></a>6. 基于AspectJ的xml方式的声明式事务管理</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 配置事务管理器 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;transactionManager&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">class</span>=<span class="string">&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;dataSource&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;jdbc连接池对象id&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 配置事务的通知（事务的增强） --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">tx:advice</span> <span class="attr">id</span>=<span class="string">&quot;txAdvice&quot;</span> <span class="attr">transaction-manager</span>=<span class="string">&quot;transactionManager&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tx:attributes</span>&gt;</span>    </span><br><span class="line">        <span class="comment">&lt;!-- propagation:事务传播行为</span></span><br><span class="line"><span class="comment">            isolation:事务的隔离级别</span></span><br><span class="line"><span class="comment">            read-only:只读</span></span><br><span class="line"><span class="comment">            rollback-for:发生哪些异常回滚</span></span><br><span class="line"><span class="comment">            no-rollback-for:发生哪些异常不回滚</span></span><br><span class="line"><span class="comment">            timeout:过期信息    --&gt;</span> </span><br><span class="line">        <span class="tag">&lt;<span class="name">tx:method</span> <span class="attr">name</span>=<span class="string">&quot;transfer&quot;</span> <span class="attr">propagation</span>=<span class="string">&quot;REQUIRED&quot;</span> <span class="attr">isolation</span>=<span class="string">&quot;DEFAULT&quot;</span> <span class="attr">read-only</span>=<span class="string">&quot;false&quot;</span> <span class="attr">rollback-for</span>=<span class="string">&quot;&quot;</span> <span class="attr">timeout</span>=<span class="string">&quot;&quot;</span> <span class="attr">no-rollback-for</span>=<span class="string">&quot;&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">tx:attributes</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">tx:advice</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 配置切面 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置切入点 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:pointcut</span> <span class="attr">id</span>=<span class="string">&quot;pointcut1&quot;</span> <span class="attr">expression</span>=<span class="string">&quot;execution(*cn.muke.spring.demo3.AccountService+.*(.))&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置切面 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:advisor</span> <span class="attr">advice-ref</span>=<span class="string">&quot;txAdvice&quot;</span> <span class="attr">pointcut-ref</span>=<span class="string">&quot;pointcut1&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aop:config</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="7-基于注解的声明式事务管理"><a href="#7-基于注解的声明式事务管理" class="headerlink" title="7. 基于注解的声明式事务管理"></a>7. 基于注解的声明式事务管理</h3><ol>
+<li>配置事务管理器<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 1.创建一个事务管理器对象 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;事务管理器id&quot;</span> </span></span><br><span class="line"><span class="tag"><span class="attr">class</span>=<span class="string">&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;dataSource&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;jdbc连接池对象id&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 2.开启声明式事务 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">tx:annotation-driven</span> <span class="attr">transaction-manager</span>=<span class="string">&quot;事务管理器id&quot;</span> <span class="attr">proxy-target-class</span>=<span class="string">&quot;true|false&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li><strong>transaction-manager</strong>：指定事务管理器(由框架提供类，在容器中创建这个对象并依赖于dataSource)</li>
+<li><strong>proxy-target-class</strong>：决定是基于接口的还是基于类的代理被创建；为true则是基于类的代理将起作用(需要cglib库)，为false(默认)则标准的JDK 基于接口的代理将起作用。</li>
+</ul>
+<ol start="2">
+<li>使用，在类上或者方法上标注<code>@Transactional</code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Transactional(</span></span><br><span class="line"><span class="meta">        rollbackFor=&#123;Exception.class&#125;, </span></span><br><span class="line"><span class="meta">        readOnly=false, </span></span><br><span class="line"><span class="meta">        isolation=Isolation.DEFAULT,</span></span><br><span class="line"><span class="meta">        propagation=Propagation.REQUIRED)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">transfer</span><span class="params">()</span>&#123;..&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>@Transactional的属性<ul>
+<li><strong>rollbackFor</strong>：设置检查异常也回滚</li>
+<li><strong>noRollbackFor</strong>：指定运行时异常不回滚</li>
+<li><strong>readOnly</strong>： 只读属性，当事务方法都是select语句时，可以将readOnly设置成true优化方法，提高方法执行效率。当有DML操作时这个属性必须时false。</li>
+<li><strong>isolation</strong>：事务的隔离级别(枚举:DEFAULT,READ_UNCOMMITTED,READ_COMMITTED,REPEATABLE_READ,SERIALIZABLE)</li>
+<li><strong>propagation</strong>：事务的传播特性(枚举:REQUIRED,SUPPORTS,MANDATORY,REQUIRES_NEW,NOT_SUPPORTED,NEVER)</li>
+</ul>
+</li>
+<li>Spring中事务管理器默认值针对<strong>运行时异常</strong>回滚，对<strong>检查异常</strong>不回滚。</li>
+</ul>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BA%8B%E5%8A%A1%E7%9A%84%E7%89%B9%E6%80%A7-ACID"><span class="toc-text">1. 事务的特性(ACID)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Spring%E6%8F%90%E4%BE%9B%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86%E7%9A%843%E4%B8%AA%E6%8E%A5%E5%8F%A3%EF%BC%9A"><span class="toc-text">2. Spring提供事务管理的3个接口：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-TransactionDefinition%E6%8E%A5%E5%8F%A3"><span class="toc-text">3. TransactionDefinition接口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98"><span class="toc-text">3.1 安全问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-%E4%BA%8B%E5%8A%A1%E7%9A%84%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB-Isolation-%EF%BC%9A"><span class="toc-text">3.2 事务的隔离级别(Isolation)：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-%E4%BA%8B%E5%8A%A1%E7%9A%84%E4%BC%A0%E6%92%AD%E7%89%B9%E6%80%A7-Propagation-%EF%BC%9A"><span class="toc-text">3.3 事务的传播特性(Propagation)：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-TransactionStatus%E6%8E%A5%E5%8F%A3"><span class="toc-text">4. TransactionStatus接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-PlatformTransactionManager%E6%8E%A5%E5%8F%A3%EF%BC%88%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86%E5%99%A8%EF%BC%89"><span class="toc-text">5. PlatformTransactionManager接口（事务管理器）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-Spring%E6%94%AF%E6%8C%81%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86%EF%BC%9A"><span class="toc-text">5.1 Spring支持两种方式事务管理：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E5%9F%BA%E4%BA%8EAspectJ%E7%9A%84xml%E6%96%B9%E5%BC%8F%E7%9A%84%E5%A3%B0%E6%98%8E%E5%BC%8F%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86"><span class="toc-text">6. 基于AspectJ的xml方式的声明式事务管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E5%9F%BA%E4%BA%8E%E6%B3%A8%E8%A7%A3%E7%9A%84%E5%A3%B0%E6%98%8E%E5%BC%8F%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86"><span class="toc-text">7. 基于注解的声明式事务管理</span></a></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/2018/04/15/spring-transaction.html">http://chaooo.github.io/2018/04/15/spring-transaction.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2018/04/09/spring-jdbc.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          「Spring」JDBC详解
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/04/21/spring-aop.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          「Spring」面向切面编程(AOP模块)
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/12/30/spring-security-permission.html">「Spring Security」前后端分离权限控制-指令级权限</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/27/spring-security-vue.html">「Spring Security」前后端分离菜单权限控制-前端动态路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/spring-security-rbac.html">「Spring Security」前后端分离后台菜单权限控制</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/10/spring-security-token.html">「Spring Security」基于Redis的Token自动续签优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/09/spring-security-jwt.html">「Spring Security」整合 JWT 实现无状态登录示例</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 10.71px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 16.43px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.71px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12.14px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12.14px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.43px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.43px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 17.14px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12.14px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12.14px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12.14px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.57px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.71px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 14.29px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.71px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.86px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.57px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 14.29px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.86px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.57px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 14.29px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.43px;">hexo</a> <a href="/tags/java/" style="font-size: 15.71px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 17.86px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 12.14px;">并发编程</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 10px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.29px;">环境配置</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年12月</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年11月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p style="display:none;">
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+      repo: 'https://github.com/chaooo/BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

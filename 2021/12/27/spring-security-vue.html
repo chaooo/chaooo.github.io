@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>「Spring Security」前后端分离菜单权限控制-前端动态路由 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-spring-security-vue" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      「Spring Security」前后端分离菜单权限控制-前端动态路由
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2021-12-27T09:35:00.000Z" itemprop="datePublished">2021年12月27日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/safe/">安全认证</a>
+  </div>
+
+      
+        <span class="article-views" style="display:none;">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2021/12/27/spring-security-vue.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>前端部分，这里基于<a target="_blank" rel="noopener" href="https://panjiachen.github.io/vue-element-admin-site/zh/">vue-element-admin</a>模板来演示，<br><a target="_blank" rel="noopener" href="https://panjiachen.github.io/vue-element-admin-site/zh/">vue-element-admin</a>是一个后台前端解决方案，它基于<a target="_blank" rel="noopener" href="https://github.com/vuejs/vue">vue</a>和<a target="_blank" rel="noopener" href="https://github.com/ElemeFE/element">element-ui</a>实现。<span id="more"></span></p>
+<h3 id="1-安装-vue-element-admin"><a href="#1-安装-vue-element-admin" class="headerlink" title="1. 安装 vue-element-admin"></a>1. 安装 vue-element-admin</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 克隆项目</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/PanJiaChen/vue-element-admin.git</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进入项目目录</span></span><br><span class="line"><span class="built_in">cd</span> vue-element-admin</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装依赖， 建议不要用 cnpm 安装 会有各种诡异的bug 可以通过如下操作解决 npm 下载速度慢的问题</span></span><br><span class="line">npm install --registry=https://registry.npm.taobao.org</span><br><span class="line"></span><br><span class="line"><span class="comment"># 本地开发 启动项目</span></span><br><span class="line">npm run dev</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-改造前端路由挂载方式"><a href="#2-改造前端路由挂载方式" class="headerlink" title="2. 改造前端路由挂载方式"></a>2. 改造前端路由挂载方式</h3><p><a target="_blank" rel="noopener" href="https://panjiachen.github.io/vue-element-admin-site/zh/">vue-element-admin</a>中权限的实现方式是：通过获取当前用户的权限去比对路由表，生成当前用户具有的权限可访问的路由表，通过<code>router.addRoutes</code>动态挂载到<code>router</code>上。</p>
+<p>这里改造得更灵活一点，后台根据用户计算出可访问得菜单列表，直接返回用户可访问得菜单列表，前端也需要保存一份全的路由表，用户登录后得到可访问菜单，匹配前端保存的路由表然后动态挂载。</p>
+<p>用户登录成功之后，在全局钩子<code>router.beforeEach</code>中拦截路由，判断是否已获得<code>token</code>，在获得<code>token</code>之后我们就要去获取用户的基本信息及可访问菜单，然后动态挂载路由。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * src/permission.js</span></span><br><span class="line"><span class="comment"> */</span> </span><br><span class="line"><span class="comment">// router.beforeEach</span></span><br><span class="line"><span class="keyword">const</span> hasRoles = store.<span class="property">getters</span>.<span class="property">roles</span> &amp;&amp; store.<span class="property">getters</span>.<span class="property">roles</span>.<span class="property">length</span> &gt; <span class="number">0</span></span><br><span class="line"><span class="keyword">if</span> (hasRoles) &#123;</span><br><span class="line"><span class="title function_">next</span>()</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">// get user info</span></span><br><span class="line">  <span class="keyword">const</span> &#123; menus &#125; = <span class="keyword">await</span> store.<span class="title function_">dispatch</span>(<span class="string">&#x27;user/getInfo&#x27;</span>)</span><br><span class="line">  <span class="comment">// generate accessible routes map based on menus</span></span><br><span class="line">  <span class="keyword">const</span> accessRoutes = <span class="keyword">await</span> store.<span class="title function_">dispatch</span>(<span class="string">&#x27;permission/generateRoutes&#x27;</span>, menus)</span><br><span class="line">  <span class="comment">// dynamically add accessible routes</span></span><br><span class="line">  router.<span class="title function_">addRoutes</span>(accessRoutes)</span><br><span class="line">  <span class="comment">// ... other code</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-1-根据接口返回的菜单列表menus动态挂载路由"><a href="#2-1-根据接口返回的菜单列表menus动态挂载路由" class="headerlink" title="2.1 根据接口返回的菜单列表menus动态挂载路由"></a>2.1 根据接口返回的菜单列表<code>menus</code>动态挂载路由</h4><p>接口返回菜单数据：</p>
+<p><img src="/2021/12/27/spring-security-vue/up-44f247866636a16715b39a0ed8941673c89.webp"></p>
+<p>动态挂载路由：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * src\store\modules\permission.js</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">import</span> &#123; constantRoutes, asyncRoutes, afterRoutes &#125; <span class="keyword">from</span> <span class="string">&#x27;@/router&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 返回当前路由名称对应的菜单</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> menus 菜单列表</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> name  路由名称</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">filterMeun</span>(<span class="params">menus, name</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (name) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; menus.<span class="property">length</span>; i++) &#123;</span><br><span class="line">      <span class="keyword">const</span> menu = menus[i]</span><br><span class="line">      <span class="keyword">if</span> (name === menu.<span class="property">name</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> menu</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">null</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 通过后台请求的菜单列表递归过滤路由表</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> routes asyncRoutes</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> menus  接口返回的菜单</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">filterAsyncRoutes</span>(<span class="params">routes, menus</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> res = []</span><br><span class="line">  routes.<span class="title function_">forEach</span>(<span class="function"><span class="params">route</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> tmp = &#123; ...route &#125;</span><br><span class="line">    <span class="keyword">const</span> meun = <span class="title function_">filterMeun</span>(menus, tmp.<span class="property">name</span>)</span><br><span class="line">    <span class="keyword">if</span> (meun != <span class="literal">null</span> &amp;&amp; meun.<span class="property">title</span>) &#123;</span><br><span class="line">      tmp.<span class="property">hidden</span> = meun.<span class="property">hidden</span> !== <span class="number">0</span></span><br><span class="line">      <span class="comment">// 显示的菜单替换后台设置的标题</span></span><br><span class="line">      <span class="keyword">if</span> (!tmp.<span class="property">hidden</span>) &#123;</span><br><span class="line">        tmp.<span class="property">meta</span>.<span class="property">title</span> = meun.<span class="property">title</span></span><br><span class="line">        tmp.<span class="property">sort</span> = meun.<span class="property">sort</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (meun.<span class="property">icon</span>) &#123;</span><br><span class="line">        tmp.<span class="property">meta</span>.<span class="property">icon</span> = meun.<span class="property">icon</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (tmp.<span class="property">children</span>) &#123;</span><br><span class="line">        tmp.<span class="property">children</span> = <span class="title function_">filterAsyncRoutes</span>(tmp.<span class="property">children</span>, menus)</span><br><span class="line">      &#125;</span><br><span class="line">      res.<span class="title function_">push</span>(tmp)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">return</span> res</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 对菜单进行排序</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">sortRouters</span>(<span class="params">accessedRouters</span>) &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; accessedRouters.<span class="property">length</span>; i++) &#123;</span><br><span class="line">    <span class="keyword">const</span> router = accessedRouters[i]</span><br><span class="line">    <span class="keyword">if</span> (router.<span class="property">children</span> &amp;&amp; router.<span class="property">children</span>.<span class="property">length</span> &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      router.<span class="property">children</span>.<span class="title function_">sort</span>(<span class="title function_">compare</span>(<span class="string">&#x27;sort&#x27;</span>))</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  accessedRouters.<span class="title function_">sort</span>(<span class="title function_">compare</span>(<span class="string">&#x27;sort&#x27;</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 升序比较函数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">compare</span>(<span class="params">p</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">m, n</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> a = m[p]</span><br><span class="line">    <span class="keyword">const</span> b = n[p]</span><br><span class="line">    <span class="keyword">return</span> a - b</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> state = &#123;</span><br><span class="line">  <span class="attr">routes</span>: [],</span><br><span class="line">  <span class="attr">addRoutes</span>: []</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> mutations = &#123;</span><br><span class="line">  <span class="attr">SET_ROUTES</span>: <span class="function">(<span class="params">state, routes</span>) =&gt;</span> &#123;</span><br><span class="line">    state.<span class="property">addRoutes</span> = routes</span><br><span class="line">    state.<span class="property">routes</span> = constantRoutes.<span class="title function_">concat</span>(routes)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> actions = &#123;</span><br><span class="line">  <span class="title function_">generateRoutes</span>(<span class="params">&#123; commit &#125;, menus</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">// 通过后台请求的菜单列表递归过滤路由表</span></span><br><span class="line">      <span class="keyword">const</span> roleAsyncRoutes = <span class="title function_">filterAsyncRoutes</span>(asyncRoutes, menus)</span><br><span class="line">      <span class="comment">// 对可访问菜单进行排序</span></span><br><span class="line">      <span class="title function_">sortRouters</span>(roleAsyncRoutes)</span><br><span class="line">      <span class="comment">// 拼接尾部公共菜单</span></span><br><span class="line">      <span class="keyword">const</span> accessedRoutes = roleAsyncRoutes.<span class="title function_">concat</span>(afterRoutes)</span><br><span class="line">      <span class="title function_">commit</span>(<span class="string">&#x27;SET_ROUTES&#x27;</span>, accessedRoutes)</span><br><span class="line">      <span class="title function_">resolve</span>(accessedRoutes)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="attr">namespaced</span>: <span class="literal">true</span>,</span><br><span class="line">  state,</span><br><span class="line">  mutations,</span><br><span class="line">  actions</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-前端保存的全路径路由表"><a href="#2-2-前端保存的全路径路由表" class="headerlink" title="2.2 前端保存的全路径路由表"></a>2.2 前端保存的全路径路由表</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * src\router\index.js</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">Vue</span> <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">Router</span> <span class="keyword">from</span> <span class="string">&#x27;vue-router&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Vue</span>.<span class="title function_">use</span>(<span class="title class_">Router</span>)</span><br><span class="line"><span class="keyword">import</span> <span class="title class_">Layout</span> <span class="keyword">from</span> <span class="string">&#x27;@/layout&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 没有权限要求的基本路由</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> constantRoutes = [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">path</span>: <span class="string">&#x27;/redirect&#x27;</span>,</span><br><span class="line">    <span class="attr">component</span>: <span class="title class_">Layout</span>,</span><br><span class="line">    <span class="attr">hidden</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">children</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">path</span>: <span class="string">&#x27;/redirect/:path(.*)&#x27;</span>,</span><br><span class="line">        <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;@/views/redirect/index&#x27;</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">path</span>: <span class="string">&#x27;/login&#x27;</span>,</span><br><span class="line">    <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;@/views/login/index&#x27;</span>),</span><br><span class="line">    <span class="attr">hidden</span>: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">path</span>: <span class="string">&#x27;/404&#x27;</span>,</span><br><span class="line">    <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;@/views/error-page/404&#x27;</span>),</span><br><span class="line">    <span class="attr">hidden</span>: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">path</span>: <span class="string">&#x27;/&#x27;</span>,</span><br><span class="line">    <span class="attr">component</span>: <span class="title class_">Layout</span>,</span><br><span class="line">    <span class="attr">redirect</span>: <span class="string">&#x27;/dashboard&#x27;</span>,</span><br><span class="line">    <span class="attr">children</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">path</span>: <span class="string">&#x27;dashboard&#x27;</span>,</span><br><span class="line">        <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;@/views/dashboard/index&#x27;</span>),</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&#x27;Dashboard&#x27;</span>,</span><br><span class="line">        <span class="attr">meta</span>: &#123; <span class="attr">title</span>: <span class="string">&#x27;后台首页&#x27;</span>, <span class="attr">icon</span>: <span class="string">&#x27;dashboard&#x27;</span>, <span class="attr">affix</span>: <span class="literal">true</span> &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">path</span>: <span class="string">&#x27;/profile&#x27;</span>,</span><br><span class="line">    <span class="attr">component</span>: <span class="title class_">Layout</span>,</span><br><span class="line">    <span class="attr">redirect</span>: <span class="string">&#x27;/profile/index&#x27;</span>,</span><br><span class="line">    <span class="attr">hidden</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">children</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">path</span>: <span class="string">&#x27;index&#x27;</span>,</span><br><span class="line">        <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;@/views/profile/index&#x27;</span>),</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&#x27;Profile&#x27;</span>,</span><br><span class="line">        <span class="attr">meta</span>: &#123; <span class="attr">title</span>: <span class="string">&#x27;个人中心&#x27;</span>, <span class="attr">icon</span>: <span class="string">&#x27;user&#x27;</span>, <span class="attr">noCache</span>: <span class="literal">true</span> &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 动态加载的路由</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> asyncRoutes = [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">path</span>: <span class="string">&#x27;/sys&#x27;</span>,</span><br><span class="line">      <span class="attr">component</span>: <span class="title class_">Layout</span>,</span><br><span class="line">      <span class="attr">redirect</span>: <span class="string">&#x27;/sys/menus&#x27;</span>,</span><br><span class="line">      <span class="attr">alwaysShow</span>: <span class="literal">true</span>, <span class="comment">// will always show the root menu</span></span><br><span class="line">      <span class="attr">name</span>: <span class="string">&#x27;SysSetting&#x27;</span>, <span class="comment">// name必须和后台配置一致，不然匹配不到</span></span><br><span class="line">      <span class="attr">meta</span>: &#123; <span class="attr">title</span>: <span class="string">&#x27;系统设置&#x27;</span>, <span class="attr">icon</span>: <span class="string">&#x27;el-icon-s-tools&#x27;</span> &#125;,</span><br><span class="line">      <span class="attr">children</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">path</span>: <span class="string">&#x27;menus&#x27;</span>,</span><br><span class="line">          <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;@/views/sys/menus/index&#x27;</span>),</span><br><span class="line">          <span class="attr">redirect</span>: <span class="string">&#x27;/sys/menus/list&#x27;</span>,</span><br><span class="line">          <span class="attr">name</span>: <span class="string">&#x27;SysMenus&#x27;</span>,</span><br><span class="line">          <span class="attr">meta</span>: &#123; <span class="attr">title</span>: <span class="string">&#x27;菜单管理&#x27;</span>, <span class="attr">icon</span>: <span class="string">&#x27;el-icon-menu&#x27;</span> &#125;,</span><br><span class="line">          <span class="attr">children</span>: [</span><br><span class="line">            &#123;</span><br><span class="line">              <span class="attr">path</span>: <span class="string">&#x27;list&#x27;</span>,</span><br><span class="line">              <span class="attr">hidden</span>: <span class="literal">true</span>,</span><br><span class="line">              <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;@/views/sys/menus/list.vue&#x27;</span>),</span><br><span class="line">              <span class="attr">name</span>: <span class="string">&#x27;SysMenuList&#x27;</span>,</span><br><span class="line">              <span class="attr">meta</span>: &#123; <span class="attr">title</span>: <span class="string">&#x27;菜单列表&#x27;</span> &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">              <span class="attr">path</span>: <span class="string">&#x27;edit&#x27;</span>,</span><br><span class="line">              <span class="attr">hidden</span>: <span class="literal">true</span>,</span><br><span class="line">              <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;@/views/sys/menus/form.vue&#x27;</span>),</span><br><span class="line">              <span class="attr">name</span>: <span class="string">&#x27;SysMenuEdit&#x27;</span>,</span><br><span class="line">              <span class="attr">meta</span>: &#123; <span class="attr">title</span>: <span class="string">&#x27;编辑菜单&#x27;</span> &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">              <span class="attr">path</span>: <span class="string">&#x27;add&#x27;</span>,</span><br><span class="line">              <span class="attr">hidden</span>: <span class="literal">true</span>,</span><br><span class="line">              <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;@/views/sys/menus/form.vue&#x27;</span>),</span><br><span class="line">              <span class="attr">name</span>: <span class="string">&#x27;SysMenuEdit&#x27;</span>,</span><br><span class="line">              <span class="attr">meta</span>: &#123; <span class="attr">title</span>: <span class="string">&#x27;添加菜单&#x27;</span> &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">path</span>: <span class="string">&#x27;roles&#x27;</span>,</span><br><span class="line">          <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;@/views/sys/roles/index&#x27;</span>),</span><br><span class="line">          <span class="attr">redirect</span>: <span class="string">&#x27;/sys/roles/list&#x27;</span>,</span><br><span class="line">          <span class="attr">name</span>: <span class="string">&#x27;SysRoles&#x27;</span>,</span><br><span class="line">          <span class="attr">meta</span>: &#123; <span class="attr">title</span>: <span class="string">&#x27;角色管理&#x27;</span>, <span class="attr">icon</span>: <span class="string">&#x27;lock&#x27;</span> &#125;,</span><br><span class="line">          <span class="attr">children</span>: [</span><br><span class="line">            &#123;</span><br><span class="line">              <span class="attr">path</span>: <span class="string">&#x27;list&#x27;</span>,</span><br><span class="line">              <span class="attr">hidden</span>: <span class="literal">true</span>,</span><br><span class="line">              <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;@/views/sys/roles/list.vue&#x27;</span>),</span><br><span class="line">              <span class="attr">name</span>: <span class="string">&#x27;SysRoleList&#x27;</span>,</span><br><span class="line">              <span class="attr">meta</span>: &#123; <span class="attr">title</span>: <span class="string">&#x27;角色列表&#x27;</span> &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">              <span class="attr">path</span>: <span class="string">&#x27;edit&#x27;</span>,</span><br><span class="line">              <span class="attr">hidden</span>: <span class="literal">true</span>,</span><br><span class="line">              <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;@/views/sys/roles/form.vue&#x27;</span>),</span><br><span class="line">              <span class="attr">name</span>: <span class="string">&#x27;SysRoleEdit&#x27;</span>,</span><br><span class="line">              <span class="attr">meta</span>: &#123; <span class="attr">title</span>: <span class="string">&#x27;编辑角色&#x27;</span> &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">              <span class="attr">path</span>: <span class="string">&#x27;add&#x27;</span>,</span><br><span class="line">              <span class="attr">hidden</span>: <span class="literal">true</span>,</span><br><span class="line">              <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;@/views/sys/roles/form.vue&#x27;</span>),</span><br><span class="line">              <span class="attr">name</span>: <span class="string">&#x27;SysRoleEdit&#x27;</span>,</span><br><span class="line">              <span class="attr">meta</span>: &#123; <span class="attr">title</span>: <span class="string">&#x27;添加角色&#x27;</span> &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">path</span>: <span class="string">&#x27;users&#x27;</span>,</span><br><span class="line">          <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;@/views/sys/users/index&#x27;</span>),</span><br><span class="line">          <span class="attr">redirect</span>: <span class="string">&#x27;/sys/users/list&#x27;</span>,</span><br><span class="line">          <span class="attr">name</span>: <span class="string">&#x27;SysUsers&#x27;</span>,</span><br><span class="line">          <span class="attr">meta</span>: &#123; <span class="attr">title</span>: <span class="string">&#x27;用户管理&#x27;</span>, <span class="attr">icon</span>: <span class="string">&#x27;user&#x27;</span> &#125;,</span><br><span class="line">          <span class="attr">children</span>: [</span><br><span class="line">            &#123;</span><br><span class="line">              <span class="attr">path</span>: <span class="string">&#x27;list&#x27;</span>,</span><br><span class="line">              <span class="attr">hidden</span>: <span class="literal">true</span>,</span><br><span class="line">              <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;@/views/sys/users/list.vue&#x27;</span>),</span><br><span class="line">              <span class="attr">name</span>: <span class="string">&#x27;SysUserList&#x27;</span>,</span><br><span class="line">              <span class="attr">meta</span>: &#123; <span class="attr">title</span>: <span class="string">&#x27;用户列表&#x27;</span> &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">              <span class="attr">path</span>: <span class="string">&#x27;add&#x27;</span>,</span><br><span class="line">              <span class="attr">hidden</span>: <span class="literal">true</span>,</span><br><span class="line">              <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;@/views/sys/users/form.vue&#x27;</span>),</span><br><span class="line">              <span class="attr">name</span>: <span class="string">&#x27;SysUserEdit&#x27;</span>,</span><br><span class="line">              <span class="attr">meta</span>: &#123; <span class="attr">title</span>: <span class="string">&#x27;添加用户&#x27;</span> &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">              <span class="attr">path</span>: <span class="string">&#x27;edit&#x27;</span>,</span><br><span class="line">              <span class="attr">hidden</span>: <span class="literal">true</span>,</span><br><span class="line">              <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;@/views/sys/users/form.vue&#x27;</span>),</span><br><span class="line">              <span class="attr">name</span>: <span class="string">&#x27;SysUserEdit&#x27;</span>,</span><br><span class="line">              <span class="attr">meta</span>: &#123; <span class="attr">title</span>: <span class="string">&#x27;编辑用户&#x27;</span> &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          ]</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">          <span class="attr">path</span>: <span class="string">&#x27;icons&#x27;</span>,</span><br><span class="line">          <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="title function_">import</span>(<span class="string">&#x27;@/views/sys/icons/index&#x27;</span>),</span><br><span class="line">          <span class="attr">name</span>: <span class="string">&#x27;SysIcons&#x27;</span>,</span><br><span class="line">          <span class="attr">meta</span>: &#123; <span class="attr">title</span>: <span class="string">&#x27;系统图标&#x27;</span>, <span class="attr">icon</span>: <span class="string">&#x27;el-icon-picture&#x27;</span>, <span class="attr">noCache</span>: <span class="literal">true</span> &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      ]</span><br><span class="line">    &#125;,</span><br><span class="line">  <span class="comment">/** when your routing map is too long, you can split it into small modules **/</span></span><br><span class="line">  <span class="comment">// componentsRouter,</span></span><br><span class="line">  <span class="comment">// chartsRouter,</span></span><br><span class="line">  <span class="comment">// nestedRouter,</span></span><br><span class="line">  <span class="comment">// tableRouter,</span></span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 没有权限要求的底部基本路由</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> afterRoutes = [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">path</span>: <span class="string">&#x27;external-link&#x27;</span>,</span><br><span class="line">    <span class="attr">component</span>: <span class="title class_">Layout</span>,</span><br><span class="line">    <span class="attr">children</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">path</span>: <span class="string">&#x27;https://www.test.com/&#x27;</span>,</span><br><span class="line">        <span class="attr">meta</span>: &#123; <span class="attr">title</span>: <span class="string">&#x27;友情链接&#x27;</span>, <span class="attr">icon</span>: <span class="string">&#x27;link&#x27;</span> &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// 404 page must be placed at the end !!!</span></span><br><span class="line">  &#123; <span class="attr">path</span>: <span class="string">&#x27;*&#x27;</span>, <span class="attr">redirect</span>: <span class="string">&#x27;/404&#x27;</span>, <span class="attr">hidden</span>: <span class="literal">true</span> &#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">createRouter</span> = (<span class="params"></span>) =&gt;</span><br><span class="line">  <span class="keyword">new</span> <span class="title class_">Router</span>(&#123;</span><br><span class="line">    <span class="comment">// mode: &#x27;history&#x27;, // require service support</span></span><br><span class="line">    <span class="attr">scrollBehavior</span>: <span class="function">() =&gt;</span> (&#123; <span class="attr">y</span>: <span class="number">0</span> &#125;),</span><br><span class="line">    <span class="attr">routes</span>: constantRoutes</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> router = <span class="title function_">createRouter</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment">// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">resetRouter</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> newRouter = <span class="title function_">createRouter</span>()</span><br><span class="line">  router.<span class="property">matcher</span> = newRouter.<span class="property">matcher</span> <span class="comment">// reset router</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> router</span><br></pre></td></tr></table></figure>
+
+
+<blockquote>
+<p>源码地址：<a target="_blank" rel="noopener" href="https://github.com/chaooo/spring-security-jwt.git">https://github.com/chaooo/spring-security-jwt.git</a>,<br>这里我将本文的前后端分离后台菜单权限控制放在github源码tag的V4.0中，防止后续修改后代码对不上。</p>
+</blockquote>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%AE%89%E8%A3%85-vue-element-admin"><span class="toc-text">1. 安装 vue-element-admin</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%94%B9%E9%80%A0%E5%89%8D%E7%AB%AF%E8%B7%AF%E7%94%B1%E6%8C%82%E8%BD%BD%E6%96%B9%E5%BC%8F"><span class="toc-text">2. 改造前端路由挂载方式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-%E6%A0%B9%E6%8D%AE%E6%8E%A5%E5%8F%A3%E8%BF%94%E5%9B%9E%E7%9A%84%E8%8F%9C%E5%8D%95%E5%88%97%E8%A1%A8menus%E5%8A%A8%E6%80%81%E6%8C%82%E8%BD%BD%E8%B7%AF%E7%94%B1"><span class="toc-text">2.1 根据接口返回的菜单列表menus动态挂载路由</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-%E5%89%8D%E7%AB%AF%E4%BF%9D%E5%AD%98%E7%9A%84%E5%85%A8%E8%B7%AF%E5%BE%84%E8%B7%AF%E7%94%B1%E8%A1%A8"><span class="toc-text">2.2 前端保存的全路径路由表</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/2021/12/27/spring-security-vue.html">http://chaooo.github.io/2021/12/27/spring-security-vue.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/safe/" rel="tag">安全认证</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2021/12/13/spring-security-rbac.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          「Spring Security」前后端分离后台菜单权限控制
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/12/30/spring-security-permission.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          「Spring Security」前后端分离权限控制-指令级权限
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/12/30/spring-security-permission.html">「Spring Security」前后端分离权限控制-指令级权限</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/27/spring-security-vue.html">「Spring Security」前后端分离菜单权限控制-前端动态路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/spring-security-rbac.html">「Spring Security」前后端分离后台菜单权限控制</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/10/spring-security-token.html">「Spring Security」基于Redis的Token自动续签优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/09/spring-security-jwt.html">「Spring Security」整合 JWT 实现无状态登录示例</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 10.71px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 16.43px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.71px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12.14px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12.14px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.43px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.43px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 17.14px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12.14px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12.14px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12.14px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.57px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.71px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 14.29px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.71px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.86px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.57px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 14.29px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.86px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.57px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 14.29px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.43px;">hexo</a> <a href="/tags/java/" style="font-size: 15.71px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 17.86px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 12.14px;">并发编程</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 10px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.29px;">环境配置</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年12月</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年11月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p style="display:none;">
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+      repo: 'https://github.com/chaooo/BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

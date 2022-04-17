@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>「ElasticStack」ElasticSearch分布式特性 与 Search机制 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-elastic-search" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      「ElasticStack」ElasticSearch分布式特性 与 Search机制
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2018-11-17T12:44:13.000Z" itemprop="datePublished">2018年11月17日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/ElasticStack/">ElasticStack</a>
+  </div>
+
+      
+        <span class="article-views" style="display:none;">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2018/11/17/elastic-search.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="1-ElasticSearch-的分布式特性"><a href="#1-ElasticSearch-的分布式特性" class="headerlink" title="1. ElasticSearch 的分布式特性"></a>1. ElasticSearch 的分布式特性</h3><h4 id="1-1-分布式介绍"><a href="#1-1-分布式介绍" class="headerlink" title="1.1 分布式介绍"></a>1.1 分布式介绍</h4><ol>
+<li><code>ES</code>支持<strong>集群模式</strong>，即一个分布式系统。其好处主要有以下 2 个:<ol>
+<li><strong>可增大系统容量</strong>。比如：内存、磁盘的增加使得<code>ES</code>能够支持<code>PB</code>级别的数据；</li>
+<li><strong>提高了系统可用性</strong>。即使一部分节点停止服务，集群依然可以正常对外服务。</li>
+</ol>
+</li>
+<li><code>ES</code>集群由多个<code>ES实例</code>构成。 + 不同集群通过<strong>集群名字</strong>来区分，通过配置文件<code>elasticsearch.yml</code>中的<code>cluster.name</code>可以修改，默认为<code>elasticsearch</code> + 每个<code>ES实例</code>的本质，其实是一个<code>JVM进程</code>，且有自己的名字，通过配置文件中的<code>node.name</code>可以修改。<span id="more"></span></li>
+</ol>
+<h4 id="1-2-构建-ES-集群"><a href="#1-2-构建-ES-集群" class="headerlink" title="1.2 构建 ES 集群"></a>1.2 构建 ES 集群</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建一个本地化集群my_cluster</span></span><br><span class="line">bin/elasticsearch -Epath.data=node1 -Ecluster.name=my_cluster -Enode.name=node1 -d</span><br><span class="line">bin/elasticsearch -Ehttp.port=8200 -Epath.data=node2 -Ecluster.name=my_cluster -Enode.name=node2 -d</span><br><span class="line">bin/elasticsearch -Ehttp.port=7200 -Epath.data=node3 -Ecluster.name=my_cluster -Enode.name=node3 -d</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>可以通过 cerebro 插件可以看到，集群<code>my_cluster</code>中存在三个节点，分别为：<code>node1</code>、<code>node2</code>、<code>node3</code></p>
+</blockquote>
+<ol>
+<li>**<code>Cluster State</code>**：ES 集群相关的数据，主要记录如下信息：<ul>
+<li>节点信息：如节点名称、连接地址等</li>
+<li>索引信息：如索引名称、配置等</li>
+</ul>
+</li>
+<li><strong><code>Master Node</code><strong>：</strong>主节点</strong>，可修改<code>cluster state</code>的节点。一个集群<strong>只能有一个</strong>。<ul>
+<li><code>cluster state</code>存储于每个节点上，<code>master</code>维护最新版本并向其他从节点同步。</li>
+<li>master 节点是通过集群中所有节点<strong>选举</strong>产生的，可被选举的节点称为**<code>master-eligible节点</code>**</li>
+<li>通过配置<code>node.master:true</code>设置节点为可被选举节点(默认为 true)</li>
+</ul>
+</li>
+<li>**<code>Cordinating Node</code>**：处理请求的节点。是所有节点的默认角色，且不能取消。<ul>
+<li>路由请求到正确的节点处理，如：创建索引的请求到 master 节点。</li>
+</ul>
+</li>
+<li>**<code>Data Node</code>**：存储数据的节点，默认节点都是<code>data</code>类型。配置<code>node.data:true</code>。</li>
+</ol>
+<h4 id="1-3-副本与分片"><a href="#1-3-副本与分片" class="headerlink" title="1.3 副本与分片"></a>1.3 副本与分片</h4><ul>
+<li><p>提高系统可用性：</p>
+<ol>
+<li>服务可用性：集群</li>
+<li>数据可用性：<strong>副本</strong>(Replication)</li>
+</ol>
+</li>
+<li><p>增大系统容量：<strong>分片</strong>(Shard)</p>
+</li>
+<li><p><strong>分片</strong>是<code>ES</code>能支持<code>PB级别数</code>据的基石：可在创建索引时指定</p>
+<ol>
+<li>分片存储部分数据，可以分布于任意节点；</li>
+<li>分片数在索引创建时指定，且后续不能更改，默认为 5 个；</li>
+<li>有主分片和副本分片之分，以实现数据的高可用；</li>
+<li>副本分片由主分片同步数据，可以有多个，从而提高数据吞吐量。</li>
+</ol>
+</li>
+<li><p><strong>分片数的设定</strong>很重要，需要提前规划好</p>
+<ul>
+<li><strong>过小</strong>会导致后续无法通过增加节点实现水平扩容</li>
+<li><strong>过大</strong>会导致一个节点分片过多，造成资源浪费，同时会影响查询性能</li>
+</ul>
+</li>
+<li><p>例如：在 3 个节点的集群中配置索引指定 3 个分片和 1 个副本（<code>index.number_of_shards:3</code>,<br><code>index.number_of_replicas:1</code>），分布如下：<br><img src="/2018/11/17/elastic-search/es_shard.jpg"></p>
+</li>
+<li><p>怎样增加节点或副本提高索引的吞吐量</p>
+<ul>
+<li><strong>同时</strong>增加新的节点<strong>和</strong>加新的副本，这样把新的副本放在新的节点上，进行索引数据读取的时候，并且读取，就会提升索引数据读取的吞吐量。</li>
+</ul>
+</li>
+</ul>
+<h4 id="1-4-ES-集群状态-与-故障转移"><a href="#1-4-ES-集群状态-与-故障转移" class="headerlink" title="1.4 ES 集群状态 与 故障转移"></a>1.4 ES 集群状态 与 故障转移</h4><ul>
+<li>ES 的**健康状态(<code>Cluster Health</code>)**分为三种：<ol>
+<li><code>Greed</code>，绿色。表示所有主分片和副本分片都正常分配；</li>
+<li><code>Yellow</code>，黄色。表示所有主分片都正常分配，但有副本分片未分配；</li>
+<li><code>Red</code>，红色。表示有主分片未分配。</li>
+</ol>
+</li>
+<li>可通过<code>GET _cluster/health</code>查看集群状态<ul>
+<li>返回<strong>集群名称</strong>，<strong>集群状态</strong>，<strong>节点数</strong>，<strong>活跃分片数</strong>等信息。</li>
+<li>如果此时磁盘空间不够，name 在创建新的索引的时候，主副分片都不会再分配，此时的集群状态会直接飙红，但此时依然可以访问集群和索引，也可以正常进行搜索。</li>
+<li>所以：<strong>ES 的集群状态为红色，不一定就不能正常服务</strong>。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>故障转移 <code>Failover</code></strong><ol>
+<li>当其余节点发现定时 ping 主节点 master 无响应的时候，集群状态转为 Red。此时会发起 master 选举。</li>
+<li>新 master 节点发现若有主分片未分配，会将副本分片提升为主分片，此时集群状态转为 Yellow。</li>
+<li>新 master 节点会将提升后的主分片生成新的副本，此时集群状态转为 Green。整个故障转移过程结束。</li>
+</ol>
+</li>
+</ul>
+<h4 id="1-5-文档分布式存储"><a href="#1-5-文档分布式存储" class="headerlink" title="1.5 文档分布式存储"></a>1.5 文档分布式存储</h4><p>通过文档到分片的<strong>映射算法</strong>，使文档<strong>均匀分布</strong>到所有分片上，以充分利用资源。</p>
+<ul>
+<li><p>文档对应分片计算公式：<code>shard = hash(routing)%number_of_primary_shards</code></p>
+<ul>
+<li><code>hash</code>保证数据均匀分布在分片中</li>
+<li><code>routing</code>作为关键参数，默认为文档 ID，也可自行指定</li>
+<li><code>number_of_primary_shards</code>为主分片数</li>
+</ul>
+</li>
+<li><p><strong>主分片数一旦设定，不能更改</strong>：<code>为了保证文档对应的分片不会发生改变</code>。</p>
+</li>
+<li><p>文档<strong>创建</strong>流程:<br><img src="/2018/11/17/elastic-search/elastic1.jpg"></p>
+</li>
+<li><p>文档<strong>读取</strong>流程<br><img src="/2018/11/17/elastic-search/elastic2.jpg"></p>
+</li>
+<li><p>文档<strong>批量创建</strong>流程<br><img src="/2018/11/17/elastic-search/elastic3.jpg"></p>
+</li>
+<li><p>文档<strong>批量读取</strong>流程<br><img src="/2018/11/17/elastic-search/elastic4.jpg"></p>
+</li>
+</ul>
+<h4 id="1-6-脑裂问题"><a href="#1-6-脑裂问题" class="headerlink" title="1.6 脑裂问题"></a>1.6 脑裂问题</h4><ul>
+<li>在分布式系统中一个经典的网络问题<ul>
+<li>当一个集群在运行时，作为<code>master</code>节点的<code>node1</code>的网络突然出现问题，无法和其他节点通信，出现网络隔离情况。那么<code>node1</code>自己会组成一个单节点集群，并更新<code>cluster state</code>；同时作为<code>data</code>节点的<code>node2</code>和<code>node3</code>因为无法和<code>node1</code>通信，则通过选举产生了一个新的<code>master</code>节点<code>node2</code>，也更新了<code>cluster state</code>。那么当<code>node1</code>的网络通信恢复之后，集群无法选择正确的<code>master</code>。</li>
+</ul>
+</li>
+<li>解决方案也很简单：<ul>
+<li>仅在可选举的<code>master-eligible</code>节点数<code>&gt;=quorum</code>的时候才进行<code>master</code>选举。</li>
+<li><code>quorum(至少为2)=master-eligible数量/2 + 1</code>。</li>
+<li>通过<code>discovery.zen.minimum_master_nodes</code>为<code>quorum</code>即可避免脑裂。</li>
+</ul>
+</li>
+</ul>
+<h4 id="1-7-Shards-分片详解"><a href="#1-7-Shards-分片详解" class="headerlink" title="1.7 Shards 分片详解"></a>1.7 Shards 分片详解</h4><ol>
+<li>倒排索引一旦生成，不能更改。<ul>
+<li>优点：<ol>
+<li>不用考虑并发写文件的问题，杜绝了锁机制带来的性能问题</li>
+<li>文件不在更改，则可以利用文件系统缓存，只需载入一次，只要内存足够，直接从内存中读取该文件，性能高；</li>
+<li>利于生成缓存数据(且不需更改)；</li>
+<li>利于对文件进行压缩存储，节省磁盘和内存存储空间。</li>
+</ol>
+</li>
+<li>缺点：在写入新的文档时，必须重构倒排索引文件，然后替换掉老倒排索引文件后，新文档才能被检索到，导致实时性差。</li>
+</ul>
+</li>
+<li>解决文档搜索的实时性问题的方案：<ul>
+<li>新文档直接生成新待排索引文件，查询时同时查询所有倒排索引文件，然后做结果的汇总即可，从而提升了实时性。</li>
+</ul>
+</li>
+<li><code>Segment</code><ul>
+<li><code>Lucene</code>就采用了上述方案，构建的单个倒排索引称为<code>Segment</code>，多个<code>Segment</code>合在一起称为<code>Index</code>(<code>Lucene</code>中的<code>Index</code>)。在<code>ES</code>中的一个<code>shard</code>分片，对应一个<code>Lucene</code>中的<code>Index</code>。且<code>Lucene</code>有一个专门记录所有<code>Segment</code>信息的文件叫做<code>Commit Point</code>。</li>
+<li><code>Segment</code>写入磁盘的过程依然很耗时，可以借助文件系统缓存的特性。「先将<code>Segment</code>在内存中创建并开放查询，来进一步提升实时性」，这个过程在<code>ES</code>中被称为：<code>refresh</code>。</li>
+<li>在<code>refresh</code>之前，文档会先存储到一个缓冲队列<code>buffer</code>中，<code>refresh</code>发生时，将<code>buffer</code>中的所有文档清空，并生成<code>Segment</code>。</li>
+<li><code>ES</code>默认每<code>1s</code>执行一次<code>refresh</code>操作，因此实时性提升到了<code>1s</code>。这也是<code>ES</code>被称为近实时的原因（<code>Near Real Time</code>）。</li>
+</ul>
+</li>
+<li><code>translog</code>文件<ul>
+<li><code>translog</code>机制：当文档写入<code>buffer</code>时，同时会将该操作写入到<code>translog</code>中，这个文件会即时将数据写入磁盘，在 6.0 版本之后默认每个要求都必须落盘，这个操作叫做<code>fsync</code>操作。这个时间也是可以通过配置：<code>index.translog.*</code>进行修改的。比如每五秒进行一次<code>fdync</code>操作，那么风险就是丢失这<code>5s</code>内的数据。</li>
+</ul>
+</li>
+<li>文档搜索实时性——<code>flush</code>(十分重要)<ul>
+<li><code>flush</code>的功能，就是：将内存中的<code>Segment</code>写入磁盘，主要做如下工作：<ol>
+<li>将<code>translog</code>写入磁盘；</li>
+<li>将<code>index bufffer</code>清空，其中的文档生成一个新的<code>Segment</code>，相当于触发一次<code>refresh</code>；</li>
+<li>更新<code>Commit Point</code>文件并写入磁盘；</li>
+<li>执行<code>fsync</code>落盘操作，将内存中的<code>Segment</code>写入磁盘；</li>
+<li>删除旧的<code>translog</code>文件。</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><code>refresh</code>与<code>flush</code>的发生时机<ul>
+<li><code>refresh</code>：发生时机主要有以下几种情况：<ol>
+<li>间隔时间达到。<ul>
+<li>通过<code>index.settings.refresh_interval</code>设置，默认为<code>1s</code>。</li>
+</ul>
+</li>
+<li><code>index.buffer</code>占满时。<ul>
+<li>通过<code>indices.memory.index_buffer_size</code>设置，默认<code>JVM heap</code>的<code>10%</code>，且所有<code>shard</code>共享。</li>
+</ul>
+</li>
+<li><code>flush</code>发生时。会触发一次<code>refresh</code>。</li>
+</ol>
+</li>
+<li><code>flush</code>：发生时机主要有以下几种情况：<ol>
+<li>间隔时间达到。<ul>
+<li>5.x 版本之前，通过<code>index.translog.flush_threshold_period</code>设置，默认 30min。</li>
+<li>5.x 版本之后，<strong>ES 强制每 30min 执行一次 flush，不能再进行更改</strong>。</li>
+</ul>
+</li>
+<li><code>translog</code>占满时。<ul>
+<li>通过<code>index.translog.flush_threshold_size</code>设置，默认<code>512m</code>。且每个<code>Index</code>有自己的<code>translog</code>。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>删除和更新文档：<ul>
+<li>删除：<ul>
+<li><code>Segment</code>一旦生成，就不能更改，删除的时候，<code>Lucene</code>专门维护一个<code>.del</code>文件，记录所有已删除的文档。</li>
+<li><code>.del</code>文件上记录的是文档在<code>Lucene</code>中的<code>ID</code>，在查询结果返回之前，会过滤掉<code>.del</code>文件中的所有文档。</li>
+</ul>
+</li>
+<li>更新：<ul>
+<li>先删除老文档，再创建新文档，两个文档的<code>ID</code>在<code>Lucene</code>中的<code>ID</code>不同，但是在<code>ElasticSearch</code>中<code>ID</code>相同。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>Segment Merging</code>(合并)<ol>
+<li>随着<code>Segment</code>的增多，由于每次查询的<code>Segment</code>数量也增多，导致查询速度变慢；</li>
+<li><code>ES</code>会定时在后台进行<code>Segment merge</code>的操作，减少<code>Segment</code>数量；</li>
+<li>通过<code>force_merge api</code>可以手动强制做<code>Segment</code>的合并操作。</li>
+</ol>
+</li>
+</ol>
+<h3 id="2-ElasticSearch-的集群优化"><a href="#2-ElasticSearch-的集群优化" class="headerlink" title="2. ElasticSearch 的集群优化"></a>2. ElasticSearch 的集群优化</h3><h4 id="2-1-生产环境部署"><a href="#2-1-生产环境部署" class="headerlink" title="2.1 生产环境部署"></a>2.1 生产环境部署</h4><ol>
+<li>遵照官方建议设置所有系统参数。<ul>
+<li>在 ES 的配置文件中 elasticsearch.yml 中，尽量只写必备的参数，其他可通过 api 进行动态设置，随着 ES 版本的不断升级，很多网上流传的参数，现在已经不再适用，所以不要胡乱复制。</li>
+<li>建议设置的基本参数有：<ol>
+<li><code>cluster.name</code></li>
+<li><code>node.name</code></li>
+<li><code>node.master/node.data/node.ingest</code></li>
+<li><code>network.host</code>: 建议显示指定为服务器的内网<code>ip</code>，切勿直接指定<code>0.0.0.0</code>，很容易直接从外部被修改<code>ES</code>数据。</li>
+<li><code>discovery.zen.ping.unicast.hosts</code>: 设置集群其他节点地址，一般设置选举节点即可</li>
+<li><code>discovery.zen.minimum_master_nodes</code>: 一般设置为<code>2</code>，有<code>3</code>个即可。</li>
+<li><code>path.data/path.log</code></li>
+<li>除上述参数外，再根据需要增加其他的静态配置参数，如：<code>refresh</code>优化参数，<code>indices.memory.index_buffer_size</code>。</li>
+</ol>
+</li>
+<li>动态设定的参数有 transient(短暂的)和 persistent(持续的)两种，前者在集群重启后会丢失，后者在集群重启后依然# 生效。二者都覆盖了 yml 中的配置，举例：</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用transient和persistent动态设置ES集群参数</span></span><br><span class="line">PUT /_cluster/Settings</span><br><span class="line">&#123;</span><br><span class="line"> <span class="string">&quot;persistent&quot;</span>:&#123;    <span class="comment"># 永久</span></span><br><span class="line">  <span class="string">&quot;discovery.zen.minimum_master_nodes:2</span></span><br><span class="line"><span class="string"> &#125;,</span></span><br><span class="line"><span class="string"> &quot;</span>transient<span class="string">&quot;:&#123;   # 临时</span></span><br><span class="line"><span class="string">  &quot;</span>indices.store.throttle.max_bytes_per_sec<span class="string">&quot;:&quot;</span>50mb<span class="string">&quot;</span></span><br><span class="line"><span class="string"> &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>关于 JVM 内存设定<ul>
+<li>每个节点尽量不要超多<code>31GB</code>。</li>
+<li>预留一半内存给操作系统，用来做文件缓存。ES 的具体内存大小根据 node 要存储的数据量来估算，为了保证性能<ul>
+<li>搜索类项目中：内存：数据量   &#x3D;&#x3D;&#x3D;&gt;   1：16；</li>
+<li>日志类项目中：内存：数据量   &#x3D;&#x3D;&#x3D;&gt;   1：48&#x2F;96。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">假设现有数据1TB，3个node，1个副本，那么：</span><br><span class="line">每个node存储(1+1)*1024 / 3 = 666GB,即700GB左右，做20%预留空间，每个node约存850GB数据。</span><br><span class="line">此时：</span><br><span class="line">如果是搜索类项目，每个node内存约为850/16=53GB，已经超过31GB最大限制；</span><br><span class="line">而：31*16 = 496，意味着每个node最大只能存496GB的数据，则：2024/496=4.08...即至少需要5个节点。</span><br><span class="line">如果是日志类项目，每个node最大能存:31*48=1488GB,则：2024/1488=1.36...，则三个节点已经够了。</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-写性能优化"><a href="#2-2-写性能优化" class="headerlink" title="2.2 写性能优化"></a>2.2 写性能优化</h4><p>在写上面的优化，主要是增大写的吞吐量——<code>EPS(Event Per Second)</code></p>
+<ul>
+<li>优化方案：<ol>
+<li><code>Client</code>：多线程写，批量写<code>bulk</code>；</li>
+<li><code>ES</code>：在高质量数据建模的前提下，主要在<code>refresh</code>、<code>translig</code>和<code>flush</code>之间做文章。</li>
+</ol>
+</li>
+</ul>
+<ol>
+<li>降低<code>refresh</code>写入内存的频率：<ol>
+<li>增大<code>refresh_interval</code>，降低实时性，增大每次<code>refresh</code>处理的文件数，默认 1s。可以设为-1s，禁止自动<code>refresh</code>。</li>
+<li>增大<code>index</code> <code>buffer</code>大小，参数为：<code>indices.memory.index_buffer_size</code>。此为静态参数，需设定在<code>elasticsea.yml</code>中，默认<code>10%</code></li>
+</ol>
+</li>
+<li>降低 translog 写入磁盘频率，同时会降低容灾能力：<ol>
+<li><code>index.translog.durability</code>：设为<code>async</code>；</li>
+<li><code>index.translog.sync_interval</code>。设置需要的大小如：120s  &#x3D;&gt;   每 120s 才写一次磁盘。</li>
+<li><code>index.translog.flush_threshold_size</code>。默认 512m。即当<code>translog</code>大小超过此值，会触发一次<code>flush</code>，可以调大避免<code>flush</code>过早触发。</li>
+</ol>
+</li>
+<li>在<code>flush</code>方面，从 6.x 开始，ES 固定每 30min 执行一次，所以优化点不多，一般都是 ES 自动完成。</li>
+<li>其他：<ol>
+<li>将副本数设置为 0，在文档全部写完之后再加副本；</li>
+<li>合理设计<code>shard</code>数，保证<code>shard</code>均匀地分布在所有<code>node</code>上，充分利用<code>node</code>资源：<ul>
+<li><code>index.routing.allocation.total_shards_per_node</code>：限定每个索引在每个<code>node</code>上可分配的主副分片数，</li>
+<li>如：有<code>5</code>个<code>node</code>，某索引有<code>10</code>个主分片，<code>1</code>个副本(<code>10</code>个副分片)，则：<code>20/5=45</code>,但是实际要设置为<code>5</code>，预防某个<code>node</code>下线后分片迁移失败。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<blockquote>
+<p>写性能优化，主要还是 index 级别的设置优化。<br>一般在 refresh、translog、flush 三个方面进行优化；</p>
+</blockquote>
+<h4 id="2-3-读性能优化"><a href="#2-3-读性能优化" class="headerlink" title="2.3 读性能优化"></a>2.3 读性能优化</h4><ul>
+<li>主要受以下几方面影响：<ol>
+<li>数据模型是否符合业务模型？</li>
+<li>数据规模是否过大？</li>
+<li>索引配置是否优化？</li>
+<li>查询运距是否优化？</li>
+</ol>
+</li>
+</ul>
+<ol>
+<li>高质量的数据建模<ol>
+<li>将需通过<code>cripte</code>脚本动态计算的值，提前计算好作为字段存入文档中；</li>
+<li>尽量使数据模型贴近业务模型</li>
+</ol>
+</li>
+<li>根据不同数据规模设定不同的<code>SLA</code>(服务等级协议)，万级数据和千万级数据和亿万级数据性能上肯定有差异；</li>
+<li>索引配置优化<ol>
+<li>根据数据规模设置合理的分片数，可通过测试得到最适合的分片数；</li>
+<li>分片数并不是越多越好</li>
+</ol>
+</li>
+<li>查询语句优化<ol>
+<li>尽量使用<code>Filter</code>上下文，减少算分场景(<code>Filter</code>有缓存机制，能极大地提升查询性能)；</li>
+<li>尽量不用<code>cript</code>进行字段计算或算分排序等；</li>
+<li>结合<code>profile</code>、<code>explain API</code>分析慢查询语句的症结所在，再去优化数据模型。</li>
+</ol>
+</li>
+</ol>
+<h4 id="2-4-其他优化点"><a href="#2-4-其他优化点" class="headerlink" title="2.4 其他优化点"></a>2.4 其他优化点</h4><ol>
+<li>如何设定<code>shard</code>数？<ul>
+<li><code>ES</code>的性能基本是线性扩展的，因此，只需测出一个<code>shard</code>的性能指标，然后根据实际的性能需求就可算出所需的<code>shard</code>数。</li>
+<li>测试一个<code>shard</code>的流程如下：<ol>
+<li>搭建与生产环境相同配置的单节点集群；</li>
+<li>设定一个单分片<code>0</code>副本的索引；</li>
+<li>写入实际生产数据进行测试，获取（写性能指标）；</li>
+<li>针对数据进行查询操作，获取（读性能指标）。</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>压力测试工具，可以采用<code>ES</code>自带的<code>esrally</code>，从经验上讲：<ul>
+<li>如果是搜索引擎场景，单<code>shard</code>大小不超过<code>15GB</code>；</li>
+<li>如果是日志分析场景，单<code>shard</code>大小不超过<code>50GB</code>；</li>
+<li>估算索引的总数据大小，除以上述单<code>shard</code>大小，也可得到经验上的分片数。</li>
+</ul>
+</li>
+</ol>
+<h4 id="2-5-ES-集群监控"><a href="#2-5-ES-集群监控" class="headerlink" title="2.5 ES 集群监控"></a>2.5 ES 集群监控</h4><p>使用官方免费插件<code>X-pack</code>。</p>
+<ol>
+<li>安装与启动：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># X-pack的安装</span></span><br><span class="line"><span class="built_in">cd</span> ~/elasticsearch-6.1.1</span><br><span class="line">bin/elasticsearch-plugin install x-pack</span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="built_in">cd</span> ~/kibana-6.1.1</span><br><span class="line">bin/kibana-plugin indtall x-pack</span><br></pre></td></tr></table></figure>
+
+<p>之后重启<code>ES</code>集群即可。<br>在<code>kibana</code>的界面可以看到新增了工具，使用<code>Monitoring</code>进行集群监控。</p>
+<h3 id="3-ElasticSearch-中-Search-的运行机制"><a href="#3-ElasticSearch-中-Search-的运行机制" class="headerlink" title="3. ElasticSearch 中 Search 的运行机制"></a>3. ElasticSearch 中 Search 的运行机制</h3><ul>
+<li><code>Search</code>执行的时候，实际分为两个步骤执行：<ol>
+<li><code>Query</code>阶段：搜索</li>
+<li><code>Fetch</code>阶段：获取</li>
+</ol>
+</li>
+</ul>
+<h4 id="3-1-Query—Then—Fetch："><a href="#3-1-Query—Then—Fetch：" class="headerlink" title="3.1 Query—Then—Fetch："></a>3.1 Query—Then—Fetch：</h4><p>若集群<code>my_cluster</code>中存在三个节点 node1、node2、node3，其中<code>master</code>为 node1，其余的为<code>data</code>节点。</p>
+<ul>
+<li><p><code>Query</code>阶段:<br><img src="/2018/11/17/elastic-search/elastic-q.jpg"></p>
+</li>
+<li><p><code>Fetch</code>阶段:<br><img src="/2018/11/17/elastic-search/elastic-f.jpg"></p>
+</li>
+</ul>
+<h4 id="3-2-相关性算分："><a href="#3-2-相关性算分：" class="headerlink" title="3.2 相关性算分："></a>3.2 相关性算分：</h4><p><strong>相关性算分在<code>shard</code>和<code>shard</code>之间是相互独立的</strong>。也就意味着：同一个单词<code>term</code>在不同的<code>shard</code>上的<code>TDF</code>等值也可能是不同的。得分与<code>shard</code>有关。<br>当文档数量不多时，会导致相关性算分严重不准的情况发生。</p>
+<ul>
+<li>解决方案：<ol>
+<li>设置分片数为<code>1</code>个，从根本上排除问题。（此方案只适用于百万&#x2F;少千万级的少量数据）</li>
+<li>使用<code>DFS Query-then-Fetch</code>查询方式。</li>
+</ol>
+</li>
+<li><code>DFS Query-then-Fecth</code>：<ul>
+<li>在拿到所有文档后，再重新进行完整的计算一次相关性得分，耗费更多的 CPU 和内存，<strong>执行性能也较低</strong>。所以也不推荐。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用DLS Query-then-Fetch进行查询：</span></span><br><span class="line">GET my_index/_search？search_type=dfs_query_then_fetch</span><br><span class="line">&#123;</span><br><span class="line"> <span class="string">&quot;query&quot;</span>:&#123;</span><br><span class="line">  <span class="string">&quot;match&quot;</span>:&#123;</span><br><span class="line">   ...</span><br><span class="line">  &#125;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3-排序相关："><a href="#3-3-排序相关：" class="headerlink" title="3.3 排序相关："></a>3.3 排序相关：</h4><p>默认采用相关性算分结果进行排序。可通过<code>sort</code>参数自定义排序规则，如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用sort关键词进行排序</span></span><br><span class="line">GET my_index/_search</span><br><span class="line">&#123;</span><br><span class="line"> <span class="string">&quot;sort&quot;</span>:&#123;    <span class="comment"># 关键词</span></span><br><span class="line">  <span class="string">&quot;birth&quot;</span>:<span class="string">&quot;desc&quot;</span></span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># 或使用数组形式定义多字段排序规则</span></span><br><span class="line">GET my_index/_search</span><br><span class="line">&#123;</span><br><span class="line"> <span class="string">&quot;sort&quot;</span>:[    <span class="comment"># 使用数组</span></span><br><span class="line">  &#123;</span><br><span class="line">   <span class="string">&quot;birth&quot;</span>:&#123;</span><br><span class="line">    <span class="string">&quot;order&quot;</span>:<span class="string">&quot;asc&quot;</span></span><br><span class="line">   &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">   <span class="string">&quot;age&quot;</span>:&#123;</span><br><span class="line">    <span class="string">&quot;order&quot;</span>:<span class="string">&quot;desc&quot;</span></span><br><span class="line">   &#125;</span><br><span class="line">  &#125;</span><br><span class="line"> ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>直接按数字&#x2F;日期排序，如上例中<code>birth</code></li>
+<li>按字符串进行排序：字符串排序较特殊，因为在<code>ES</code>中有<code>keyword</code>和<code>text</code>两种：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 直接对text类型进行排序</span></span><br><span class="line">GET my_index/_search</span><br><span class="line">&#123;</span><br><span class="line"> <span class="string">&quot;sort&quot;</span>:&#123;</span><br><span class="line">  <span class="string">&quot;username&quot;</span>:<span class="string">&quot;desc&quot;</span>    <span class="comment"># 针对username字段进行倒序排序</span></span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 针对keyword进行排序</span></span><br><span class="line">GET my_index/_search</span><br><span class="line">&#123;</span><br><span class="line"> <span class="string">&quot;sort&quot;</span>:&#123;</span><br><span class="line">  <span class="string">&quot;username.keyword&quot;</span>:<span class="string">&quot;desc&quot;</span>    <span class="comment"># 针对username的子类型keyword类型进行倒叙排序</span></span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-3-1-关于-fielddata-和-docvalues"><a href="#3-3-1-关于-fielddata-和-docvalues" class="headerlink" title="3.3.1 关于 fielddata 和 docvalues:"></a>3.3.1 关于 fielddata 和 docvalues:</h5><p>排序的实质是对字段的原始内容排序的过程，此过程中<strong>倒排索引无法发挥作用</strong>，需要用到<strong>正排索引</strong>。即：通过文档<code>ID</code>和字段得到原始内容。</p>
+<ul>
+<li>ES 提供 2 中实现方式：<ul>
+<li><code>Fielddata</code>。     默认禁用。</li>
+<li><code>DocValues</code>。     默认启用，除了 text 类型。</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>对比</th>
+<th>Fielddata</th>
+<th>DocValues</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>创建时机</td>
+<td>搜索时即时创建</td>
+<td>创建索引时创建，和倒排索引创建时间一致</td>
+</tr>
+<tr>
+<td>创建位置</td>
+<td>JVM Heap</td>
+<td>磁盘</td>
+</tr>
+<tr>
+<td>优点</td>
+<td>不占用额外磁盘空间</td>
+<td>不占用 Heap 内存</td>
+</tr>
+<tr>
+<td>缺点</td>
+<td>文档较多时，同时创建会花费过多时间，占用过多 Heap 内存</td>
+<td>减慢索引的速度，占用额外的磁盘空间</td>
+</tr>
+</tbody></table>
+<h5 id="3-3-2-Fielddata-的开启"><a href="#3-3-2-Fielddata-的开启" class="headerlink" title="3.3.2 Fielddata 的开启:"></a>3.3.2 Fielddata 的开启:</h5><p><code>Fielddata</code><strong>默认关闭</strong>，可通过如下 api 进行开启，且在后续使用时随时可以开启&#x2F;关闭：</p>
+<ul>
+<li>使用场景：<strong>一般在对分词做聚合分析的时候开启</strong>。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 开启字段的fielddata设置</span></span><br><span class="line">PUT my_index/_mapping/doc</span><br><span class="line">&#123;</span><br><span class="line"> <span class="string">&quot;properties&quot;</span>:&#123;</span><br><span class="line">  <span class="string">&quot;username&quot;</span>:&#123;</span><br><span class="line">   <span class="string">&quot;type&quot;</span>:<span class="string">&quot;text&quot;</span>,</span><br><span class="line">   <span class="string">&quot;fielddata&quot;</span>:<span class="literal">true</span>    <span class="comment"># 关键词</span></span><br><span class="line">  &#125;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="3-3-3-Docvalues-的关闭"><a href="#3-3-3-Docvalues-的关闭" class="headerlink" title="3.3.3 Docvalues 的关闭"></a>3.3.3 Docvalues 的关闭</h4><p><code>Docvalues</code><strong>默认开启</strong>，可在创建索引时关闭，且之后不能再打开，要打开只能做 reindex 操作。</p>
+<ul>
+<li>使用场景：当明确知道，不会使用这个字段排序或者不做聚合分析的时候，可关闭 doc_values，减少磁盘空间的占用。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 关闭字段的docvalues设置</span></span><br><span class="line">PUT my_index</span><br><span class="line">&#123;</span><br><span class="line"> <span class="string">&quot;mappings&quot;</span>:&#123;</span><br><span class="line">  <span class="string">&quot;doc&quot;</span>:&#123;</span><br><span class="line">   <span class="string">&quot;properties&quot;</span>:&#123;</span><br><span class="line">    <span class="string">&quot;username&quot;</span>:&#123;</span><br><span class="line">     <span class="string">&quot;type&quot;</span>:<span class="string">&quot;keyword&quot;</span>,</span><br><span class="line">     <span class="string">&quot;doc_values&quot;</span>:<span class="literal">false</span>    <span class="comment"># 关键词</span></span><br><span class="line">    &#125;</span><br><span class="line">   &#125;</span><br><span class="line">  &#125;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="3-4-分页与遍历"><a href="#3-4-分页与遍历" class="headerlink" title="3.4 分页与遍历"></a>3.4 分页与遍历</h4><p>ES 提供了三种方式来解决分页和遍历的问题： <code>from/size</code>，<code>scroll</code>，<code>search_after</code>。</p>
+<h5 id="3-4-1-from-x2F-size"><a href="#3-4-1-from-x2F-size" class="headerlink" title="3.4.1 from&#x2F;size"></a>3.4.1 from&#x2F;size</h5><ul>
+<li><code>from</code>：指明开始位置；</li>
+<li><code>size</code>：指明获取总数</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用from——size</span></span><br><span class="line">GET my_index/_search</span><br><span class="line">&#123;</span><br><span class="line"> <span class="string">&quot;from&quot;</span>:1,    <span class="comment"># 从第2个开始搜索</span></span><br><span class="line"> <span class="string">&quot;size&quot;</span>:2     <span class="comment"># 获取2个长度</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>经典问题：<strong>深度分页</strong>。<ul>
+<li>问题：如何在数据分片存储的情况下， 获取前 1000 个文档？</li>
+<li>答案：<ul>
+<li>先从每个分片上获取前 1000 个文档， 然后由处理节点聚合所有分片的结果之后，再排序获取前 1000 个文档。</li>
+<li>此时页数越深，处理的文档就越多，占用的内存就越大，耗时就越长。这就是深度分页问题。</li>
+<li>为了尽量避免深度分页为题，ES 通过设定<code>index.max_result_window</code>限定最多到 10000 条数据。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在设计分页系统时，有一个分页数十分重要：<ul>
+<li><code>total_page=(total + page_size -1) / page_size</code></li>
+<li>总分页数&#x3D; (文档总数+认为设定的文档大小-1) &#x2F; 人为设定的文档大小</li>
+<li>但是在搜索引擎中的意义并不大，因为如果排在前面的结果都不能让用户满意，那么越往后，越不能让用户满意。</li>
+</ul>
+</li>
+</ol>
+<h5 id="3-4-2-scroll"><a href="#3-4-2-scroll" class="headerlink" title="3.4.2 scroll"></a>3.4.2 scroll</h5><ul>
+<li>遍历文档集的<code>API</code>，以快照的方式来避免深度分页问题。<ol>
+<li>不能用来做实时搜索，因为数据不是实时的；</li>
+<li>尽量不用复杂的<code>sort</code>条件，使用<code>_doc</code>最高效；</li>
+<li>使用比较复杂。</li>
+</ol>
+</li>
+<li>步骤：<ol>
+<li>发起一个<code>scroll search</code>，会返回后续会用到的<code>_scroll_id</code></li>
+<li>调用<code>scroll search</code>的<code>api</code>，获取文档集合，不断迭代至返回<code>hits</code>数组为空时停止</li>
+<li>之后不断返回新的<code>_scroll_id</code>，使用新的<code>_scroll_id</code>进行查询，直到返回数组为空。</li>
+<li>当不断的进行迭代，会产生很多<code>scroll</code>，导致大量内存被占用，可以通过<code>clear api</code>进行删除</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 发起一个scroll search</span></span><br><span class="line">GET my_index/_search?scroll=5m <span class="comment"># 该快照的有效时间为5min</span></span><br><span class="line">&#123;</span><br><span class="line"> <span class="string">&quot;size&quot;</span>1    <span class="comment"># 指明每次scroll返回的文档数</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 调用scroll search 的api，获取文档集合</span></span><br><span class="line">POST _search/scroll</span><br><span class="line">&#123;</span><br><span class="line"> <span class="string">&quot;scroll&quot;</span>:<span class="string">&quot;5m&quot;</span>,    <span class="comment"># 指明有效时间</span></span><br><span class="line"> <span class="string">&quot;scroll_id&quot;</span>:<span class="string">&quot;xxxxxx&quot;</span>    <span class="comment"># 上一步返回的_scroll_id</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 使用clear api对scroll进行删除</span></span><br><span class="line">DELETE /_search/scroll</span><br><span class="line">&#123;</span><br><span class="line"> <span class="string">&quot;scroll_id&quot;</span>:[</span><br><span class="line">   <span class="string">&quot;xxxxxx&quot;</span>,    <span class="comment"># _scroll_id</span></span><br><span class="line">   <span class="string">&quot;xxxxxx&quot;</span>,    <span class="comment"># _scroll_id</span></span><br><span class="line">   ......</span><br><span class="line"> ]</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 删除所有的scroll</span></span><br><span class="line">DELETE /_search/scroll/_all</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-4-3-search-after"><a href="#3-4-3-search-after" class="headerlink" title="3.4.3 search_after"></a>3.4.3 search_after</h5><p>避免深度分页的性能问题，提供实时的下一页文档获取功能。</p>
+<ul>
+<li>缺点：不能使用 from 参数，即：不能指定页数。且只能下一页，不能上一页。</li>
+<li>使用步骤：<ol>
+<li>第一步：正常搜索，但是要指定 sort 值，并保证值唯一：</li>
+<li>第二步：使用上一步最后一个文档的 sort 值进行查询：</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 第一步，正常搜索</span></span><br><span class="line">GET my_index/_search</span><br><span class="line">&#123;</span><br><span class="line"> <span class="string">&quot;size&quot;</span>:1,</span><br><span class="line"> <span class="string">&quot;sort&quot;</span>:&#123;</span><br><span class="line">  <span class="string">&quot;age&quot;</span>:<span class="string">&quot;desc&quot;</span>,</span><br><span class="line">  <span class="string">&quot;_id&quot;</span>:<span class="string">&quot;desc&quot;</span></span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># 第二步，使用sort值进行查询</span></span><br><span class="line">GET my_index/_search</span><br><span class="line">&#123;</span><br><span class="line"> <span class="string">&quot;size&quot;</span>:1,</span><br><span class="line"> <span class="string">&quot;search_after&quot;</span>:[28,<span class="string">&quot;2&quot;</span>],<span class="comment"># 28,&quot;2&quot;，是上一次搜索返回的sort值</span></span><br><span class="line"> <span class="string">&quot;sort&quot;</span>:&#123;</span><br><span class="line">  <span class="string">&quot;age&quot;</span>:<span class="string">&quot;desc&quot;</span>,</span><br><span class="line">  <span class="string">&quot;_id&quot;</span>:<span class="string">&quot;desc&quot;</span></span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-4-4-如何避免深度分页问题"><a href="#3-4-4-如何避免深度分页问题" class="headerlink" title="3.4.4 如何避免深度分页问题:"></a>3.4.4 如何避免深度分页问题:</h5><p>这个问题目前连 google 都没能解决，所以只能最大程度避免，通过唯一排序值定位每次要处理的文档数都控制在 size 内：</p>
+<ul>
+<li>应用场景：<ol>
+<li>from&#x2F;size:需实时获取顶部的部分文档，且需自由翻页（实时）；</li>
+<li>scroll:需全部文档，如：导出所有数据的功能（非实时）；</li>
+<li>search_after:需全部文档，不需自由翻页（实时）。</li>
+</ol>
+</li>
+</ul>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-ElasticSearch-%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E7%89%B9%E6%80%A7"><span class="toc-text">1. ElasticSearch 的分布式特性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BB%8B%E7%BB%8D"><span class="toc-text">1.1 分布式介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-%E6%9E%84%E5%BB%BA-ES-%E9%9B%86%E7%BE%A4"><span class="toc-text">1.2 构建 ES 集群</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-%E5%89%AF%E6%9C%AC%E4%B8%8E%E5%88%86%E7%89%87"><span class="toc-text">1.3 副本与分片</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-ES-%E9%9B%86%E7%BE%A4%E7%8A%B6%E6%80%81-%E4%B8%8E-%E6%95%85%E9%9A%9C%E8%BD%AC%E7%A7%BB"><span class="toc-text">1.4 ES 集群状态 与 故障转移</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5-%E6%96%87%E6%A1%A3%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8"><span class="toc-text">1.5 文档分布式存储</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-6-%E8%84%91%E8%A3%82%E9%97%AE%E9%A2%98"><span class="toc-text">1.6 脑裂问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-7-Shards-%E5%88%86%E7%89%87%E8%AF%A6%E8%A7%A3"><span class="toc-text">1.7 Shards 分片详解</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-ElasticSearch-%E7%9A%84%E9%9B%86%E7%BE%A4%E4%BC%98%E5%8C%96"><span class="toc-text">2. ElasticSearch 的集群优化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2"><span class="toc-text">2.1 生产环境部署</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-%E5%86%99%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"><span class="toc-text">2.2 写性能优化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-%E8%AF%BB%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"><span class="toc-text">2.3 读性能优化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96%E7%82%B9"><span class="toc-text">2.4 其他优化点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-ES-%E9%9B%86%E7%BE%A4%E7%9B%91%E6%8E%A7"><span class="toc-text">2.5 ES 集群监控</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-ElasticSearch-%E4%B8%AD-Search-%E7%9A%84%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6"><span class="toc-text">3. ElasticSearch 中 Search 的运行机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-Query%E2%80%94Then%E2%80%94Fetch%EF%BC%9A"><span class="toc-text">3.1 Query—Then—Fetch：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-%E7%9B%B8%E5%85%B3%E6%80%A7%E7%AE%97%E5%88%86%EF%BC%9A"><span class="toc-text">3.2 相关性算分：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-%E6%8E%92%E5%BA%8F%E7%9B%B8%E5%85%B3%EF%BC%9A"><span class="toc-text">3.3 排序相关：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3-3-1-%E5%85%B3%E4%BA%8E-fielddata-%E5%92%8C-docvalues"><span class="toc-text">3.3.1 关于 fielddata 和 docvalues:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-3-2-Fielddata-%E7%9A%84%E5%BC%80%E5%90%AF"><span class="toc-text">3.3.2 Fielddata 的开启:</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-3-Docvalues-%E7%9A%84%E5%85%B3%E9%97%AD"><span class="toc-text">3.3.3 Docvalues 的关闭</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4-%E5%88%86%E9%A1%B5%E4%B8%8E%E9%81%8D%E5%8E%86"><span class="toc-text">3.4 分页与遍历</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3-4-1-from-x2F-size"><span class="toc-text">3.4.1 from&#x2F;size</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-4-2-scroll"><span class="toc-text">3.4.2 scroll</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-4-3-search-after"><span class="toc-text">3.4.3 search_after</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-4-4-%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8D%E6%B7%B1%E5%BA%A6%E5%88%86%E9%A1%B5%E9%97%AE%E9%A2%98"><span class="toc-text">3.4.4 如何避免深度分页问题:</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/2018/11/17/elastic-search.html">http://chaooo.github.io/2018/11/17/elastic-search.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2018/11/12/elastic-base.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          「ElasticStack」ElasticSearch入门
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/11/21/elastic-aggregation.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          「ElasticStack」ElasticSearch聚合分析与数据建模
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/12/30/spring-security-permission.html">「Spring Security」前后端分离权限控制-指令级权限</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/27/spring-security-vue.html">「Spring Security」前后端分离菜单权限控制-前端动态路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/spring-security-rbac.html">「Spring Security」前后端分离后台菜单权限控制</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/10/spring-security-token.html">「Spring Security」基于Redis的Token自动续签优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/09/spring-security-jwt.html">「Spring Security」整合 JWT 实现无状态登录示例</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 10.71px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 16.43px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.71px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12.14px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12.14px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.43px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.43px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 17.14px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12.14px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12.14px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12.14px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.57px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.71px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 14.29px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.71px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.86px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.57px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 14.29px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.86px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.57px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 14.29px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.43px;">hexo</a> <a href="/tags/java/" style="font-size: 15.71px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 17.86px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 12.14px;">并发编程</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 10px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.29px;">环境配置</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年12月</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年11月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p style="display:none;">
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+      repo: 'https://github.com/chaooo/BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

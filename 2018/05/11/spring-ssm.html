@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>「Spring」SSM框架整合(Spring+SpringMVC+MyBatis) | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-spring-ssm" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      「Spring」SSM框架整合(Spring+SpringMVC+MyBatis)
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2018-05-11T14:52:55.000Z" itemprop="datePublished">2018年05月11日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/Spring/">Spring</a>
+  </div>
+
+      
+        <span class="article-views" style="display:none;">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2018/05/11/spring-ssm.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>SSM框架是spring MVC ，spring和mybatis框架的整合，是标准的MVC模式，将整个系统划分为表现层，controller层，service层，DAO层。<span id="more"></span></p>
+<ul>
+<li>使用spring MVC负责请求的转发和视图管理</li>
+<li>spring实现业务对象管理</li>
+<li>mybatis作为数据对象的持久化引擎</li>
+</ul>
+<h3 id="1-搭建SSM架构步骤："><a href="#1-搭建SSM架构步骤：" class="headerlink" title="1.搭建SSM架构步骤："></a>1.搭建SSM架构步骤：</h3><ol>
+<li>设计数据库</li>
+<li>先写实体类entity，定义对象的属性，（参照数据库中表的字段来设置）。</li>
+<li>编写Mapper.xml（Mybatis），定义功能，对应要对数据库进行的那些操作，比如 insert、selectAll、selectByKey、delete、update等。</li>
+<li>编写Mapper.java(DAO接口)，将Mapper.xml中的操作按照id映射成Java函数。</li>
+<li>配置spring和mybatis框架的整合(applicationContext.xml)</li>
+<li>编写Service.java，为控制层提供服务，接受控制层的参数，完成相应的功能，并返回给控制层。</li>
+<li>配置SpringMVC(web.xml)</li>
+<li>编写Controller.java，连接页面请求和服务层，获取页面请求的参数，通过自动装配，映射不同的URL到相应的处理函数，并获取参数，对参数进行处理，之后传给服务层。</li>
+<li>编写JSP页面调用，请求哪些参数，需要获取什么数据。</li>
+</ol>
+<blockquote>
+<p>DataBase –&gt; Entity –&gt; Mapper.xml –&gt; Mapper.Java(DAO) –&gt; Service.java –&gt; Controller.java –&gt; Jsp</p>
+</blockquote>
+<h3 id="2-搭建SSM架构实例（管理员登录）"><a href="#2-搭建SSM架构实例（管理员登录）" class="headerlink" title="2.搭建SSM架构实例（管理员登录）"></a>2.搭建SSM架构实例（管理员登录）</h3><h4 id="2-1-设计数据库-以MySql为例"><a href="#2-1-设计数据库-以MySql为例" class="headerlink" title="2.1 设计数据库(以MySql为例)"></a>2.1 设计数据库(以MySql为例)</h4><p>建立web项目，在src下新建sql脚本(admin.sql)，并在数据库中执行</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> DATABASE exam_sys;</span><br><span class="line"><span class="comment">/** 管理员表 */</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> admin;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> admin(</span><br><span class="line">    id <span class="type">INT</span> AUTO_INCREMENT COMMENT <span class="string">&#x27;管理员ID&#x27;</span>,</span><br><span class="line">    name <span class="type">VARCHAR</span>(<span class="number">30</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;管理员账号&#x27;</span>,</span><br><span class="line">    password <span class="type">VARCHAR</span>(<span class="number">30</span>) COMMENT <span class="string">&#x27;管理员密码&#x27;</span>,</span><br><span class="line">    <span class="keyword">CONSTRAINT</span> et_admin_id_pk <span class="keyword">PRIMARY</span> KEY(id),</span><br><span class="line">    <span class="keyword">CONSTRAINT</span> et_admin_name_uk <span class="keyword">UNIQUE</span>(NAME)</span><br><span class="line">);</span><br><span class="line"><span class="comment">/** 插入数据 */</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> admin (name, password) <span class="keyword">VALUES</span>(<span class="string">&#x27;admin&#x27;</span>, <span class="string">&#x27;123456&#x27;</span>);</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> admin;</span><br><span class="line"><span class="keyword">COMMIT</span>;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="2-2-先写实体类entity，定义对象的属性"><a href="#2-2-先写实体类entity，定义对象的属性" class="headerlink" title="2.2 先写实体类entity，定义对象的属性"></a>2.2 先写实体类entity，定义对象的属性</h4><p>参照数据库中表的字段来设置</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">package com.<span class="property">exam</span>.<span class="property">entity</span>;</span><br><span class="line"></span><br><span class="line">public <span class="keyword">class</span> <span class="title class_">Admin</span> &#123;</span><br><span class="line">    private int id;</span><br><span class="line">    private <span class="title class_">String</span> name;</span><br><span class="line">    private <span class="title class_">String</span> password;</span><br><span class="line">    <span class="comment">/** 添加 getter/setter方法</span></span><br><span class="line"><span class="comment">     *  添加 无参，有参构造</span></span><br><span class="line"><span class="comment">     *  重写toString()以便于测试</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="2-3-编写AdminMapper-xml（Mybatis），定义功能"><a href="#2-3-编写AdminMapper-xml（Mybatis），定义功能" class="headerlink" title="2.3 编写AdminMapper.xml（Mybatis），定义功能"></a>2.3 编写AdminMapper.xml（Mybatis），定义功能</h4><p>对应要对数据库进行的那些操作，比如 insert、selectAll、selectByKey、delete、update等。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span>  </span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">mapper</span> <span class="keyword">PUBLIC</span> <span class="string">&quot;-//ibatis.apache.org//DTD Mapper 3.0//EN&quot;</span> <span class="string">&quot;http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- namespace指定和哪个Mapper映射器接口对应 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;com.exam.mapper.AdminDao&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 定义SQL语句 --&gt;</span>	</span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;findByNameAndPassword&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;com.exam.entity.Admin&quot;</span>&gt;</span></span><br><span class="line">        select * from admin where name=#&#123;name, jdbcType=VARCHAR&#125; and password=#&#123;password, jdbcType=VARCHAR&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="2-4-编写AdminDao-java，将AdminMapper-xml中的操作按照id映射成Java函数。"><a href="#2-4-编写AdminDao-java，将AdminMapper-xml中的操作按照id映射成Java函数。" class="headerlink" title="2.4 编写AdminDao.java，将AdminMapper.xml中的操作按照id映射成Java函数。"></a>2.4 编写AdminDao.java，将AdminMapper.xml中的操作按照id映射成Java函数。</h4><p>导入Mybatis相关jar包：mybatis.jar、mysql-connector-java.jar(数据库驱动)、mybatis-spring.jar(SM整合)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">package com.<span class="property">exam</span>.<span class="property">mapper</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.<span class="property">apache</span>.<span class="property">ibatis</span>.<span class="property">annotations</span>.<span class="property">Param</span>;</span><br><span class="line"><span class="keyword">import</span> com.<span class="property">exam</span>.<span class="property">entity</span>.<span class="property">Admin</span>;</span><br><span class="line"></span><br><span class="line">public interface <span class="title class_">AdminDao</span> &#123;</span><br><span class="line">    public <span class="title class_">Admin</span> <span class="title function_">findByNameAndPassword</span>(@<span class="title class_">Param</span>(<span class="string">&quot;name&quot;</span>) <span class="title class_">String</span> name, @<span class="title class_">Param</span>(<span class="string">&quot;password&quot;</span>) <span class="title class_">String</span> password);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="2-5-配置spring和mybatis框架的整合"><a href="#2-5-配置spring和mybatis框架的整合" class="headerlink" title="2.5 配置spring和mybatis框架的整合"></a>2.5 配置spring和mybatis框架的整合</h4><p>导入Spring相关jar包：ioc&#x2F;aop&#x2F;dao&#x2F;连接池；添加Spring配置文件（applicationContext.xml）到src下。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 配置连接池对象 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;dataSource&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.apache.commons.dbcp.BasicDataSource&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;driverClassName&quot;</span> <span class="attr">value</span>=<span class="string">&quot;com.mysql.cj.jdbc.Driver&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;url&quot;</span> <span class="attr">value</span>=<span class="string">&quot;jdbc:mysql://localhost:3306/exam_sys&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span> <span class="attr">value</span>=<span class="string">&quot;root&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span> <span class="attr">value</span>=<span class="string">&quot;123456&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 配置SqlSessionFactoryBean来创建SqlSessionFactory</span></span><br><span class="line"><span class="comment">        属性dataSource：注入连接池对象</span></span><br><span class="line"><span class="comment">        属性mapperLocations：指定MyBatis的映射器XML配置文件的位置</span></span><br><span class="line"><span class="comment">        属性typeAliasesPackage：对应我们的实体类所在的包，配置此项可在Mapper映射器直接使用类名，而非包名.类名</span></span><br><span class="line"><span class="comment"> --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;sqlSessionFactory&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.mybatis.spring.SqlSessionFactoryBean&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;dataSource&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;dataSource&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;mapperLocations&quot;</span> <span class="attr">value</span>=<span class="string">&quot;classpath:com/exam/mapper/*.xml&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- &lt;property name=&quot;typeAliasesPackage&quot; value=&quot;com.exam.entity&quot;&gt;&lt;/property&gt; --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 批量生产DAO接口实现类  ,实现类id为类名首字母小写 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;mapperScanner&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.mybatis.spring.mapper.MapperScannerConfigurer&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- &lt;property name=&quot;sqlSessionFactory&quot; ref=&quot;sqlSessionFactory&quot;&gt;&lt;/property&gt; --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;basePackage&quot;</span> <span class="attr">value</span>=<span class="string">&quot;com.exam.mapper&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 自定义注解可以让只让有注解的接口产生实现类，另一部分一部分不产生 --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- &lt;property name=&quot;annotationClass&quot; value=&quot;com.annotation.MyAnnotation&quot;&gt;&lt;/property&gt; --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 开启服务层组件扫描 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;com.exam.service&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="2-6-编写Service-java，为控制层提供服务"><a href="#2-6-编写Service-java，为控制层提供服务" class="headerlink" title="2.6 编写Service.java，为控制层提供服务"></a>2.6 编写Service.java，为控制层提供服务</h4><p>接受控制层的参数，完成相应的功能，并返回给控制层。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">package com.<span class="property">exam</span>.<span class="property">service</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.<span class="property">springframework</span>.<span class="property">beans</span>.<span class="property">factory</span>.<span class="property">annotation</span>.<span class="property">Autowired</span>;</span><br><span class="line"><span class="keyword">import</span> org.<span class="property">springframework</span>.<span class="property">stereotype</span>.<span class="property">Service</span>;</span><br><span class="line"><span class="keyword">import</span> com.<span class="property">exam</span>.<span class="property">mapper</span>.<span class="property">AdminDao</span>;</span><br><span class="line"></span><br><span class="line">@<span class="title class_">Service</span>(<span class="string">&quot;adminService&quot;</span>)</span><br><span class="line">public <span class="keyword">class</span> <span class="title class_">AdminService</span> &#123;</span><br><span class="line">    @<span class="title class_">Autowired</span></span><br><span class="line">    private <span class="title class_">AdminDao</span> dao;</span><br><span class="line">    </span><br><span class="line">    public boolean <span class="title class_">Login</span>(<span class="title class_">String</span> name, <span class="title class_">String</span> password) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> dao.<span class="title function_">findByNameAndPassword</span>(name, password)!=<span class="literal">null</span>?<span class="attr">true</span>:<span class="literal">false</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (<span class="title class_">Exception</span> e) &#123;</span><br><span class="line">            e.<span class="title function_">printStackTrace</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-7-配置SpringMVC"><a href="#2-7-配置SpringMVC" class="headerlink" title="2.7 配置SpringMVC"></a>2.7 配置SpringMVC</h4><p>导入jar包（spring-web.jar，spring-webmvc.jar）,生成web.xml并配置DispatcherServlet分发请求。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 配置编码过滤器 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>CharacterEncodingFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">filter-class</span>&gt;</span>org.springframework.web.filter.CharacterEncodingFilter<span class="tag">&lt;/<span class="name">filter-class</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>encoding<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>utf-8<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">filter-name</span>&gt;</span>CharacterEncodingFilter<span class="tag">&lt;/<span class="name">filter-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">filter-mapping</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 配置DispatcherServlet分发请求 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>DispatcherServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>org.springframework.web.servlet.DispatcherServlet<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>contextConfigLocation<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>classpath:applicationContext.xml<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">load-on-startup</span>&gt;</span>1<span class="tag">&lt;/<span class="name">load-on-startup</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>DispatcherServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 在applicationContext.xml对静态资源进行放行 ：mvc:default-servlet-handler--&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在applicationContext.xml中开启组件扫描(com.controller)，开启标注形式mvc，配置视图处理器 并 对静态资源进行放行。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 开启控制器组件扫描 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;com.exam.controller&quot;</span>/&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 开启标注形式mvc --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:annotation-driven</span> /&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 配置视图处理器 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;viewResolver&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;prefix&quot;</span> <span class="attr">value</span>=<span class="string">&quot;/WEB-INF/&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;suffix&quot;</span> <span class="attr">value</span>=<span class="string">&quot;.jsp&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 对静态资源进行放行 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:default-servlet-handler</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="2-8-编写Controller-java，连接页面请求和服务层"><a href="#2-8-编写Controller-java，连接页面请求和服务层" class="headerlink" title="2.8 编写Controller.java，连接页面请求和服务层"></a>2.8 编写Controller.java，连接页面请求和服务层</h4><p>获取页面请求的参数，通过自动装配，映射不同的URL到相应的处理函数，并获取参数，对参数进行处理，之后传给服务层。（导入Json相关包：jackson-core.jar，jackson-databind.jar，jackson-annotations.jar）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">package com.<span class="property">exam</span>.<span class="property">controller</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.<span class="property">servlet</span>.<span class="property">http</span>.<span class="property">HttpServletRequest</span>;</span><br><span class="line"><span class="keyword">import</span> org.<span class="property">springframework</span>.<span class="property">beans</span>.<span class="property">factory</span>.<span class="property">annotation</span>.<span class="property">Autowired</span>;</span><br><span class="line"><span class="keyword">import</span> org.<span class="property">springframework</span>.<span class="property">stereotype</span>.<span class="property">Controller</span>;</span><br><span class="line"><span class="keyword">import</span> org.<span class="property">springframework</span>.<span class="property">web</span>.<span class="property">bind</span>.<span class="property">annotation</span>.<span class="property">RequestMapping</span>;</span><br><span class="line"><span class="keyword">import</span> org.<span class="property">springframework</span>.<span class="property">web</span>.<span class="property">bind</span>.<span class="property">annotation</span>.<span class="property">RequestMethod</span>;</span><br><span class="line"><span class="keyword">import</span> org.<span class="property">springframework</span>.<span class="property">web</span>.<span class="property">bind</span>.<span class="property">annotation</span>.<span class="property">ResponseBody</span>;</span><br><span class="line"><span class="keyword">import</span> com.<span class="property">exam</span>.<span class="property">entity</span>.<span class="property">Admin</span>;</span><br><span class="line"><span class="keyword">import</span> com.<span class="property">exam</span>.<span class="property">service</span>.<span class="property">AdminService</span>;</span><br><span class="line"></span><br><span class="line">@<span class="title class_">Controller</span></span><br><span class="line">@<span class="title class_">RequestMapping</span>(<span class="string">&quot;/admin&quot;</span>)</span><br><span class="line">public <span class="keyword">class</span> <span class="title class_">AdminController</span> &#123;</span><br><span class="line">    @<span class="title class_">Autowired</span></span><br><span class="line">    private <span class="title class_">AdminService</span> <span class="keyword">as</span>;</span><br><span class="line">    </span><br><span class="line">    @<span class="title class_">RequestMapping</span>(<span class="string">&quot;/tologin&quot;</span>)</span><br><span class="line">    public <span class="title class_">String</span> <span class="title function_">toLogin</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;admin/login&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    @<span class="title class_">RequestMapping</span>(value=<span class="string">&quot;/login&quot;</span>,method=<span class="title class_">RequestMethod</span>.<span class="property">POST</span>)</span><br><span class="line">    @<span class="title class_">ResponseBody</span></span><br><span class="line">    public boolean <span class="title function_">addUser</span>(<span class="params">Admin admin, HttpServletRequest request</span>) &#123;</span><br><span class="line">        <span class="title class_">System</span>.<span class="property">out</span>.<span class="title function_">println</span>(<span class="string">&quot;add:&quot;</span>+admin);</span><br><span class="line">        <span class="title class_">System</span>.<span class="property">out</span>.<span class="title function_">println</span>(admin.<span class="title function_">getName</span>()+<span class="string">&quot;---&quot;</span>+admin.<span class="title function_">getPassword</span>());</span><br><span class="line">        boolean bl = <span class="keyword">as</span>.<span class="title class_">Login</span>(admin.<span class="title function_">getName</span>(), admin.<span class="title function_">getPassword</span>());</span><br><span class="line">        <span class="keyword">if</span>(bl) &#123;</span><br><span class="line">            <span class="comment">//登录成功的逻辑</span></span><br><span class="line">            request.<span class="title function_">getSession</span>().<span class="title function_">setAttribute</span>(<span class="string">&quot;admin&quot;</span>, admin);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//登录失败的逻辑</span></span><br><span class="line">        request.<span class="title function_">setAttribute</span>(<span class="string">&quot;msg&quot;</span>, <span class="string">&quot;登录失败&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="2-9-编写JSP页面调用"><a href="#2-9-编写JSP页面调用" class="headerlink" title="2.9 编写JSP页面调用"></a>2.9 编写JSP页面调用</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span>&gt;</span></span><br><span class="line">    管理员: <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">&quot;aName&quot;</span>  <span class="attr">type</span>=<span class="string">&quot;text&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">    密码:<span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">&quot;aPassword&quot;</span>  <span class="attr">type</span>=<span class="string">&quot;text&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">&quot;loginBtn&quot;</span>  <span class="attr">type</span>=<span class="string">&quot;button&quot;</span>  <span class="attr">value</span>=<span class="string">&quot;登录&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;js/jquery.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">$(<span class="string">&quot;#loginBtn&quot;</span>).<span class="title function_">on</span>(<span class="string">&quot;click&quot;</span>, <span class="keyword">function</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript">    $.<span class="title function_">ajax</span>(&#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="attr">url</span>: <span class="string">&quot;admin/login&quot;</span>,</span></span><br><span class="line"><span class="language-javascript">        <span class="attr">type</span>: <span class="string">&quot;post&quot;</span>,</span></span><br><span class="line"><span class="language-javascript">        <span class="attr">data</span>: &#123;</span></span><br><span class="line"><span class="language-javascript">            <span class="attr">name</span>: $(<span class="string">&quot;#aName&quot;</span>).<span class="title function_">val</span>(),</span></span><br><span class="line"><span class="language-javascript">            <span class="attr">password</span>: $(<span class="string">&quot;#aPassword&quot;</span>).<span class="title function_">val</span>()</span></span><br><span class="line"><span class="language-javascript">        &#125;,</span></span><br><span class="line"><span class="language-javascript">        <span class="attr">success</span>: <span class="keyword">function</span>(<span class="params">res</span>)&#123;</span></span><br><span class="line"><span class="language-javascript">            <span class="title function_">alert</span>(res);</span></span><br><span class="line"><span class="language-javascript">        &#125;</span></span><br><span class="line"><span class="language-javascript">    &#125;);</span></span><br><span class="line"><span class="language-javascript">&#125;);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%90%AD%E5%BB%BASSM%E6%9E%B6%E6%9E%84%E6%AD%A5%E9%AA%A4%EF%BC%9A"><span class="toc-text">1.搭建SSM架构步骤：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%90%AD%E5%BB%BASSM%E6%9E%B6%E6%9E%84%E5%AE%9E%E4%BE%8B%EF%BC%88%E7%AE%A1%E7%90%86%E5%91%98%E7%99%BB%E5%BD%95%EF%BC%89"><span class="toc-text">2.搭建SSM架构实例（管理员登录）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-%E8%AE%BE%E8%AE%A1%E6%95%B0%E6%8D%AE%E5%BA%93-%E4%BB%A5MySql%E4%B8%BA%E4%BE%8B"><span class="toc-text">2.1 设计数据库(以MySql为例)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-%E5%85%88%E5%86%99%E5%AE%9E%E4%BD%93%E7%B1%BBentity%EF%BC%8C%E5%AE%9A%E4%B9%89%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="toc-text">2.2 先写实体类entity，定义对象的属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-%E7%BC%96%E5%86%99AdminMapper-xml%EF%BC%88Mybatis%EF%BC%89%EF%BC%8C%E5%AE%9A%E4%B9%89%E5%8A%9F%E8%83%BD"><span class="toc-text">2.3 编写AdminMapper.xml（Mybatis），定义功能</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-%E7%BC%96%E5%86%99AdminDao-java%EF%BC%8C%E5%B0%86AdminMapper-xml%E4%B8%AD%E7%9A%84%E6%93%8D%E4%BD%9C%E6%8C%89%E7%85%A7id%E6%98%A0%E5%B0%84%E6%88%90Java%E5%87%BD%E6%95%B0%E3%80%82"><span class="toc-text">2.4 编写AdminDao.java，将AdminMapper.xml中的操作按照id映射成Java函数。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-%E9%85%8D%E7%BD%AEspring%E5%92%8Cmybatis%E6%A1%86%E6%9E%B6%E7%9A%84%E6%95%B4%E5%90%88"><span class="toc-text">2.5 配置spring和mybatis框架的整合</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-6-%E7%BC%96%E5%86%99Service-java%EF%BC%8C%E4%B8%BA%E6%8E%A7%E5%88%B6%E5%B1%82%E6%8F%90%E4%BE%9B%E6%9C%8D%E5%8A%A1"><span class="toc-text">2.6 编写Service.java，为控制层提供服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-7-%E9%85%8D%E7%BD%AESpringMVC"><span class="toc-text">2.7 配置SpringMVC</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-8-%E7%BC%96%E5%86%99Controller-java%EF%BC%8C%E8%BF%9E%E6%8E%A5%E9%A1%B5%E9%9D%A2%E8%AF%B7%E6%B1%82%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%B1%82"><span class="toc-text">2.8 编写Controller.java，连接页面请求和服务层</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-9-%E7%BC%96%E5%86%99JSP%E9%A1%B5%E9%9D%A2%E8%B0%83%E7%94%A8"><span class="toc-text">2.9 编写JSP页面调用</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/2018/05/11/spring-ssm.html">http://chaooo.github.io/2018/05/11/spring-ssm.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2018/05/06/spring-mybatis.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          「Spring」持久层框架Mybatis
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/06/06/spring-boot.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          「Spring」SpringBoot入门
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/12/30/spring-security-permission.html">「Spring Security」前后端分离权限控制-指令级权限</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/27/spring-security-vue.html">「Spring Security」前后端分离菜单权限控制-前端动态路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/spring-security-rbac.html">「Spring Security」前后端分离后台菜单权限控制</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/10/spring-security-token.html">「Spring Security」基于Redis的Token自动续签优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/09/spring-security-jwt.html">「Spring Security」整合 JWT 实现无状态登录示例</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 10.71px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 16.43px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.71px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12.14px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12.14px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.43px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.43px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 17.14px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12.14px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12.14px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12.14px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.57px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.71px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 14.29px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.71px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.86px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.57px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 14.29px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.86px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.57px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 14.29px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.43px;">hexo</a> <a href="/tags/java/" style="font-size: 15.71px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 17.86px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 12.14px;">并发编程</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 10px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.29px;">环境配置</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年12月</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年11月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p style="display:none;">
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+      repo: 'https://github.com/chaooo/BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

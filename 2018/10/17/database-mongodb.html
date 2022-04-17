@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>「数据库」MongoDB学习笔记 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-database-mongodb" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      「数据库」MongoDB学习笔记
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2018-10-17T10:20:16.000Z" itemprop="datePublished">2018年10月17日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/db/">数据库</a>
+  </div>
+
+      
+        <span class="article-views" style="display:none;">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2018/10/17/database-mongodb.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="1-安装"><a href="#1-安装" class="headerlink" title="1. 安装"></a>1. 安装</h3><p>在mongodb官网下载对应自己电脑系统的安装包，地址为： <a target="_blank" rel="noopener" href="http://www.mongodb.org/downloads">http://www.mongodb.org/downloads</a>。</p>
+<span id="more"></span> 
+<p>1、以Windows64bit为例，下载.msi文件双击安装。<br>2、安装过程中，点击 “Custom(自定义)” 按钮来设置安装目录(D:\MongoDB\bin)。<br>3、创建数据目录(D:\MongoDB\data\db),MongoDB默认数据目录\data\db。<br>4、连接数据库(命令行win+r cmd,到D:\MongoDB\bin目录下，执行代码：mongod –dbpath D:\MongoDB\data\db)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">D:</span><br><span class="line"><span class="built_in">cd</span> D:\MongoDB\bin</span><br><span class="line">mongod --dbpath D:\MongoDB\data\db</span><br></pre></td></tr></table></figure>
+<p>5、启动 MongoDB JavaScript 工具(D:\MongoDB\bin目录下,打开mongo,会看到：)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MongoDB shell version: 3.2.4  //mongodb版本</span><br><span class="line">connecting to: <span class="built_in">test</span>  //默认shell连接的是本机localhost 上面的<span class="built_in">test</span>库</span><br></pre></td></tr></table></figure>
+<p>此时就可以操作数据库了。</p>
+<h3 id="2-将MongoDB服务器作为Windows服务运行"><a href="#2-将MongoDB服务器作为Windows服务运行" class="headerlink" title="2. 将MongoDB服务器作为Windows服务运行"></a>2. 将MongoDB服务器作为Windows服务运行</h3><p>1、在D:\MongoDB目录下创建mongodb.config,写入如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 数据库文件目录</span></span><br><span class="line">dbpath=D:/MongoDB/data</span><br><span class="line"><span class="comment">## 日志目录</span></span><br><span class="line">logpath=D:/MongoDB/log/mongo.log</span><br><span class="line">diaglog=3</span><br></pre></td></tr></table></figure>
+<p>2、常规命令(cmd管理员):</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">D:</span><br><span class="line">cd D:\MongoDB\bin</span><br><span class="line">mongod --config D:\MongoDB\mongodb.config </span><br></pre></td></tr></table></figure>
+<p>3、若常规方式失败，则sc方式(cmd管理员)：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">D:</span><br><span class="line">cd D:\MongoDB\bin</span><br><span class="line">sc create mongodb binPath= &quot;D:\MongoDB\bin\mongod.exe --service --config=D:\mongoDB\mongodb.config&quot; </span><br></pre></td></tr></table></figure>
+<p>访问地址：localhost:27017测试是否启动成功</p>
+<h3 id="3-CRUD操作-Creat-Read-Update-Delete"><a href="#3-CRUD操作-Creat-Read-Update-Delete" class="headerlink" title="3. CRUD操作(Creat,Read,Update,Delete)"></a>3. CRUD操作(Creat,Read,Update,Delete)</h3><h4 id="3-1-MongoDB基础"><a href="#3-1-MongoDB基础" class="headerlink" title="3.1 MongoDB基础"></a>3.1 MongoDB基础</h4><p>1、document(文档)</p>
+<p>MongoDB把所有数据存放在类似于JSON数据结构的文档内：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span> <span class="attr">&quot;item&quot;</span><span class="punctuation">:</span> <span class="string">&quot;pencil&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;qty&quot;</span><span class="punctuation">:</span> <span class="number">500</span><span class="punctuation">,</span> <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;no.2&quot;</span> <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>2、collection(集合)</p>
+<p>集合是一组相关的文档，MongoDB存储所有的文档在集合里,他们拥有一套共享的通用索引。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span> <span class="attr">&quot;item&quot;</span><span class="punctuation">:</span> <span class="string">&quot;pencil&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;qty&quot;</span><span class="punctuation">:</span> <span class="number">500</span><span class="punctuation">,</span> <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;no.1&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#123;</span> <span class="attr">&quot;item&quot;</span><span class="punctuation">:</span> <span class="string">&quot;pencil2&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;qty&quot;</span><span class="punctuation">:</span> <span class="number">550</span><span class="punctuation">,</span> <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;no.2&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#123;</span> <span class="attr">&quot;item&quot;</span><span class="punctuation">:</span> <span class="string">&quot;pencil3&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;qty&quot;</span><span class="punctuation">:</span> <span class="number">800</span><span class="punctuation">,</span> <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;no.3&quot;</span> <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>3、database(数据库)</p>
+<p>MongoDB的默认数据库为”db”，该数据库存储在data目录中。一个mongodb中可以建立多个数据库。</p>
+<h4 id="3-2-数据库操作："><a href="#3-2-数据库操作：" class="headerlink" title="3.2 数据库操作："></a>3.2 数据库操作：</h4><p>连接及运行mongoDB<br>“<code>show dbs</code>“命令可以显示所有的数据的列表<br>“<code>db</code>“命令可以显示当前数据库对象或集合<br>“<code>use</code>“命令可以连接到一个指定的数据库<br>数据库也通过名字来标识。数据库名可以是满足以下条件的任意UTF-8字符串。<br>  1.不能是空字符串（””)。<br>  2.不得含有’ ‘（空格)、.、$、&#x2F;、\和\0 (空宇符)。<br>  3.应全部小写。<br>  4.最多64字节。</p>
+<p>1、创建数据库：<code>use Database_Name</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">use <span class="built_in">test</span>  <span class="comment">##创建名为test的数据库</span></span><br></pre></td></tr></table></figure>
+<p>2、删除当前数据库：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.dropDatabase()</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3-文档操作（以-Collection-Name-x3D-col-为例）"><a href="#3-3-文档操作（以-Collection-Name-x3D-col-为例）" class="headerlink" title="3.3 文档操作（以 Collection_Name &#x3D; col 为例）"></a>3.3 文档操作（以 Collection_Name &#x3D; col 为例）</h4><h5 id="3-3-1插入："><a href="#3-3-1插入：" class="headerlink" title="3.3.1插入："></a>3.3.1插入：</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">db.col.insert(Document)     <span class="comment">##插入一条或多组数据</span></span><br><span class="line">db.col.insertOne(Document)  <span class="comment">##插入一条数据</span></span><br><span class="line">db.col.insertMany(Document) <span class="comment">##插入多条数据</span></span><br><span class="line"><span class="comment">##例如：</span></span><br><span class="line">    db.col.insertOne(&#123; <span class="string">&quot;item&quot;</span>: <span class="string">&quot;pencil&quot;</span>, <span class="string">&quot;type&quot;</span>: <span class="string">&quot;no.1&quot;</span> &#125;)</span><br><span class="line">    db.col.insertMany([</span><br><span class="line">    &#123; <span class="string">&quot;item&quot;</span>: <span class="string">&quot;dog&quot;</span>, <span class="string">&quot;type&quot;</span>: <span class="string">&quot;no.2&quot;</span> &#125;,</span><br><span class="line">    &#123; <span class="string">&quot;item&quot;</span>: <span class="string">&quot;apple&quot;</span>, <span class="string">&quot;type&quot;</span>: <span class="string">&quot;no.3&quot;</span> &#125;,</span><br><span class="line">    &#123; <span class="string">&quot;item&quot;</span>: <span class="string">&quot;orange&quot;</span>, <span class="string">&quot;type&quot;</span>: <span class="string">&quot;no.4&quot;</span> &#125;</span><br><span class="line">    ])</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-3-2-删除："><a href="#3-3-2-删除：" class="headerlink" title="3.3.2 删除："></a>3.3.2 删除：</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">db.col.remove(&#123;&#125;)                    <span class="comment">##删除所有数据</span></span><br><span class="line">db.col.remove(query &lt;,options&gt;)</span><br><span class="line">    <span class="comment">#  query: 查询条件(数据索引或名字)</span></span><br><span class="line">    <span class="comment">#  ptions:两个可选参数</span></span><br><span class="line">    <span class="comment">#      &#123;justOne: &lt;boolean&gt;,     //默认false，删除所有匹配到的。</span></span><br><span class="line">    <span class="comment">#       writeConcern: &lt;document&gt;//抛出异常的级别。</span></span><br><span class="line">    <span class="comment">#      &#125;</span></span><br><span class="line">db.col.deleteOne(query &lt;,options&gt;)   <span class="comment">##同上，无justOne参数，只删除第一条</span></span><br><span class="line">db.col.deleteMany(query &lt;,options&gt;)  <span class="comment">##同上，无justOne参数，只删除多条</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="3-3-3-更新："><a href="#3-3-3-更新：" class="headerlink" title="3.3.3 更新："></a>3.3.3 更新：</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">db.col.update(query, update &lt;,options&gt;)</span><br><span class="line">    <span class="comment">#  query:  查询条件(数据索引或名字)</span></span><br><span class="line">    <span class="comment">#  update: 更新的内容，语法：&#123;$set:query&#125;</span></span><br><span class="line">    <span class="comment">#  options:三个可选参数</span></span><br><span class="line">    <span class="comment">#      &#123;upsert: &lt;boolean&gt;,      //如果不存在update的记录，是否插入新数据，默认:false。</span></span><br><span class="line">    <span class="comment">#       multi: &lt;boolean&gt;,       //只更新找到的第一条记录，默认是false,如果为true,多条记录全部更新。</span></span><br><span class="line">    <span class="comment">#       writeConcern: &lt;document&gt;//#抛出异常的级别。</span></span><br><span class="line">    <span class="comment">#      &#125;</span></span><br><span class="line"><span class="comment">##例如：</span></span><br><span class="line">    db.col.update(</span><br><span class="line">        &#123;<span class="string">&quot;type&quot;</span>: <span class="string">&quot;no.1&quot;</span>&#125;, </span><br><span class="line">        &#123;<span class="variable">$set</span>: &#123;<span class="string">&quot;item&quot;</span>: <span class="string">&quot;human&quot;</span>&#125;&#125;, </span><br><span class="line">        &#123;upsert: <span class="literal">true</span>, multi: <span class="literal">true</span>&#125;</span><br><span class="line">        )</span><br><span class="line">db.col.updateOne()                    <span class="comment">##同上，无multi参数，只更新第一条</span></span><br><span class="line">db.col.updateMany()                   <span class="comment">##同上，无multi参数</span></span><br><span class="line">db.col.replaceOne()                   <span class="comment">##同updateOne</span></span><br><span class="line">db.col.save(document &lt;,writeConcern&gt;) <span class="comment">##通过传入的文档整个替换</span></span><br></pre></td></tr></table></figure>
+<h5 id="insert-与-save的区别"><a href="#insert-与-save的区别" class="headerlink" title="insert 与 save的区别"></a>insert 与 save的区别</h5><p>如果插入的数据的_id相同,save将会更新该文档,而insert将会报错</p>
+<h5 id="update常用操作符"><a href="#update常用操作符" class="headerlink" title="update常用操作符"></a>update常用操作符</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$set</span>         <span class="comment">##当文档中包含该字段的时候,更新该字段,如果该文档中没有该字段,则为本文档添加一个字段.</span></span><br><span class="line"><span class="variable">$unset</span>       <span class="comment">##删除文档中的一个字段.</span></span><br><span class="line"><span class="variable">$rename</span>      <span class="comment">##重命名某个列</span></span><br><span class="line"><span class="variable">$inc</span>         <span class="comment">##增长某个列</span></span><br><span class="line"><span class="variable">$setOnInsert</span> <span class="comment">##当upsert为true时,并且发生了insert操作时,可以补充的字段</span></span><br><span class="line"><span class="variable">$push</span>        <span class="comment">##将一个数字存入一个数组,分为三种情况,如果该字段存在,则直接将数字存入数组.如果该字段不存在,创建字段并且将数字插入该数组.如果更新的字段不是数组,会报错的.</span></span><br><span class="line"><span class="variable">$pushAll</span>     <span class="comment">##将多个数值一次存入数组.上面的push只能一个一个的存入</span></span><br><span class="line"><span class="variable">$addToSet</span>    <span class="comment">##与$push功能相同将一个数字存入数组,不同的是如果数组中有这个数字,将不会插入,只会插入新的数据,同样也会有三种情况,与$push相同.</span></span><br><span class="line"><span class="variable">$pop</span>         <span class="comment">##删除数组最后一个元素</span></span><br><span class="line"><span class="variable">$pull</span>        <span class="comment">##删除数组中的指定的元素,如果删除的字段不是数组,会报错</span></span><br><span class="line"><span class="variable">$pullAll</span>     <span class="comment">##删除数组中的多个值,跟pushAll与push的关系类似.</span></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="3-4-查询"><a href="#3-4-查询" class="headerlink" title="3.4 查询"></a>3.4 查询</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">db.col.find(&#123;&#125;)          <span class="comment">##查询所有文档</span></span><br><span class="line">db.col.find().pretty()   <span class="comment">##以易读的方式来读取数据</span></span><br><span class="line">db.collection.find(query, projection)</span><br><span class="line">    <span class="comment">#  query：查询条件(数据索引或名字)</span></span><br><span class="line">    <span class="comment">#  projection：可选。指定返回的字段。</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="3-4-1-深入查询表达式"><a href="#3-4-1-深入查询表达式" class="headerlink" title="3.4.1 深入查询表达式"></a>3.4.1 深入查询表达式</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">db.col.find()<span class="comment">##查询所有</span></span><br><span class="line">db.col.find(&#123;filed: value&#125;)                              <span class="comment">##等值查询</span></span><br><span class="line">db.col.find(&#123;filed: &#123;<span class="variable">$ne</span>: value&#125;&#125;)                       <span class="comment">##不等于 $ne</span></span><br><span class="line">db.col.find(&#123;filed: &#123;<span class="variable">$nin</span>: [value1, value2, ...]&#125;&#125;)      <span class="comment">##不能包含给定的值 $nin</span></span><br><span class="line">db.col.find(&#123;filed: &#123;<span class="variable">$all</span>: [value1, value2, ...]&#125;&#125;)      <span class="comment">##必须包含所有给定的值 $all</span></span><br><span class="line">db.col.find(&#123;filed: &#123;<span class="variable">$in</span>: [value1, value2, ...]&#125;&#125;)       <span class="comment">##只要包含一个或多个给定的值 $in</span></span><br><span class="line">db.col.find(&#123;filed: &#123;<span class="variable">$exists</span>:1&#125;&#125;)                        <span class="comment">##存在filed字段的</span></span><br><span class="line">db.col.find(&#123;filed: &#123;<span class="variable">$exists</span>:0&#125;&#125;)                        <span class="comment">##不存在filed字段的</span></span><br><span class="line">db.col.find(&#123;filed: &#123;<span class="variable">$mod</span>:[3,1]&#125;&#125;)                       <span class="comment">##模三余一，$mod(取模操作)</span></span><br><span class="line">db.col.find(&#123;<span class="variable">$or</span>: [&#123;filed1: vulue1&#125;, &#123;filed2: vulue2&#125;]&#125;) <span class="comment">##或 $or</span></span><br><span class="line">db.col.find(&#123;<span class="variable">$nor</span>: [&#123;filed1: vulue1&#125;, &#123;filed2: vulue2&#125;]&#125;)<span class="comment">##排除 $nor</span></span><br><span class="line">db.col.find(&#123;filed: &#123;<span class="variable">$size</span>: 3&#125;&#125;)                         <span class="comment">##返回值得数组是给定的长度(3) $size</span></span><br><span class="line">db.col.find(&#123;<span class="variable">$where</span>: <span class="function"><span class="title">function</span></span>()&#123;<span class="built_in">return</span> ...&#125;&#125;)            <span class="comment">##回调，隐式迭代，符合条件才返回</span></span><br><span class="line">db.col.find(&#123;<span class="variable">$where</span>: <span class="string">&#x27;...&#x27;</span>&#125;&#125;)                            <span class="comment">##同上</span></span><br><span class="line">db.col.find(&#123;age: &#123;<span class="variable">$lt</span>: 5&#125;&#125;).<span class="built_in">limit</span>(3)                    <span class="comment">##查询age的值小于5，限制3条</span></span><br><span class="line">    <span class="comment">#范围查询：</span></span><br><span class="line">    <span class="comment">#    $lt  （小于）</span></span><br><span class="line">    <span class="comment">#    $gt  （大于）</span></span><br><span class="line">    <span class="comment">#    $lte （小于等于）</span></span><br><span class="line">    <span class="comment">#    $gte （大于等于）</span></span><br><span class="line">    <span class="comment">#    limit（限制显示）</span></span><br><span class="line">db.col.find().skip(2).<span class="built_in">limit</span>(3)                           <span class="comment">##跳过前两个文档查询后面三个</span></span><br><span class="line">    <span class="comment">#  skip(num):表示跳过前面num个文档</span></span><br><span class="line">db.col.find().<span class="built_in">sort</span>(&#123;age: 1&#125;)                             <span class="comment">##查询后以age升序排列显示</span></span><br><span class="line">    <span class="comment">#  sort():排序，这里 1 代表升序, -1 代表降序.</span></span><br><span class="line">db.col.find(&#123;filed: /user.*/i&#125;)                          <span class="comment">##正则，查询filed以user开头不区分大小写（正则效率低）</span></span><br><span class="line">db.col.find(&#123;filed: &#123;<span class="variable">$type</span>: 1&#125;&#125;)                         <span class="comment">##查找filed为双精度的文档</span></span><br><span class="line">    <span class="comment"># 根据数据类型查询 $type</span></span><br><span class="line">    <span class="comment">#      |类型　　　　　　　　|编号|</span></span><br><span class="line">    <span class="comment">#      |双精度　　　　　　　|1 　|</span></span><br><span class="line">    <span class="comment">#      |字符串　　　　　　　|2 　|</span></span><br><span class="line">    <span class="comment">#      |对象　　　　　　　　|3   |</span></span><br><span class="line">    <span class="comment">#      |数组　　　　　　　　|4   |</span></span><br><span class="line">    <span class="comment">#      |二进制数据　　　　　|5   |</span></span><br><span class="line">    <span class="comment">#      |对象ID　　　　　　　|7   |</span></span><br><span class="line">    <span class="comment">#      |布尔值　　　　　　　|8   |</span></span><br><span class="line">    <span class="comment">#      |日期　　　　　　　　|9   |</span></span><br><span class="line">    <span class="comment">#      |空　　　　　　　　　|10  |</span></span><br><span class="line">    <span class="comment">#      |正则表达式　　　　　|11  |</span></span><br><span class="line">    <span class="comment">#      |JavaScript　　　　|13  |</span></span><br><span class="line">    <span class="comment">#      |符号　　　　　　　　|14  |</span></span><br><span class="line">    <span class="comment">#      |JavaScript(带范围)|15  |</span></span><br><span class="line">    <span class="comment">#      |32位整数　　　　　　|16  |</span></span><br><span class="line">    <span class="comment">#      |时间戳　　　　　　　|17  |</span></span><br><span class="line">    <span class="comment">#      |64位整数　　　　　　|18  |</span></span><br><span class="line">    <span class="comment">#      |最小键　　　　　　　|255 |</span></span><br><span class="line">    <span class="comment">#      |最大键　　　　　　　|127 |</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="3-4-2-group分组查询"><a href="#3-4-2-group分组查询" class="headerlink" title="3.4.2 group分组查询"></a>3.4.2 group分组查询</h5><p>group做的聚合有些复杂。先选定分组所依据的键，此后MongoDB就会将集合依据选定键值的不同分成若干组。然后可以通过聚合每一组内的文档，产生一个结果文档。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">group(&#123;</span><br><span class="line">  key:&#123;字段:1&#125;,</span><br><span class="line">  initial:&#123;变量:初始值&#125;,</span><br><span class="line">  <span class="variable">$reduce</span>:<span class="keyword">function</span>(doc,prev)&#123;函数代码&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>其中key下的字段代表,需要按哪个字段分组.<br>initial下的变量表示这一个分组中会使用的变量,并且给一个初始值.可以在后面的$reduce函数中使用.<br>$reduce的两个参数,分别代表当前的文档和上个文档执行完函数后的结果.</p>
+<p>栗子：如下我们按年龄分组,同级不同年龄的用户的多少:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">db.user.<span class="function"><span class="title">find</span></span>()</span><br><span class="line">    &#123; <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;5198c286c686eb50e2c843b2&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user0&quot;</span>, <span class="string">&quot;age&quot;</span> : 0 &#125;</span><br><span class="line">    &#123; <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;5198c286c686eb50e2c843b3&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user1&quot;</span>, <span class="string">&quot;age&quot;</span> : 1 &#125;</span><br><span class="line">    &#123; <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;5198c286c686eb50e2c843b4&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user2&quot;</span>, <span class="string">&quot;age&quot;</span> : 2 &#125;</span><br><span class="line">    &#123; <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;5198c286c686eb50e2c843b5&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user3&quot;</span>, <span class="string">&quot;age&quot;</span> : 1 &#125;</span><br><span class="line">    &#123; <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;5198c286c686eb50e2c843b6&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user4&quot;</span>, <span class="string">&quot;age&quot;</span> : 1 &#125;</span><br><span class="line">    &#123; <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;5198c286c686eb50e2c843b7&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user5&quot;</span>, <span class="string">&quot;age&quot;</span> : 2 &#125;</span><br><span class="line"></span><br><span class="line">db.user.group(&#123;</span><br><span class="line">    key:&#123;age:1&#125;,</span><br><span class="line">    initial:&#123;count:0&#125;,</span><br><span class="line">    <span class="variable">$reduce</span>:<span class="keyword">function</span>(doc,prev)&#123;</span><br><span class="line">        prev.count++</span><br><span class="line">    &#125;</span><br><span class="line">&#125;); </span><br><span class="line">    [</span><br><span class="line">        &#123;<span class="string">&quot;age&quot;</span>: 0, <span class="string">&quot;count&quot;</span>: 1&#125;,</span><br><span class="line">        &#123;<span class="string">&quot;age&quot;</span>: 1, <span class="string">&quot;count&quot;</span>: 3&#125;,</span><br><span class="line">        &#123;<span class="string">&quot;age&quot;</span>: 2, <span class="string">&quot;count&quot;</span>: 2&#125;</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">db.user.group(&#123;</span><br><span class="line">    key:&#123;age:1&#125;,</span><br><span class="line">    initial:&#123;<span class="built_in">users</span>:[]&#125;,</span><br><span class="line">    reduce:<span class="keyword">function</span>(doc,prev)&#123;</span><br><span class="line">        prev.users.push(doc.name)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">  [</span><br><span class="line">      &#123;<span class="string">&quot;age&quot;</span>: 0, <span class="string">&quot;users&quot;</span>: [<span class="string">&quot;user0&quot;</span>]&#125;,</span><br><span class="line">      &#123;<span class="string">&quot;age&quot;</span>: 1, <span class="string">&quot;users&quot;</span>: [<span class="string">&quot;user1&quot;</span>, <span class="string">&quot;user3&quot;</span>, <span class="string">&quot;user4&quot;</span>]&#125;,</span><br><span class="line">      &#123;<span class="string">&quot;age&quot;</span>: 2, <span class="string">&quot;users&quot;</span>: [<span class="string">&quot;user2&quot;</span>, <span class="string">&quot;user5&quot;</span>]&#125;</span><br><span class="line">  ]</span><br></pre></td></tr></table></figure>
+
+<p>另外本函数还有两个可选参数 condition 和 finalize<br>condition就是分组的条件筛选类似mysql中的having</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">db.user.group(&#123;</span><br><span class="line">    key:&#123;age:1&#125;,</span><br><span class="line">    initial:&#123;<span class="built_in">users</span>:[]&#125;,</span><br><span class="line">    <span class="variable">$reduce</span>:<span class="keyword">function</span>(doc,prev)&#123;</span><br><span class="line">        prev.users.push(doc.name)</span><br><span class="line">    &#125;,</span><br><span class="line">    condition:&#123;age:&#123;<span class="variable">$gt</span>:0&#125;&#125;&#125;)</span><br><span class="line">　<span class="comment">##筛选出age大于0的:</span></span><br><span class="line">[</span><br><span class="line">    &#123;<span class="string">&quot;age&quot;</span>: 1, <span class="string">&quot;users&quot;</span>: [<span class="string">&quot;user1&quot;</span>, <span class="string">&quot;user3&quot;</span>, <span class="string">&quot;user4&quot;</span>]&#125;,</span><br><span class="line">    &#123;<span class="string">&quot;age&quot;</span>: 2, <span class="string">&quot;users&quot;</span>: [<span class="string">&quot;user2&quot;</span>, <span class="string">&quot;user5&quot;</span>]&#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-4-3-count统计"><a href="#3-4-3-count统计" class="headerlink" title="3.4.3 count统计"></a>3.4.3 count统计</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.goods.count()            <span class="comment">##统计该集合总数</span></span><br><span class="line">db.goods.count(&#123;cat_id: 3&#125;) <span class="comment">##统计cat_id=3的总数</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="3-4-4-distinct排重"><a href="#3-4-4-distinct排重" class="headerlink" title="3.4.4 distinct排重"></a>3.4.4 distinct排重</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">db.user.<span class="function"><span class="title">find</span></span>()</span><br><span class="line">   &#123; <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;5198c286c686eb50e2c843b2&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user0&quot;</span>, <span class="string">&quot;age&quot;</span> : 0 &#125;</span><br><span class="line">   &#123; <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;5198c286c686eb50e2c843b3&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user1&quot;</span>, <span class="string">&quot;age&quot;</span> : 1 &#125;</span><br><span class="line">   &#123; <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;5198c286c686eb50e2c843b4&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user2&quot;</span>, <span class="string">&quot;age&quot;</span> : 2 &#125;</span><br><span class="line">   &#123; <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;5198c286c686eb50e2c843b5&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user3&quot;</span>, <span class="string">&quot;age&quot;</span> : 1 &#125;</span><br><span class="line">   &#123; <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;5198c286c686eb50e2c843b6&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user4&quot;</span>, <span class="string">&quot;age&quot;</span> : 1 &#125;</span><br><span class="line">   &#123; <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;5198c286c686eb50e2c843b7&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user5&quot;</span>, <span class="string">&quot;age&quot;</span> : 2 &#125;</span><br><span class="line"></span><br><span class="line"> db.user.distinct(<span class="string">&quot;age&quot;</span>) <span class="comment">## 特殊,传入的参数直接是字符串,而不是对象;</span></span><br><span class="line">     [0, 1, 2]</span><br></pre></td></tr></table></figure>
+<h5 id="3-4-5-子文档查询-elemMatch"><a href="#3-4-5-子文档查询-elemMatch" class="headerlink" title="3.4.5 子文档查询$elemMatch"></a>3.4.5 子文档查询$elemMatch</h5><p>elemMatch投影操作符将限制查询返回的数组字段的内容只包含匹配elemMatch条件的数组元素。<br>注意：<br>(1)数组中元素是内嵌文档。<br>(2)如果多个元素匹配$elemMatch条件，操作符返回数组中第一个匹配条件的元素。<br>假设集合school有如下数据：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line"> _id: 1,</span><br><span class="line"> zipcode: 63109,</span><br><span class="line"> students: [</span><br><span class="line">              &#123; name: <span class="string">&quot;john&quot;</span>, school: 102, age: 10 &#125;,</span><br><span class="line">              &#123; name: <span class="string">&quot;jess&quot;</span>, school: 102, age: 11 &#125;,</span><br><span class="line">              &#123; name: <span class="string">&quot;jeff&quot;</span>, school: 108, age: 15 &#125;</span><br><span class="line">           ]</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line"> _id: 2,</span><br><span class="line"> zipcode: 63110,</span><br><span class="line"> students: [</span><br><span class="line">              &#123; name: <span class="string">&quot;ajax&quot;</span>, school: 100, age: 7 &#125;,</span><br><span class="line">              &#123; name: <span class="string">&quot;achilles&quot;</span>, school: 100, age: 8 &#125;,</span><br><span class="line">           ]</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line"> _id: 3,</span><br><span class="line"> zipcode: 63109,</span><br><span class="line"> students: [</span><br><span class="line">              &#123; name: <span class="string">&quot;ajax&quot;</span>, school: 100, age: 7 &#125;,</span><br><span class="line">              &#123; name: <span class="string">&quot;achilles&quot;</span>, school: 100, age: 8 &#125;,</span><br><span class="line">           ]</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line"> _id: 4,</span><br><span class="line"> zipcode: 63109,</span><br><span class="line"> students: [</span><br><span class="line">              &#123; name: <span class="string">&quot;barney&quot;</span>, school: 102, age: 7 &#125;,</span><br><span class="line">           ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面的操作将查询邮政编码键值是63109的所有文档。 $elemMatch操作符将返回 students数组中的第一个匹配条件（内嵌文档的school键且值为102）的元素。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">db.school.find(&#123;zipcode: 63109 &#125;,&#123; students: &#123; <span class="variable">$elemMatch</span>: &#123; school: 102 &#125; &#125; &#125; );</span><br><span class="line"></span><br><span class="line">&#123;<span class="string">&quot;_id&quot;</span>: 1, <span class="string">&quot;students&quot;</span>: [&#123;<span class="string">&quot;name&quot;</span>:<span class="string">&quot;john&quot;</span>, <span class="string">&quot;school&quot;</span>:102, <span class="string">&quot;age&quot;</span>:10&#125;]&#125;</span><br><span class="line">&#123;<span class="string">&quot;_id&quot;</span>: 3&#125;</span><br><span class="line">&#123;<span class="string">&quot;_id&quot;</span>: 4, <span class="string">&quot;students&quot;</span>: [&#123;<span class="string">&quot;name&quot;</span>:<span class="string">&quot;barney&quot;</span>, <span class="string">&quot;school&quot;</span>:102, <span class="string">&quot;age&quot;</span>:7&#125;]&#125;</span><br></pre></td></tr></table></figure>
+<p>查询结果说明：<br><code>_id为1的文档</code>，students数组包含多个元素中存在school键且值为102的元素，$elemMatch只返回一个匹配条件的元素。<br><code>_id为3的文档</code>，因为students数组中元素无法匹配$elemMatch条件，所以查询结果不包含”students”字段。</p>
+<p>$elemMatch可以指定多个字段的限定条件，下面的操作将查询邮政编码键值是63109的所有文档。 $elemMatch操作符将返回 students数组中的第一个匹配条件（内嵌文档的school键且值为102且age键值大于10）的元素。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">db.school.find( &#123; zipcode: 63109 &#125;,&#123; students: &#123; <span class="variable">$elemMatch</span>: &#123; school: 102, age: &#123; <span class="variable">$gt</span>: 10&#125; &#125; &#125; &#125; );</span><br><span class="line"></span><br><span class="line">  &#123;<span class="string">&quot;_id&quot;</span>: 1, <span class="string">&quot;students&quot;</span>: [&#123;<span class="string">&quot;name&quot;</span>:<span class="string">&quot;jess&quot;</span>, <span class="string">&quot;school&quot;</span>:102, <span class="string">&quot;age&quot;</span>:11&#125;]&#125;</span><br><span class="line">  &#123;<span class="string">&quot;_id&quot;</span>: 3&#125;</span><br><span class="line">  &#123;<span class="string">&quot;_id&quot;</span>: 4&#125;</span><br></pre></td></tr></table></figure>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%AE%89%E8%A3%85"><span class="toc-text">1. 安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%B0%86MongoDB%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%BD%9C%E4%B8%BAWindows%E6%9C%8D%E5%8A%A1%E8%BF%90%E8%A1%8C"><span class="toc-text">2. 将MongoDB服务器作为Windows服务运行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-CRUD%E6%93%8D%E4%BD%9C-Creat-Read-Update-Delete"><span class="toc-text">3. CRUD操作(Creat,Read,Update,Delete)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-MongoDB%E5%9F%BA%E7%A1%80"><span class="toc-text">3.1 MongoDB基础</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C%EF%BC%9A"><span class="toc-text">3.2 数据库操作：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-%E6%96%87%E6%A1%A3%E6%93%8D%E4%BD%9C%EF%BC%88%E4%BB%A5-Collection-Name-x3D-col-%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="toc-text">3.3 文档操作（以 Collection_Name &#x3D; col 为例）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3-3-1%E6%8F%92%E5%85%A5%EF%BC%9A"><span class="toc-text">3.3.1插入：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-3-2-%E5%88%A0%E9%99%A4%EF%BC%9A"><span class="toc-text">3.3.2 删除：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-3-3-%E6%9B%B4%E6%96%B0%EF%BC%9A"><span class="toc-text">3.3.3 更新：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#insert-%E4%B8%8E-save%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">insert 与 save的区别</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#update%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="toc-text">update常用操作符</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4-%E6%9F%A5%E8%AF%A2"><span class="toc-text">3.4 查询</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3-4-1-%E6%B7%B1%E5%85%A5%E6%9F%A5%E8%AF%A2%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-text">3.4.1 深入查询表达式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-4-2-group%E5%88%86%E7%BB%84%E6%9F%A5%E8%AF%A2"><span class="toc-text">3.4.2 group分组查询</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-4-3-count%E7%BB%9F%E8%AE%A1"><span class="toc-text">3.4.3 count统计</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-4-4-distinct%E6%8E%92%E9%87%8D"><span class="toc-text">3.4.4 distinct排重</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-4-5-%E5%AD%90%E6%96%87%E6%A1%A3%E6%9F%A5%E8%AF%A2-elemMatch"><span class="toc-text">3.4.5 子文档查询$elemMatch</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/2018/10/17/database-mongodb.html">http://chaooo.github.io/2018/10/17/database-mongodb.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/db/" rel="tag">数据库</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2018/09/01/database-sql.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          「数据库」嵌入式SQL语言
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/11/12/elastic-base.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          「ElasticStack」ElasticSearch入门
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/12/30/spring-security-permission.html">「Spring Security」前后端分离权限控制-指令级权限</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/27/spring-security-vue.html">「Spring Security」前后端分离菜单权限控制-前端动态路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/spring-security-rbac.html">「Spring Security」前后端分离后台菜单权限控制</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/10/spring-security-token.html">「Spring Security」基于Redis的Token自动续签优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/09/spring-security-jwt.html">「Spring Security」整合 JWT 实现无状态登录示例</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 10.71px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 16.43px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.71px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12.14px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12.14px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.43px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.43px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 17.14px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12.14px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12.14px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12.14px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.57px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.71px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 14.29px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.71px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.86px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.57px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 14.29px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.86px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.57px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 14.29px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.43px;">hexo</a> <a href="/tags/java/" style="font-size: 15.71px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 17.86px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 12.14px;">并发编程</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 10px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.29px;">环境配置</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年12月</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年11月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p style="display:none;">
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+      repo: 'https://github.com/chaooo/BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

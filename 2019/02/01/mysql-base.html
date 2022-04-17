@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>「MySQL」MySQL性能优化基础 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-mysql-base" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      「MySQL」MySQL性能优化基础
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2019-02-01T13:36:46.000Z" itemprop="datePublished">2019年02月01日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/db/">数据库</a>
+  </div>
+
+      
+        <span class="article-views" style="display:none;">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2019/02/01/mysql-base.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="1-MySQL基础操作"><a href="#1-MySQL基础操作" class="headerlink" title="1. MySQL基础操作"></a>1. MySQL基础操作</h3><h4 id="1-1-MySQL备份与恢复"><a href="#1-1-MySQL备份与恢复" class="headerlink" title="1.1 MySQL备份与恢复"></a>1.1 MySQL备份与恢复</h4><ol>
+<li>备份：在mysql的安装目录的bin目录下有<strong>mysqldump命令</strong>，可以完成对数据库的备份。 <ul>
+<li>语法：<code>mysqldump -u 用户名 -p 数据库名&gt; 磁盘SQL文件路径</code> <span id="more"></span></li>
+<li>由于mysqldump命令不是sql命令，需要在<strong>dos窗口下使用</strong>。</li>
+<li>仅仅只会备份数据库中的表和数据，恢复时需要先手动创建数据库。</li>
+</ul>
+</li>
+<li>恢复：先手动创建数据库：<code>create database 数据库名</code><ul>
+<li>然后dos窗口：<code>mysql -u 用户名-p 导入库名&lt; 磁盘SQL文件绝对路径</code></li>
+</ul>
+</li>
+</ol>
+<h4 id="1-2-MySQL事务基础"><a href="#1-2-MySQL事务基础" class="headerlink" title="1.2 MySQL事务基础"></a>1.2 MySQL事务基础</h4><ol>
+<li>特性(ACID)：<strong>原子性</strong>（Atomicity，或称不可分割性）、<strong>一致性</strong>（Consistency）、<strong>隔离性</strong>（Isolation，又称独立性）、<strong>持久性</strong>（Durability）。</li>
+<li>事务隔离级别：<strong>读未提交</strong>（Read uncommitted）、<strong>读提交</strong>（read committed）、<strong>可重复读</strong>（repeatable read）和<strong>串行化</strong>（Serializable）。</li>
+<li>MYSQL事务处理主要有两种方法： <ol>
+<li>用 BEGIN, ROLLBACK, COMMIT来实现:<ul>
+<li>BEGIN 开始一个事务</li>
+<li>COMMIT 事务确认 </li>
+<li>ROLLBACK 事务回滚</li>
+</ul>
+</li>
+<li>直接用 SET 来改变 MySQL 的自动提交模式: <ul>
+<li>SET AUTOCOMMIT&#x3D;0 禁止自动提交</li>
+<li>SET AUTOCOMMIT&#x3D;1 开启自动提交</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>事务并发操作出现几种问题: 丢失修改数据、读“脏”数据、数据不一致</li>
+</ol>
+<h4 id="1-3-查看设置MySQL编码"><a href="#1-3-查看设置MySQL编码" class="headerlink" title="1.3 查看设置MySQL编码"></a>1.3 查看设置MySQL编码</h4><ol>
+<li>查看：<code>mysql&gt; show variables like &#39;character%&#39;</code></li>
+<li>设置: # <code>vi /etc/my.cnf</code>：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[mysqld] </span><br><span class="line">character‐set‐server=utf8</span><br><span class="line">collation‐server=utf8_general_ci</span><br><span class="line">sql_mode=<span class="string">&#x27;NO_ENGINE_SUBSTITUTION&#x27;</span></span><br><span class="line">[mysql] </span><br><span class="line"><span class="keyword">default</span>‐character‐set = utf8 </span><br><span class="line">[mysql.server] </span><br><span class="line"><span class="keyword">default</span>‐character‐set = utf8 </span><br><span class="line">[mysqld_safe] </span><br><span class="line"><span class="keyword">default</span>‐character‐set = utf8 </span><br><span class="line">[client] </span><br><span class="line"><span class="keyword">default</span>‐character‐set = utf8</span><br></pre></td></tr></table></figure></li>
+<li>mysql的主配置文件: <code>/etc/my.cnf</code></li>
+<li>数据库文件存放位置: <code>/var/lib/mysql</code></li>
+<li>数据库的日志输出存放位置: <code>/var/log/mysql</code></li>
+<li>端口: <code>Netstat –nltp</code> 看是否能找到3306的端口</li>
+</ol>
+<h4 id="1-4-范式"><a href="#1-4-范式" class="headerlink" title="1.4 范式"></a>1.4 范式</h4><p>概念：范式就是符合某一规范级别的关系模式的集合。共有7种范式：<code>1NF⊃2NF⊃3NF⊃BCNF⊃4NF⊃5NF⊃6NF</code></p>
+<ol>
+<li>第一范式(1NF, First Normal Form)：字段值具有<strong>原子性</strong>,不能再分(所有关系型数据库系统都满足第一范式);<ul>
+<li>例如：姓名字段,其中姓和名是一个整体,如果区分姓和名那么必须设立两个独立字段;</li>
+</ul>
+</li>
+<li>第二范式(2NF, Second Normal Form)：一个表<strong>必须有主键</strong>,即每行数据都能被唯一的区分(2NF必须先满足第一范式);</li>
+<li>第三范式(3NF, Third Normal Form)：一个表中不能包涵其他相关表中非关键字段的信息,即数据表<strong>不能有冗余字段</strong>(3NF必须先满足第二范式);<ul>
+<li>备注：往往我们在设计表中不能遵守第三范式,因为合理的沉余字段将会给我们减少join的查询;</li>
+<li>例如：相册表中会添加图片的点击数字段,在相册图片表中也会添加图片的点击数字段;</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-SQL语句优化"><a href="#2-SQL语句优化" class="headerlink" title="2. SQL语句优化"></a>2. SQL语句优化</h3><h4 id="2-1-通过慢查日志发现有问题的SQL"><a href="#2-1-通过慢查日志发现有问题的SQL" class="headerlink" title="2.1 通过慢查日志发现有问题的SQL"></a>2.1 通过慢查日志发现有问题的SQL</h4><ol>
+<li>查询次数多且每次查询占用时间长的sql<ul>
+<li>通常为<strong>pt-query-digest</strong>分析的前几个查询；该工具可以很清楚的看出每个SQL执行的次数及百分比等信息，执行的次数多，占比比较大的SQL</li>
+</ul>
+</li>
+<li>IO大的sql<ul>
+<li>注意pt-query-digest分析中的Rows examine项。扫描的行数越多，IO越大。</li>
+</ul>
+</li>
+<li>未命中的索引的SQL<ul>
+<li>注意pt-query-digest分析中的Rows examine 和Rows Send的对比。说明该SQL的索引命中率不高，对于这种SQL，我们要重点进行关注。</li>
+</ul>
+</li>
+<li>通过explain查询分析SQL的执行计划, SQL的执行计划侧面反映出了SQL的执行效率，</li>
+</ol>
+<h4 id="2-2-常见SQL优化手段"><a href="#2-2-常见SQL优化手段" class="headerlink" title="2.2 常见SQL优化手段"></a>2.2 常见SQL优化手段</h4><ol>
+<li>函数Max()的优化<ul>
+<li>在求max的字段<strong>建索引</strong></li>
+</ul>
+</li>
+<li>函数Count()的优化：<ul>
+<li>Count(*):是包含null值；Count(id)：不包含null值</li>
+</ul>
+</li>
+<li>子查询的优化<ul>
+<li>子查询是我们在开发过程中经常使用的一种方式，在通常情况下，需要把<strong>子查询优化为join查询</strong>但在优化是需要注意关联键是否有一对多的关系，要注意重复数据(distinct去重)。</li>
+<li>在用Join进行多表联合查询时，我们通常使用On来建立两个表的关系。其实还有一个更方便的关键字，那就是Using（如果两个表的关联字段名是一样）。</li>
+</ul>
+</li>
+<li>group by的优化: <ul>
+<li>最好使用同一表中的列，在子查询中分组</li>
+</ul>
+</li>
+<li>Limit查询的优化：Limit常用于分页处理，时常会伴随order by从句使用，因此大多时候会使用Filesorts这样会造成大量的IO问题。<ul>
+<li>优化步骤1：使用有索引的列或主键进行order by操作，因为大家知道，innodb是按照主键的逻辑顺序进行排序的。可以避免很多的IO操作。</li>
+<li>优化步骤2：记录上次返回的主键， 在下次查询时使用主键过滤。（说明：避免了数据量大时扫描过多的记录）</li>
+<li>注意事项：主键要顺序排序并连续的，如果主键中间空缺了某一列，或者某几列，会出现列出数据不足一页的数据；如果不连续的情况，建立一个附加的列index_id列，保证这一列数据要自增的，并添加索引即可。</li>
+</ul>
+</li>
+</ol>
+<h3 id="3-索引的优化"><a href="#3-索引的优化" class="headerlink" title="3. 索引的优化"></a>3. 索引的优化</h3><h4 id="3-1-索引基础概念"><a href="#3-1-索引基础概念" class="headerlink" title="3.1 索引基础概念"></a>3.1 索引基础概念</h4><p>索引是为了加速对表中数据行的检索而创建的一种分散存储的<strong>数据结构</strong>。</p>
+<ul>
+<li>索引的建立是表中<strong>比较有指向性的字段</strong>，相当于目录，比如说行政区域代码，同一个地域的行政区域代码都是相同的，那么给这一列加上索引，避免让它重复扫描，从而达到优化的目的！</li>
+<li>创建索引：在执行create table语句时可以创建索引，也可以单独用create index或alter index来为表增加索引。<strong>不能用create index语句创建primary key索引</strong>。</li>
+<li>在创建索引时，可以规定索引能否包含重复值。如果不包含，则索引应该创建为primary key或unique索引。对于单列惟一性索引，这保证单列不包含重复的值。对于<strong>多列惟一性索引，保证多个值的组合不重复</strong>。</li>
+<li>primary key索引和unique索引非常类似。事实上，<strong>primary key索引仅是一个具有名称PRIMARY的unique索引</strong>。</li>
+<li>查看索引：<code>show index from tblname;</code>或<code>show keys from tblname;</code></li>
+</ul>
+<h4 id="3-2-索引的创建与删除"><a href="#3-2-索引的创建与删除" class="headerlink" title="3.2 索引的创建与删除"></a>3.2 索引的创建与删除</h4><ol>
+<li>创建<strong>普通索引</strong>：<ul>
+<li>方式1：<code>create index 索引名 on 表名(列名)</code></li>
+<li>方式2：<code>alter table 表名 add index 索引名(列名)</code></li>
+<li>方式3：创建表的时候直接指定: <code>,index [索引名] (列名)</code></li>
+</ul>
+</li>
+<li>删除索引： <code>drop index [索引名] on 表名</code></li>
+<li>唯一索引：索引列的值必须唯一，但允许有空值。如果是组合索引，则列值的组合必须唯一。</li>
+<li>创建<strong>唯一索引</strong>：<ul>
+<li>方式1：<code>create unique index 索引名 on 表名(列名)</code></li>
+<li>方式2：<code>alter table 表名 add unique 索引名(列名)</code></li>
+<li>方式3：创建表的时候直接指定: <code>,unique [索引名] (列名)</code></li>
+</ul>
+</li>
+</ol>
+<h4 id="3-3-使用索引的场景"><a href="#3-3-使用索引的场景" class="headerlink" title="3.3 使用索引的场景"></a>3.3 使用索引的场景</h4><ol>
+<li>表的主键自动建立唯一索引</li>
+<li>表的字段唯一约束</li>
+<li>直接条件查询的字段（在SQL中用于条件约束的字段）</li>
+<li>查询中与其它表关联的字段</li>
+<li>查询中排序的字段（排序的字段如果通过索引去访问那将大大提高排序速度）</li>
+<li>查询中统计或分组统计的字段</li>
+<li>表记录太少（如果一个表只有5条记录，采用索引去访问记录的话，那首先需访问索引表，再通过索引表访问数据表，一般索引表与数据表不在同一个数据块）</li>
+<li>经常插入、删除、修改的表（对一些经常处理的业务表应在查询允许的情况下尽量减少索引）</li>
+<li>数据重复且分布平均的表字段（假如一个表有10万行记录，有一个字段A只有T和F两种值，且每个值的分布概率大约为50%，那么对这种表A字段建索引一般不会提高数据库的查询速度。）</li>
+<li>经常和主字段一块查询但主字段索引值比较多的表字段</li>
+<li>对千万级MySQL数据库建立索引的事项及提高性能的手段</li>
+</ol>
+<h4 id="3-4-索引的维护及优化（重复及冗余索引）"><a href="#3-4-索引的维护及优化（重复及冗余索引）" class="headerlink" title="3.4 索引的维护及优化（重复及冗余索引）"></a>3.4 索引的维护及优化（重复及冗余索引）</h4><p>增加索引会有利于查询效率，但会降低insert，update，delete的效率，但实际上往往不是这样的，<strong>过多的索引会不但会影响使用效率，同时会影响查询效率</strong>，这是由于数据库进行查询分析时，首先要选择使用哪一个索引进行查询，如果索引过多，分析过程就会越慢，这样同样的减少查询的效率，因此我们要知道如何增加，有时候要知道维护和删除不需要的索引</p>
+<ul>
+<li>重复索引：重复索引是指相同的列以相同的顺序建立的同类型的索引，如在primary key再建立唯一索引就是重复索引</li>
+<li>冗余索引：冗余索引是指多个索引的前缀列相同，或是在联合索引中包含了主键的索引，如对于innodb来说，每一个索引后面，实际上都会包含主键，这时候我们建立的联合索引，又人为的把主键包含进去，那么这个时候就是一个冗余索引。</li>
+<li>工具：使用**<code>pt-duplicate-key-checker</code>工具检查重复及冗余索引**: <code>pt-duplicate-key-checker -uroot -padmin -h 127.0.0.1</code></li>
+<li>索引维护的方法: 由于业务变更，某些索引是后续不需要使用的，就要进行<strong>删除</strong>。</li>
+<li>在mysql中，目前只能通过慢查询日志配合pt-index-usage工具来进行索引使用情况的分析；<code>pt-index-usage -uroot -padmin /var/lib/mysql/mysql-host-slow.log</code></li>
+</ul>
+<h4 id="3-5-设计MySql索引的注意事项"><a href="#3-5-设计MySql索引的注意事项" class="headerlink" title="3.5 设计MySql索引的注意事项"></a>3.5 设计MySql索引的注意事项</h4><p>设计好MySql的索引可以让你的数据库飞起来，大大的提高数据库效率。设计MySql索引的时候有一下几点注意：</p>
+<ol>
+<li><strong>创建索引</strong><ul>
+<li>对于查询占主要的应用来说，索引显得尤为重要。很多时候性能问题很简单的就是因为我们忘了添加索引而造成的，或者说没有添加更为有效的索引导致。如果不加索引的话，那么查找任何哪怕只是一条特定的数据都会进行一次全表扫描，如果一张表的数据量很大而符合条件的结果又很少，那么不加索引会引起致命的性能下降。</li>
+<li>但是也不是什么情况都非得建索引不可，比如性别可能就只有两个值，建索引不仅没什么优势，还会影响到更新速度，这被称为过度索引。</li>
+</ul>
+</li>
+<li><strong>复合索引</strong><ul>
+<li>比如有一条语句是这样的：select * from users where area&#x3D;’beijing’ and age&#x3D;22;</li>
+<li>如果我们是在area和age上分别创建单个索引的话，由于mysql查询每次只能使用一个索引，所以虽然这样已经相对不做索引时全表扫描提高了很多效率，但是如果在area、age两列上创建复合索引的话将带来更高的效率。如果我们创建了(area, age,salary)的复合索引，那么其实相当于创建了(area,age,salary)、(area,age)、(area)三个索引，这被称为<strong>最佳左前缀特性</strong>。</li>
+<li>因此我们在创建复合索引时应该将最常用作限制条件的列放在最左边，依次递减。</li>
+</ul>
+</li>
+<li>索引不会包含有NULL值的列<ul>
+<li>只要列中包含有NULL值都将不会被包含在索引中，复合索引中只要有一列含有<strong>NULL值</strong>，那么这一列对于此复合索引就是<strong>无效</strong>的。所以我们在数据库设计时不要让字段的默认值为NULL。</li>
+</ul>
+</li>
+<li>使用短索引<ul>
+<li>对字符串列进行索引，如果可能应该<strong>指定一个前缀长度</strong>。</li>
+<li>例如，如果有一个CHAR(255)的 列，如果在前10 个或20 个字符内，多数值是惟一的，那么就不要对整个列进行索引。短索引不仅可以提高查询速度而且可以节省磁盘空间和I&#x2F;O操作。</li>
+</ul>
+</li>
+<li>排序的索引问题<ul>
+<li>mysql查询只使用一个索引，因此如果where子句中已经使用了索引的话，那么order by中的列是不会使用索引的。因此数据库默认排序可以符合要求的情况下不要使用排序操作；尽量不要包含多个列的排序，如果需要最好给这些列<strong>创建复合索引</strong>。</li>
+</ul>
+</li>
+<li>like语句操作<ul>
+<li>一般情况下不鼓励使用like操作，如果非使用不可，如何使用也是一个问题。like “%aaa%” <strong>不会使用索引</strong>，而like “aaa%”可以使用索引。</li>
+</ul>
+</li>
+<li>不要在列上进行运算<ul>
+<li>select * from users where YEAR(adddate)</li>
+</ul>
+</li>
+<li>不使用NOT IN操作<ul>
+<li>NOT IN操作都不会使用索引将进行全表扫描。NOT IN可以<strong>NOT EXISTS代替</strong></li>
+</ul>
+</li>
+</ol>
+<h3 id="4-MYSQL数据库设计规范与原则"><a href="#4-MYSQL数据库设计规范与原则" class="headerlink" title="4. MYSQL数据库设计规范与原则"></a>4. MYSQL数据库设计规范与原则</h3><h4 id="4-1-设计规范"><a href="#4-1-设计规范" class="headerlink" title="4.1 设计规范"></a>4.1 设计规范</h4><ol>
+<li>命名规范<ul>
+<li>采用26个英文字母(区分大小写)和0-9的自然数(经常不需要)加上下划线’_’组成</li>
+<li>命名简洁明确,多个单词用下划线’_’分隔,长度不超过30个字符</li>
+<li>除非是备份数据库可以加0-9的自然数,如：<code>&#39;user_db_20191210&#39;</code></li>
+<li>表前缀可以有效的把相同关系的表显示在一起,如：<code>&#39;user_&#39;</code></li>
+<li>每个表中必须有自增主键</li>
+<li>表与表之间的相关联字段名称要求尽可能的相同</li>
+</ul>
+</li>
+<li>字段类型规范<ul>
+<li>用尽量少的存储空间来存数一个字段的数据, 例如：能使用int就不要使用varchar、char,能用varchar(16)就不要使用varchar(256);</li>
+<li>IP地址最好使用int类型;</li>
+<li>固定长度的类型最好使用char,例如：邮编;</li>
+<li>能使用tinyint就不要使用smallint,int;</li>
+<li>最好给每个字段一个默认值, 最好不能为null;</li>
+</ul>
+</li>
+<li>索引规范<ul>
+<li>命名简洁明确,例如：<code>user_login</code>表<code>user_name</code>字段的索引应为<code>user_name_index</code>唯一索引;</li>
+<li>为每个表创建一个主键索引;</li>
+<li>为每个表创建合理的索引;</li>
+<li>建立复合索引请<strong>慎重</strong>;</li>
+</ul>
+</li>
+</ol>
+<h4 id="4-2-设计原则"><a href="#4-2-设计原则" class="headerlink" title="4.2 设计原则"></a>4.2 设计原则</h4><ol>
+<li>核心原则<ul>
+<li>不在数据库做运算;</li>
+<li>cpu计算务必移至业务层;</li>
+<li>控制列数量(字段少而精,字段数建议在20以内);</li>
+<li>平衡范式与冗余(效率优先；往往牺牲范式)</li>
+<li>拒绝3B(拒绝大sql语句：big sql、拒绝大事务：big transaction、拒绝大批量：big batch);</li>
+</ul>
+</li>
+<li>字段类原则<ul>
+<li>用好数值类型(用合适的字段类型节约空间);</li>
+<li>字符转化为数字(能转化的最好转化,同样节约空间、提高查询性能);</li>
+<li>避免使用NULL字段(NULL字段很难查询优化、NULL字段的索引需要额外空间、NULL字段的复合索引无效);</li>
+<li>少用text类型(尽量使用varchar代替text字段);</li>
+</ul>
+</li>
+<li>索引类原则<ul>
+<li>合理使用索引(改善查询,减慢更新,索引一定不是越多越好);</li>
+<li>字符字段必须建前缀索引;</li>
+<li>不在索引做列运算;</li>
+<li>innodb主键推荐使用自增列(主键建立聚簇索引,主键不应该被修改,字符串不应该做主键)(理解Innodb的索引保存结构就知道了);</li>
+<li>不用外键(由程序保证约束);</li>
+</ul>
+</li>
+<li>sql类原则<ul>
+<li>sql语句尽可能简单(一条sql只能在一个cpu运算,大语句拆小语句,减少锁时间,一条大sql可以堵死整个库);</li>
+<li>简单的事务;</li>
+<li>避免使用trig&#x2F;func(触发器、函数不用客户端程序取而代之);</li>
+<li>不用select *(消耗cpu,io,内存,带宽,这种程序不具有扩展性);</li>
+<li>OR改写为IN(or的效率是n级别);</li>
+<li>OR改写为UNION(mysql的索引合并很弱智);</li>
+<li>避免负向%;</li>
+<li>慎用count(*);</li>
+<li>limit高效分页(limit越大，效率越低);</li>
+<li>使用union all替代union(union有去重开销);</li>
+<li>少用连接join;</li>
+<li>使用group by;</li>
+<li>请使用同类型比较;</li>
+<li>打散批量更新;</li>
+</ul>
+</li>
+</ol>
+<h3 id="5-数据库结构的优化"><a href="#5-数据库结构的优化" class="headerlink" title="5. 数据库结构的优化"></a>5. 数据库结构的优化</h3><h4 id="5-1-选择合适的数据类型"><a href="#5-1-选择合适的数据类型" class="headerlink" title="5.1 选择合适的数据类型"></a>5.1 选择合适的数据类型</h4><p>数据类型的选择，重点在于“合适”二字</p>
+<ol>
+<li>使用可以存下你的数据的最小的数据类型。（时间类型数据：可以使用varchar类型，可以使用int类型，也可以使用时间戳类型）</li>
+<li>使用简单的数据类型，int要比varchar类型在mysql处理上简单。（int类型存储时间是最好的选择）</li>
+<li>尽可能的使用not null定义字段。（innodb的特性所决定，非not null的值，需要额外的在字段存储，同时也会增加IO和存储的开销）</li>
+<li>尽量少用text类型，非用不可时最好考虑分表。</li>
+</ol>
+<h4 id="5-2-数据库表的范式化优化"><a href="#5-2-数据库表的范式化优化" class="headerlink" title="5.2 数据库表的范式化优化"></a>5.2 数据库表的范式化优化</h4><ol>
+<li>表范式化<ul>
+<li>范式化是指数据库设计的规范，目前说道范式化一般是指第三设计范式。也就是要求数据表中不存在非关键字段对任意候选关键字段的传递函数依赖则符合第三范式。</li>
+</ul>
+</li>
+<li>反范式化<ul>
+<li>反范式化是指为了查询效率的考虑把原本符合<strong>第三范式</strong>的表“适当”的<strong>增加冗余</strong>，以达到优化查询效率的目的，反范式化是一种以空间来换取时间的操作。</li>
+</ul>
+</li>
+</ol>
+<h4 id="5-3-数据库表的垂直拆分"><a href="#5-3-数据库表的垂直拆分" class="headerlink" title="5.3 数据库表的垂直拆分"></a>5.3 数据库表的垂直拆分</h4><p>所谓的垂直拆分，就是把原来一个有很多列的表拆分成多个表，这解决了表的宽度问题。</p>
+<ul>
+<li>垂直拆分原则<ol>
+<li>把不常用的字段表单独存放到一个表中。</li>
+<li>把大字段独立存放到一个表中。</li>
+<li>把经常一起使用的字段放到一起。</li>
+</ol>
+</li>
+</ul>
+<h4 id="5-4-数据库表的水平拆分"><a href="#5-4-数据库表的水平拆分" class="headerlink" title="5.4 数据库表的水平拆分"></a>5.4 数据库表的水平拆分</h4><p>表的水平拆分是为了解决单表数据量过大的问题，水平拆分的表每一个表的结构都是完全一致的</p>
+<ol>
+<li>水平拆分原因<ul>
+<li>如果单表的数据量达到上亿条，那么这时候我们尽管加了完美的索引，查询效率低，写入的效率也相应的降低。</li>
+</ul>
+</li>
+<li>如何将数据平均分为N份<ol>
+<li>对customer_id进行hash运算，如果要拆分为5个表则使用mod（customer_id，5）取出0-4个值。</li>
+<li>针对不动的hashid把数据存储到不同的表中。</li>
+</ol>
+</li>
+<li>水平拆分面临的挑战<ol>
+<li>夸分区表进行数据查询<ul>
+<li>前端业务统计：业务上给不同的用户返回不同的业务信息，对分区表没有大的挑战。</li>
+</ul>
+</li>
+<li>统计及后台报表操作<ul>
+<li>但是对后台进行报表统计时，数据量比较大，后台统计时效性比较低，后台就用汇总表，将前后台的表拆分开。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="6-数据库系统配置优化"><a href="#6-数据库系统配置优化" class="headerlink" title="6. 数据库系统配置优化"></a>6. 数据库系统配置优化</h3><p>数据库是基于操作系统的，目前大多数MySQL都是安装在<strong>linux系统</strong>之上，所以对于操作系统的一些参数配置也会影响到MySQL的性能</p>
+<h4 id="6-1-操作系统的优化"><a href="#6-1-操作系统的优化" class="headerlink" title="6.1 操作系统的优化"></a>6.1 操作系统的优化</h4><p>网络方面的配置，要修改<code>/etc/sysctl.conf</code></p>
+<ol>
+<li>增加tcp支持的队列数<ul>
+<li><code>net.ipv4.tcp_max_syn_backlog = 65535</code></li>
+</ul>
+</li>
+<li>减少断开连接时，资源回收(tcp有连接状态)<ul>
+<li><code>net.ipv4.tcp_max_tw_buckets = 8000</code></li>
+<li><code>net.ipv4.tcp_tw_reuse = 1</code></li>
+<li><code>net.ipv4.tcp_tw_recycle = 1</code></li>
+<li><code>net.ipv4.tcp_fin_timeout = 10</code></li>
+<li>说明： TCP是有连接状态，通过netstat查看连接状态，经常会看到timeout状态或者timewait状态连接，为了加快timewait状态的连接回收，就需要调整上面的四个参数，保持TCP连接数在一个适当的状态。</li>
+</ul>
+</li>
+</ol>
+<h4 id="6-2-打开文件数的限制"><a href="#6-2-打开文件数的限制" class="headerlink" title="6.2 打开文件数的限制"></a>6.2 打开文件数的限制</h4><p>打开文件数的限制，可以使用ulimit –a查看目录的各个限制，可以修改<code>/etc/security/limits.conf</code>文件</p>
+<ul>
+<li>limits.conf中增加以下内容以修改打开文件数量的限制（永久生效）<ul>
+<li><code>*Soft nofile 65535</code></li>
+<li><code>*Hard nofile 65535</code></li>
+</ul>
+</li>
+<li>如果一次有效，就要使用<code>ulimit –n 65535</code>即可。（默认情况是1024）</li>
+<li>除此之外最好在MySQL服务器上关闭iptables，selinux等防火墙软件</li>
+</ul>
+<h4 id="6-3-MySQL配置文件优化"><a href="#6-3-MySQL配置文件优化" class="headerlink" title="6.3 MySQL配置文件优化"></a>6.3 MySQL配置文件优化</h4><p>Mysql可以通过启动时指定参数和使用配置文件两种方法进行配置，在大多数情况下配置文件位于<code>/etc/my.cnf</code>或<code>/etc/mysql/my.cnf</code></p>
+<ul>
+<li>MySQL<strong>查找配置文件的顺序</strong>可以通过以下命令获得：<ul>
+<li><code>/usr/sbin/mysqld --verbose --help | grep -A 1 &#39;default options&#39;</code></li>
+<li>注意：如果存在多个位置存在配置文件，则后面的会覆盖前面的。</li>
+</ul>
+</li>
+</ul>
+<h5 id="6-3-1-my-cnf常用-连接请求-参数"><a href="#6-3-1-my-cnf常用-连接请求-参数" class="headerlink" title="6.3.1 my.cnf常用 连接请求 参数"></a>6.3.1 <code>my.cnf</code>常用 连接请求 参数</h5><ol>
+<li><code>max_connections</code>：最大连接数<ul>
+<li>如果服务器的并发连接请求量比较大，建议调高此值，以增加并行连接数量，MySQL会为每个连接提供连接缓冲区，连接数越多就会开销越多的内存，所以要<strong>适当调整该值</strong>，不能盲目提高设值。</li>
+<li>数值过小会经常出现ERROR 1040: Too many connections错误，可以过’conn%’通配符查看当前状态的连接数量，以定夺该值的大小。</li>
+<li><code>max_used_connections / max_connections * 100% </code>（**理想值≈ 85%**）: 响应的连接数&#x2F;最大连接数</li>
+</ul>
+</li>
+<li><code>back_log</code>：能暂存的连接数量<ul>
+<li>如果MySQL的连接数据达到<code>max_connections</code>时，新来的请求将会被存在堆栈中，以等待某一连接释放资源，该堆栈的数量即<code>back_log</code>，如果等待连接的数量超过<code>back_log</code>，将不被授予连接资源。</li>
+<li><strong>默认数值是50，可调优为128</strong>，对于Linux系统设置范围为小于512的整数。</li>
+</ul>
+</li>
+<li><code>interactive_timeout</code>：服务器关闭<strong>交互式连接</strong>前等待活动的秒数<ul>
+<li>默认数值是28800，可调优为7200。</li>
+</ul>
+</li>
+<li><code>wait_timeout</code>：服务器关闭<strong>非交互连接</strong>之前等待活动的秒数<ul>
+<li>指定一个请求的最大连接时间，对于4GB左右内存的服务器可以设置为5-10。</li>
+</ul>
+</li>
+</ol>
+<h5 id="6-3-1-my-cnf常用-缓冲区-参数"><a href="#6-3-1-my-cnf常用-缓冲区-参数" class="headerlink" title="6.3.1 my.cnf常用 缓冲区 参数"></a>6.3.1 <code>my.cnf</code>常用 缓冲区 参数</h5><ol>
+<li><code>key_buffer_size</code>: 指定索引缓冲区的大小<ul>
+<li>它决定索引处理的速度，尤其是索引读的速度。</li>
+<li>它只对<strong>MyISAM表起作用</strong>。即使你不使用MyISAM表，但是内部的临时磁盘表是MyISAM表，也要使用该值</li>
+</ul>
+</li>
+<li><code>query_cache_size</code> ：查询缓存的内存<ul>
+<li>使用查询缓冲，MySQL将查询结果存放在缓冲区中，今后对于同样的SELECT语句（区分大小写），将直接从缓冲区中读取结果。</li>
+<li>通过检查状态值Qcache_*，可以知道<code>query_cache_size</code>设置是否合理（上述状态值可以使用<code>SHOW STATUS LIKE ‘Qcache%’</code>获得）。如果<code>Qcache_lowmem_prunes</code>的值非常大，则表明经常出现缓冲不够的情况，如果<code>Qcache_hits</code>的值也非常大，则表明查询缓冲使用非常频繁，此时需要增加缓冲大小；如果<code>Qcache_hits</code>的值不大，则表明你的查询重复率很低，这种情况下使用查询缓冲反而会影响效率，那么可以考虑不用查询缓冲。此外，在SELECT语句中加入<code>SQL_NO_CACHE</code>可以明确表示不使用查询缓冲。</li>
+<li>与查询缓冲有关的参数还有<code>query_cache_type</code>、<code>query_cache_limit</code>、<code>query_cache_min_res_unit</code>。<ul>
+<li><code>query_cache_type</code>指定是否使用查询缓冲，可以设置为0、1、2，该变量是SESSION级的变量。</li>
+<li><code>query_cache_limit</code>指定单个查询能够使用的缓冲区大小，缺省为1M。</li>
+<li><code>query_cache_min_res_unit</code>指定分配缓冲区空间的最小单位，缺省为4K。检查状态值<code>Qcache_free_blocks</code>，如果该值非常大，则表明缓冲区中碎片很多，这就表明查询结果都比较小，此时需要减小<code>query_cache_min_res_unit</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>record_buffer_size</code>：顺序扫描缓冲区大小<ul>
+<li>每个进行一个顺序扫描的线程为其扫描的每张表分配这个大小的一个缓冲区。如果你做很多顺序扫描，你可能想要增加该值。</li>
+<li>默认数值是131072(128K)，可改为16773120 (16M)</li>
+</ul>
+</li>
+<li><code>read_rnd_buffer_size</code>：随机读缓冲区大小<ul>
+<li>当按任意顺序读取行时(例如，按照排序顺序)，将分配一个随机读缓存区。进行排序查询时，MySQL会首先扫描一遍该缓冲，以避免磁盘搜索，提高查询速度，如果需要排序大量数据，可适当调高该值。但MySQL会为每个客户连接发放该缓冲空间，所以应尽量适当设置该值，以避免内存开销过大。一般可设置为16M</li>
+</ul>
+</li>
+<li><code>sort_buffer_size</code>：排序扫描缓冲区大小<ul>
+<li>每个需要进行排序的线程分配该大小的一个缓冲区。增加这值加速ORDER BY或GROUP BY操作。</li>
+<li>默认数值是2097144(2M)，可改为16777208 (16M)。</li>
+</ul>
+</li>
+<li><code>join_buffer_size</code>：联合查询缓冲区大小<ul>
+<li>联合查询操作所能使用的缓冲区大小。</li>
+<li><code>record_buffer_size</code>，<code>read_rnd_buffer_size</code>，<code>sort_buffer_size</code>，<code>join_buffer_size</code>为每个线程独占，也就是说，如果有100个线程连接，则占用为16M*100</li>
+</ul>
+</li>
+<li><code>table_cache</code>：表高速缓存的大小<ul>
+<li>表高速缓存的大小。每当MySQL访问一个表时，如果在表缓冲区中还有空间，该表就被打开并放入其中，这样可以更快地访问表内容。通过检查峰值时间的状态值<code>Open_tables</code>和<code>Opened_tables</code>，可以决定是否需要增加<code>table_cache</code>的值。如果你发现open_tables等于<code>table_cache</code>，并且opened_tables在不断增长，那么你就需要增加<code>table_cache</code>的值了（上述状态值可以使用<code>SHOW STATUS LIKE ‘Open%tables’</code>获得）。注意，不能盲目地把<code>table_cache</code>设置成很大的值。如果设置得太高，可能会造成文件描述符不足，从而造成性能不稳定或者连接失败。</li>
+<li>1G内存机器，推荐值是128－256。内存在4GB左右的服务器该参数可设置为256M或384M。</li>
+</ul>
+</li>
+<li><code>max_heap_table_size</code>：用户可以创建的内存表(memory table)的大小<ul>
+<li>这个值用来计算内存表的最大行数值。这个变量支持动态改变，即set @max_heap_table_size&#x3D;#</li>
+<li>这个变量和tmp_table_size一起限制了内部内存表的大小。如果某个内部heap（堆积）表大小超过tmp_table_size，MySQL可以根据需要自动将内存中的heap表改为基于硬盘的MyISAM表。</li>
+</ul>
+</li>
+<li><code>tmp_table_size</code>：临时表的大小<ul>
+<li>通过设置<code>tmp_table_size</code>选项来增加一张临时表的大小，例如做高级GROUP BY操作生成的临时表。如果调高该值，MySQL同时将增加heap表的大小，可达到提高联接查询速度的效果，建议尽量优化查询，要确保查询过程中生成的临时表在内存中，避免临时表过大导致生成基于硬盘的MyISAM表。</li>
+<li>每次创建临时表，<code>Created_tmp_tables</code>增加，如果临时表大小超过<code>tmp_table_size</code>，则是在磁盘上创建临时表，<code>Created_tmp_disk_tables</code>也增加,<code>Created_tmp_files</code>表示MySQL服务创建的临时文件文件数</li>
+<li>比较理想的配置是：<code>Created_tmp_disk_tables / Created_tmp_tables * 100% &lt;= 25%</code>比如上面的服务器<code>Created_tmp_disk_tables / Created_tmp_tables * 100% ＝1.20%</code>，应该相当好了</li>
+<li>默认为16M，可调到64-256最佳，线程独占，太大可能内存不够I&#x2F;O堵塞</li>
+</ul>
+</li>
+<li><code>thread_cache_size</code>：可以复用的保存在中的线程的数量<ul>
+<li>可以复用的保存在中的线程的数量。如果有，新的线程从缓存中取得，当断开连接的时候如果有空间，客户的线置在缓存中。如果有很多新的线程，为了提高性能可以这个变量值。</li>
+<li>通过比较 Connections和<code>Threads_created</code>状态的变量，可以看到这个变量的作用。默认值为110，可调优为80。</li>
+</ul>
+</li>
+<li><code>thread_concurrency</code>：同一时间运行的线程系统提示所需数量的线程<ul>
+<li>推荐设置为服务器 CPU核数的2倍，</li>
+<li>例如双核的CPU, 那么<code>thread_concurrency</code>的应该为4；2个双核的cpu, <code>thread_concurrency</code>的值应为8。默认为8</li>
+<li>这个参数<strong>已经在5.7.2版本的MySQL中被移除</strong></li>
+</ul>
+</li>
+</ol>
+<h5 id="6-3-1-my-cnf常用-配置InnoDB的-参数"><a href="#6-3-1-my-cnf常用-配置InnoDB的-参数" class="headerlink" title="6.3.1 my.cnf常用 配置InnoDB的 参数"></a>6.3.1 <code>my.cnf</code>常用 配置InnoDB的 参数</h5><ol>
+<li><code>innodb_buffer_pool_size</code>：缓冲池大小<ul>
+<li>对于InnoDB表来说，<code>innodb_buffer_pool_size</code>的作用就相当于<code>key_buffer_size</code>对于MyISAM表的作用一样。</li>
+<li>InnoDB使用该参数指定大小的内存来缓冲数据和索引。对于单独的MySQL数据库服务器，最大可以把该值设置成物理内存的80%。</li>
+<li>根据MySQL手册，对于2G内存的机器，推荐值是1G（50%）。</li>
+</ul>
+</li>
+<li><code>innodb_flush_log_at_trx_commit</code>：主要控制了innodb将log buffer中的数据写入日志文件并flush磁盘的时间点，取值分别为0、1、2三个<ul>
+<li>设置为0，表示当事务提交时，不做日志写入操作，而是每秒钟将log buffer中的数据写入日志文件并flush磁盘一次；</li>
+<li>设置为1，则在每秒钟或是每次事物的提交都会引起日志文件写入、flush磁盘的操作，确保了事务的ACID；</li>
+<li>设置为2，每次事务提交引起写入日志文件的动作，但每秒钟完成一次flush磁盘操作。</li>
+<li>实际测试发现，该值对插入数据的速度影响非常大，设置为2时插入10000条记录只需要2秒，设置为0时只需要1秒，而设置为1时则需要229秒。因此，MySQL手册也建议尽量将插入操作合并成一个事务，这样可以大幅提高速度。</li>
+<li>根据MySQL手册，在允许丢失最近部分事务的危险的前提下，可以把该值设为0或2。</li>
+</ul>
+</li>
+<li><code>innodb_log_buffer_size</code>：log缓存大小<ul>
+<li>一般为1-8M，默认为1M，对于较大的事务，可以增大缓存大小。可设置为4M或8M。</li>
+</ul>
+</li>
+<li><code>innodb_additional_mem_pool_size</code>：内存池大小<ul>
+<li>该参数指定InnoDB用来存储数据字典和其他内部数据结构的内存池大小。缺省值是1M。通常不用太大，只要够用就行，应该与表结构的复杂度有关系。如果不够用，MySQL会在错误日志中写入一条警告信息。</li>
+<li>根据MySQL手册，对于2G内存的机器，推荐值是20M，可适当增加。</li>
+<li><code>innodb_thread_concurrency=8</code>，推荐设置为 2*(NumCPUs+NumDisks)，默认一般为8</li>
+</ul>
+</li>
+<li><code>skip-name-resolve</code>：禁止域名解析<ul>
+<li>禁止MySQL对外部连接进行DNS解析，使用这一选项可以消除MySQL进行DNS解析的时间。</li>
+<li>但需要注意，如果开启该选项，则所有远程主机连接授权都要使用IP地址方式，否则MySQL将无法正常处理连接请求</li>
+</ul>
+</li>
+</ol>
+<h3 id="7-MySQL的执行顺序"><a href="#7-MySQL的执行顺序" class="headerlink" title="7. MySQL的执行顺序"></a>7. MySQL的执行顺序</h3><p>MySQL的语句一共分为<strong>11步</strong>，最<strong>先</strong>执行的总是<strong>FROM</strong>操作，最<strong>后</strong>执行的是<strong>LIMIT</strong>操作。</p>
+<ul>
+<li>其中<strong>每一个操作都会产生一张虚拟的表</strong>，这个虚拟的表作为一个处理的输入，只是这些虚拟的表对用户来说是透明的，但是只有<strong>最后一个虚拟的表才会被作为结果返回</strong>。</li>
+<li>如果没有在语句中指定某一个子句，那么将会跳过相应的步骤。<ul>
+<li>⑧<code>select</code></li>
+<li>⑨<code>distinct &lt;字段名&gt;</code></li>
+<li>①<code>from &lt;表名&gt;</code></li>
+<li>③<code>&lt;连接类型&gt;join &lt;表名&gt;</code></li>
+<li>②<code>on&lt;连接条件&gt;</code></li>
+<li>④<code>where&lt;查询条件&gt;</code></li>
+<li>④<code>group by&lt;分组字段&gt;</code></li>
+<li>⑥<code>with&#123;cube|rollup&#125;</code></li>
+<li>⑦<code>having&lt;查询条件&gt;</code></li>
+<li>⑩<code>order by&lt;排序字段&gt;</code></li>
+<li>⑪<code>limit&lt;分页数量&gt;</code></li>
+</ul>
+</li>
+</ul>
+<p>查询处理的每一个阶段分析：</p>
+<ol>
+<li><strong>FORM</strong>: 对FROM的左边的表和右边的表计算<strong>笛卡尔积</strong>。产生虚表VT1</li>
+<li><strong>ON</strong>: 对虚表VT1进行ON筛选，只有那些符合<code>&lt;连接条件&gt;</code>的行才会被记录在虚表VT2中。</li>
+<li><strong>JOIN</strong>：如果指定了OUTER JOIN（比如left join、 right join），那么保留表中未匹配的行就会作为外部行添加到虚拟表VT2中，产生虚拟表VT3, rug from子句中包含两个以上的表的话，那么就会对上一个join连接产生的结果VT3和下一个表重复执行步骤1~3这三个步骤，一直到处理完所有的表为止。</li>
+<li><strong>WHERE</strong>：对虚拟表VT3进行WHERE条件过滤。只有符合<code>&lt;where查询条件&gt;</code>的记录才会被插入到虚拟表VT4中。</li>
+<li><strong>GROUP BY</strong>: 根据group by子句中的列，对VT4中的记录进行分组操作，产生VT5.</li>
+<li><strong>CUBE | ROLLUP</strong>: 对表VT5进行cube或者rollup操作，产生表VT6.</li>
+<li><strong>HAVING</strong>： 对虚拟表VT6应用having过滤，只有符合<code>&lt;having查询条件&gt;</code>的记录才会被 插入到虚拟表VT7中。</li>
+</ol>
+<h3 id="8-MySQL执行引擎"><a href="#8-MySQL执行引擎" class="headerlink" title="8. MySQL执行引擎"></a>8. MySQL执行引擎</h3><h4 id="8-1-MyISAM存储引擎"><a href="#8-1-MyISAM存储引擎" class="headerlink" title="8.1 MyISAM存储引擎"></a>8.1 MyISAM存储引擎</h4><ul>
+<li><strong>不支持事务、也不支持外键</strong>，优势是<strong>访问速度快</strong>，对事务完整性没有 要求或者以select，insert为主的应用基本上可以用这个引擎来创建表</li>
+<li>支持3种不同的存储格式，分别是：静态表；动态表；压缩表</li>
+<li>静态表：<ul>
+<li>表中的字段都是非变长字段，这样每个记录都是固定长度的，优点存储非常迅速，容易缓存，出现故障容易恢复；缺点是占用的空间通常比动态表多（因为存储时会按照列的宽度定义补足空格）ps：在取数据的时候，默认会把字段后面的空格去掉，如果不注意会把数据本身带的空格也会忽略。</li>
+</ul>
+</li>
+<li>动态表：<ul>
+<li>记录不是固定长度的，这样存储的优点是占用的空间相对较少；缺点：频繁的更新、删除数据容易产生碎片，需要定期执行OPTIMIZE TABLE或者myisamchk-r命令来改善性能</li>
+</ul>
+</li>
+<li>压缩表：<ul>
+<li>因为每个记录是被单独压缩的，所以只有非常小的访问开支</li>
+</ul>
+</li>
+</ul>
+<h4 id="8-2-InnoDB存储引擎"><a href="#8-2-InnoDB存储引擎" class="headerlink" title="8.2 InnoDB存储引擎"></a>8.2 InnoDB存储引擎</h4><ul>
+<li>提供了具有提交、回滚和崩溃恢复能力的<strong>事务安全</strong>。但是对比MyISAM引擎，<strong>写的处理效率会差一些</strong>，并且会占用更多的磁盘空间以保留数据和索引。 </li>
+<li>InnoDB存储引擎的特点：<strong>支持自动增长列，支持外键约束</strong></li>
+</ul>
+<h4 id="8-3-MEMORY存储引擎"><a href="#8-3-MEMORY存储引擎" class="headerlink" title="8.3 MEMORY存储引擎"></a>8.3 MEMORY存储引擎</h4><ul>
+<li>Memory存储引擎使用存在于内存中的内容来创建表。每个memory表只实际对应一个磁盘文件，格式是.frm。memory类型的表访问非常的快，因为它的数据是放在内存中的，并且<strong>默认使用HASH索引</strong>，但是<strong>一旦服务关闭，表中的数据就会丢失掉</strong>。 </li>
+<li>MEMORY存储引擎的表可以选择使用<strong>BTREE索引</strong>或者<strong>HASH索引</strong>，两种不同类型的索引有其不同的使用范围</li>
+<li>Hash索引优点： <ul>
+<li>Hash 索引结构的特殊性，其检索效率非常高，索引的检索可以一次定位，不像B-Tree 索引需要从根节点到枝节点，最后才能访问到页节点这样多次的IO访问，所以 Hash 索引的查询效率要远高于 B-Tree 索引。</li>
+</ul>
+<p> </p>
+</li>
+<li>Hash索引缺点： <ul>
+<li>那么不精确查找呢，也很明显，因为hash算法是基于等值计算的，所以对于“like”等范围查找hash索引无效，不支持；</li>
+</ul>
+</li>
+<li>Memory类型的存储引擎主要用于哪些内容变化不频繁的代码表，或者作为统计操作的中间结果表，便于高效地对中间结果进行分析并得到最终的统计结果，。对存储引擎为memory的表进行更新操作要谨慎，因为数据并没有实际写入到磁盘中，所以一定要对下次重新启动服务后如何获得这些修改后的数据有所考虑。</li>
+</ul>
+<h4 id="8-4-MERGE存储引擎"><a href="#8-4-MERGE存储引擎" class="headerlink" title="8.4 MERGE存储引擎"></a>8.4 MERGE存储引擎</h4><ul>
+<li>Merge存储引擎是一组MyISAM表的组合，这些MyISAM表必须结构完全相同，merge表本身并没有数据，对merge类型的表可以进行查询，更新，删除操作，这些操作实际上是对内部的MyISAM表进行的。</li>
+</ul>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-MySQL%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C"><span class="toc-text">1. MySQL基础操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-MySQL%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D"><span class="toc-text">1.1 MySQL备份与恢复</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-MySQL%E4%BA%8B%E5%8A%A1%E5%9F%BA%E7%A1%80"><span class="toc-text">1.2 MySQL事务基础</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-%E6%9F%A5%E7%9C%8B%E8%AE%BE%E7%BD%AEMySQL%E7%BC%96%E7%A0%81"><span class="toc-text">1.3 查看设置MySQL编码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-%E8%8C%83%E5%BC%8F"><span class="toc-text">1.4 范式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-SQL%E8%AF%AD%E5%8F%A5%E4%BC%98%E5%8C%96"><span class="toc-text">2. SQL语句优化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-%E9%80%9A%E8%BF%87%E6%85%A2%E6%9F%A5%E6%97%A5%E5%BF%97%E5%8F%91%E7%8E%B0%E6%9C%89%E9%97%AE%E9%A2%98%E7%9A%84SQL"><span class="toc-text">2.1 通过慢查日志发现有问题的SQL</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-%E5%B8%B8%E8%A7%81SQL%E4%BC%98%E5%8C%96%E6%89%8B%E6%AE%B5"><span class="toc-text">2.2 常见SQL优化手段</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BC%98%E5%8C%96"><span class="toc-text">3. 索引的优化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-%E7%B4%A2%E5%BC%95%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="toc-text">3.1 索引基础概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-%E7%B4%A2%E5%BC%95%E7%9A%84%E5%88%9B%E5%BB%BA%E4%B8%8E%E5%88%A0%E9%99%A4"><span class="toc-text">3.2 索引的创建与删除</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95%E7%9A%84%E5%9C%BA%E6%99%AF"><span class="toc-text">3.3 使用索引的场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4-%E7%B4%A2%E5%BC%95%E7%9A%84%E7%BB%B4%E6%8A%A4%E5%8F%8A%E4%BC%98%E5%8C%96%EF%BC%88%E9%87%8D%E5%A4%8D%E5%8F%8A%E5%86%97%E4%BD%99%E7%B4%A2%E5%BC%95%EF%BC%89"><span class="toc-text">3.4 索引的维护及优化（重复及冗余索引）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-5-%E8%AE%BE%E8%AE%A1MySql%E7%B4%A2%E5%BC%95%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">3.5 设计MySql索引的注意事项</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-MYSQL%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%83%E4%B8%8E%E5%8E%9F%E5%88%99"><span class="toc-text">4. MYSQL数据库设计规范与原则</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%83"><span class="toc-text">4.1 设计规范</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99"><span class="toc-text">4.2 设计原则</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%BB%93%E6%9E%84%E7%9A%84%E4%BC%98%E5%8C%96"><span class="toc-text">5. 数据库结构的优化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-%E9%80%89%E6%8B%A9%E5%90%88%E9%80%82%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">5.1 选择合适的数据类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E7%9A%84%E8%8C%83%E5%BC%8F%E5%8C%96%E4%BC%98%E5%8C%96"><span class="toc-text">5.2 数据库表的范式化优化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-3-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E7%9A%84%E5%9E%82%E7%9B%B4%E6%8B%86%E5%88%86"><span class="toc-text">5.3 数据库表的垂直拆分</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-4-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A1%A8%E7%9A%84%E6%B0%B4%E5%B9%B3%E6%8B%86%E5%88%86"><span class="toc-text">5.4 数据库表的水平拆分</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E7%BB%9F%E9%85%8D%E7%BD%AE%E4%BC%98%E5%8C%96"><span class="toc-text">6. 数据库系统配置优化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BC%98%E5%8C%96"><span class="toc-text">6.1 操作系统的优化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E6%95%B0%E7%9A%84%E9%99%90%E5%88%B6"><span class="toc-text">6.2 打开文件数的限制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-MySQL%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E4%BC%98%E5%8C%96"><span class="toc-text">6.3 MySQL配置文件优化</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#6-3-1-my-cnf%E5%B8%B8%E7%94%A8-%E8%BF%9E%E6%8E%A5%E8%AF%B7%E6%B1%82-%E5%8F%82%E6%95%B0"><span class="toc-text">6.3.1 my.cnf常用 连接请求 参数</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#6-3-1-my-cnf%E5%B8%B8%E7%94%A8-%E7%BC%93%E5%86%B2%E5%8C%BA-%E5%8F%82%E6%95%B0"><span class="toc-text">6.3.1 my.cnf常用 缓冲区 参数</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#6-3-1-my-cnf%E5%B8%B8%E7%94%A8-%E9%85%8D%E7%BD%AEInnoDB%E7%9A%84-%E5%8F%82%E6%95%B0"><span class="toc-text">6.3.1 my.cnf常用 配置InnoDB的 参数</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-MySQL%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="toc-text">7. MySQL的执行顺序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-MySQL%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E"><span class="toc-text">8. MySQL执行引擎</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#8-1-MyISAM%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E"><span class="toc-text">8.1 MyISAM存储引擎</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-2-InnoDB%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E"><span class="toc-text">8.2 InnoDB存储引擎</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-3-MEMORY%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E"><span class="toc-text">8.3 MEMORY存储引擎</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-4-MERGE%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E"><span class="toc-text">8.4 MERGE存储引擎</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/2019/02/01/mysql-base.html">http://chaooo.github.io/2019/02/01/mysql-base.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/db/" rel="tag">数据库</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2018/11/28/elastic-stack.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          「ElasticStack」Beats+Logstash+Elasticsearch+Kibana基础整合
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/02/05/mysql-index.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          「MySQL」MySQL索引的使用及优化
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/12/30/spring-security-permission.html">「Spring Security」前后端分离权限控制-指令级权限</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/27/spring-security-vue.html">「Spring Security」前后端分离菜单权限控制-前端动态路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/spring-security-rbac.html">「Spring Security」前后端分离后台菜单权限控制</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/10/spring-security-token.html">「Spring Security」基于Redis的Token自动续签优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/09/spring-security-jwt.html">「Spring Security」整合 JWT 实现无状态登录示例</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 10.71px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 16.43px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.71px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12.14px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12.14px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.43px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.43px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 17.14px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12.14px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12.14px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12.14px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.57px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.71px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 14.29px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.71px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.86px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.57px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 14.29px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.86px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.57px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 14.29px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.43px;">hexo</a> <a href="/tags/java/" style="font-size: 15.71px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 17.86px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 12.14px;">并发编程</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 10px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.29px;">环境配置</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年12月</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年11月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p style="display:none;">
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+      repo: 'https://github.com/chaooo/BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

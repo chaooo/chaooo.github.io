@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>「环境配置」Linux常用命令整理 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-env-linux" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      「环境配置」Linux常用命令整理
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2020-06-05T12:08:46.000Z" itemprop="datePublished">2020年06月05日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/env/">环境配置</a>
+  </div>
+
+      
+        <span class="article-views" style="display:none;">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2020/06/05/env-linux.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="1-常用基础命令"><a href="#1-常用基础命令" class="headerlink" title="1. 常用基础命令"></a>1. 常用基础命令</h3><ol>
+<li><p>文件管理</p>
+<span id="more"></span>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ls          # 显示指定工作目录下的内容及属性信息</span><br><span class="line">cp          # 复制文件或目录</span><br><span class="line">mkdir       # 创建目录</span><br><span class="line">mv          # 移动或改名文件</span><br><span class="line">pwd         # 显示当前路径</span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>文档编辑</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cat         # 在终端设备上显示文件内容</span><br><span class="line">echo        # 输出字符串或提取Shell变量的值</span><br><span class="line">rm          # 移除文件或目录</span><br><span class="line">tail        # 查看文件尾部内容</span><br><span class="line">rmdir       # 删除空目录</span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>系统管理</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">startx      # 初始化X-windows</span><br><span class="line">rpm         # RPM软件包管理器</span><br><span class="line">find        # 查找和搜索文件</span><br><span class="line">vmstat      # 显示虚拟内存状态</span><br><span class="line">uname       # 显示系统信息</span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>磁盘管理</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">df          # 显示磁盘空间使用情况</span><br><span class="line">fdisk       # 磁盘分区</span><br><span class="line">hdparm      # 显示与设定硬盘参数</span><br><span class="line">lsblk       # 查看系统的磁盘</span><br><span class="line">vgextend    # 扩展卷组</span><br></pre></td></tr></table></figure></li>
+<li><p>文件传输</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">tftp        # 上传及下载文件</span><br><span class="line">curl        # 文件传输工具</span><br><span class="line">fsck        # 检查并修复Linux文件系统</span><br><span class="line">ftpwho      # 显示ftp会话信息</span><br><span class="line">lprm        # 删除打印队列中的打印任务</span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>网络通讯</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ssh         # 安全连接客户端</span><br><span class="line">netstat     # 显示网络状态</span><br><span class="line">ping        # 测试主机间网络连通性</span><br><span class="line">ifconfig    # 显示或设置网络设备</span><br><span class="line">dhclient    # 动态获取或释放IP地址</span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>设备管理</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mount       # 文件系统挂载</span><br><span class="line">MAKEDEV     # 建立设备</span><br><span class="line">setleds     # 设定键盘上方三个 LED 的状态</span><br><span class="line">lspci       # 显示当前设备所有PCI总线信息</span><br><span class="line">sensors     # 检测服务器内部温度及电压</span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>备份压缩</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">zipinfo     # 查看压缩文件信息</span><br><span class="line">gzip        # 压缩和解压文件</span><br><span class="line">zip         # 压缩文件</span><br><span class="line">unarj       # 解压.arj文件</span><br><span class="line">unzip       # 解压缩zip文件</span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>其他命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">chsh        # 查看和修改当前登录的Shell</span><br><span class="line">export      # 查看和设置Shell环境变量</span><br><span class="line">read        # 读取从键盘或文件输入的数据</span><br><span class="line">expr        # 四则远算和字符串运算</span><br><span class="line">tmux        # 一个窗口操作多个会话</span><br><span class="line">alias       # 给命令定义别名</span><br><span class="line">history     # 显示与操纵历史命令</span><br><span class="line">xargs       # 一个给其他命令传递参数的过滤器</span><br><span class="line">time        # 测量命令的执行时间或者系统资源的使用情况</span><br><span class="line">sleep       # 让程序暂停或休眠一段时间</span><br><span class="line">file        # 查看文件信息或类型</span><br><span class="line">ln          # 创建文件链接</span><br><span class="line">du          # 查看文件夹和文件的磁盘占用情况</span><br><span class="line">bzip2       # 压缩和解压文件（.bz2文件）</span><br><span class="line">dd          # 复制（拷贝）文件，并对原文件进行转换</span><br><span class="line">grep        # 文本搜索工具（可使用正则表达式）</span><br><span class="line">cut         # 剪切文件中的数据</span><br><span class="line">wc          # 计算单个文件中的字数、单词数和字节数</span><br><span class="line">split       # 切割（拆分）文件</span><br><span class="line">paste       # 合并（拼接）文件</span><br><span class="line">Vim         # 替换文本内容</span><br><span class="line">sed         # 替换、删除、更新文件中的内容</span><br><span class="line">hash        # 显示与清除命令运行时查询的哈希表</span><br><span class="line">wait        # 等待指令</span><br><span class="line">bc          # 浮点运算</span><br><span class="line">rmmod       # 删除模块</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="2-命令实例"><a href="#2-命令实例" class="headerlink" title="2. 命令实例"></a>2. 命令实例</h3><ol>
+<li><p>系统信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">arch                    # 显示机器的处理器架构(1) </span><br><span class="line">uname -m                # 显示机器的处理器架构(2) </span><br><span class="line">uname -r                # 显示正在使用的内核版本 </span><br><span class="line">dmidecode -q            # 显示硬件系统部件 - (SMBIOS / DMI) </span><br><span class="line">hdparm -i /dev/hda      # 罗列一个磁盘的架构特性 </span><br><span class="line">hdparm -tT /dev/sda     # 在磁盘上执行测试性读取操作 </span><br><span class="line">cat /proc/cpuinfo       # 显示CPU info的信息 </span><br><span class="line">cat /proc/interrupts    # 显示中断 </span><br><span class="line">cat /proc/meminfo       # 校验内存使用 </span><br><span class="line">cat /proc/swaps         # 显示哪些swap被使用 </span><br><span class="line">cat /proc/version       # 显示内核的版本 </span><br><span class="line">cat /proc/net/dev       # 显示网络适配器及统计 </span><br><span class="line">cat /proc/mounts        # 显示已加载的文件系统 </span><br><span class="line">lspci -tv               # 罗列 PCI 设备 </span><br><span class="line">lsusb -tv               # 显示 USB 设备 </span><br><span class="line">date                    # 显示系统日期 </span><br><span class="line">cal 2007                # 显示2007年的日历表 </span><br><span class="line">date 041217002007.00    # 设置日期和时间 - 月日时分年.秒 </span><br><span class="line">clock -w                # 将时间修改保存到 BIOS </span><br></pre></td></tr></table></figure>
+</li>
+<li><p>关机 (系统的关机、重启以及登出)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">shutdown -h now               # 关闭系统(1) </span><br><span class="line">init 0                        # 关闭系统(2) </span><br><span class="line">telinit 0                     # 关闭系统(3) </span><br><span class="line">shutdown -h hours:minutes &amp;   # 按预定时间关闭系统 </span><br><span class="line">shutdown -c                   # 取消按预定时间关闭系统 </span><br><span class="line">shutdown -r now               # 重启(1) </span><br><span class="line">reboot                        # 重启(2) </span><br><span class="line">logout                        # 注销 </span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>文件和目录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">cd /home                # 进入 &#x27;/ home&#x27; 目录&#x27; </span><br><span class="line">cd ..                   # 返回上一级目录 </span><br><span class="line">cd ../..                # 返回上两级目录 </span><br><span class="line">cd                      # 进入个人的主目录 </span><br><span class="line">cd ~user1               # 进入个人的主目录 </span><br><span class="line">cd -                    # 返回上次所在的目录 </span><br><span class="line">pwd                     # 显示工作路径 </span><br><span class="line">ls                      # 查看目录中的文件 </span><br><span class="line">ls -F                   # 查看目录中的文件 </span><br><span class="line">ls -l                   # 显示文件和目录的详细资料 </span><br><span class="line">ls -a                   # 显示隐藏文件 </span><br><span class="line">ls *[0-9]*              # 显示包含数字的文件名和目录名 </span><br><span class="line">tree                    # 显示文件和目录由根目录开始的树形结构(1) </span><br><span class="line">lstree                  # 显示文件和目录由根目录开始的树形结构(2) </span><br><span class="line">mkdir dir1              # 创建一个叫做 &#x27;dir1&#x27; 的目录&#x27; </span><br><span class="line">mkdir dir1 dir2         # 同时创建两个目录 </span><br><span class="line">mkdir -p /tmp/dir1/dir2 # 创建一个目录树 </span><br><span class="line">rm -f file1             # 删除一个叫做 &#x27;file1&#x27; 的文件&#x27; </span><br><span class="line">rmdir dir1              # 删除一个叫做 &#x27;dir1&#x27; 的目录&#x27; </span><br><span class="line">rm -rf dir1             # 删除一个叫做 &#x27;dir1&#x27; 的目录并同时删除其内容 </span><br><span class="line">rm -rf dir1 dir2        # 同时删除两个目录及它们的内容 </span><br><span class="line">mv dir1 new_dir         # 重命名/移动 一个目录 </span><br><span class="line">cp file1 file2          # 复制一个文件 </span><br><span class="line">cp dir/* .              # 复制一个目录下的所有文件到当前工作目录 </span><br><span class="line">cp -a /tmp/dir1 .       # 复制一个目录到当前工作目录 </span><br><span class="line">cp -a dir1 dir2         # 复制一个目录 </span><br><span class="line">ln -s file1 lnk1        # 创建一个指向文件或目录的软链接 </span><br><span class="line">ln file1 lnk1           # 创建一个指向文件或目录的物理链接 </span><br><span class="line">touch -t 0712250000 file1   # 修改一个文件或目录的时间戳 - (YYMMDDhhmm) </span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>文件搜索</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">find / -name file1                           # 从 &#x27;/&#x27; 开始进入根文件系统搜索文件和目录 </span><br><span class="line">find / -user user1                           # 搜索属于用户 &#x27;user1&#x27; 的文件和目录 </span><br><span class="line">find /home/user1 -name \*.bin                # 在目录 &#x27;/ home/user1&#x27; 中搜索带有&#x27;.bin&#x27; 结尾的文件 </span><br><span class="line">find /usr/bin -type f -atime +100            # 搜索在过去100天内未被使用过的执行文件 </span><br><span class="line">find /usr/bin -type f -mtime -10             # 搜索在10天内被创建或者修改过的文件 </span><br><span class="line">find / -name \*.rpm -exec chmod 755 &#x27;&#123;&#125;&#x27; \;  # 搜索以 &#x27;.rpm&#x27; 结尾的文件并定义其权限 </span><br><span class="line">find / -xdev -name \*.rpm                    # 搜索以 &#x27;.rpm&#x27; 结尾的文件，忽略光驱、捷盘等可移动设备 </span><br><span class="line">locate \*.ps                                 # 寻找以 &#x27;.ps&#x27; 结尾的文件 - 先运行 &#x27;updatedb&#x27; 命令 </span><br><span class="line">whereis halt                                 # 显示一个二进制文件、源码或man的位置 </span><br><span class="line">which halt                                   # 显示一个二进制文件或可执行文件的完整路径 </span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>挂载一个文件系统</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mount /dev/hda2 /mnt/hda2             # 挂载一个叫做hda2的盘 - 确定目录 &#x27;/ mnt/hda2&#x27; 已经存在 </span><br><span class="line">umount /dev/hda2                      # 卸载一个叫做hda2的盘 - 先从挂载点 &#x27;/ mnt/hda2&#x27; 退出 </span><br><span class="line">fuser -km /mnt/hda2                   # 当设备繁忙时强制卸载 </span><br><span class="line">umount -n /mnt/hda2                   # 运行卸载操作而不写入 /etc/mtab 文件- 当文件为只读或当磁盘写满时非常有用 </span><br><span class="line">mount /dev/fd0 /mnt/floppy            # 挂载一个软盘 </span><br><span class="line">mount /dev/cdrom /mnt/cdrom           # 挂载一个cdrom或dvdrom </span><br><span class="line">mount /dev/hdc /mnt/cdrecorder        # 挂载一个cdrw或dvdrom </span><br><span class="line">mount /dev/hdb /mnt/cdrecorder        # 挂载一个cdrw或dvdrom </span><br><span class="line">mount -o loop file.iso /mnt/cdrom     # 挂载一个文件或ISO镜像文件 </span><br><span class="line">mount -t vfat /dev/hda5 /mnt/hda5     # 挂载一个Windows FAT32文件系统 </span><br><span class="line">mount /dev/sda1 /mnt/usbdisk          # 挂载一个usb 捷盘或闪存设备 </span><br><span class="line">mount -t smbfs -o username=user,password=pass //WinClient/share /mnt/share  # 挂载一个windows网络共享 </span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>磁盘空间</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">df -h                   # 显示已经挂载的分区列表 </span><br><span class="line">ls -lSr |more           # 以尺寸大小排列文件和目录 </span><br><span class="line">du -sh dir1             # 估算目录 &#x27;dir1&#x27; 已经使用的磁盘空间&#x27; </span><br><span class="line">du -sk * | sort -rn     # 以容量大小为依据依次显示文件和目录的大小 </span><br><span class="line">rpm -q -a --qf &#x27;%10&#123;SIZE&#125;t%&#123;NAME&#125;n&#x27; | sort -k1,1n                  # 以大小为依据依次显示已安装的rpm包所使用的空间 (fedora, redhat类系统) </span><br><span class="line">dpkg-query -W -f=&#x27;$&#123;Installed-Size;10&#125;t$&#123;Package&#125;n&#x27; | sort -k1,1n  # 以大小为依据显示已安装的deb包所使用的空间 (ubuntu, debian类系统) </span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>用户和群组</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">groupadd group_name                        # 创建一个新用户组 </span><br><span class="line">groupdel group_name                        # 删除一个用户组 </span><br><span class="line">groupmod -n new_group_name old_group_name  # 重命名一个用户组 </span><br><span class="line">useradd -c &quot;Name Surname &quot; -g admin -d /home/user1 -s /bin/bash user1  # 创建一个属于 &quot;admin&quot; 用户组的用户 </span><br><span class="line">useradd user1                              # 创建一个新用户 </span><br><span class="line">userdel -r user1                           # 删除一个用户 ( &#x27;-r&#x27; 排除主目录) </span><br><span class="line">usermod -c &quot;User FTP&quot; -g system -d /ftp/user1 -s /bin/nologin user1    # 修改用户属性 </span><br><span class="line">passwd                                     # 修改口令 </span><br><span class="line">passwd user1                               # 修改一个用户的口令 (只允许root执行) </span><br><span class="line">chage -E 2005-12-31 user1                  # 设置用户口令的失效期限 </span><br><span class="line">pwck                                       # 检查 &#x27;/etc/passwd&#x27; 的文件格式和语法修正以及存在的用户 </span><br><span class="line">grpck                                      # 检查 &#x27;/etc/passwd&#x27; 的文件格式和语法修正以及存在的群组 </span><br><span class="line">newgrp group_name                          #登陆进一个新的群组以改变新创建文件的预设群组 </span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>文件的权限 - 使用 “+” 设置权限，使用 “-“ 用于取消</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">ls -lh                      # 显示权限 </span><br><span class="line">ls /tmp | pr -T5 -W$COLUMNS # 将终端划分成5栏显示 </span><br><span class="line">chmod ugo+rwx directory1    # 设置目录的所有人(u)、群组(g)以及其他人(o)以读（r ）、写(w)和执行(x)的权限 </span><br><span class="line">chmod go-rwx directory1     # 删除群组(g)与其他人(o)对目录的读写执行权限 </span><br><span class="line">chown user1 file1           # 改变一个文件的所有人属性 </span><br><span class="line">chown -R user1 directory1   # 改变一个目录的所有人属性并同时改变改目录下所有文件的属性 </span><br><span class="line">chgrp group1 file1          # 改变文件的群组 </span><br><span class="line">chown user1:group1 file1    # 改变一个文件的所有人和群组属性 </span><br><span class="line">find / -perm -u+s           # 罗列一个系统中所有使用了SUID控制的文件 </span><br><span class="line">chmod u+s /bin/file1        # 设置一个二进制文件的 SUID 位 - 运行该文件的用户也被赋予和所有者同样的权限 </span><br><span class="line">chmod u-s /bin/file1        # 禁用一个二进制文件的 SUID位 </span><br><span class="line">chmod g+s /home/public      # 设置一个目录的SGID 位 - 类似SUID ，不过这是针对目录的 </span><br><span class="line">chmod g-s /home/public      # 禁用一个目录的 SGID 位 </span><br><span class="line">chmod o+t /home/public      # 设置一个文件的 STIKY 位 - 只允许合法所有人删除文件 </span><br><span class="line">chmod o-t /home/public      # 禁用一个目录的 STIKY 位 </span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>文件的特殊属性 - 使用 “+” 设置权限，使用 “-“ 用于取消</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">chattr +a file1         # 只允许以追加方式读写文件 </span><br><span class="line">chattr +c file1         # 允许这个文件能被内核自动压缩/解压 </span><br><span class="line">chattr +d file1         # 在进行文件系统备份时，dump程序将忽略这个文件 </span><br><span class="line">chattr +i file1         # 设置成不可变的文件，不能被删除、修改、重命名或者链接 </span><br><span class="line">chattr +s file1         # 允许一个文件被安全地删除 </span><br><span class="line">chattr +S file1         # 一旦应用程序对这个文件执行了写操作，使系统立刻把修改的结果写到磁盘 </span><br><span class="line">chattr +u file1         # 若文件被删除，系统会允许你在以后恢复这个被删除的文件 </span><br><span class="line">lsattr                  # 显示特殊的属性 </span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>打包和压缩文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">bunzip2 file1.bz2                       # 解压一个叫做 &#x27;file1.bz2&#x27;的文件 </span><br><span class="line">bzip2 file1                             # 压缩一个叫做 &#x27;file1&#x27; 的文件 </span><br><span class="line">gunzip file1.gz                         # 解压一个叫做 &#x27;file1.gz&#x27;的文件 </span><br><span class="line">gzip file1                              # 压缩一个叫做 &#x27;file1&#x27;的文件 </span><br><span class="line">gzip -9 file1                           # 最大程度压缩 </span><br><span class="line">rar a file1.rar test_file               # 创建一个叫做 &#x27;file1.rar&#x27; 的包 </span><br><span class="line">rar a file1.rar file1 file2 dir1        # 同时压缩 &#x27;file1&#x27;, &#x27;file2&#x27; 以及目录 &#x27;dir1&#x27; </span><br><span class="line">rar x file1.rar                         # 解压rar包 </span><br><span class="line">unrar x file1.rar                       # 解压rar包 </span><br><span class="line">tar -cvf archive.tar file1              # 创建一个非压缩的 tarball </span><br><span class="line">tar -cvf archive.tar file1 file2 dir1   # 创建一个包含了 &#x27;file1&#x27;, &#x27;file2&#x27; 以及 &#x27;dir1&#x27;的档案文件 </span><br><span class="line">tar -tf archive.tar                     # 显示一个包中的内容 </span><br><span class="line">tar -xvf archive.tar                    # 释放一个包 </span><br><span class="line">tar -xvf archive.tar -C /tmp            # 将压缩包释放到 /tmp目录下 </span><br><span class="line">tar -cvfj archive.tar.bz2 dir1          # 创建一个bzip2格式的压缩包 </span><br><span class="line">tar -xvfj archive.tar.bz2               # 解压一个bzip2格式的压缩包 </span><br><span class="line">tar -cvfz archive.tar.gz dir1           # 创建一个gzip格式的压缩包 </span><br><span class="line">tar -xvfz archive.tar.gz                # 解压一个gzip格式的压缩包 </span><br><span class="line">zip file1.zip file1                     # 创建一个zip格式的压缩包 </span><br><span class="line">zip -r file1.zip file1 file2 dir1       # 将几个文件和目录同时压缩成一个zip格式的压缩包 </span><br><span class="line">unzip file1.zip                         # 解压一个zip格式压缩包 </span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>RPM 包 - （Fedora, Redhat及类似系统）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">rpm -ivh package.rpm                    # 安装一个rpm包 </span><br><span class="line">rpm -ivh --nodeeps package.rpm          # 安装一个rpm包而忽略依赖关系警告 </span><br><span class="line">rpm -U package.rpm                      # 更新一个rpm包但不改变其配置文件 </span><br><span class="line">rpm -F package.rpm                      # 更新一个确定已经安装的rpm包 </span><br><span class="line">rpm -e package_name.rpm                 # 删除一个rpm包 </span><br><span class="line">rpm -qa                                 # 显示系统中所有已经安装的rpm包 </span><br><span class="line">rpm -qa | grep httpd                    # 显示所有名称中包含 &quot;httpd&quot; 字样的rpm包 </span><br><span class="line">rpm -qi package_name                    # 获取一个已安装包的特殊信息 </span><br><span class="line">rpm -qg &quot;System Environment/Daemons&quot;    # 显示一个组件的rpm包 </span><br><span class="line">rpm -ql package_name                    # 显示一个已经安装的rpm包提供的文件列表 </span><br><span class="line">rpm -qc package_name                    # 显示一个已经安装的rpm包提供的配置文件列表 </span><br><span class="line">rpm -q package_name --whatrequires      # 显示与一个rpm包存在依赖关系的列表 </span><br><span class="line">rpm -q package_name --whatprovides      # 显示一个rpm包所占的体积 </span><br><span class="line">rpm -q package_name --scripts           # 显示在安装/删除期间所执行的脚本l </span><br><span class="line">rpm -q package_name --changelog         # 显示一个rpm包的修改历史 </span><br><span class="line">rpm -qf /etc/httpd/conf/httpd.conf      # 确认所给的文件由哪个rpm包所提供 </span><br><span class="line">rpm -qp package.rpm -l                  # 显示由一个尚未安装的rpm包提供的文件列表 </span><br><span class="line">rpm --import /media/cdrom/RPM-GPG-KEY   # 导入公钥数字证书 </span><br><span class="line">rpm --checksig package.rpm              # 确认一个rpm包的完整性 </span><br><span class="line">rpm -qa gpg-pubkey                      # 确认已安装的所有rpm包的完整性 </span><br><span class="line">rpm -V package_name                     # 检查文件尺寸、 许可、类型、所有者、群组、MD5检查以及最后修改时间 </span><br><span class="line">rpm -Va                                 # 检查系统中所有已安装的rpm包- 小心使用 </span><br><span class="line">rpm -Vp package.rpm                     # 确认一个rpm包还未安装 </span><br><span class="line">rpm2cpio package.rpm | cpio --extract --make-directories *bin*  # 从一个rpm包运行可执行文件 </span><br><span class="line">rpm -ivh /usr/src/redhat/RPMS/`arch`/package.rpm    # 从一个rpm源码安装一个构建好的包 </span><br><span class="line">rpmbuild --rebuild package_name.src.rpm # 从一个rpm源码构建一个 rpm 包 </span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>YUM 软件包升级器 - （Fedora, RedHat及类似系统）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">yum install package_name            # 下载并安装一个rpm包 </span><br><span class="line">yum localinstall package_name.rpm   # 将安装一个rpm包，使用你自己的软件仓库为你解决所有依赖关系 </span><br><span class="line">yum update package_name.rpm         # 更新当前系统中所有安装的rpm包 </span><br><span class="line">yum update package_name             # 更新一个rpm包 </span><br><span class="line">yum remove package_name             # 删除一个rpm包 </span><br><span class="line">yum list                            # 列出当前系统中安装的所有包 </span><br><span class="line">yum search package_name             # 在rpm仓库中搜寻软件包 </span><br><span class="line">yum clean packages                  # 清理rpm缓存删除下载的包 </span><br><span class="line">yum clean headers                   # 删除所有头文件 </span><br><span class="line">yum clean all                       # 删除所有缓存的包和头文件 </span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>DEB 包 (Debian, Ubuntu 以及类似系统)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">dpkg -i package.deb         # 安装/更新一个 deb 包 </span><br><span class="line">dpkg -r package_name        # 从系统删除一个 deb 包 </span><br><span class="line">dpkg -l                     # 显示系统中所有已经安装的 deb 包 </span><br><span class="line">dpkg -l | grep httpd        # 显示所有名称中包含 &quot;httpd&quot; 字样的deb包 </span><br><span class="line">dpkg -s package_name        # 获得已经安装在系统中一个特殊包的信息 </span><br><span class="line">dpkg -L package_name        # 显示系统中已经安装的一个deb包所提供的文件列表 </span><br><span class="line">dpkg --contents package.deb # 显示尚未安装的一个包所提供的文件列表 </span><br><span class="line">dpkg -S /bin/ping           # 确认所给的文件由哪个deb包提供 </span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>APT 软件工具 (Debian, Ubuntu 以及类似系统) </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">apt-get install package_name        # 安装/更新一个 deb 包 </span><br><span class="line">apt-cdrom install package_name      # 从光盘安装/更新一个 deb 包 </span><br><span class="line">apt-get update                      # 升级列表中的软件包 </span><br><span class="line">apt-get upgrade                     # 升级所有已安装的软件 </span><br><span class="line">apt-get remove package_name         # 从系统删除一个deb包 </span><br><span class="line">apt-get check                       # 确认依赖的软件仓库正确 </span><br><span class="line">apt-get clean                       # 从下载的软件包中清理缓存 </span><br><span class="line">apt-cache search searched-package   # 返回包含所要搜索字符串的软件包名称 </span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>查看文件内容</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cat file1                   # 从第一个字节开始正向查看文件的内容 </span><br><span class="line">tac file1                   # 从最后一行开始反向查看一个文件的内容 </span><br><span class="line">more file1                  # 查看一个长文件的内容 </span><br><span class="line">less file1                  # 类似于 &#x27;more&#x27; 命令，但是它允许在文件中和正向操作一样的反向操作 </span><br><span class="line">head -2 file1               # 查看一个文件的前两行 </span><br><span class="line">tail -2 file1               # 查看一个文件的最后两行 </span><br><span class="line">tail -f /var/log/messages   # 实时查看被添加到一个文件中的内容 </span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>文本处理</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">cat file1 | command( sed, grep, awk, grep, etc...) &gt; result.txt  # 合并一个文件的详细说明文本，并将简介写入一个新文件中 </span><br><span class="line">cat file1 | command( sed, grep, awk, grep, etc...) &gt;&gt; result.txt # 合并一个文件的详细说明文本，并将简介写入一个已有的文件中 </span><br><span class="line">grep Aug /var/log/messages                  # 在文件 &#x27;/var/log/messages&#x27;中查找关键词&quot;Aug&quot; </span><br><span class="line">grep ^Aug /var/log/messages                 # 在文件 &#x27;/var/log/messages&#x27;中查找以&quot;Aug&quot;开始的词汇 </span><br><span class="line">grep [0-9] /var/log/messages                # 选择 &#x27;/var/log/messages&#x27; 文件中所有包含数字的行 </span><br><span class="line">grep Aug -R /var/log/*                      # 在目录 &#x27;/var/log&#x27; 及随后的目录中搜索字符串&quot;Aug&quot; </span><br><span class="line">sed &#x27;s/stringa1/stringa2/g&#x27; example.txt     # 将example.txt文件中的 &quot;string1&quot; 替换成 &quot;string2&quot; </span><br><span class="line">sed &#x27;/^$/d&#x27; example.txt                     # 从example.txt文件中删除所有空白行 </span><br><span class="line">sed &#x27;/ *#/d; /^$/d&#x27; example.txt             # 从example.txt文件中删除所有注释和空白行 </span><br><span class="line">echo &#x27;esempio&#x27; | tr &#x27;[:lower:]&#x27; &#x27;[:upper:]&#x27; # 合并上下单元格内容 </span><br><span class="line">sed -e &#x27;1d&#x27; result.txt                      # 从文件example.txt 中排除第一行 </span><br><span class="line">sed -n &#x27;/stringa1/p&#x27;                        # 查看只包含词汇 &quot;string1&quot;的行 </span><br><span class="line">sed -e &#x27;s/ *$//&#x27; example.txt                # 删除每一行最后的空白字符 </span><br><span class="line">sed -e &#x27;s/stringa1//g&#x27; example.txt          # 从文档中只删除词汇 &quot;string1&quot; 并保留剩余全部 </span><br><span class="line">sed -n &#x27;1,5p;5q&#x27; example.txt                # 查看从第一行到第5行内容 </span><br><span class="line">sed -n &#x27;5p;5q&#x27; example.txt                  # 查看第5行 </span><br><span class="line">sed -e &#x27;s/00*/0/g&#x27; example.txt              # 用单个零替换多个零 </span><br><span class="line">cat -n file1                                # 标示文件的行数 </span><br><span class="line">cat example.txt | awk &#x27;NR%2==1&#x27;             # 删除example.txt文件中的所有偶数行 </span><br><span class="line">echo a b c | awk &#x27;&#123;print $1&#125;&#x27;               # 查看一行第一栏 </span><br><span class="line">echo a b c | awk &#x27;&#123;print $1,$3&#125;&#x27;            # 查看一行的第一和第三栏 </span><br><span class="line">paste file1 file2                           # 合并两个文件或两栏的内容 </span><br><span class="line">paste -d &#x27;+&#x27; file1 file2                    # 合并两个文件或两栏的内容，中间用&quot;+&quot;区分 </span><br><span class="line">sort file1 file2                            # 排序两个文件的内容 </span><br><span class="line">sort file1 file2 | uniq                     # 取出两个文件的并集(重复的行只保留一份) </span><br><span class="line">sort file1 file2 | uniq -u                  # 删除交集，留下其他的行 </span><br><span class="line">sort file1 file2 | uniq -d                  # 取出两个文件的交集(只留下同时存在于两个文件中的文件) </span><br><span class="line">comm -1 file1 file2                         # 比较两个文件的内容只删除 &#x27;file1&#x27; 所包含的内容 </span><br><span class="line">comm -2 file1 file2                         # 比较两个文件的内容只删除 &#x27;file2&#x27; 所包含的内容 </span><br><span class="line">comm -3 file1 file2                         # 比较两个文件的内容只删除两个文件共有的部分 </span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>字符设置和文件格式转换</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dos2unix filedos.txt fileunix.txt       # 将一个文本文件的格式从MSDOS转换成UNIX </span><br><span class="line">unix2dos fileunix.txt filedos.txt       # 将一个文本文件的格式从UNIX转换成MSDOS </span><br><span class="line">recode ..HTML &lt; page.txt &gt; page.html    # 将一个文本文件转换成html </span><br><span class="line">recode -l | more                        # 显示所有允许的转换格式 </span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>文件系统分析</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">badblocks -v /dev/hda1  # 检查磁盘hda1上的坏磁块 </span><br><span class="line">fsck /dev/hda1          # 修复/检查hda1磁盘上linux文件系统的完整性 </span><br><span class="line">fsck.ext2 /dev/hda1     # 修复/检查hda1磁盘上ext2文件系统的完整性 </span><br><span class="line">e2fsck /dev/hda1        # 修复/检查hda1磁盘上ext2文件系统的完整性 </span><br><span class="line">e2fsck -j /dev/hda1     # 修复/检查hda1磁盘上ext3文件系统的完整性 </span><br><span class="line">fsck.ext3 /dev/hda1     # 修复/检查hda1磁盘上ext3文件系统的完整性 </span><br><span class="line">fsck.vfat /dev/hda1     # 修复/检查hda1磁盘上fat文件系统的完整性           # </span><br><span class="line">fsck.msdos /dev/hda1    # 修复/检查hda1磁盘上dos文件系统的完整性 </span><br><span class="line">dosfsck /dev/hda1       # 修复/检查hda1磁盘上dos文件系统的完整性 </span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>初始化一个文件系统</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mkfs /dev/hda1                  # 在hda1分区创建一个文件系统 </span><br><span class="line">mke2fs /dev/hda1                # 在hda1分区创建一个linux ext2的文件系统 </span><br><span class="line">mke2fs -j /dev/hda1             # 在hda1分区创建一个linux ext3(日志型)的文件系统 </span><br><span class="line">mkfs -t vfat 32 -F /dev/hda1    # 创建一个 FAT32 文件系统 </span><br><span class="line">fdformat -n /dev/fd0            # 格式化一个软盘 </span><br><span class="line">mkswap /dev/hda3                # 创建一个swap文件系统 </span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>SWAP文件系统</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkswap /dev/hda3            # 创建一个swap文件系统 </span><br><span class="line">swapon /dev/hda3            # 启用一个新的swap文件系统 </span><br><span class="line">swapon /dev/hda2 /dev/hdb3  # 启用两个swap分区 </span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>备份</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">dump -0aj -f /tmp/home0.bak /home                               # 制作一个 &#x27;/home&#x27; 目录的完整备份 </span><br><span class="line">dump -1aj -f /tmp/home0.bak /home                               # 制作一个 &#x27;/home&#x27; 目录的交互式备份 </span><br><span class="line">restore -if /tmp/home0.bak                                      # 还原一个交互式备份 </span><br><span class="line">rsync -rogpav --delete /home /tmp                               # 同步两边的目录 </span><br><span class="line">rsync -rogpav -e ssh --delete /home ip_address:/tmp             # 通过SSH通道rsync </span><br><span class="line">rsync -az -e ssh --delete ip_addr:/home/public /home/local      # 通过ssh和压缩将一个远程目录同步到本地目录 </span><br><span class="line">rsync -az -e ssh --delete /home/local ip_addr:/home/public      # 通过ssh和压缩将本地目录同步到远程目录 </span><br><span class="line">dd bs=1M if=/dev/hda | gzip | ssh user@ip_addr &#x27;dd of=hda.gz&#x27;   # 通过ssh在远程主机上执行一次备份本地磁盘的操作 </span><br><span class="line">dd if=/dev/sda of=/tmp/file1                                    # 备份磁盘内容到一个文件 </span><br><span class="line">tar -Puf backup.tar /home/user                                  # 执行一次对&#x27;/home/user&#x27;目录的交互式备份操作 </span><br><span class="line">( cd /tmp/local/ &amp;&amp; tar c . ) | ssh -C user@ip_addr &#x27;cd /home/share/ &amp;&amp; tar x -p&#x27;           # 通过ssh在远程目录中复制一个目录内容 </span><br><span class="line">( tar c /home ) | ssh -C user@ip_addr &#x27;cd /home/backup-home &amp;&amp; tar x -p&#x27;                    # 通过ssh在远程目录中复制一个本地目录 </span><br><span class="line">tar cf - . | (cd /tmp/backup ; tar xf - )                       # 本地将一个目录复制到另一个地方，保留原有权限及链接 </span><br><span class="line">find /home/user1 -name &#x27;*.txt&#x27; | xargs cp -av --target-directory=/home/backup/ --parents    # 从一个目录查找并复制所有以 &#x27;.txt&#x27; 结尾的文件到另一个目录 </span><br><span class="line">find /var/log -name &#x27;*.log&#x27; | tar cv --files-from=- | bzip2 &gt; log.tar.bz2                   # 查找所有以&#x27;.log&#x27;结尾的文件并做成一个bzip包 </span><br><span class="line">dd if=/dev/hda of=/dev/fd0 bs=512 count=1                       # 做一个将 MBR (Master Boot Record)内容复制到软盘的动作 </span><br><span class="line">dd if=/dev/fd0 of=/dev/hda bs=512 count=1                       # 从已经保存到软盘的备份中恢复MBR内容 </span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>网络 - （以太网和WIFI无线）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ifconfig eth0           # 显示一个以太网卡的配置 </span><br><span class="line">ifup eth0               # 启用一个 &#x27;eth0&#x27; 网络设备 </span><br><span class="line">ifdown eth0             # 禁用一个 &#x27;eth0&#x27; 网络设备 </span><br><span class="line">ifconfig eth0 192.168.1.1 netmask 255.255.255.0   # 控制IP地址 </span><br><span class="line">ifconfig eth0 promisc   # 设置 &#x27;eth0&#x27; 成混杂模式以嗅探数据包 (sniffing) </span><br><span class="line">dhclient eth0           # 以dhcp模式启用 &#x27;eth0&#x27; </span><br></pre></td></tr></table></figure></li>
+</ol>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%B8%B8%E7%94%A8%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4"><span class="toc-text">1. 常用基础命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%91%BD%E4%BB%A4%E5%AE%9E%E4%BE%8B"><span class="toc-text">2. 命令实例</span></a></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/2020/06/05/env-linux.html">http://chaooo.github.io/2020/06/05/env-linux.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/env/" rel="tag">环境配置</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2020/05/07/docker-image.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          「Docker」Docker容器与镜像的使用
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/06/06/env-shell-base.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          「Shell」Shell 编程入门
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/12/30/spring-security-permission.html">「Spring Security」前后端分离权限控制-指令级权限</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/27/spring-security-vue.html">「Spring Security」前后端分离菜单权限控制-前端动态路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/spring-security-rbac.html">「Spring Security」前后端分离后台菜单权限控制</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/10/spring-security-token.html">「Spring Security」基于Redis的Token自动续签优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/09/spring-security-jwt.html">「Spring Security」整合 JWT 实现无状态登录示例</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 10.71px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 16.43px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.71px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12.14px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12.14px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.43px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.43px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 17.14px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12.14px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12.14px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12.14px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.57px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.71px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 14.29px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.71px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.86px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.57px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 14.29px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.86px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.57px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 14.29px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.43px;">hexo</a> <a href="/tags/java/" style="font-size: 15.71px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 17.86px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 12.14px;">并发编程</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 10px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.29px;">环境配置</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年12月</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年11月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p style="display:none;">
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+      repo: 'https://github.com/chaooo/BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

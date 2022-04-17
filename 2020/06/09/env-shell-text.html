@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>「Shell」Shell 文本处理 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-env-shell-text" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      「Shell」Shell 文本处理
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2020-06-09T07:12:46.000Z" itemprop="datePublished">2020年06月09日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/env/">环境配置</a>
+  </div>
+
+      
+        <span class="article-views" style="display:none;">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2020/06/09/env-shell-text.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="1-文件查找命令"><a href="#1-文件查找命令" class="headerlink" title="1. 文件查找命令"></a>1. 文件查找命令</h3><h4 id="1-1-find命令"><a href="#1-1-find命令" class="headerlink" title="1.1 find命令"></a>1.1 find命令</h4><p>语法格式：<code>find 搜索路径 [选项] 搜索内容</code><span id="more"></span></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>解析</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-name</td>
+<td>按照文件名搜索</td>
+</tr>
+<tr>
+<td>-iname</td>
+<td>按照文件名搜索，不区分文件名大小</td>
+</tr>
+<tr>
+<td>-inum</td>
+<td>按照 inode 号搜索</td>
+</tr>
+<tr>
+<td>-type</td>
+<td>根据文件类型(f:文件,d:目录,c:字符设备文件,b:块设备文件,l:链接文件,p:管道文件)搜索</td>
+</tr>
+<tr>
+<td>-size</td>
+<td>根据文件大小(单位:ckMGTP)搜索，<code>-</code>小于，<code>+</code>大于，例如查找&#x2F;etc目录下大于1M的文件：find &#x2F;etc -size +1M</td>
+</tr>
+<tr>
+<td>-mtime</td>
+<td>根据修改时间(单位:smhdw)搜索</td>
+</tr>
+<tr>
+<td>-ctime</td>
+<td>根据创建时间(单位:smhdw)搜索</td>
+</tr>
+<tr>
+<td>-atime</td>
+<td>根据被访问时的时间间隔(单位:smhdw)搜索</td>
+</tr>
+<tr>
+<td>-mmin</td>
+<td>n分钟以(-n:内，+n:外)内修改的文件</td>
+</tr>
+<tr>
+<td>-mindepth</td>
+<td>从n级子目录开始搜索,最多搜索到n-1级子目录</td>
+</tr>
+<tr>
+<td>-depth</td>
+<td>检索深度为 n 的文件，即位于指定目录以下 n 层的文件</td>
+</tr>
+<tr>
+<td>-empty</td>
+<td>检索空文件或空目录</td>
+</tr>
+<tr>
+<td>-perm</td>
+<td>根据文件权限搜索</td>
+</tr>
+<tr>
+<td>-ls</td>
+<td>打印搜索到的文件的详细信息</td>
+</tr>
+<tr>
+<td>-delete</td>
+<td>删除检索到的文件</td>
+</tr>
+<tr>
+<td>-exec</td>
+<td>对搜索的文件常用操作(“-exec”和”-ok”相似，对文件执行特定的操作，”-ok”得到确认命令后，才会执行；-print打印输出)</td>
+</tr>
+</tbody></table>
+<h4 id="1-2-locate命令"><a href="#1-2-locate命令" class="headerlink" title="1.2 locate命令"></a>1.2 locate命令</h4><ol start="2">
+<li><code>locate</code>命令，不同于find命令是在整块磁盘中搜索，locate命令是在数据库文件中查找<ul>
+<li>find是默认全局匹配，locate则是默认部分匹配</li>
+<li>文件更新后，用updatedb命令把文件更新到数据库(默认是第二天系统才会自动更新到数据库)，否则locate查找不到</li>
+</ul>
+</li>
+</ol>
+<h4 id="1-3-whereis命令"><a href="#1-3-whereis命令" class="headerlink" title="1.3 whereis命令"></a>1.3 whereis命令</h4><ol start="3">
+<li><code>whereis</code>命令，只能用于程序名的搜索<ul>
+<li>命令参数：二进制文件（参数-b）、man说明文件（参数-m）和源代码文件（参数-s）。如果省略参数，则返回所有信息。</li>
+</ul>
+</li>
+</ol>
+<h4 id="1-4-which命令"><a href="#1-4-which命令" class="headerlink" title="1.4 which命令"></a>1.4 which命令</h4><ol start="4">
+<li><code>which</code>命令，仅查找二进制程序文件</li>
+</ol>
+<h3 id="2-Linux文本处理三剑客"><a href="#2-Linux文本处理三剑客" class="headerlink" title="2. Linux文本处理三剑客"></a>2. Linux文本处理三剑客</h3><p>文本处理三剑客工具<code>grep</code>，<code>sed</code>和<code>awk</code>都是基于行处理的，它们会一行行读入数据，处理完一行之后再处理下一行。</p>
+<h4 id="2-1-文件处理三剑客之grep"><a href="#2-1-文件处理三剑客之grep" class="headerlink" title="2.1 文件处理三剑客之grep"></a>2.1 文件处理三剑客之grep</h4><p><code>grep</code>命令，用于查找文件里符合条件的字符串。</p>
+<ul>
+<li>语法格式：<ul>
+<li>语法1：<code>grep [option] [ pattern] [file1, file2..]</code></li>
+<li>语法2：<code>command | grep [option] [pattern]</code></li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>选项(option)</th>
+<th>解析</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-v</td>
+<td>不显示匹配行信息</td>
+</tr>
+<tr>
+<td>-i</td>
+<td>搜索时忽略大小写</td>
+</tr>
+<tr>
+<td>-n</td>
+<td>显示行号</td>
+</tr>
+<tr>
+<td>-r</td>
+<td>递归搜索</td>
+</tr>
+<tr>
+<td>-E</td>
+<td>支持扩展正则表达式</td>
+</tr>
+<tr>
+<td>-F</td>
+<td>不按正则表达式匹配，按照字符串字面意思匹配</td>
+</tr>
+<tr>
+<td>-c</td>
+<td>只显示匹配行总数</td>
+</tr>
+<tr>
+<td>-w</td>
+<td>匹配整词</td>
+</tr>
+<tr>
+<td>-x</td>
+<td>匹配整行</td>
+</tr>
+<tr>
+<td>-l</td>
+<td>只显示文件名，不显示内容</td>
+</tr>
+<tr>
+<td>-s</td>
+<td>不显示错误信息</td>
+</tr>
+</tbody></table>
+<ul>
+<li><code>grep</code>和<code>egrep</code><ul>
+<li><code>grep</code>默认不支持扩展正则表达式，只支持基础正则表达式</li>
+<li>使用<code>grep-E</code>可以支持扩展正则表达式使用</li>
+<li><code>egrep</code>可以支持扩展正则表达式，与<code>grep-E</code>等价</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-2-文件处理三剑客之sed"><a href="#2-2-文件处理三剑客之sed" class="headerlink" title="2.2 文件处理三剑客之sed"></a>2.2 文件处理三剑客之sed</h4><p><code>sed</code>（Stream Editor），流编辑器。对标准输出或文件逐行进行处理</p>
+<ul>
+<li>语法格式：<ul>
+<li>语法1：<code>stdout |sed [option] &quot;pattern command&quot;</code></li>
+<li>语法2：<code>sed [option] &quot;pattern command&quot; file</code></li>
+</ul>
+</li>
+</ul>
+<h5 id="2-2-1-sed选项"><a href="#2-2-1-sed选项" class="headerlink" title="2.2.1 sed选项"></a>2.2.1 sed选项</h5><table>
+<thead>
+<tr>
+<th>选项(option)</th>
+<th>解析</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-n</td>
+<td>只打印模式匹配行</td>
+</tr>
+<tr>
+<td>-e</td>
+<td>直接在命令行进行sed编辑，默认选项</td>
+</tr>
+<tr>
+<td>-f</td>
+<td>编辑动作保存在文件中，指定文件执行</td>
+</tr>
+<tr>
+<td>-r</td>
+<td>支持扩展正则表达式</td>
+</tr>
+<tr>
+<td>-i</td>
+<td>直接修改文件内容</td>
+</tr>
+</tbody></table>
+<h5 id="2-2-2-sed匹配模式"><a href="#2-2-2-sed匹配模式" class="headerlink" title="2.2.2 sed匹配模式"></a>2.2.2 sed匹配模式</h5><table>
+<thead>
+<tr>
+<th>匹配模式(pattern)</th>
+<th>解析</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>10command</td>
+<td>匹配到第10行</td>
+</tr>
+<tr>
+<td>10,20command</td>
+<td>匹配从第10行开始，到第20行结束10，</td>
+</tr>
+<tr>
+<td>10,+5command</td>
+<td>匹配从第10行开始，到第16行结束</td>
+</tr>
+<tr>
+<td>&#x2F;pattern1&#x2F;command</td>
+<td>匹配到pattern1的行</td>
+</tr>
+<tr>
+<td>&#x2F;pattern1&#x2F;,&#x2F;pattern2&#x2F;command</td>
+<td>匹配到pattern1的行开始，到匹配到patern2的行结束</td>
+</tr>
+<tr>
+<td>10,&#x2F;pattern1&#x2F;command</td>
+<td>匹配从第10行开始，到匹配到pettern1的行结束</td>
+</tr>
+<tr>
+<td>&#x2F;pattern1&#x2F;,10command</td>
+<td>匹配到pattern1的行开始，到第10行匹配结束</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">打印test.txt文件的第17行</span></span><br><span class="line">sed -n &quot;17p&quot; test.txt</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">打印文件的10到20行</span></span><br><span class="line">sed -n &quot;10,20p&quot; test.txt</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">打印test.txt文件中从第10行开始，往后面加5行</span></span><br><span class="line">sed -n &quot;10,+5p&quot; test.txt</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">打印test.txt文件中以root开头的行</span></span><br><span class="line">sed -n &quot;/^root/p&quot; test.txt</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">打印test.txt文件中第一个匹配到以ftp开头的行，到mail开头的行结束</span></span><br><span class="line">sed -n &quot;/^ftp/,/^mail/p&quot; test.txt</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">打印test.txt文件中从第4行开始匹配，直到以hdfs开头的行结束</span></span><br><span class="line">sed -n &quot;4,/^hdfs/p&quot; test.txt</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">打印test.txt文件中匹配root的行，直到第10行结束</span></span><br><span class="line">sed -n &quot;/root/,10p&quot;test.txt</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="2-2-3-sed中的编辑命令"><a href="#2-2-3-sed中的编辑命令" class="headerlink" title="2.2.3 sed中的编辑命令"></a>2.2.3 sed中的编辑命令</h5><table>
+<thead>
+<tr>
+<th>编辑命令</th>
+<th>类别</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>p</td>
+<td>查询</td>
+<td>打印</td>
+</tr>
+<tr>
+<td>&#x3D;</td>
+<td>查询</td>
+<td>只显示行号</td>
+</tr>
+<tr>
+<td>a</td>
+<td>增加</td>
+<td>行后追加</td>
+</tr>
+<tr>
+<td>i</td>
+<td>增加</td>
+<td>行前追加</td>
+</tr>
+<tr>
+<td>r</td>
+<td>增加</td>
+<td>外部文件读入，行后追加</td>
+</tr>
+<tr>
+<td>w</td>
+<td>增加</td>
+<td>匹配行写入外部文件</td>
+</tr>
+<tr>
+<td>d</td>
+<td>删除</td>
+<td>删除</td>
+</tr>
+<tr>
+<td>s&#x2F;old&#x2F;new</td>
+<td>修改</td>
+<td>将行内第一个old替换为new</td>
+</tr>
+<tr>
+<td>s&#x2F;old&#x2F;new&#x2F;g</td>
+<td>修改</td>
+<td>将行内全部的old替换为new</td>
+</tr>
+<tr>
+<td>s&#x2F;old&#x2F;new&#x2F;2g</td>
+<td>修改</td>
+<td>将行内从第2个old开始到剩下所有的old替换为new</td>
+</tr>
+<tr>
+<td>s&#x2F;old&#x2F;new&#x2F;ig</td>
+<td>修改</td>
+<td>将行内全部的old替换为new，忽略大小写</td>
+</tr>
+</tbody></table>
+<p><strong>反向引用</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[cmuser@localhost test]$ cat abc.txt</span><br><span class="line">First Line</span><br><span class="line">Second haha</span><br><span class="line">[cmuser@localhost test]$ sed -i &#x27;s/Sec..d/&amp;s/g&#x27; abc.txt</span><br><span class="line">[cmuser@localhost test]$ cat abc.txt</span><br><span class="line">First Line</span><br><span class="line">Seconds haha</span><br><span class="line">[cmuser@localhost test]$ sed -i &#x27;s/\(Sec..ds\)/\10/g&#x27; abc.txt</span><br><span class="line">[cmuser@localhost test]$ cat abc.txt</span><br><span class="line">First Line</span><br><span class="line">Seconds0 haha</span><br><span class="line">[cmuser@localhost test]$ sed -i &#x27;s/\(Sec\)...../\1FFFFFFFFFF/g&#x27; abc.txt</span><br><span class="line">[cmuser@localhost test]$ cat abc.txt</span><br><span class="line">First Line</span><br><span class="line">SecFFFFFFFFFF haha</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>&amp;</code>和<code>\1</code>引用模式匹配到的整个串</p>
+<ul>
+<li>两者区别在于只能表示匹配到的完整字符串，只能引用整个字符串；而<code>\1</code>可以使用<code>()</code>匹配到的字符</li>
+</ul>
+</li>
+<li><p>sed中引用变量时注意事项：</p>
+<ol>
+<li>匹配模式中存在变量，则建议使用双引号</li>
+<li>sed中需要引入自定义变量时，如果外面使用单引号，则自定义变量也必须使用单引号</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[cmuser@localhost test]$ old_str=First</span><br><span class="line">[cmuser@localhost test]$ new_str=One</span><br><span class="line">[cmuser@localhost test]$ sed -i &quot;s/$old_str&quot;/&quot;$new_str/g&quot; abc.txt</span><br><span class="line">[cmuser@localhost test]$ cat abc.txt</span><br><span class="line">One Line</span><br><span class="line">SecFFFFFFFFFF haha</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-2-4-sed实例"><a href="#2-2-4-sed实例" class="headerlink" title="2.2.4 sed实例"></a>2.2.4 sed实例</h5><ol>
+<li>sed查找文件内容（处理一个MySQL配置文件my.cnf的文本，示例如下；编写脚本实现以下功能：输出文件有几个段，并且针对每个段可以统计配置参数总个数）<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[jenkins@caimeidev1 test]$ vim test1.sh</span><br><span class="line"><span class="meta">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">FILE_NAME=/etc/my.cnf</span><br><span class="line"></span><br><span class="line">function get_all_segments &#123;</span><br><span class="line">    echo &quot;`sed -n &#x27;/\[.*\]/p&#x27; $FILE_NAME |sed -e &#x27;s/\[//g&#x27; -e &#x27;s/\]//g&#x27;`&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function count_items_in_segment &#123;</span><br><span class="line">    echo &quot;`sed -n &#x27;/\[&#x27;$1&#x27;\]/,/\[.*\]/p&#x27; $FILE_NAME  | grep -v ^# |grep -v ^$ |grep -v &quot;\[.*\]&quot; |wc -l `&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">num=0</span><br><span class="line">for seg in `get_all_segments`</span><br><span class="line">do</span><br><span class="line">    num=`expr $num + 1`</span><br><span class="line">    items_count=`count_items_in_segment $seg`</span><br><span class="line">    echo &quot;$num:$seg  $items_count&quot;</span><br><span class="line">done</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>输出结果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[jenkins@caimeidev1 test]$ ./test1.sh</span><br><span class="line">1:mysqld  9</span><br><span class="line">2:mysqld_safe  2</span><br><span class="line">3:mysql  1</span><br><span class="line">4:client  1</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>sed删除和修改文件内容</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">删除文件中的所有注释行和空行</span></span><br><span class="line">sed -i &#x27;/[:blank:]*#/d;/^$/d&#x27; nginx.conf</span><br><span class="line"><span class="meta"># </span><span class="language-bash">在配置文件中所有不以<span class="comment">#开头的行前面添加*符号，注意：以#开头的行不添加</span></span></span><br><span class="line">sed -i &#x27;s/^[^#]/\*&amp;/g&#x27; nginx.conf</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">修改/etc/passwd中第1行中第1个root为ROOT</span>	</span><br><span class="line">sed -i &#x27;1s/root/ROOT/&#x27; passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">修改/etc/passwd中第5行到第10行中所有的/sbin/nologin为/bin/bash</span></span><br><span class="line">sed -i &#x27;5,10s/\/sbin\/nologin/\/bin\/bash/g&#x27; passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">修改/etc/passwd中匹配到/sbin/nologin的行，将匹配到行中的login改为大写的LOGIN</span></span><br><span class="line">sed -i &#x27;/\/sbin\/nologin/s/login/LOGIN/g&#x27; passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">修改/etc/passwd中从匹配到以root开头的行，到匹配到行中包含mail的所有行。修改内为将这些所有匹配到的行中的bin改为HADOOP</span></span><br><span class="line">sed -i &#x27;/^root/,/mail/s/bin/HADOOP/g&#x27; passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">修改/etc/passwd中从匹配到以root开头的行，到第15行中的所有行，修改内容为将这些行中的nologin修改为SPARK</span></span><br><span class="line">sed -i &#x27;/^root/,15s/nologin/SPARK/g&#x27; passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">修改/etc/passwd中从第15行开始，到匹配到以yarn开头的所有行，修改内容为将这些行中的bin换位BIN</span></span><br><span class="line">sed -i &#x27;15,/^yarn/s/bin/BIN/g&#x27; passwd </span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>sed追加文件内容（a:在匹配行后面追加，i:在匹配行前面追加，r:将文件内容追加到匹配行后面，w:将匹配行写入指定文件）</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">a:在匹配行后面追加</span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">(1)、passwd文件第10行后面追加<span class="string">&quot;Add Line Behind&quot;</span></span>		</span><br><span class="line">sed -i &#x27;10a Add Line Begind&#x27; passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">(2)、passwd文件第10行到第20行，每一行后面都追加<span class="string">&quot;Test Line Behind&quot;</span></span></span><br><span class="line">sed -i &#x27;10,20a Test Line Behind&#x27; passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">(3)、passwd文件匹配到/bin/bash的行后面追加<span class="string">&quot;Insert Line For /bin/bash Behind&quot;</span></span></span><br><span class="line">sed -i &#x27;/\/bin\/bash/a Insert Line For /bin/bash Behind&#x27; passwd</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">i:在匹配行前面追加</span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">(1)、passwd文件匹配到以yarn开头的行，在匹配行前面追加<span class="string">&quot;Add Line Before&quot;</span></span></span><br><span class="line">sed -i &#x27;/^yarn/i Add Line Before&#x27; passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">(2)、passwd文件每一行前面都追加<span class="string">&quot;Insert Line Before Every Line&quot;</span></span></span><br><span class="line">sed -i &#x27;i Insert Line Before Every Line&#x27; passwd</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">r:将文件内容追加到匹配行后面</span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">(1)、将/etc/fstab文件的内容追加到passwd文件的第20行后面</span></span><br><span class="line">sed -i &#x27;20r /etc/fstab&#x27; passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">(2)、将/etc/inittab文件内容追加到passwd文件匹配/bin/bash行的后面</span></span><br><span class="line">sed -i &#x27;/\/bin\/bash/r /etc/inittab&#x27; passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">(3)、将/etc/vconsole.conf文件内容追加到passwd文件中特定行后面，匹配以ftp开头的行，到第18行的所有行</span></span><br><span class="line">sed -i &#x27;//,18r /etc/vconsole.conf&#x27; passwd</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">w:将匹配行写入指定文件</span>	</span><br><span class="line"><span class="meta"># </span><span class="language-bash">(1)、将passwd文件匹配到/bin/bash的行追加到/tmp/sed.txt文件中</span></span><br><span class="line">sed -i &#x27;/\/bin\/bash/w /tmp/sed.txt&#x27; passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">(2)、将passwd文件从第10行开始，到匹配到hdfs开头的所有行内容追加到/tmp/sed-1.txt</span></span><br><span class="line">sed -i &#x27;10,/^hdfs/w /tmp/sed-1.txt&#x27; passwd</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="2-3-文件处理三剑客之awk"><a href="#2-3-文件处理三剑客之awk" class="headerlink" title="2.3 文件处理三剑客之awk"></a>2.3 文件处理三剑客之awk</h4><p><code>awk</code>是一个文本处理工具，通常用于处理数据并生成结果报告</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">awk &#x27;BEGIN&#123;&#125; pattern&#123;commands&#125;END&#123;&#125;&#x27; file_name</span><br><span class="line">standard output | awk &#x27;BEGIN&#123;&#125;pattern&#123;commands&#125;END&#123;&#125;&#x27;</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>语法格式</th>
+<th>解析</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BEGIN{}</td>
+<td>正式处理数据之前执行</td>
+</tr>
+<tr>
+<td>pattern</td>
+<td>匹配模式</td>
+</tr>
+<tr>
+<td>{commands}</td>
+<td>处理命令，可能多行</td>
+</tr>
+<tr>
+<td>END{}</td>
+<td>处理完所有匹配数据后执行</td>
+</tr>
+</tbody></table>
+<h5 id="2-3-1-awk内置变量"><a href="#2-3-1-awk内置变量" class="headerlink" title="2.3.1 awk内置变量"></a>2.3.1 awk内置变量</h5><table>
+<thead>
+<tr>
+<th>内置变量</th>
+<th>解析</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$0</td>
+<td>打印行所有信息</td>
+</tr>
+<tr>
+<td>$1~$n</td>
+<td>打印行的第1到n个字段的信息</td>
+</tr>
+<tr>
+<td>NF</td>
+<td>Number Field 处理行的字段个数</td>
+</tr>
+<tr>
+<td>NR</td>
+<td>Number Row 处理行的行号，从1开始计数</td>
+</tr>
+<tr>
+<td>FNR</td>
+<td>File Number Row 多文件处理时，每个文件单独记录行号，都是从0康凯斯</td>
+</tr>
+<tr>
+<td>FS</td>
+<td>Field Separator 字段分割符，不指定时默认以空格或tab键分割</td>
+</tr>
+<tr>
+<td>RS</td>
+<td>Row Separator 行分隔符，不指定时以回车分割\n</td>
+</tr>
+<tr>
+<td>OFS</td>
+<td>Output Filed Separator 输出字段分隔符。</td>
+</tr>
+<tr>
+<td>ORS</td>
+<td>Output Row Separator 输出行分隔符</td>
+</tr>
+<tr>
+<td>FILENAME</td>
+<td>处理文件的文件名</td>
+</tr>
+<tr>
+<td>ARGC</td>
+<td>命令行参数个数</td>
+</tr>
+<tr>
+<td>ARGV</td>
+<td>命令行参数数组</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[cmuser@localhost test]$ awk &#x27;&#123;print $0&#125;&#x27; abc.txt</span><br><span class="line">One Line</span><br><span class="line">SecFFFFFFFFFF haha</span><br><span class="line">[cmuser@localhost test]$ awk &#x27;&#123;print $1&#125;&#x27; abc.txt</span><br><span class="line">One</span><br><span class="line">SecFFFFFFFFFF</span><br><span class="line">[cmuser@localhost test]$ awk &#x27;&#123;print NR&#125;&#x27; abc.txt</span><br><span class="line">1</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="2-3-2-awk格式化输出之printf"><a href="#2-3-2-awk格式化输出之printf" class="headerlink" title="2.3.2 awk格式化输出之printf"></a>2.3.2 awk格式化输出之printf</h5><table>
+<thead>
+<tr>
+<th>格式符</th>
+<th>解析</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>%s</td>
+<td>打印字符串</td>
+</tr>
+<tr>
+<td>%d</td>
+<td>打印10进制数</td>
+</tr>
+<tr>
+<td>%f</td>
+<td>打印浮点数</td>
+</tr>
+<tr>
+<td>%x</td>
+<td>打印16进制数</td>
+</tr>
+<tr>
+<td>%o</td>
+<td>打印8进制数</td>
+</tr>
+<tr>
+<td>%e</td>
+<td>打印数字的科学计数法格式</td>
+</tr>
+<tr>
+<td>%c</td>
+<td>打印单个字符的ASCII码</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>修饰符</th>
+<th>解析</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-</td>
+<td>左对齐</td>
+</tr>
+<tr>
+<td>+</td>
+<td>右对齐</td>
+</tr>
+<tr>
+<td>#</td>
+<td>显示8进制在前面加o，显示16进制在前面加0x</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">1、以字符串格式打印/etc/passwd中的第7个字段，以<span class="string">&quot;:&quot;</span>作为分隔符</span></span><br><span class="line">awk &#x27;BEGIN&#123;FS=&quot;:&quot;&#125; &#123;printf &quot;%s\n&quot;,$7&#125;&#x27; /etc/passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">2、以10进制格式打印/etc/passwd中的第3个字段，以<span class="string">&quot;:&quot;</span>作为分隔符</span></span><br><span class="line">awk &#x27;BEGIN&#123;FS=&quot;:&quot;&#125; &#123;printf &quot;%d\n&quot;,$3&#125;&#x27; /etc/passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">3、以浮点数格式打印/etc/passwd中的第3个字段，以<span class="string">&quot;:&quot;</span>作为分隔符</span></span><br><span class="line">awk &#x27;BEGIN&#123;FS=&quot;:&quot;&#125; &#123;printf &quot;%0.3f\n&quot;,$3&#125;&#x27; /etc/passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">4、以16进制数格式打印/etc/passwd中的第3个字段，以<span class="string">&quot;:&quot;</span>作为分隔符</span></span><br><span class="line">awk &#x27;BEGIN&#123;FS=&quot;:&quot;&#125; &#123;printf &quot;%#x\n&quot;,$3&#125;&#x27; /etc/passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">5、以8进制数格式打印/etc/passwd中的第3个字段，以<span class="string">&quot;:&quot;</span>作为分隔符</span></span><br><span class="line">awk &#x27;BEGIN&#123;FS=&quot;:&quot;&#125; &#123;printf &quot;%#o\n&quot;,$3&#125;&#x27; /etc/passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">6、以科学计数法格式打印/etc/passwd中的第3个字段，以<span class="string">&quot;:&quot;</span>作为分隔符</span></span><br><span class="line">awk &#x27;BEGIN&#123;FS=&quot;:&quot;&#125; &#123;printf &quot;%e\n&quot;,$3&#125;&#x27; /etc/passwd</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="2-3-3-awk模式匹配的两种用法"><a href="#2-3-3-awk模式匹配的两种用法" class="headerlink" title="2.3.3 awk模式匹配的两种用法"></a>2.3.3 awk模式匹配的两种用法</h5><ul>
+<li><code>awk</code>模式匹配：<ol>
+<li><code>RegExp</code>：按正则表达式匹配</li>
+<li><code>关系运算匹配</code>：按关系运算匹配</li>
+</ol>
+</li>
+</ul>
+<ol>
+<li>RegExp(正则表达式匹配)</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">匹配/etc/passwd文件行中含有root字符串的所有行</span></span><br><span class="line">awk &#x27;BEGIN&#123;FS=&quot;:&quot;&#125;/root/&#123;print $0&#125;&#x27; /etc/passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">匹配/etc/passwd文件行中以yarn开头的所有行</span></span><br><span class="line">awk &#x27;BEGIN&#123;FS=&quot;:&quot;&#125;/^yarn/&#123;print $0&#125;&#x27; /etc/passwd</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>运算符匹配(<code>&lt;</code>:小于，<code>&gt;</code>:大于，<code>&lt;=</code>:小于等于，<code>&gt;=</code>:大于等于，<code>==</code>:等于，<code>!=</code>:不等于，<code>~</code>:匹配正则表达式，<code>!~</code>:不匹配正则表达式)</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">以:为分隔符，匹配/etc/passwd文件中第3个字段小于50的所有行信息</span></span><br><span class="line">awk &#x27;BEGIN&#123;FS=&quot;:&quot;&#125;$3&lt;50&#123;print $0&#125;&#x27; /etc/passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">以:为分隔符，匹配/etc/passwd文件中第3个字段大于50的所有行信息</span></span><br><span class="line">awk &#x27;BEGIN&#123;FS=&quot;:&quot;&#125;$3&gt;50&#123;print $0&#125;&#x27; /etc/passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">以:为分隔符，匹配/etc/passwd文件中第7个字段为/bin/bash的所有行信息</span></span><br><span class="line">awk &#x27;BEGIN&#123;FS=&quot;:&quot;&#125;$7==&quot;/bin/bash&quot;&#123;print $0&#125;&#x27; /etc/passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">以:为分隔符，匹配/etc/passwd文件中第7个字段不为/bin/bash的所有行信息</span></span><br><span class="line">awk &#x27;BEGIN&#123;FS=&quot;:&quot;&#125;$7!=&quot;/bin/bash&quot;&#123;print $0&#125;&#x27; /etc/passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">以:为分隔符，匹配/etc/passwd中第3个字段包含3个以上数字的所有行信息</span></span><br><span class="line">awk &#x27;BEGIN&#123;FS=&quot;:&quot;&#125;$3~/[0-9]&#123;3,&#125;/&#123;print $0&#125;&#x27; /etc/passwd</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>布尔运算符匹配(<code>||</code>:或，<code>&amp;&amp;</code>:与，<code>!</code>:非)</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">以:为分隔符，匹配/etc/passwd文件中包含hdfs或yarn的所有行信息</span></span><br><span class="line">awk &#x27;BEGIN&#123;FS=&quot;:&quot;&#125;$1==&quot;hdfs&quot; || $1==&quot;yarn&quot; &#123;print $0&#125;&#x27; /etc/passwd</span><br><span class="line"><span class="meta"># </span><span class="language-bash">以:为分隔符，匹配/etc/passwd文件中第3个字段小于50并且第4个字段大于50的所有行信息</span></span><br><span class="line">awk &#x27;BEGIN&#123;FS=&quot;:&quot;&#125;$3&lt;50 &amp;&amp; $4&gt;50 &#123;print $0&#125;&#x27; /etc/passwd</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="2-3-4-awk表达式用法"><a href="#2-3-4-awk表达式用法" class="headerlink" title="2.3.4 awk表达式用法"></a>2.3.4 awk表达式用法</h5><table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>解析</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>+</code></td>
+<td>加</td>
+</tr>
+<tr>
+<td><code>/</code></td>
+<td>除</td>
+</tr>
+<tr>
+<td><code>%</code></td>
+<td>模</td>
+</tr>
+<tr>
+<td><code>^</code>或<code>**</code></td>
+<td>乘方</td>
+</tr>
+<tr>
+<td><code>++x</code></td>
+<td>在返回x变量之前，×变量加1</td>
+</tr>
+<tr>
+<td><code>X++</code></td>
+<td>在返回x变量之后，×变量加1</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">使用awk计算/etc/services中的空白行数量</span></span><br><span class="line">awk &#x27;/^$/&#123;sum++&#125;END&#123;print sum&#125;&#x27; /etc/services</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="2-3-5-awk动作中的条件及循环语句"><a href="#2-3-5-awk动作中的条件及循环语句" class="headerlink" title="2.3.5 awk动作中的条件及循环语句"></a>2.3.5 awk动作中的条件及循环语句</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">以:为分隔符，只打印/etc/passwd中第3个字段的数值在50-100范围内的行信息</span></span><br><span class="line">awk &#x27;BEGIN&#123;FS=&quot;:&quot;&#125;&#123;</span><br><span class="line">    if($3&lt;50)&#123; </span><br><span class="line">        printf &quot;%-20s%-20s%-5d\n&quot;,&quot;小于50的UID&quot;,$1,$3</span><br><span class="line">    &#125; else if($3&gt;100) &#123;</span><br><span class="line">        printf &quot;%-20s%-20s%-5d\n&quot;,&quot;大 于100的UID&quot;,$1,$3</span><br><span class="line">    &#125; else&#123;</span><br><span class="line">        printf &quot;%-20s%-20s%-5d\n&quot;,&quot;大于50 小于100的UID&quot;,$1,$3</span><br><span class="line">    &#125;</span><br><span class="line">&#125;&#x27; /etc/passwd</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="2-3-6-awk中的字符串函数"><a href="#2-3-6-awk中的字符串函数" class="headerlink" title="2.3.6 awk中的字符串函数"></a>2.3.6 awk中的字符串函数</h5><table>
+<thead>
+<tr>
+<th>函数名</th>
+<th>解析</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>length(str)</td>
+<td>计算长度</td>
+</tr>
+<tr>
+<td>index(str1,str2)</td>
+<td>返回在str1中查询到的str2的位置</td>
+</tr>
+<tr>
+<td>tolower(str)</td>
+<td>小写转换</td>
+</tr>
+<tr>
+<td>toupper(str)</td>
+<td>大写转换</td>
+</tr>
+<tr>
+<td>split(str,arr,fs)</td>
+<td>分隔字符串，并保存到数组中</td>
+</tr>
+<tr>
+<td>match(str,RE)</td>
+<td>返回正则表达式匹配到的子串的位置</td>
+</tr>
+<tr>
+<td>substr(str,m,n)</td>
+<td>截取子串，从m个字符开始，截取n位。n若不指定，则默认截取到字符串尾</td>
+</tr>
+<tr>
+<td>sub(RE,RepStr,str)</td>
+<td>替换查找到的第一个子串</td>
+</tr>
+<tr>
+<td>gsub(RE,RepStr,str)</td>
+<td>替换查找到的所有子串</td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">搜索字符串<span class="string">&quot;I have a dream&quot;</span>中出现<span class="string">&quot;ea&quot;</span>子串的位置</span></span><br><span class="line">awk &#x27;BEGIN&#123;str=&quot;I hava a dream&quot;;location=index(str,&quot;ea&quot;);print location&#125;</span><br><span class="line">awk &#x27;BEGIN&#123;str=&quot;I hava a dream&quot;;location=match(str,&quot;ea&quot;);print location&#125;&#x27;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">将字符串<span class="string">&quot;Hadoop is a bigdata Framawork&quot;</span>全部转换为小写</span></span><br><span class="line">awk &#x27;BEGIN&#123;str=&quot;Hadoop is a bigdata Framework&quot;;print tolower(str)&#125;&#x27;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">将字符串<span class="string">&quot;Hadoop is a bigdata Framawork&quot;</span>全部转换为大写</span></span><br><span class="line">awk &#x27;BEGIN&#123;str=&quot;Hadoop is a bigdata Framework&quot;;print toupper(str)&#125;&#x27;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">将字符串<span class="string">&quot;Hadoop Kafka Spark Storm HDFS YARN Zookeeper&quot;</span>，按照空格为分隔符，分隔每部分保存到数组array中</span></span><br><span class="line">awk &#x27;BEGIN&#123;str=&quot;Hadoop Kafka Spark Storm HDFS YARN Zookeeper&quot;;split(str,arr,&quot; &quot;);for(a in arr) print arr[a]&#125;&#x27;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">搜索字符串<span class="string">&quot;Tranction 2345 Start:Select * from master&quot;</span>第一个数字出现的位置</span></span><br><span class="line">awk &#x27;BEGIN&#123;str=&quot;Tranction 2345 Start:Select * from master&quot;;location=match(str,/[0-9]/);print location&#125;&#x27;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">截取字符串<span class="string">&quot;transaction start&quot;</span>的子串，截取条件从第4个字符开始，截取5位</span></span><br><span class="line">awk &#x27;BEGIN&#123;str=&quot;transaction start&quot;;print substr(str,4,5)&#125;&#x27;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">替换字符串<span class="string">&quot;Tranction 243 Start,Event ID:9002&quot;</span>中第一个匹配到的数字串为$符号</span></span><br><span class="line">awk &#x27;BEGIN&#123;str=&quot;Tranction 243 Start,Event ID:9002&quot;;count=sub(/[0-9]+/,&quot;$&quot;,str);print count,str&#125;&#x27;</span><br><span class="line">awk &#x27;BEGIN&#123;str=&quot;Tranction 243 Start,Event ID:9002&quot;;count=gsub(/[0-9]+/,&quot;$&quot;,str);print count,str&#125;&#x27;</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="2-3-7-awk的常用选项"><a href="#2-3-7-awk的常用选项" class="headerlink" title="2.3.7 awk的常用选项"></a>2.3.7 awk的常用选项</h5><table>
+<thead>
+<tr>
+<th>选项</th>
+<th>解析</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-v</td>
+<td>参数传递</td>
+</tr>
+<tr>
+<td>-f</td>
+<td>指定脚本文件</td>
+</tr>
+<tr>
+<td>-F</td>
+<td>指定分隔符</td>
+</tr>
+<tr>
+<td>-V</td>
+<td>查看awk的版本号</td>
+</tr>
+</tbody></table>
+<h5 id="2-3-8-awk中数组的用法"><a href="#2-3-8-awk中数组的用法" class="headerlink" title="2.3.8 awk中数组的用法"></a>2.3.8 awk中数组的用法</h5><p>在awk中，使用数组时，不仅可以使用1.2…n作为数组下标，也可以使用字符串作为数组下标。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">打印元素：</span></span><br><span class="line">echo $&#123;array[2]&#125;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">打印元素个数：</span></span><br><span class="line">echo $&#123;#array[@]&#125;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">打印元素长度：</span></span><br><span class="line">echo $&#123;#array[3]&#125;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">给元素赋值：</span></span><br><span class="line">array[3]=&quot;Li&quot;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">删除元素：</span></span><br><span class="line">unset array[2];unset array</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">分片访问：</span></span><br><span class="line">echo $&#123;array[@]:1:3&#125;</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">元素内容替换：</span></span><br><span class="line"><span class="meta">$</span><span class="language-bash">&#123;array[@]/e/E&#125;只替换第一个e；</span></span><br><span class="line"><span class="meta">$</span><span class="language-bash">tarray[@]//e/E&#125;替换所有的e</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">数组的遍历：</span></span><br><span class="line">for a in array </span><br><span class="line">do</span><br><span class="line">	echo $a </span><br><span class="line">done </span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta"># </span><span class="language-bash">使用字符串作为数组下标</span></span><br><span class="line">array[&quot;var1&quot;]=&quot;Jin&quot;</span><br><span class="line">array[&quot;var2&quot;]=&quot;Hao&quot;</span><br><span class="line">array[&quot;var3&quot;]=&quot;Fang&quot;</span><br><span class="line">for(a in array)</span><br><span class="line">	print array[a]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># </span><span class="language-bash">统计主机上所有的TCP连接状态数，按照每个TCP状态分类</span></span><br><span class="line">netstat -an | grep tcp | awk &#x27;&#123;array[$6]++&#125; END&#123;for(a in array) print a,array[a]&#125;&#x27;</span><br></pre></td></tr></table></figure>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%96%87%E4%BB%B6%E6%9F%A5%E6%89%BE%E5%91%BD%E4%BB%A4"><span class="toc-text">1. 文件查找命令</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-find%E5%91%BD%E4%BB%A4"><span class="toc-text">1.1 find命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-locate%E5%91%BD%E4%BB%A4"><span class="toc-text">1.2 locate命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-whereis%E5%91%BD%E4%BB%A4"><span class="toc-text">1.3 whereis命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-which%E5%91%BD%E4%BB%A4"><span class="toc-text">1.4 which命令</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Linux%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86%E4%B8%89%E5%89%91%E5%AE%A2"><span class="toc-text">2. Linux文本处理三剑客</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86%E4%B8%89%E5%89%91%E5%AE%A2%E4%B9%8Bgrep"><span class="toc-text">2.1 文件处理三剑客之grep</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86%E4%B8%89%E5%89%91%E5%AE%A2%E4%B9%8Bsed"><span class="toc-text">2.2 文件处理三剑客之sed</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-1-sed%E9%80%89%E9%A1%B9"><span class="toc-text">2.2.1 sed选项</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-2-sed%E5%8C%B9%E9%85%8D%E6%A8%A1%E5%BC%8F"><span class="toc-text">2.2.2 sed匹配模式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-3-sed%E4%B8%AD%E7%9A%84%E7%BC%96%E8%BE%91%E5%91%BD%E4%BB%A4"><span class="toc-text">2.2.3 sed中的编辑命令</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-4-sed%E5%AE%9E%E4%BE%8B"><span class="toc-text">2.2.4 sed实例</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86%E4%B8%89%E5%89%91%E5%AE%A2%E4%B9%8Bawk"><span class="toc-text">2.3 文件处理三剑客之awk</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-3-1-awk%E5%86%85%E7%BD%AE%E5%8F%98%E9%87%8F"><span class="toc-text">2.3.1 awk内置变量</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-3-2-awk%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%BE%93%E5%87%BA%E4%B9%8Bprintf"><span class="toc-text">2.3.2 awk格式化输出之printf</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-3-3-awk%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D%E7%9A%84%E4%B8%A4%E7%A7%8D%E7%94%A8%E6%B3%95"><span class="toc-text">2.3.3 awk模式匹配的两种用法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-3-4-awk%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%94%A8%E6%B3%95"><span class="toc-text">2.3.4 awk表达式用法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-3-5-awk%E5%8A%A8%E4%BD%9C%E4%B8%AD%E7%9A%84%E6%9D%A1%E4%BB%B6%E5%8F%8A%E5%BE%AA%E7%8E%AF%E8%AF%AD%E5%8F%A5"><span class="toc-text">2.3.5 awk动作中的条件及循环语句</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-3-6-awk%E4%B8%AD%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%87%BD%E6%95%B0"><span class="toc-text">2.3.6 awk中的字符串函数</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-3-7-awk%E7%9A%84%E5%B8%B8%E7%94%A8%E9%80%89%E9%A1%B9"><span class="toc-text">2.3.7 awk的常用选项</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-3-8-awk%E4%B8%AD%E6%95%B0%E7%BB%84%E7%9A%84%E7%94%A8%E6%B3%95"><span class="toc-text">2.3.8 awk中数组的用法</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/2020/06/09/env-shell-text.html">http://chaooo.github.io/2020/06/09/env-shell-text.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/env/" rel="tag">环境配置</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2020/06/08/env-shell-function.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          「Shell」Shell 函数的用法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/06/10/env-shell-java.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          「Shell」Shell脚本部署Java应用
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/12/30/spring-security-permission.html">「Spring Security」前后端分离权限控制-指令级权限</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/27/spring-security-vue.html">「Spring Security」前后端分离菜单权限控制-前端动态路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/spring-security-rbac.html">「Spring Security」前后端分离后台菜单权限控制</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/10/spring-security-token.html">「Spring Security」基于Redis的Token自动续签优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/09/spring-security-jwt.html">「Spring Security」整合 JWT 实现无状态登录示例</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 10.71px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 16.43px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.71px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12.14px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12.14px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.43px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.43px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 17.14px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12.14px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12.14px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12.14px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.57px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.71px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 14.29px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.71px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.86px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.57px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 14.29px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.86px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.57px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 14.29px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.43px;">hexo</a> <a href="/tags/java/" style="font-size: 15.71px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 17.86px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 12.14px;">并发编程</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 10px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.29px;">环境配置</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年12月</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年11月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p style="display:none;">
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+      repo: 'https://github.com/chaooo/BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

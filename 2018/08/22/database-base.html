@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>「数据库」数据库系统基础 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-database-base" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      「数据库」数据库系统基础
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2018-08-22T12:20:19.000Z" itemprop="datePublished">2018年08月22日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/db/">数据库</a>
+  </div>
+
+      
+        <span class="article-views" style="display:none;">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2018/08/22/database-base.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><ol>
+<li>数据库 是 电子化信息的集合</li>
+</ol>
+<ul>
+<li>将信息规范化并使之电子化，形成电子信息’库’，以便利用计算机对这些信息进行快速有效的存储、检索、统计与管理。</li>
+</ul>
+<ol start="2">
+<li>表(Table)：以按行按列形式组织及展现的数据<span id="more"></span></li>
+</ol>
+<ul>
+<li>数据库起源于规范化“表(Table)”的处理，Table中描述了一批相互有关联关系的数据–&gt;关系</li>
+</ul>
+<ol start="3">
+<li>数据库系统的构成（概念层次）:</li>
+<li>数据库(DB):Database：相互之间有关联关系的数据的集合</li>
+<li>数据库管理系统(DBMS):Database Management System</li>
+<li>数据库应用(DBAP):Database Application</li>
+<li>数据库管理员(DBA):Database Asministrator</li>
+<li>计算机基本系统</li>
+</ol>
+<h3 id="1-数据库管理系统-DBMS"><a href="#1-数据库管理系统-DBMS" class="headerlink" title="1. 数据库管理系统(DBMS)"></a>1. 数据库管理系统(DBMS)</h3><h4 id="1-1-从用户角度看DBMS-数据库管理系统"><a href="#1-1-从用户角度看DBMS-数据库管理系统" class="headerlink" title="1.1 从用户角度看DBMS(数据库管理系统)"></a>1.1 从用户角度看DBMS(数据库管理系统)</h4><ol>
+<li>数据库定义：定义数据库中的Table的表名、标题(属性以及属性值的要求)等</li>
+</ol>
+<ul>
+<li>DBMS提供了一套<strong>数据定义语言(DDL</strong>: Data Definition Language)给用户</li>
+<li>用户使用DDL描述其所要建立的表的格式</li>
+<li>DBMS依照用户的定义，创建数据库及其中的表</li>
+</ul>
+<ol start="2">
+<li>数据库操作：向数据库的Table中增加&#x2F;删除&#x2F;更新数据及对数据进行查询、检索、统计等</li>
+</ol>
+<ul>
+<li>DBMS提供了一套<strong>数据库操纵语言(DML</strong>: Data Manipulation Language)给用户</li>
+<li>用户使用DML描述其所要进行的增、删、改、查等操作</li>
+<li>DBMS依照用户的操作描述，实际执行这些操作</li>
+</ul>
+<ol start="3">
+<li>数据库控制：控制数据库中数据的使用(哪些用户可以使用，哪些不可以)</li>
+</ol>
+<ul>
+<li>DBMS提供了一套<strong>数据控制语言(DCL</strong>: Data Control Language)给用户</li>
+<li>用户使用DCL描述其对数据库所要实施的控制</li>
+<li>DBMS依照用户描述，实际ijnx控制</li>
+</ul>
+<ol start="4">
+<li>数据库维护：转储&#x2F;恢复&#x2F;重组&#x2F;性能监测&#x2F;分析…</li>
+</ol>
+<ul>
+<li>DBMS提供了一系列程序(实用程序&#x2F;例行程序)给用户</li>
+<li>在这些程序中提供了对数据库维护的各种功能</li>
+<li>用户使用这些程序进行各种数据库维护操作</li>
+<li>(数据库维护的实用程序，一般由数据库管理员(DBA)来使用和掌握的)</li>
+</ul>
+<h4 id="1-2-数据库语言"><a href="#1-2-数据库语言" class="headerlink" title="1.2 数据库语言"></a>1.2 数据库语言</h4><ul>
+<li>使用者使用数据库语言，利用DBMS操纵数据库</li>
+<li>SQL语言：结构化的数据库语言</li>
+<li>高级语言：一条数据库语言相当于高级语言的一个或多个循环程序，数据库语言可以嵌入到高级语言(宿主语言)中使用</li>
+</ul>
+<h4 id="1-3-从系统实现角度看DBMS的功能"><a href="#1-3-从系统实现角度看DBMS的功能" class="headerlink" title="1.3 从系统实现角度看DBMS的功能"></a>1.3 从系统实现角度看DBMS的功能</h4><ol>
+<li>数据库管理系统的实现：形式 –&gt; 构造 –&gt; 自动化</li>
+<li>DBMS为完成DB管理，在后台运行着一系列程序…</li>
+</ol>
+<ul>
+<li><strong>语言编译器</strong>：将数据库语言书写的内容，翻译成BDMS可执行的命令。例如：DDL编译器，DML编译器，DCL编译器等</li>
+<li><strong>查询优化</strong>(执行引擎)与<strong>查询实现</strong>(基本命令的不同执行算法)：提高数据库检索速度的手段。例如贯穿于数据存取各个阶段的优化程序</li>
+<li><strong>数据存取与索引</strong>：提供数据在磁盘&#x2F;磁带等上的搞笑存取手段。例如：存储管理器，缓冲区管理器，索引&#x2F;文件和记录管理器等</li>
+<li><strong>通信控制</strong>：提供网络环境下数据库操作与数据传输的手段</li>
+<li><strong>事务管理</strong>：提供提高可靠性并避免并发操作错误的手段</li>
+<li><strong>故障恢复</strong>：使用数据库自动恢复到故障发生前正确状态的手段。例如备份、运行日志操控等实用程序</li>
+<li><strong>安全性控制</strong>：提供合法性检验，避免非授权非法用户访问数据库的手段</li>
+<li><strong>完整性控制</strong>：提供数据及数据操作正确性检查的手段</li>
+<li><strong>数据字典管理</strong>：管理用户已经定义的信息</li>
+<li>**应用程序接口(API)**：提供应用程序使用DBMS特定功能的二首段</li>
+<li><strong>数据库数据装载、重组等实用程序</strong></li>
+<li><strong>数据库性能分析</strong>：统计在运行过程中数据库的各种性能数据，便于优化运行</li>
+</ul>
+<blockquote>
+<p>典型的数据库管理系统(DBMS)：Oracle、DB2(IBM)、Sybase、Microsoft SQL Server、Microsoft Access、PostgreSQL </p>
+</blockquote>
+<h3 id="2-数据库系统的标准结构"><a href="#2-数据库系统的标准结构" class="headerlink" title="2. 数据库系统的标准结构"></a>2. 数据库系统的标准结构</h3><p>DBMS管理数据的三个层次：</p>
+<ol>
+<li>External Level &#x3D; User Level（外部级别 &#x3D; 用户级别）</li>
+</ol>
+<ul>
+<li>某一用户能够看到与处理的数据,   全局数据中的某一部分</li>
+</ul>
+<ol start="2">
+<li>Conceptual Level &#x3D; Logic level（概念级别 &#x3D; 逻辑级别）</li>
+</ol>
+<ul>
+<li>从全局角度理解&#x2F;管理的数据, 含相应的关联约束</li>
+</ul>
+<ol start="3">
+<li>Internal Level &#x3D; Physical level（内部级别 &#x3D; 物理级别）</li>
+</ol>
+<ul>
+<li>存储在介质上的数据，含存储路径、存储方式 、索引方式等</li>
+</ul>
+<h3 id="3-三级模式两层映像"><a href="#3-三级模式两层映像" class="headerlink" title="3. 三级模式两层映像"></a>3. 三级模式两层映像</h3><p>数据库的三级模式结构是指：数据库系统是由外模式、模式(概念模式)和内模式三级构成</p>
+<ul>
+<li>应用–&gt; 外模式(多个) –&gt; 模式(一个) –&gt; 内模式(一个) –&gt; 数据库</li>
+</ul>
+<h4 id="3-1-数据-视图-与模式-数据的结构"><a href="#3-1-数据-视图-与模式-数据的结构" class="headerlink" title="3.1 数据(视图)与模式(数据的结构)"></a>3.1 数据(视图)与模式(数据的结构)</h4><ul>
+<li>模式(Schema):对数据库中数据所进行的一种结构性的描述，所观察到数据的结构信息</li>
+<li>视图(View)&#x2F;数据(Data)：某一种表现形式下表现出来的数据库中的数据</li>
+</ul>
+<h4 id="3-2-三级模式-三级视图"><a href="#3-2-三级模式-三级视图" class="headerlink" title="3.2 三级模式(三级视图)"></a>3.2 三级模式(三级视图)</h4><ol>
+<li>External Schema —-(External) View</li>
+</ol>
+<ul>
+<li>外模式：某一用户能够看到与处理的数据的结构描述</li>
+</ul>
+<ol start="2">
+<li>(Conceptual) Schema —- Conceptual View</li>
+</ol>
+<ul>
+<li>模式(概念模式)：从全局角度理解&#x2F;管理的数据的结构描述, 含相应的关联约束</li>
+<li>体现在数据之间的内在本质联系</li>
+</ul>
+<ol start="3">
+<li>Internal Schema —- Internal  View</li>
+</ol>
+<ul>
+<li>内模式：存储在介质上的数据的结构描述，含存储路径、存储方式 、索引方式等</li>
+</ul>
+<h4 id="3-3-两层映像"><a href="#3-3-两层映像" class="headerlink" title="3.3 两层映像"></a>3.3 两层映像</h4><ol>
+<li>E-C Mapping：External Schema-Conceptual Schema Mapping</li>
+</ol>
+<ul>
+<li>将外模式映射为概念模式，从而支持实现数据概念视图向外部视图的转换</li>
+<li>便于用户观察和使用</li>
+</ul>
+<ol start="2">
+<li>C-I Mapping：Conceptual Schema-Internal Schema Mapping</li>
+</ol>
+<ul>
+<li>将概念模式映射为内模式，从而支持实现数据概念视图向内部视图的转换</li>
+<li>便于计算机进行存储和处理</li>
+</ul>
+<h4 id="3-4-标准结构的两个独立性"><a href="#3-4-标准结构的两个独立性" class="headerlink" title="3.4 标准结构的两个独立性"></a>3.4 标准结构的两个独立性</h4><ol>
+<li>逻辑数据独立性</li>
+</ol>
+<ul>
+<li>当概念模式变化时，可以不改变外部模式(只需改变E-C Mapping)，从而无需改变应用程序</li>
+</ul>
+<ol start="2">
+<li>物理数据独立性</li>
+</ol>
+<ul>
+<li>当内部模式变化时，可以不改变概念模式(只需改变C-I Mapping) ，从而不改变外部模式</li>
+</ul>
+<h3 id="4-数据模型"><a href="#4-数据模型" class="headerlink" title="4. 数据模型"></a>4. 数据模型</h3><ol>
+<li>数据模型：模式 与 模式的结构</li>
+</ol>
+<ul>
+<li>规定模式统一描述方式的模型，包括：数据结构、操作和约束</li>
+<li>数据模型是对模式本身结构的抽象，模式是对数据本身结构形式的抽象</li>
+<li>比如：关系模型：所有模式都可为抽象表(Table)的形式[<strong>数据结构</strong>]，而每一个具体的模式都是拥有不同列名的具体的表。对这种表形式的数据有哪些[<strong>操作</strong>]和[<strong>约束</strong>]</li>
+</ul>
+<ol start="2">
+<li>三大经典数据模型</li>
+</ol>
+<ul>
+<li>关系模型：<strong>表</strong>的形式组织数据</li>
+<li>层次模型：<strong>树</strong>的形式组织数据</li>
+<li>网状模型：<strong>图</strong>的形式组织数据</li>
+</ul>
+<h3 id="5-关系模型"><a href="#5-关系模型" class="headerlink" title="5. 关系模型"></a>5. 关系模型</h3><ol>
+<li>形象地说，<strong>一个关系(relation)就是一个Table</strong>，关系模型就是处理Table的，它由三个部分组成：</li>
+</ol>
+<ul>
+<li>描述DB各种数据的基本结构形式(Table&#x2F;Relation)</li>
+<li>描述Table与Table之间所可能发生的各种操作(关系运算)</li>
+<li>描述这些操作所应遵循的约束条件(完整性约束)</li>
+</ul>
+<ol start="2">
+<li>关系模型的三个要素：</li>
+</ol>
+<ul>
+<li>基本结构：Relation&#x2F;Table</li>
+<li>基本操作：Relation Operator<ul>
+<li>基本的:(并, UNION)、(差, DIFFERENCE)、(广义积,PRODUCT)、(选择, SELECTION)、(投影, PROJECTION)。</li>
+<li>扩展的:(交, INTERSECTION)、(连接, JOIN)、(除, DIVISION)运算</li>
+</ul>
+</li>
+<li>完整性约束：实体完整性、参照完整性和用户自定义的完整性</li>
+</ul>
+<ol start="3">
+<li>表(Table)的基本构成要素</li>
+</ol>
+<ul>
+<li>列&#x2F;字段&#x2F;属性&#x2F;数据项：列名，列值</li>
+<li>行&#x2F;元组&#x2F;记录</li>
+<li>标题&#x2F;模式</li>
+</ul>
+<h4 id="5-1-“表”的严格定义"><a href="#5-1-“表”的严格定义" class="headerlink" title="5.1 “表”的严格定义"></a>5.1 “表”的严格定义</h4><ul>
+<li>域(Domain)：“列”的取值范围，一组值的集合，这组值具有相同的数据类型</li>
+<li>笛卡尔积(Cartesian Product)：“元组”及所有可能组合成的元组</li>
+<li>关系(Relation)：一组域D1,D2,…,Dn的笛卡尔积的子集，笛卡尔积中具有某一方面意义的那些元组被称作一个关系(Relation)</li>
+</ul>
+<h4 id="5-2-关系模式与关系"><a href="#5-2-关系模式与关系" class="headerlink" title="5.2 关系模式与关系"></a>5.2 关系模式与关系</h4><ul>
+<li>同一关系模式下，可有很多的关系</li>
+<li>关系模式是关系的结构, 关系是关系模式在某一时刻的数据</li>
+<li>关系模式是稳定的；而关系是某一时刻的值，是随时间可能变化的</li>
+</ul>
+<h4 id="5-3-关系的特性"><a href="#5-3-关系的特性" class="headerlink" title="5.3 关系的特性"></a>5.3 关系的特性</h4><ul>
+<li>列是同质：即每一列中的分量来自同一域，是同一类型的数据</li>
+<li>不同的列可来自同一个域，称其中的每一列为一个属性，不同的属性要给予不同的属性名。</li>
+<li>列位置互换性：区分哪一列是靠列名</li>
+<li>行位置互换性：区分哪一行是靠某一或某几列的值(关键字&#x2F;键字&#x2F;码字)</li>
+<li>关系是以内容(名字或值)来区分的，而不是属性在关系的位置来区分</li>
+<li>理论上，关系的任意两个元组不能完全相同。(集合的要求：集合内不能有相同的两个元素)；现实应用中，表(Table)可能并不完全遵守此特性。元组相同是指两个元组的每个分量(列值)都相同。</li>
+<li>属性不可再分特性:又被称为关系第一范式</li>
+</ul>
+<h4 id="5-4-关系的一些重要概念"><a href="#5-4-关系的一些重要概念" class="headerlink" title="5.4 关系的一些重要概念"></a>5.4 关系的一些重要概念</h4><ol>
+<li>候选码(Candidate Key)&#x2F;候选键</li>
+</ol>
+<ul>
+<li>关系中的一个属性组，其值能唯一标识一个元组，若从该属性组中去掉<br>任何一个属性，它就不具有这一性质了，这样的属性组称作候选码。</li>
+</ul>
+<ol start="2">
+<li>主码(Primary Key)&#x2F;主键</li>
+</ol>
+<ul>
+<li>当有多个候选码时，可以选定一个作为主码。DBMS以主码为主要线索管理关系中的各个元组</li>
+</ul>
+<ol start="3">
+<li>主属性与非主属性</li>
+</ol>
+<ul>
+<li>包含在任何一个候选码中的属性被称作主属性，而其他属性被称作非主属性</li>
+<li>最简单的，候选码只包含一个属性；</li>
+<li>极端的，所有属性构成这个关系的候选码，称为全码(All-Key)</li>
+</ul>
+<ol start="4">
+<li>外码(Foreign Key)&#x2F;外键</li>
+</ol>
+<ul>
+<li>关系R中的一个属性组，它不是R的候选码，但它与另一个关系S的候选码相对应，则称这个属性组为R的外码或外键。</li>
+<li>两个关系通常是靠外码连接起来的。</li>
+</ul>
+<h3 id="6-关系模型中的完整性"><a href="#6-关系模型中的完整性" class="headerlink" title="6. 关系模型中的完整性"></a>6. 关系模型中的完整性</h3><h4 id="6-1-实体完整性"><a href="#6-1-实体完整性" class="headerlink" title="6.1 实体完整性"></a>6.1 实体完整性</h4><ul>
+<li>关系的主码中的属性值不能为空值；</li>
+<li>意义：关系中的元组对应到现实世界相互之间可区分的一个个个体，这些个体是通过主码来唯一标识的；若主码为空，则出现不可标识的个体，这是不容许的。</li>
+</ul>
+<h4 id="6-2-参照完整性"><a href="#6-2-参照完整性" class="headerlink" title="6.2 参照完整性"></a>6.2 参照完整性</h4><ul>
+<li>如果关系R1的外码Fk与关系R2的主码Pk相对应，则R1中的每一个元组的Fk值或者等于R2 中某个元组的Pk 值，或者为空值</li>
+<li>意义：如果关系R1的某个元组t1参照了关系R2的某个元组t2，则t2必须存在</li>
+</ul>
+<h4 id="6-3-用户自定义完整性"><a href="#6-3-用户自定义完整性" class="headerlink" title="6.3 用户自定义完整性"></a>6.3 用户自定义完整性</h4><ul>
+<li>用户针对具体的应用环境定义的完整性约束条件</li>
+</ul>
+<h4 id="6-4-DBMS对关系完整性的支持"><a href="#6-4-DBMS对关系完整性的支持" class="headerlink" title="6.4 DBMS对关系完整性的支持"></a>6.4 DBMS对关系完整性的支持</h4><ul>
+<li>实体完整性和参照完整性由DBMS系统自动支持</li>
+<li>DBMS系统通常提供了如下机制：<ol>
+<li>它使用户可以自行定义有关的完整性约束条件</li>
+<li>当有更新操作发生时，DBMS将自动按照完整性约束条件检验更新操作的正确性，即是否符合用户自定义的完整性</li>
+</ol>
+</li>
+</ul>
+<h3 id="7-关系代数"><a href="#7-关系代数" class="headerlink" title="7. 关系代数"></a>7. 关系代数</h3><h4 id="7-1-关系代数的特点"><a href="#7-1-关系代数的特点" class="headerlink" title="7.1 关系代数的特点"></a>7.1 关系代数的特点</h4><ul>
+<li>基于集合，提供了一系列的关系代数操作：并、差、笛卡尔积(广义积)、选择、投影和更名等基本操作</li>
+<li>以及交、 连接和关系除等扩展操作，是一种集合思维的操作语言。</li>
+<li>关系代数操作以一个或多个关系为输入，结果是一个新的关系。</li>
+<li>用对关系的运算来表达查询，需要指明所用操作, 具有一定的过程性。</li>
+<li>是一种抽象的语言，是学习其他数据库语言，如SQL等的基础</li>
+</ul>
+<h4 id="7-2-关系代数的约束"><a href="#7-2-关系代数的约束" class="headerlink" title="7.2 关系代数的约束"></a>7.2 关系代数的约束</h4><p>某些关系代数操作，如并、差、交等，需满足”并相容性”</p>
+<ul>
+<li>并相容性：<ol>
+<li>参与运算的两个关系及其相关属性之间有一定的对应性、可比性或意义关联性</li>
+<li>定义：关系R与关系S存在相容性，当且仅当：</li>
+</ol>
+<ul>
+<li>(1) 关系R和关系S的属性数目必须相同；</li>
+<li>(2) 对于任意i，关系R的第i个属性的域必须和关系S的第i个属性的域相同</li>
+</ul>
+<ul>
+<li>示例：关系R：STUDENT(SID <strong>char(10)</strong>, Sname <strong>char(8)</strong>, Age <strong>char(3)</strong>)</li>
+<li>示例：关系S：TEACHER(TID <strong>char(10)</strong>, Tname <strong>char(8)</strong>, Age <strong>char(3)</strong>)</li>
+</ul>
+</li>
+</ul>
+<h4 id="7-3-关系代数的基本操作"><a href="#7-3-关系代数的基本操作" class="headerlink" title="7.3 关系代数的基本操作"></a>7.3 关系代数的基本操作</h4><ol>
+<li>集合操作</li>
+</ol>
+<ul>
+<li>并（UNIO）：R∪S</li>
+<li>交（INTERSECTION）：R∩S</li>
+<li>差（DIFFERENCE）：R-S</li>
+<li>笛卡儿积（Cartesian PRODUCT）：R×S</li>
+</ul>
+<ol start="2">
+<li>纯关系操作</li>
+</ol>
+<ul>
+<li>选择（SELECT）：σF(R)</li>
+<li>投影（PROJECT）：ΠA(R)</li>
+<li>连接（JOIN）：R⋈S</li>
+<li>除（DIVISION）：R÷S</li>
+</ul>
+<h5 id="7-3-1-并-Union-操作"><a href="#7-3-1-并-Union-操作" class="headerlink" title="7.3.1 并(Union) 操作"></a>7.3.1 并(Union) 操作</h5><ul>
+<li>定义：设关系R和关系S是并相容的，则关系R与关系S的并运算结果也是一个关系，记作：**<code>R∪S</code>**, 它由 或者出现在关系R中，或者出现在S中的元组构成。</li>
+<li>数学描述：<code>R∪S=&#123;t|t∈R∨t∈S&#125;</code>，其中t是元组</li>
+<li>并运算是将两个关系的元组合并成一个关系，在合并时去掉重复的元组。</li>
+<li>汉语中的“或者…或者…”通常意义是并运算的要求。</li>
+<li><code>R∪S</code> 与 <code>S∪R</code> 运算的结果是<strong>同</strong>一个关系</li>
+</ul>
+<h5 id="7-3-2-差-Difference-操作"><a href="#7-3-2-差-Difference-操作" class="headerlink" title="7.3.2 差(Difference) 操作"></a>7.3.2 差(Difference) 操作</h5><ul>
+<li>定义：设关系R 和关系S是并相容的，则关系R与关系S的差运算结果也是一个关系，记作：**<code>R-S</code>**, 它由出现在关系R中但不出现在关系S中的元组构成。</li>
+<li>数学描述：<code>R－S=&#123;t|t∈R∧t∉S&#125;</code>，其中t是元组</li>
+<li>汉语中的“是…但不含…”通常意义是差运算的要求。</li>
+<li><code>R-S</code> 与 <code>S-R</code> 是<strong>不同</strong>的</li>
+</ul>
+<h5 id="7-3-3-交（Intersection-Referential-integrity）-操作"><a href="#7-3-3-交（Intersection-Referential-integrity）-操作" class="headerlink" title="7.3.3  交（Intersection Referential integrity） 操作"></a>7.3.3  交（Intersection Referential integrity） 操作</h5><ul>
+<li>定义：设关系R和关系S具有相同的目n，且相应的属性取自同一个域，则关系R与关系S的交由既属于R又属于S的元组组成。其结果关系仍为n目关系。</li>
+<li>数学描述：<code>R∩S=&#123;t|t∈R∧t∈S&#125;</code>，其中t是元组</li>
+</ul>
+<h5 id="7-3-4-广义笛卡尔积-Extended-cartesian-product-操作"><a href="#7-3-4-广义笛卡尔积-Extended-cartesian-product-操作" class="headerlink" title="7.3.4 广义笛卡尔积(Extended cartesian product) 操作"></a>7.3.4 广义笛卡尔积(Extended cartesian product) 操作</h5><ul>
+<li>定义：关系<code>R(&lt;a1,a2, …,an&gt;)</code>与关系<code>S(&lt;b1,b2, …,bm &gt;)</code>的广义笛卡尔积(简称广义积,或 积 或笛卡尔积)运算结果也是一个关系，记作：**<code>RxS</code>**；两个分别为n目和m目的关系R和S的广义笛卡尔积是一个(n+m)列的元组的集合，元组的前n列是关系R的一个元组，后m列是关系S的一个元组，若R有k1个元组，S有k2个元组，则关系R和关系S的广义笛卡尔积有k1×k2个元组。</li>
+<li>数学描述：<code>RxS = &#123;&lt;a1,a2,…,an,b1,b2,…,bm&gt;|&lt;a1,a2,…,an&gt;∈R ∧ &lt;b1,b2,…,bm&gt;∈S&#125;</code></li>
+<li><code>RxS=SxR</code>：RxS为R中的每一个元组都和S中的所有元组进行串接。<code>SxR</code>为S中的每一个元组都和R中的所有元组进行串接。结果是相同的。</li>
+<li>两个关系R和S，它们的<strong>属性个数</strong>分别为n和m(R是n度关系，S是m度关系)则笛卡尔积R×S的属性个数&#x3D;n+m。即元组的前n个分量是R中元组的分量，后m个分量是S中元组的分量(R×S是n+m度关系).</li>
+<li>两个关系R和S，它们的<strong>元组个数</strong>分别为x和y(关系R的基数x,S的基数y),则笛卡尔积R×S的元组个数&#x3D;x×y。(R×S的基数是x×y).</li>
+</ul>
+<h5 id="7-3-5-选择-Select"><a href="#7-3-5-选择-Select" class="headerlink" title="7.3.5 选择(Select)"></a>7.3.5 选择(Select)</h5><ul>
+<li>定义：给定一个关系R, 同时给定一个选择的条件condition(简记F), 选择运算结果也是一个关系，记作**<code>σF(R)</code>**, 它从关系R中选择出满足给定条件condition的元组构成。</li>
+<li>数学描述：<code>σF(R) = &#123;t|t∈R ∧ F(t)=&#39;真&#39;&#125;</code>,其中F表示选择条件，它是一个逻辑表达式，取逻辑值‘真’或‘假’。</li>
+<li>选择操作从给定的关系中选出满足条件的行,条件的书写很重要，尤其是当不同运算符在一起时，要注意运算符的优先次序，优先次序自高至低为{ <code>括弧()；θ；¬；∧；∨</code> }</li>
+</ul>
+<h5 id="7-3-6-投影-Project"><a href="#7-3-6-投影-Project" class="headerlink" title="7.3.6 投影(Project)"></a>7.3.6 投影(Project)</h5><ul>
+<li>定义：给定一个关系R, 投影运算结果也是一个关系，记作**<code>A(R)</code>**, 它从关系R中选出属性包含在A中的列构成。</li>
+<li>数学描述：<code>ΠA(R) = &#123;t[A] | t∈R&#125;</code>,其中A为R中的属性列</li>
+<li>投影操作从给定关系中选出某些列组成新的关系, 而选择操作是从给定关系中选出某些行组成新的关系</li>
+</ul>
+<h4 id="7-4-关系代数的扩展操作"><a href="#7-4-关系代数的扩展操作" class="headerlink" title="7.4 关系代数的扩展操作"></a>7.4 关系代数的扩展操作</h4><h5 id="7-4-1-交-Intersection"><a href="#7-4-1-交-Intersection" class="headerlink" title="7.4.1 交(Intersection)"></a>7.4.1 交(Intersection)</h5><ul>
+<li><strong>定义</strong>：假设关系R和关系S是并相容的，则关系R与关系S的交运算结果也是一个关系，记作：**<code>R∩S</code>**, 它由同时出现在关系R和关系S中的元组构成。</li>
+<li>数学描述：<code>R∩S = &#123;t|t∈R ∧ t∈S&#125;</code>，其中t是元组</li>
+<li>R∩S 和 S∩R 运算的结果是同一个关系</li>
+<li>交运算可以通过差运算来实现：<code>R∩S = R-(R-S) = S-(S-R)</code></li>
+<li>汉语中的“既…又…”，“…, 并且…”通常意义是交运算的要求</li>
+</ul>
+<h5 id="7-4-2-θ-连接-θ-Join-theta-Join"><a href="#7-4-2-θ-连接-θ-Join-theta-Join" class="headerlink" title="7.4.2 θ-连接(θ-Join, theta-Join)"></a>7.4.2 θ-连接(θ-Join, theta-Join)</h5><ul>
+<li>投影与选择操作只是对单个关系(表)进行操作, 而实际应用中往往涉及多个表之间的操作, 这就需要θ-连接操作</li>
+<li><strong>定义</strong>：给定关系R和关系S, R与S的连接运算结果也是一个关系，记作 **<code>R⋈S[AθB]</code>**：(括号内AθB是⋈的下标)，它由关系R和关系S的笛卡尔积中, 选取R中属性A与S中属性B之间满足 θ 条件的元组构成。</li>
+<li>数学描述：<code>R⋈S[AθB] = σ t[A]θs[B] (R×S)</code>，σF(RxS)其中t是R中的元组，s是S中的元组</li>
+<li>在实际应用中，θ-连接操作经常与投影Π、选择σ操作一起使用</li>
+<li><strong>特别注意</strong>：当引入θ-连接操作后，DBMS可直接进行连接操作，而不必先形成笛卡尔积。</li>
+</ul>
+<h5 id="7-4-3-等值连接-Equi-Join"><a href="#7-4-3-等值连接-Equi-Join" class="headerlink" title="7.4.3 等值连接(Equi-Join)"></a>7.4.3 等值连接(Equi-Join)</h5><ul>
+<li><strong>定义</strong>：给定关系R和关系S, R与S的等值连接运算结果也是一个关系，记作**<code>R⋈S[A=B]</code>**：(括号内A&#x3D;B是⋈的下标)，它由关系R和关系S的笛卡尔积中选取R中属性A与S中属性B上值相等的元组所构成。</li>
+<li>数学描述：<code>R⋈S[A=B] = σ t[A]=s[B] (R×S)</code></li>
+<li>当θ-连接中运算符为“＝”时，就是等值连接，等值连接是θ-连接的一个特例；</li>
+<li>广义积的元组组合并不是都有意义的，另广义积的元组组合数目也非常庞大，因此采用<strong>θ-连接&#x2F;等值连接</strong>运算可大幅度降低中间结果的保存量，提高速度。</li>
+</ul>
+<h5 id="7-4-4-自然连接-Natural-Join"><a href="#7-4-4-自然连接-Natural-Join" class="headerlink" title="7.4.4 自然连接(Natural-Join)"></a>7.4.4 自然连接(Natural-Join)</h5><ul>
+<li>定义：给定关系R和关系S, R与S的自然连接运算结果也是一个关系，记作 ，它由关系R和关系S的笛卡尔积中选取相同属性组B上值相等的元组所构成。</li>
+<li>数学描述：<code>R⋈S = σ t[B]=s[B] (R×S)</code></li>
+<li>自然连接是一种特殊的等值连接，要求关系R和关系S必须有相同的属性组B，R, S属性相同，值必须相等才能连接，要在结果中去掉重复的属性列</li>
+</ul>
+<h4 id="7-5-关系代数的基本书写思路"><a href="#7-5-关系代数的基本书写思路" class="headerlink" title="7.5 关系代数的基本书写思路"></a>7.5 关系代数的基本书写思路</h4><ol>
+<li>选出将用到的关系&#x2F;表</li>
+<li>做”积”运算（可用连接运算替换）</li>
+<li>做选择运算保留所需的行&#x2F;元组</li>
+<li>做投影运算保留所需的列&#x2F;属性</li>
+</ol>
+<ul>
+<li>基本思路： 检索是否涉及多个表，如不涉及，则可直接采用并、差、交、选择与投影，只要注意条件书写正确与否即可</li>
+<li>如涉及多个表，则检查：<ul>
+<li>能否使用自然连接，将多个表连接起来(多数情况是这样的)</li>
+<li>如不能，能否使用等值或不等值连接(θ-连接)</li>
+<li>还不能，则使用广义笛卡尔积，注意相关条件的书写</li>
+</ul>
+</li>
+<li>连接完后，可以继续使用选择、投影等运算，即所谓数据库的“选投联”操作</li>
+</ul>
+<h4 id="7-6-关系代数之复杂扩展操作"><a href="#7-6-关系代数之复杂扩展操作" class="headerlink" title="7.6 关系代数之复杂扩展操作"></a>7.6 关系代数之复杂扩展操作</h4><h5 id="7-6-1-除-Division"><a href="#7-6-1-除-Division" class="headerlink" title="7.6.1 除(Division)"></a>7.6.1 除(Division)</h5><ul>
+<li>除法运算经常用于求解“查询… 全部的&#x2F;所有的…”问题</li>
+<li>前提条件：给定关系R(A1 ,A2 , … ,An)为n度关系，关系S(B1 ,B2 , … ,Bm)为m度关系 。如果可以进行关系R与关系S的除运算，当且仅当：属性集{ B1 ,B2 , … , Bm }是属性集{ A1 ,A2 , … ,An }的真子集，即m &lt; n。</li>
+<li>定义：关系R 和关系S的除运算结果也是一个关系，记作R÷S，分两部分来定义。</li>
+<li>数学描述：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">R÷S = &#123;t|t∈Π[R-S](R) ∧ ∀u∈S(tu∈R) &#125;</span><br><span class="line">    = Π[R-S](R) - Π[R-S]((Π[R-S](R)×S)-R)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>其中[R-S]为投影Π的下标(属性)</p>
+</blockquote>
+</li>
+</ul>
+<h5 id="7-6-2-外连接-Outer-Join"><a href="#7-6-2-外连接-Outer-Join" class="headerlink" title="7.6.2 外连接(Outer-Join)"></a>7.6.2 外连接(Outer-Join)</h5><ul>
+<li>定义：两个关系R与S进行连接时，如果关系R(或S)中的元组在S(或R)中找不到相匹配的元组，则为了避免该元组信息丢失，从而将该元组与S(或R)中假定存在的全为空值的元组形成连接，放置在结果关系中，这种连接称之为外连接(Outer Join)。</li>
+<li>外连接 &#x3D; 自然连接 (或θ连接) + 失配的元组(与全空元组形成的连接)</li>
+<li>外连接的形式：左外连接、右外连接、全外连接<ul>
+<li>左外连接 &#x3D; 自然连接(或连接) + 左侧表中失配的元组</li>
+<li>右外连接 &#x3D; 自然连接(或连接) + 右侧表中失配的元组</li>
+<li>全外连接 &#x3D; 自然连接(或连接) + 两侧表中失配的元组</li>
+<li>左外连接(Left Outer Join)记为：⋊</li>
+<li>右外连接(Right Outer Join)记为：⋉</li>
+<li>全外连接(Full Outer Join)记为：⋊⋉</li>
+</ul>
+</li>
+</ul>
+<h3 id="8-关系演算"><a href="#8-关系演算" class="headerlink" title="8. 关系演算"></a>8. 关系演算</h3><p>关系演算是<strong>描述关系运算</strong>的另一种思维方式，它是以数理逻辑中的谓词演算为基础的，SQL语言是继承了关系代数和关系演算各自的优点所形成的</p>
+<ul>
+<li>按照谓词变量的不同，可分为关系元组演算和关系域演算<ol>
+<li>关系元组演算是以<strong>元组变量</strong>作为谓词变量的基本对象</li>
+<li>关系域演算是以<strong>域变量</strong>作为谓词变量的基本对象</li>
+</ol>
+</li>
+</ul>
+<h4 id="8-1-关系元组演算"><a href="#8-1-关系元组演算" class="headerlink" title="8.1 关系元组演算"></a>8.1 关系元组演算</h4><ol>
+<li>关系元组演算公式：{ t | P(t) }</li>
+</ol>
+<ul>
+<li>表示：所有使谓词 P 为真的元组 t 的集合</li>
+<li>t 是元组变量</li>
+<li>t ∈ r 表示元组 t 在关系 r 中</li>
+<li>t[A] 表示元组 t 的分量，即 t 在属性 A 上的值</li>
+<li>P是与谓词逻辑相似的公式, P(t)表示以元组 t 为变量的公式</li>
+</ul>
+<ol start="2">
+<li>关系元组演算公式的基本形式：{ t | P(t) }</li>
+<li>P(t)可以是如下三种形式之一的原子公式：</li>
+</ol>
+<ul>
+<li>t∈R：t 是关系 R 中的一个元组，例如： { t | t∈Student}</li>
+<li>s[A] θ c：元组分量s[A]与常量 c 之间满足比较关系θ，θ:比较运算符&lt;,&lt;&#x3D;,&#x3D;,&lt;&gt;,&gt;,&gt;&#x3D;</li>
+<li>s[A] θ u[B]：s[A] 与 u[B] 为元组分量，A和B分别是某些关系的属性，他们之间满足比较关系θ，</li>
+</ul>
+<ol start="4">
+<li>P(t)可以由公式加运算符 ∧(与)、∨(或)、¬(非)递归地构造</li>
+</ol>
+<ul>
+<li>如果F是一个公式，则 ¬F 也是公式</li>
+<li>如果F1、F2是公式，则 F1∧F2, F1∨F2也是公式</li>
+</ul>
+<ol start="5">
+<li>P(t)运算符优先次序(括弧；θ；∃；∀；¬；∧；∨)示例</li>
+<li>构造P(t)还有两个运算符：∃(存在)、∀(任意)</li>
+</ol>
+<ul>
+<li>如果F是一个公式，则 ∃(t∈r)(F(t)) 也是公式</li>
+<li>如果F是一个公式，则 ∀(t∈r)(F(t)) 也是公式</li>
+<li>运算符∃和∀，又称为量词，前者称“<strong>存在量词</strong>”，后者称“<strong>全称量词</strong>”</li>
+<li>而被∃或∀限定的元组变量 t , 或者说，元组变量 t 前有存在量词或全称量词，则该变量被称为“<strong>约束变量</strong>”，否则被称为“<strong>自由变量</strong>”。</li>
+</ul>
+<ol start="7">
+<li>元组演算的等价性变换<ul>
+<li>符号<code>&lt;=&gt;</code>表示表示等价于,如：<code>¬(A&gt;B) &lt;=&gt; A&lt;=B  &lt;=&gt; A&lt;B∨A=B</code></li>
+</ul>
+</li>
+</ol>
+<h4 id="8-2-关系域演算"><a href="#8-2-关系域演算" class="headerlink" title="8.2 关系域演算"></a>8.2 关系域演算</h4><ol>
+<li>关系域演算公式的基本形式：<code>&#123;&lt;x1,x2, …,xn&gt; | P(x1,x2, …,xn)&#125;</code>,其中 xi 代表域变量或常量, P为以xi为变量的公式。</li>
+<li>元组演算是以元组为变量，以元组为基本处理单位，先找到元组，然后再找到元组分量，进行谓词判断；</li>
+<li>域演算是以域变量为基本处理单位，先有域变量，然后再判断由这些域变量组成的元组是否存在或是否满足谓词判断。</li>
+<li>公式的运算符(∧(与)、∨(或)、¬(非)、∀(全称量词)和∃(存在量词))是相同的，只是其中的变量不同。</li>
+<li>元组演算和域演算可以等价互换。</li>
+</ol>
+<h5 id="8-2-1-基于关系域演算的QBE语言"><a href="#8-2-1-基于关系域演算的QBE语言" class="headerlink" title="8.2.1 基于关系域演算的QBE语言"></a>8.2.1 基于关系域演算的QBE语言</h5><p>QBE: Query By Example，1975年由M. M. Zloof提出，1978年在IBM370上实现，是一种高度非过程化的查询语言，特别适合于终端用户的使用。</p>
+<ol>
+<li>特点：操作独特，基于屏幕表格的查询语言，不用书写复杂的公式，只需将条件填在表格中即可</li>
+<li>QBE操作框架由四个部分构成<ul>
+<li>关系名区：用于书写欲待查询的关系名</li>
+<li>属性名区：用于显示对应关系名区关系的所有属性名</li>
+<li>操作命令区：用于书写查询操作的命令</li>
+<li>查询条件区：用于书写查询条件</li>
+</ul>
+</li>
+<li>QBE的操作命令<ul>
+<li>Print 或 P.   —- 显示输出操作</li>
+<li>Delete或D.   —- 删除操作</li>
+<li>Insert或I.     —- 插入操作</li>
+<li>Update或U. —- 更新操作</li>
+</ul>
+</li>
+<li>构造查询的几个要素 <ul>
+<li>示例元素: 即域变量， 一定要加下划线 </li>
+<li>示例元素是这个域中可能的一个值， 它不必是查询结果中的元素</li>
+<li>打印操作符P.: 指定查询结果所含属性列 </li>
+<li>查询条件: 不用加下划线</li>
+<li>可使用比较运算符＞， ≥，＜， ≤，＝和≠  其中＝可以省略</li>
+<li>排序要求 <ul>
+<li>升序排序(AO.)，降序排序（DO.）,多列排序，用‚AO(i).‛ 或‚DO(i).‛ 表示 ，其中i为排序的优先级， i值越小，优先级越高</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="8-3-安全性"><a href="#8-3-安全性" class="headerlink" title="8.3 安全性"></a>8.3 安全性</h4><p>关系运算的安全性：不产生无限关系和无穷验证的运算被称为是安全的</p>
+<ol>
+<li>关系代数是一种集合运算，是安全的<ul>
+<li>集合本身是有限的，有限元素集合的有限次运算仍旧是有限的。</li>
+</ul>
+</li>
+<li>关系演算不一定是安全的<ul>
+<li>如：{t|¬(R(t))}, {t R(t)∨t[2]&gt;3}可能表示无限关系</li>
+</ul>
+</li>
+<li>需要对关系演算施加约束条件，即任何公式都在一个集合范围内操作，而不是无限范围内操作，才能保证其安全性。</li>
+</ol>
+<h5 id="8-3-1-安全约束有限集合DOM"><a href="#8-3-1-安全约束有限集合DOM" class="headerlink" title="8.3.1 安全约束有限集合DOM"></a>8.3.1 安全约束有限集合DOM</h5><ol>
+<li>DOM(ψ)是一个有限集合，其中的每个符号要么是ψ中明显出现的符号，要么是出现在ψ中的某个关系R的某元组的分量。</li>
+<li>DOM主要用于约束ψ中一些谓词的计算范围，它不必是最小集合。</li>
+<li>安全元组演算表达式，满足三个条件：<ul>
+<li>只要t满足ψ，t的每个分量就是DOM(ψ)的一个成员。<ul>
+<li>{ t|ψ(t) }中t的取值只能是DOM中的值，有限的。</li>
+</ul>
+</li>
+<li>对于ψ中形如(∃u)(ω(u))的子表达式，若u满足ω,则u的每个分量都是DOM(ω)中的成员。<ul>
+<li>{ t|ψ(t) }中的每个(∃u)(ω(u))子表达式，只需要验证DOM中的元素是否有使ω(u)为真的元素。而对于DOM以外的元素，已经明确其都不满足ω(u)，无需验证。</li>
+</ul>
+</li>
+<li>对于ψ中形如(∀u)(ω(u))的子表达式，若u不满足ω,则u的每个分量都是DOM(ω)中的成员。<ul>
+<li>{ t|ψ(t) }中的每个(∀u)(ω(u))子表达式，只需要验证DOM中的元素是否有使ω(u)为假的元素。而对于DOM以外的元素，已经明确其都满足ω(u)，无需验证。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="8-4-关于三种关系运算的一些观点"><a href="#8-4-关于三种关系运算的一些观点" class="headerlink" title="8.4 关于三种关系运算的一些观点"></a>8.4 关于三种关系运算的一些观点</h4><ol>
+<li>关系运算有三种：关系代数、关系元组演算和关系域演算</li>
+<li>三种关系运算都是抽象的数学运算，体现了三种不同的思维<ul>
+<li>关系代数—以集合为对象的操作思维，由集合到集合的变换</li>
+<li>元组演算—以元组为对象的操作思维，取出关系的每一个元组进行验证，有一个元组变量则可能需要一个循环，多个元组变量则需要多个循环</li>
+<li>域演算—以域变量为对象的操作思维，取出域的每一个变量进行验证看其是否满足条件</li>
+</ul>
+</li>
+<li>三种运算之间是等价的<ul>
+<li>关系代数 与 安全的元组演算表达式 与 安全的域演算表达式 是等<br>价的。即一种形式的表达式可以被等价地转换为另一种形式</li>
+</ul>
+</li>
+<li>三种关系运算都可说是非过程性的<ul>
+<li>相比之下：域演算的非过程性最好，元组演算次之，关系代数最差</li>
+</ul>
+</li>
+<li>三种关系运算虽是抽象的，但却是衡量数据库语言完备性的基础<ul>
+<li>一个数据库语言如果能够等价地实现这三种关系运算的操作，则说该语言是完备的</li>
+<li>目前多数数据库语言都能够实现这三种运算的操作，在此基础上还增加了许多其他的操作，如赋值操作、聚集操作等</li>
+</ul>
+</li>
+<li>数据库语言可以基于这三种抽象运算来设计<ul>
+<li>用“键盘符号”来替换抽象的数学符号</li>
+<li>用易于理解的符号组合来表达抽象的数学符号</li>
+<li>例如：ISBL语言—基于关系代数的数据库语言</li>
+<li>再例如：Ingres系统的QUEL语言</li>
+</ul>
+</li>
+</ol>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F-DBMS"><span class="toc-text">1. 数据库管理系统(DBMS)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-%E4%BB%8E%E7%94%A8%E6%88%B7%E8%A7%92%E5%BA%A6%E7%9C%8BDBMS-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F"><span class="toc-text">1.1 从用户角度看DBMS(数据库管理系统)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%AD%E8%A8%80"><span class="toc-text">1.2 数据库语言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-%E4%BB%8E%E7%B3%BB%E7%BB%9F%E5%AE%9E%E7%8E%B0%E8%A7%92%E5%BA%A6%E7%9C%8BDBMS%E7%9A%84%E5%8A%9F%E8%83%BD"><span class="toc-text">1.3 从系统实现角度看DBMS的功能</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%A0%87%E5%87%86%E7%BB%93%E6%9E%84"><span class="toc-text">2. 数据库系统的标准结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%B8%89%E7%BA%A7%E6%A8%A1%E5%BC%8F%E4%B8%A4%E5%B1%82%E6%98%A0%E5%83%8F"><span class="toc-text">3. 三级模式两层映像</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-%E6%95%B0%E6%8D%AE-%E8%A7%86%E5%9B%BE-%E4%B8%8E%E6%A8%A1%E5%BC%8F-%E6%95%B0%E6%8D%AE%E7%9A%84%E7%BB%93%E6%9E%84"><span class="toc-text">3.1 数据(视图)与模式(数据的结构)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-%E4%B8%89%E7%BA%A7%E6%A8%A1%E5%BC%8F-%E4%B8%89%E7%BA%A7%E8%A7%86%E5%9B%BE"><span class="toc-text">3.2 三级模式(三级视图)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-%E4%B8%A4%E5%B1%82%E6%98%A0%E5%83%8F"><span class="toc-text">3.3 两层映像</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4-%E6%A0%87%E5%87%86%E7%BB%93%E6%9E%84%E7%9A%84%E4%B8%A4%E4%B8%AA%E7%8B%AC%E7%AB%8B%E6%80%A7"><span class="toc-text">3.4 标准结构的两个独立性</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B"><span class="toc-text">4. 数据模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%85%B3%E7%B3%BB%E6%A8%A1%E5%9E%8B"><span class="toc-text">5. 关系模型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-%E2%80%9C%E8%A1%A8%E2%80%9D%E7%9A%84%E4%B8%A5%E6%A0%BC%E5%AE%9A%E4%B9%89"><span class="toc-text">5.1 “表”的严格定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-%E5%85%B3%E7%B3%BB%E6%A8%A1%E5%BC%8F%E4%B8%8E%E5%85%B3%E7%B3%BB"><span class="toc-text">5.2 关系模式与关系</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-3-%E5%85%B3%E7%B3%BB%E7%9A%84%E7%89%B9%E6%80%A7"><span class="toc-text">5.3 关系的特性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-4-%E5%85%B3%E7%B3%BB%E7%9A%84%E4%B8%80%E4%BA%9B%E9%87%8D%E8%A6%81%E6%A6%82%E5%BF%B5"><span class="toc-text">5.4 关系的一些重要概念</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E5%85%B3%E7%B3%BB%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%AE%8C%E6%95%B4%E6%80%A7"><span class="toc-text">6. 关系模型中的完整性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-%E5%AE%9E%E4%BD%93%E5%AE%8C%E6%95%B4%E6%80%A7"><span class="toc-text">6.1 实体完整性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-%E5%8F%82%E7%85%A7%E5%AE%8C%E6%95%B4%E6%80%A7"><span class="toc-text">6.2 参照完整性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-%E7%94%A8%E6%88%B7%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AE%8C%E6%95%B4%E6%80%A7"><span class="toc-text">6.3 用户自定义完整性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-4-DBMS%E5%AF%B9%E5%85%B3%E7%B3%BB%E5%AE%8C%E6%95%B4%E6%80%A7%E7%9A%84%E6%94%AF%E6%8C%81"><span class="toc-text">6.4 DBMS对关系完整性的支持</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E5%85%B3%E7%B3%BB%E4%BB%A3%E6%95%B0"><span class="toc-text">7. 关系代数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-1-%E5%85%B3%E7%B3%BB%E4%BB%A3%E6%95%B0%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-text">7.1 关系代数的特点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-%E5%85%B3%E7%B3%BB%E4%BB%A3%E6%95%B0%E7%9A%84%E7%BA%A6%E6%9D%9F"><span class="toc-text">7.2 关系代数的约束</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-3-%E5%85%B3%E7%B3%BB%E4%BB%A3%E6%95%B0%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="toc-text">7.3 关系代数的基本操作</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#7-3-1-%E5%B9%B6-Union-%E6%93%8D%E4%BD%9C"><span class="toc-text">7.3.1 并(Union) 操作</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#7-3-2-%E5%B7%AE-Difference-%E6%93%8D%E4%BD%9C"><span class="toc-text">7.3.2 差(Difference) 操作</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#7-3-3-%E4%BA%A4%EF%BC%88Intersection-Referential-integrity%EF%BC%89-%E6%93%8D%E4%BD%9C"><span class="toc-text">7.3.3  交（Intersection Referential integrity） 操作</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#7-3-4-%E5%B9%BF%E4%B9%89%E7%AC%9B%E5%8D%A1%E5%B0%94%E7%A7%AF-Extended-cartesian-product-%E6%93%8D%E4%BD%9C"><span class="toc-text">7.3.4 广义笛卡尔积(Extended cartesian product) 操作</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#7-3-5-%E9%80%89%E6%8B%A9-Select"><span class="toc-text">7.3.5 选择(Select)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#7-3-6-%E6%8A%95%E5%BD%B1-Project"><span class="toc-text">7.3.6 投影(Project)</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-4-%E5%85%B3%E7%B3%BB%E4%BB%A3%E6%95%B0%E7%9A%84%E6%89%A9%E5%B1%95%E6%93%8D%E4%BD%9C"><span class="toc-text">7.4 关系代数的扩展操作</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#7-4-1-%E4%BA%A4-Intersection"><span class="toc-text">7.4.1 交(Intersection)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#7-4-2-%CE%B8-%E8%BF%9E%E6%8E%A5-%CE%B8-Join-theta-Join"><span class="toc-text">7.4.2 θ-连接(θ-Join, theta-Join)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#7-4-3-%E7%AD%89%E5%80%BC%E8%BF%9E%E6%8E%A5-Equi-Join"><span class="toc-text">7.4.3 等值连接(Equi-Join)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#7-4-4-%E8%87%AA%E7%84%B6%E8%BF%9E%E6%8E%A5-Natural-Join"><span class="toc-text">7.4.4 自然连接(Natural-Join)</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-5-%E5%85%B3%E7%B3%BB%E4%BB%A3%E6%95%B0%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%B9%A6%E5%86%99%E6%80%9D%E8%B7%AF"><span class="toc-text">7.5 关系代数的基本书写思路</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-6-%E5%85%B3%E7%B3%BB%E4%BB%A3%E6%95%B0%E4%B9%8B%E5%A4%8D%E6%9D%82%E6%89%A9%E5%B1%95%E6%93%8D%E4%BD%9C"><span class="toc-text">7.6 关系代数之复杂扩展操作</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#7-6-1-%E9%99%A4-Division"><span class="toc-text">7.6.1 除(Division)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#7-6-2-%E5%A4%96%E8%BF%9E%E6%8E%A5-Outer-Join"><span class="toc-text">7.6.2 外连接(Outer-Join)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-%E5%85%B3%E7%B3%BB%E6%BC%94%E7%AE%97"><span class="toc-text">8. 关系演算</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#8-1-%E5%85%B3%E7%B3%BB%E5%85%83%E7%BB%84%E6%BC%94%E7%AE%97"><span class="toc-text">8.1 关系元组演算</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-2-%E5%85%B3%E7%B3%BB%E5%9F%9F%E6%BC%94%E7%AE%97"><span class="toc-text">8.2 关系域演算</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#8-2-1-%E5%9F%BA%E4%BA%8E%E5%85%B3%E7%B3%BB%E5%9F%9F%E6%BC%94%E7%AE%97%E7%9A%84QBE%E8%AF%AD%E8%A8%80"><span class="toc-text">8.2.1 基于关系域演算的QBE语言</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-3-%E5%AE%89%E5%85%A8%E6%80%A7"><span class="toc-text">8.3 安全性</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#8-3-1-%E5%AE%89%E5%85%A8%E7%BA%A6%E6%9D%9F%E6%9C%89%E9%99%90%E9%9B%86%E5%90%88DOM"><span class="toc-text">8.3.1 安全约束有限集合DOM</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-4-%E5%85%B3%E4%BA%8E%E4%B8%89%E7%A7%8D%E5%85%B3%E7%B3%BB%E8%BF%90%E7%AE%97%E7%9A%84%E4%B8%80%E4%BA%9B%E8%A7%82%E7%82%B9"><span class="toc-text">8.4 关于三种关系运算的一些观点</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/2018/08/22/database-base.html">http://chaooo.github.io/2018/08/22/database-base.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/db/" rel="tag">数据库</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2018/06/20/spring-boot-mvc.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          「Spring」SpringBoot MVC应用
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/08/27/database-language.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          「数据库」数据库语言SQL
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/12/30/spring-security-permission.html">「Spring Security」前后端分离权限控制-指令级权限</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/27/spring-security-vue.html">「Spring Security」前后端分离菜单权限控制-前端动态路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/spring-security-rbac.html">「Spring Security」前后端分离后台菜单权限控制</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/10/spring-security-token.html">「Spring Security」基于Redis的Token自动续签优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/09/spring-security-jwt.html">「Spring Security」整合 JWT 实现无状态登录示例</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 10.71px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 16.43px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.71px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12.14px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12.14px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.43px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.43px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 17.14px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12.14px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12.14px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12.14px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.57px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.71px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 14.29px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.71px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.86px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.57px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 14.29px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.86px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.57px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 14.29px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.43px;">hexo</a> <a href="/tags/java/" style="font-size: 15.71px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 17.86px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 12.14px;">并发编程</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 10px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.29px;">环境配置</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年12月</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年11月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p style="display:none;">
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+      repo: 'https://github.com/chaooo/BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

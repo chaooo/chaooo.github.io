@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>「SpringCloud」Gateway网关 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-spring-cloud-gateway" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      「SpringCloud」Gateway网关
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2021-10-29T07:26:23.000Z" itemprop="datePublished">2021年10月29日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a>
+  </div>
+
+      
+        <span class="article-views" style="display:none;">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2021/10/29/spring-cloud-gateway.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="1-Gateway简介"><a href="#1-Gateway简介" class="headerlink" title="1. Gateway简介"></a>1. Gateway简介</h3><p>Spring Cloud Gateway 是基于 Spring5.0、SpringBoot2.0 和 Project Reactor 开发的网关，旨在提供一种简单而有效的方式来对API进行路由，基于过滤器链的方式提供：安全，监控&#x2F;埋点，和限流。</p>
+<p>Spring Cloud Gateway 基于 Spring Boot2.x、Spring WebFlux 和 Project Reactor构建，属于异步非阻塞模型。<span id="more"></span></p>
+<h3 id="1-1-核心概念"><a href="#1-1-核心概念" class="headerlink" title="1.1 核心概念"></a>1.1 核心概念</h3><p>路由（Route）：路由是网关最基础的部分，路由信息由ID、目标URI、一组断言和一组过滤器组成。如果断言路由为真，则说明请求的 URI 和配置匹配。</p>
+<p>断言（Predicate）：Java8 中的断言函数。Spring Cloud Gateway 中的断言函数输入类型是 Spring 5.0 框架中的 ServerWebExchange。Spring Cloud Gateway 中的断言函数允许开发者去定义匹配来自于 Http Request 中的任何信息，比如请求头和参数等。</p>
+<p>过滤器（Filter）：使用特定工厂构建的 Spring Framework GatewayFilter 实例。过滤器将会对请求和响应进行处理。</p>
+<h3 id="1-2-工作流程"><a href="#1-2-工作流程" class="headerlink" title="1.2 工作流程"></a>1.2 工作流程</h3><p><img src="/2021/10/29/spring-cloud-gateway/up-d4f455febd78f36b2be8fcc90839349977e.webp"></p>
+<p>客户端向 Spring Cloud Gateway 发出请求。 由网关处理程序 Gateway Handler Mapping 映射确定请求与路由匹配，则将其发送到网关 Web 处理程序 Gateway Web Handler。 Web 处理程序通过指定的过滤器链将请求发送到我们实际的服务执行业务逻辑，然后返回。 过滤器被虚线分隔的原因是过滤器可以在发送代理请求之前和之后运行逻辑。执行所有 pre 过滤器逻辑，然后发出代理请求；发出代理请求后，将运行 post 过滤器逻辑。</p>
+<h3 id="2-Gateway网关搭建"><a href="#2-Gateway网关搭建" class="headerlink" title="2. Gateway网关搭建"></a>2. Gateway网关搭建</h3><ol>
+<li>在Spring Cloud父工程中创建module</li>
+<li>导入依赖</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 引入spring cloud gateway依赖 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-gateway<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 引入SpringCloud Eureka client依赖 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>启动类上加注解<code>@EnableDiscoveryClient</code>注册到Eureka</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @EnableEurekaClient: 声明一个Eureka客户端，只能注册到Eureka Server</span></span><br><span class="line"><span class="comment">// @EnableDiscoveryClient: 声明一个可以被发现的客户端，可以是其他注册中心</span></span><br><span class="line"><span class="meta">@EnableDiscoveryClient</span></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserApplication</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        SpringApplication.run(UserApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>配置文件application.yml</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">server:</span><br><span class="line">  port: 18001</span><br><span class="line"></span><br><span class="line"># 指定当前服务的名称，这个名称会注册到注册中心</span><br><span class="line">spring:</span><br><span class="line">  application:</span><br><span class="line">    name: @artifactId@</span><br><span class="line">  cloud:              # spring cloud gateway 路由配置方式</span><br><span class="line">    gateway:</span><br><span class="line">      discovery:      # 是否与服务发现组件进行结合，通过 serviceId 转发到具体的服务实例。</span><br><span class="line">        locator:      # 默认为false，设为true便开启通过服务中心的自动根据 serviceId 创建路由的功能。</span><br><span class="line">          enabled: true</span><br><span class="line">        lowerCaseServiceId: true # 将请求路径的服务名配置改成小写</span><br><span class="line">      routes:</span><br><span class="line">        - id: user-server                 # 自定义的路由 ID，保持唯一性</span><br><span class="line">          uri: lb://XXXX-cloud-user       # 从注册中心获取服务，且以lb(load-balance)负载均衡方式转发</span><br><span class="line">          predicates:</span><br><span class="line">            - Path=/user/**               # 将以/user/开头的请求转发到uri为lb://XXXX-cloud-user的地址上</span><br><span class="line">        - id: product-server</span><br><span class="line">          uri: lb://XXXX-cloud-product</span><br><span class="line">          predicates:</span><br><span class="line">            - Path=/product/**            # 将以/product/开头的请求转发到uri为lb://XXXX-cloud-product的地址上</span><br><span class="line"></span><br><span class="line"># 指定服务注册中心的地址</span><br><span class="line">eureka:</span><br><span class="line">  instance:</span><br><span class="line">    prefer-ip-address: true       # 是否使用 ip 地址注册</span><br><span class="line">    instance-id: $&#123;spring.cloud.client.ip-address&#125;:$&#123;server.port&#125; # ip:port</span><br><span class="line">  client:</span><br><span class="line">    service-url:                  # 设置服务注册中心地址</span><br><span class="line">      defaultZone: http://localhost:18000/eureka/</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-路由配置"><a href="#3-路由配置" class="headerlink" title="3. 路由配置"></a>3. 路由配置</h3><h4 id="3-1-路由配置方式"><a href="#3-1-路由配置方式" class="headerlink" title="3.1 路由配置方式"></a>3.1 路由配置方式</h4><ol>
+<li>基础URI路由配置</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  cloud:</span><br><span class="line">    gateway:</span><br><span class="line">      routes:</span><br><span class="line">        - id: product-service         # 自定义的路由 ID，保持唯一</span><br><span class="line">          uri: http://localhost:9004  # 目标服务地址</span><br><span class="line">          predicates:                 # 断言（判断条件）：Predicate接受一个输入参数，返回一个布尔值结果。该接口包含多种默认方法来将 Predicate 组合成其他复杂的逻辑（比如：与，或，非）。</span><br><span class="line">            - Path=/product/**</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>单个URI的地址的schema协议，一般为http或者https协议。 和注册中心相结合的路由配置的schema协议部分为自定义的lb:类型，表示从微服务注册中心（如Eureka）订阅服务，并且进行服务的路由。</p>
+</blockquote>
+<ol>
+<li>基于代码的路由配置</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.boot.SpringApplication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.autoconfigure.SpringBootApplication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.cloud.gateway.route.RouteLocator;</span><br><span class="line"><span class="keyword">import</span> org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">GatewayApplication</span> &#123;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        SpringApplication.run(GatewayApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> RouteLocator <span class="title function_">customRouteLocator</span><span class="params">(RouteLocatorBuilder builder)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> builder.routes()   <span class="comment">// 参数分别为：路由 ID，断言（判断条件），目标服务地址</span></span><br><span class="line">                .route(<span class="string">&quot;product-service&quot;</span>, r -&gt; r.path(<span class="string">&quot;/product/**&quot;</span>).uri(<span class="string">&quot;http://localhost:9004&quot;</span>))</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-路由匹配规则"><a href="#3-2-路由匹配规则" class="headerlink" title="3.2 路由匹配规则"></a>3.2 路由匹配规则</h4><p>Spring Cloud Gateway 是通过 Spring WebFlux 的 HandlerMapping 做为底层支持来匹配到转发路由，Spring Cloud Gateway 内置了很多 Predicates 工厂，这些 Predicates 工厂通过不同的 HTTP 请求参数来匹配，多个 Predicates 工厂可以组合使用。</p>
+<p>路由谓词工厂（Route Predicate Factories）</p>
+<table>
+<thead><tr><th>类型</th><th>路由谓词</th><th>路由谓词工厂</th><th>描述</th></tr></thead>
+<tbody>
+  <tr><td rowspan="3">时间相关</td><td>After</td><td>AfterRoutePredicateFactory</td><td>在某个时间之后的请求才会被转发，如：`- After=2017-01-20T17:42:47.789-07:00[America/Denver]`</td></tr>
+  <tr><td>Before</td><td>BeforeRoutePredicateFactory</td><td>在某个时间之前的请求才会被转发，如：`- Before=2017-01-20T17:42:47.789-07:00[America/Denver]`</td></tr>
+  <tr><td>Between</td><td>BetweenRoutePredicateFactory</td><td>在某个时间段之间的才会被转发，如：`- Between=2017-01-20T17:42:47.789-07:00[America/Denver], 2017-01-21T17:42:47.789-07:00[America/Denver]`</td></tr>
+  <tr><td>Cookie相关</td><td>Cookie</td><td>CookieRoutePredicateFactory</td><td>`- Cookie=chocolate, ch.p`名为chocolate的表单或者满足正则ch.p的表单才会被匹配到进行请求转发</td></tr>
+  <tr><td rowspan="2">Header相关</td><td>Header</td><td>HeaderRoutePredicateFactory</td><td>`- Header=X-Request-Id, \d+`携带参数X-Request-Id或者满足\d+的请求头才会匹配</td></tr>
+  <tr><td>Host</td><td>HostRoutePredicateFactory</td><td>`- Host=**.somehost.org,**.anotherhost.org`当主机名为somehost.org或anotherhost.org的时候才会被转发</td></tr>
+  <tr><td rowspan="5">请求相关</td><td>Method</td><td>MethodRoutePredicateFactory</td><td>`- Method=GET,POST`只有GET和POST方法才会匹配转发请求</td></tr>
+  <tr><td>Path</td><td>PathRoutePredicateFactory</td><td>`- Path=/red/{segment},/blue/{segment}`当请求的路径为/red/、/blue/开头的时才会被转发</td></tr>
+  <tr><td>Query</td><td>QueryRoutePredicateFactory</td><td>`- Query=green`只要请求中包含green参数即可</td></tr>
+  <tr><td>RemoteAddr</td><td>RemoteAddrRoutePredicateFactory</td><td>`- RemoteAddr=192.168.1.1/24`主机IP</td></tr>
+  <tr><td>Weight</td><td>WeightRoutePredicateFactory</td><td>`- Weight=group1, 2`权重是按组计算的, 两个参数：group 和 weight（int）</td></tr>
+</tbody>
+</table>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  cloud:</span><br><span class="line">    gateway:</span><br><span class="line">      routes:</span><br><span class="line">      - id: predicate_route_test</span><br><span class="line">        uri: https://example.org</span><br><span class="line">        predicates:</span><br><span class="line">        - Between=2017-01-20T17:42:47.789-07:00[America/Denver], 2017-01-21T17:42:47.789-07:00[America/Denver]</span><br><span class="line">        - Method=GET,POST</span><br><span class="line">        - Host=**.somehost.org,**.anotherhost.org</span><br><span class="line">        - Header=X-Request-Id, \d+</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-过滤器规则"><a href="#4-过滤器规则" class="headerlink" title="4. 过滤器规则"></a>4. 过滤器规则</h3><p>Spring Cloud Gateway 除了具备请求路由功能之外，也支持对请求的过滤。</p>
+<ul>
+<li>Spring Cloud Gateway的Filter的生命周期：”pre”和”post”。<ul>
+<li>PRE：这种过滤器在请求被路由之前调用。我们可以利用这种过滤器实现身份认证、在集群中选择请求的微服务、记录调试信息等。</li>
+<li>POST：这种过滤器在路由到微服务以后执行。这种过滤器可以用来为响应添加标准的HTTP Header、收集统计信息和指标、将响应从微服务发送给客户端等等。</li>
+</ul>
+</li>
+<li>Spring Cloud Gateway的Filter从作用范围可以分为两种：局部过滤器（GatewayFilter）和 全局过滤器（GlobalFilter）。<ul>
+<li>GatewayFilter：应用到当个路由或者一个分组的路由上。</li>
+<li>GlobalFilter：应用到所有的路由上。</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-1-局部过滤器"><a href="#4-1-局部过滤器" class="headerlink" title="4.1 局部过滤器"></a>4.1 局部过滤器</h4><p>局部过滤器（GatewayFilter），是针对单个路由的过滤器。可以对访问的URL过滤，进行切面处理。Spring Cloud Gateway 包含许多内置的 GatewayFilter 工厂。</p>
+<table>
+<thead>
+<tr>
+<th>过滤器工厂</th>
+<th>作用</th>
+<th>参数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AddRequestHeader</td>
+<td>为原始请求添加Header</td>
+<td>Header的名称及值</td>
+</tr>
+<tr>
+<td>AddRequestParameter</td>
+<td>为原始请求添加请求参数</td>
+<td>参数名称及值</td>
+</tr>
+<tr>
+<td>AddResponseHeader</td>
+<td>为原始响应添加Header</td>
+<td>Header的名称及值</td>
+</tr>
+<tr>
+<td>DedupeResponseHeader</td>
+<td>剔除响应头中重复的值</td>
+<td>需要去重的Header名称及去重策略</td>
+</tr>
+<tr>
+<td>CircuitBreaker</td>
+<td>为路由引入CircuitBreaker的断路器保护</td>
+<td>CircuitBreakerCommand的名称</td>
+</tr>
+<tr>
+<td>MapRequestHeader</td>
+<td>将fromHeader的值更新到toHeader</td>
+<td>fromHeader名称, toHeader名称</td>
+</tr>
+<tr>
+<td>FallbackHeaders</td>
+<td>为fallbackUri的请求头中添加具体的异常信息</td>
+<td>Header的名称</td>
+</tr>
+<tr>
+<td>PrefixPath</td>
+<td>为原始请求路径添加前缀</td>
+<td>前缀路径</td>
+</tr>
+<tr>
+<td>PreserveHostHeader</td>
+<td>为请求添加一个 preserveHostHeader&#x3D;true的属 性，路由过滤器会检查该属性以 决定是否要发送原始的Host</td>
+<td>无</td>
+</tr>
+<tr>
+<td>RequestRateLimiter</td>
+<td>用于对请求限流，限流算法为令 牌桶</td>
+<td>keyResolver、 rateLimiter、 statusCode、 denyEmptyKey、 emptyKeyStatus</td>
+</tr>
+<tr>
+<td>Redirect</td>
+<td>将原始请求重定向到指定的URL</td>
+<td>http状态码及重定向的 url</td>
+</tr>
+<tr>
+<td>RemoveRequestHeader</td>
+<td>为原始请求删除某个Header</td>
+<td>Header名称</td>
+</tr>
+<tr>
+<td>RemoveResponseHeader</td>
+<td>为原始响应删除某个Header</td>
+<td>Header名称</td>
+</tr>
+<tr>
+<td>RemoveRequestParameter</td>
+<td>为原始请求删除请求参数</td>
+<td>参数名称</td>
+</tr>
+<tr>
+<td>RewritePath</td>
+<td>重写原始的请求路径</td>
+<td>原始路径正则表达式以 及重写后路径的正则表 达式</td>
+</tr>
+<tr>
+<td>RewriteLocationResponseHeader</td>
+<td>重写响应头中 Location 的值</td>
+<td>输入四个参数：stripVersionMode、locationHeaderName、hostValue、protocolsRegex</td>
+</tr>
+<tr>
+<td>RewriteResponseHeader</td>
+<td>重写原始响应中的某个Header</td>
+<td>Header名称，值的正 则表达式，重写后的值</td>
+</tr>
+<tr>
+<td>SaveSession</td>
+<td>在转发请求之前，强制执行 WebSession::save操作</td>
+<td>无</td>
+</tr>
+<tr>
+<td>SecureHeaders</td>
+<td>为原始响应添加一系列起安全作 用的响应头</td>
+<td>无，支持修改这些安全 响应头的值</td>
+</tr>
+<tr>
+<td>SetPath</td>
+<td>修改原始的请求路径</td>
+<td>修改后的路径</td>
+</tr>
+<tr>
+<td>SetRequestHeader</td>
+<td>重置请求头的值</td>
+<td>Header的名称及值</td>
+</tr>
+<tr>
+<td>SetResponseHeader</td>
+<td>修改原始响应中某个Header的值</td>
+<td>Header名称，修改后 的值</td>
+</tr>
+<tr>
+<td>SetStatus</td>
+<td>修改原始响应的状态码</td>
+<td>HTTP 状态码，可以是 数字，也可以是字符串</td>
+</tr>
+<tr>
+<td>StripPrefix</td>
+<td>用于截断原始请求的路径</td>
+<td>使用数字表示要截断的 路径的数量</td>
+</tr>
+<tr>
+<td>Retry</td>
+<td>针对不同的响应进行重试</td>
+<td>retries、statuses、 methods、series</td>
+</tr>
+<tr>
+<td>RequestSize</td>
+<td>设置允许接最大请求包的大小。如果请求包大小超过设置的 值，则返回 413 Payload Too Large</td>
+<td>请求包大小，单位为字 节，默认值为5M</td>
+</tr>
+<tr>
+<td>SetRequestHost</td>
+<td>用指定的值替换现有的host header</td>
+<td>指定的Host</td>
+</tr>
+<tr>
+<td>ModifyRequestBody</td>
+<td>在转发请求之前修改原始请求体内容</td>
+<td>修改后的请求体内容</td>
+</tr>
+<tr>
+<td>ModifyResponseBody</td>
+<td>修改原始响应体的内容</td>
+<td>修改后的响应体内容</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>每个过滤器工厂都对应一个实体类，并且这些类的名称必须以GatewayFilterFactory结尾，这是Spring Cloud Gateway的一个约定，例如AddRequestHeader对一个的实体类为AddRequestHeaderGatewayFilterFactory。</p>
+</blockquote>
+<p>4.1.1 限流过滤器RequestRateLimiter</p>
+<p>Spring Cloud Gateway官方提供了基于令牌桶的限流支持。 基于其内置的过滤器工厂RequestRateLimiterGatewayFilterFactory实现。 在过滤器工厂中是通过Redis和Lua脚本结合的方式进行流量控制。</p>
+<ol>
+<li>首先引入Redis依赖：</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- reactive redis依赖包（包含Lettuce客户端） --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis-reactive<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>配置文件</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">api-gateway-server</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">gateway:</span></span><br><span class="line">      <span class="attr">discovery:</span></span><br><span class="line">        <span class="attr">locator:</span></span><br><span class="line">          <span class="attr">enabled:</span> <span class="literal">true</span>               <span class="comment"># 开启从注册中心动态创建路由的功能，利用微服务名进行路由</span></span><br><span class="line">          <span class="attr">lower-case-service-id:</span> <span class="literal">true</span> <span class="comment"># 微服务名称以小写形式呈现</span></span><br><span class="line">      <span class="attr">routes:</span>       <span class="comment"># 配置路由： 路由id，路由到微服务的uri,断言（判断条件）</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">id:</span> <span class="string">product-service</span>       <span class="comment"># 路由id</span></span><br><span class="line">          <span class="attr">uri:</span> <span class="string">lb://service-product</span> <span class="comment"># 路由到微服务的uri。 lb://xxx，lb代表从注册中心获取服务列表，xxx代表需要转发的微服务的名称</span></span><br><span class="line">          <span class="attr">predicates:</span>               <span class="comment"># 断言（判断条件）</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">Path=/product-service/**</span></span><br><span class="line">          <span class="attr">filters:</span>   <span class="comment"># 配置路由过滤器</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">RequestRateLimiter</span>                 <span class="comment"># 使用的限流过滤器是Spring Cloud Gateway提供的</span></span><br><span class="line">              <span class="attr">args:</span></span><br><span class="line">                <span class="attr">key-resolver:</span> <span class="string">&#x27;#&#123;@pathKeyResolver&#125;&#x27;</span>   <span class="comment"># 使用SpEL从容器中获取对象</span></span><br><span class="line">                <span class="attr">redis-rate-limiter.replenishRate:</span> <span class="number">1</span>   <span class="comment"># 令牌桶每秒填充平均速率，允许用户每秒处理多少个请求</span></span><br><span class="line">                <span class="attr">redis-rate-limiter.burstCapacity:</span> <span class="number">3</span>   <span class="comment"># 令牌桶的上限，令牌桶的容量，允许在一秒钟内完成的最大请求数</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>配置Redis中key的解析器</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> reactor.core.publisher.Mono;</span><br><span class="line"><span class="keyword">import</span> java.util.Objects;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">KeyResolverConfig</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 基于请求路径的限流</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="comment">//@Bean</span></span><br><span class="line">    <span class="keyword">public</span> KeyResolver <span class="title function_">pathKeyResolver</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> exchange -&gt; Mono.just(exchange.getRequest().getPath().toString());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 基于请求参数的限流</span></span><br><span class="line"><span class="comment">     * 请求/abc?userId=1</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="comment">//@Bean</span></span><br><span class="line">    <span class="keyword">public</span> KeyResolver <span class="title function_">useKeyResolver</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> exchange -&gt; Mono.just(Objects.requireNonNull(exchange.getRequest().getQueryParams().getFirst(<span class="string">&quot;userId&quot;</span>)));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 基于请求IP地址的限流</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> KeyResolver <span class="title function_">ipKeyResolver</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> exchange -&gt; Mono.just(Objects.requireNonNull(exchange.getRequest().getHeaders().getFirst(<span class="string">&quot;x-Forwarded-For&quot;</span>)));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Spring Cloud Gateway目前提供的限流还是比较简单的，在实际开发中我们的限流策略会有很多种情况， 比如：对不同接口的限流，被限流后的友好提示，这些可以通过自定义RedisRateLimiter来实现自己的限流策略。</p>
+</blockquote>
+<h4 id="4-2-全局过滤器"><a href="#4-2-全局过滤器" class="headerlink" title="4.2 全局过滤器"></a>4.2 全局过滤器</h4><p>全局过滤器（GlobalFilter）作用于所有路由，Spring Cloud Gateway定义了Global Filter接口，用户可以自定义实现自己的Global Filter。 通过全局过滤器可以实现对权限的统一校验，安全性校验等功能。</p>
+<table>
+<thead>
+<tr>
+<th>过滤器工厂</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ForwardRoutingFilter</td>
+<td>它会从exchange.getRequiredAttribute(GATEWAY_REQUEST_URL_ATTR);获取路由配置的URI，如果这个URI是forward模式，过滤器会将请求转发到DispatcherHandler，然后匹配到网关本的请求路径之中，原来请求的URI将被forward的URI覆盖，原始的请求URI被存储到exchange的ServerWebExchangeUtils.GATEWAY_ORIGINAL_REQUEST_URL_ATTR属性之中。</td>
+</tr>
+<tr>
+<td>LoadBalancerClientFilter</td>
+<td>它是用来处理负载均衡的过滤器。在网关后面的服务可以启动多个服务实例，这个过滤器就是把请求根据均衡规则路由到某台服务实例上面。它从exchange的ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR属性中获取URI，如果这个URI的scheme是“lb”，如：lb:&#x2F;&#x2F;myserivce，它会使用spring cloud 的LoadBalancerClient解析myservice服务名，获取一个服务实例的host和port，并替换原来的客户端请求。原来请求的url会存储在exchange的ServerWebExchangeUtils.GATEWAY_ORIGINAL_REQUEST_URL_ATTR属性中。这个过滤器也会从exchange中获取ServerWebExchangeUtils.GATEWAY_SCHEME_PREFIX_ATTR属性值，如果它的值也是“lb”，也会使用相同的规则路由。</td>
+</tr>
+<tr>
+<td>NettyRoutingFilter</td>
+<td>这是一个优先级最低的过滤器，如果从exchange的ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR获取的URL的scheme是https或http，它将使用Netty的HttpClient创建向下执行的请求代理，请求返回的结果将存储在exchange的ServerWebExchangeUtils.CLIENT_RESPONSE_ATTR属性中，过滤器链后面的过滤器可以从中获取返回的结果。（还有一个测试使用的过滤器，WebClientHttpRoutingFilter，它和NettyRoutingFilter的功能一样，但是不使用netty）。</td>
+</tr>
+<tr>
+<td>NettyWriteResponseFilter</td>
+<td>它的优先级是最高的，它是“post”类型的过滤器。如果在exchange中ServerWebExchangeUtils.CLIENT_RESPONSE_ATTR的属性存在HttpClientResponse，它会在所有的其它的过滤器执行完成之后运行，将响应的数据发送给网关的客户端。</td>
+</tr>
+<tr>
+<td>RouteToRequestUrlFilter</td>
+<td>它的作用是把浏览器的URL请求的Path路径添加到路由的URI之中，比如浏览器请求网关的URL是：<code>http://localhost:8080/app-a/app/balance</code>，路由的URI配置是：<code>uri: lb://app-a</code>，那么添加之后的路由的URI是：<code>lb://app-a/app/balance</code>，并将它存储在exchange的ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR属性之中。</td>
+</tr>
+<tr>
+<td>WebsocketRoutingFilter</td>
+<td>它是用来路由WebScoket请求，在exchange的ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR的URI中，如果scheme是ws或wss，它会使用Spring Web Socket 模块转发WebSocket请求。WebSockets可以使用路由进行负载均衡，比如：lb:ws:&#x2F;&#x2F;serviceid。</td>
+</tr>
+<tr>
+<td>GatewayMetricsFilter</td>
+<td>它用来统计一些网关的性能指标。需要添加spring-boot-starter-actuator的项目依赖。</td>
+</tr>
+</tbody></table>
+<p>在网关路由 ServerWebExchange 后，它将通过在 exchange 添加一个 gatewayAlreadyRouted 属性，从而将exchange标记为 routed 。一旦请求被标记为 routed ，其他路由过滤器将不会再次路由请求，而是直接跳过，防止重复的路由操。可以使用便捷方法将 exchange 标记为 routed ，或检查 exchange 是否是 routed。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ServerWebExchangeUtils.isAlreadyRouted   <span class="comment">//检查是否已被路由</span></span><br><span class="line">ServerWebExchangeUtils.setAlreadyRouted  <span class="comment">//设置routed状态</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="4-3-自定义全局过滤器鉴权"><a href="#4-3-自定义全局过滤器鉴权" class="headerlink" title="4.3 自定义全局过滤器鉴权"></a>4.3 自定义全局过滤器鉴权</h4><p>鉴权逻辑： ①当客户端第一次请求服务的时候，服务端对用户进行信息认证（登录）。 ②认证通过，将用户信息进行加密形成token，返回给客户端，作为登录凭证。 ③以后每次请求，客户端都携带认证的token。 ④服务端对token进行解密，判断是否有效。</p>
+<p>对于验证用户是否已经登录授权的过程可以在网关层统一校验。校验的标准就是请求中是否携带token凭证以及token的正确性。</p>
+<p>这里代码实现仅判断是否携带token凭证：<code>TokenFilter.java</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.commons.lang.StringUtils;</span><br><span class="line"><span class="keyword">import</span> org.springframework.cloud.gateway.filter.GatewayFilterChain;</span><br><span class="line"><span class="keyword">import</span> org.springframework.cloud.gateway.filter.GlobalFilter;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.Ordered;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.HttpStatus;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.server.reactive.ServerHttpRequest;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.server.ServerWebExchange;</span><br><span class="line"><span class="keyword">import</span> reactor.core.publisher.Mono;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TokenFilter</span> <span class="keyword">implements</span> <span class="title class_">GlobalFilter</span>, Ordered &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 是否携带token凭证</span></span><br><span class="line"><span class="comment">     * 对请求参数中的access-token进行判断</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Mono&lt;Void&gt; <span class="title function_">filter</span><span class="params">(ServerWebExchange exchange, GatewayFilterChain chain)</span> &#123;</span><br><span class="line">        <span class="type">ServerHttpRequest</span> <span class="variable">request</span> <span class="operator">=</span> exchange.getRequest();</span><br><span class="line"></span><br><span class="line">        <span class="type">String</span> <span class="variable">token</span> <span class="operator">=</span> request.getHeaders().getFirst(<span class="string">&quot;access-token&quot;</span>);</span><br><span class="line">        <span class="comment">//如果token为空</span></span><br><span class="line">        <span class="keyword">if</span> (StringUtils.isEmpty(token)) &#123;</span><br><span class="line">            <span class="comment">//设置Http的状态码</span></span><br><span class="line">            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);</span><br><span class="line">            <span class="comment">//请求结束</span></span><br><span class="line">            <span class="keyword">return</span> exchange.getResponse().setComplete();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//如果token存在，继续执行</span></span><br><span class="line">        <span class="keyword">return</span> chain.filter(exchange);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 指定过滤器的执行顺序，返回值越小，优先级越高</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getOrder</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Gateway%E7%AE%80%E4%BB%8B"><span class="toc-text">1. Gateway简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-text">1.1 核心概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-text">1.2 工作流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Gateway%E7%BD%91%E5%85%B3%E6%90%AD%E5%BB%BA"><span class="toc-text">2. Gateway网关搭建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%B7%AF%E7%94%B1%E9%85%8D%E7%BD%AE"><span class="toc-text">3. 路由配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-%E8%B7%AF%E7%94%B1%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F"><span class="toc-text">3.1 路由配置方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-%E8%B7%AF%E7%94%B1%E5%8C%B9%E9%85%8D%E8%A7%84%E5%88%99"><span class="toc-text">3.2 路由匹配规则</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E8%BF%87%E6%BB%A4%E5%99%A8%E8%A7%84%E5%88%99"><span class="toc-text">4. 过滤器规则</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-%E5%B1%80%E9%83%A8%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="toc-text">4.1 局部过滤器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-%E5%85%A8%E5%B1%80%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="toc-text">4.2 全局过滤器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-%E8%87%AA%E5%AE%9A%E4%B9%89%E5%85%A8%E5%B1%80%E8%BF%87%E6%BB%A4%E5%99%A8%E9%89%B4%E6%9D%83"><span class="toc-text">4.3 自定义全局过滤器鉴权</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/2021/10/29/spring-cloud-gateway.html">http://chaooo.github.io/2021/10/29/spring-cloud-gateway.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2021/10/26/spring-cloud-eureka.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          「SpringCloud」Eureka注册中心
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/11/09/spring-cloud-config.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          「SpringCloud」Config配置中心
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/12/30/spring-security-permission.html">「Spring Security」前后端分离权限控制-指令级权限</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/27/spring-security-vue.html">「Spring Security」前后端分离菜单权限控制-前端动态路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/spring-security-rbac.html">「Spring Security」前后端分离后台菜单权限控制</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/10/spring-security-token.html">「Spring Security」基于Redis的Token自动续签优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/09/spring-security-jwt.html">「Spring Security」整合 JWT 实现无状态登录示例</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 10.71px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 16.43px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.71px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12.14px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12.14px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.43px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.43px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 17.14px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12.14px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12.14px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12.14px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.57px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.71px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 14.29px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.71px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.86px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.57px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 14.29px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.86px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.57px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 14.29px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.43px;">hexo</a> <a href="/tags/java/" style="font-size: 15.71px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 17.86px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 12.14px;">并发编程</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 10px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.29px;">环境配置</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年12月</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年11月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p style="display:none;">
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+      repo: 'https://github.com/chaooo/BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

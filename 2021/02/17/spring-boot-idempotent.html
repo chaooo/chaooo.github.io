@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Java接口幂等性设计及实例 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-spring-boot-idempotent" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Java接口幂等性设计及实例
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2021-02-17T06:12:42.000Z" itemprop="datePublished">2021年02月17日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/Spring/">Spring</a>
+  </div>
+
+      
+        <span class="article-views" style="display:none;">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2021/02/17/spring-boot-idempotent.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><strong>幂等性</strong>：多次调用方法或者接口不会改变业务状态，可以保证重复调用的结果和单次调用的结果一致。<br><code>select</code>和<code>delete</code>操作具有天然幂等性：<code>select</code>多次结果总是一致，<code>delete</code>第一次执行后继续再执行也不会对数据有影响；<br>一般没有幂等性而出现异常的操作：<code>insert</code>操作，<code>update</code>操作，混合类型操作(同时包含增删改等)。<span id="more"></span></p>
+<h3 id="1-使用幂等的场景"><a href="#1-使用幂等的场景" class="headerlink" title="1. 使用幂等的场景"></a>1. 使用幂等的场景</h3><ol>
+<li>前端重复提交：前端瞬时点击多次造成表单重复提交；</li>
+<li>接口超时重试：接口可能会因为某些原因而调用失败，出于容错性考虑会加上失败重试的机制。如果接口调用一半，再次调用就会因为脏数据的存在而出现异常。</li>
+<li>消息重复消费：在使用消息中间件来处理消息队列，且手动<code>ack</code>确认消息被正常消费时。如果消费者突然断开连接，那么已经执行了一半的消息会重新放回队列。被其他消费者重新消费时就会导致结果异常，如数据库重复数据，数据库数据冲突，资源重复等。</li>
+<li>请求重发：网络抖动引发的<code>nginx</code>重发请求，造成重复调用；</li>
+</ol>
+<h3 id="2-幂等性设计"><a href="#2-幂等性设计" class="headerlink" title="2. 幂等性设计"></a>2. 幂等性设计</h3><ol>
+<li><code>update</code>操作<ul>
+<li>根据唯一业务<code>id</code>去更新数据。</li>
+<li>使用乐观锁(增加版本号或修改时间字段)。</li>
+</ul>
+</li>
+<li><code>insert</code>操作<ul>
+<li>若该操作具有唯一业务号，则可通过数据库层面的唯一&#x2F;联合唯一索引来限制重复数据；或通过分布式锁来保证接口幂等性。</li>
+<li>若该操作没有唯一业务号，可以使用<code>Token</code>机制，保证幂等性。</li>
+</ul>
+</li>
+<li>混合操作（一个接口包含多种操作）<ul>
+<li>使用<code>Token</code>机制，或使用<code>Token</code> + 分布式锁的方案来解决幂等性问题。</li>
+</ul>
+</li>
+</ol>
+<h3 id="3-解决方案"><a href="#3-解决方案" class="headerlink" title="3. 解决方案"></a>3. 解决方案</h3><h4 id="3-1-Token机制实现"><a href="#3-1-Token机制实现" class="headerlink" title="3.1 Token机制实现"></a>3.1 Token机制实现</h4><p>通过<code>Token</code> 机制实现接口的幂等性，这是一种比较通用性的实现方法。</p>
+<p>具体流程步骤：</p>
+<ol>
+<li>客户端会先发送一个请求去获取<code>Token</code>，服务端会生成一个全局唯一的<code>ID</code>作为<code>Token</code>保存在<code>Redis</code>中，同时把这个<code>ID</code>返回给客户端；</li>
+<li>客户端第二次调用业务请求的时候必须携带这个<code>Token</code>；</li>
+<li>服务端会校验这个 <code>Token</code>，如果校验成功，则执行业务，并删除<code>Redis</code>中的 <code>Token</code>；</li>
+<li>如果校验失败，说明<code>Redis</code>中已经没有对应的 <code>Token</code>，则表示重复操作，直接返回指定的结果给客户端。</li>
+</ol>
+<h4 id="3-2-基于MySQL实现"><a href="#3-2-基于MySQL实现" class="headerlink" title="3.2 基于MySQL实现"></a>3.2 基于MySQL实现</h4><p>通过<code>MySQL</code>唯一索引的特性实现接口的幂等性。</p>
+<p>具体流程步骤：</p>
+<ol>
+<li>建立一张去重表，其中某个字段需要建立唯一索引；</li>
+<li>客户端去请求服务端，服务端会将这次请求的一些信息插入这张去重表中；</li>
+<li>因为表中某个字段带有唯一索引，如果插入成功，证明表中没有这次请求的信息，则执行后续的业务逻辑；</li>
+<li>如果插入失败，则代表已经执行过当前请求，直接返回。</li>
+</ol>
+<h4 id="3-3-基于Redis实现"><a href="#3-3-基于Redis实现" class="headerlink" title="3.3 基于Redis实现"></a>3.3 基于Redis实现</h4><p>通过<code>Redis</code>的<code>SETNX</code>命令实现接口的幂等性。</p>
+<blockquote>
+<p><code>SETNX key value</code>：当且仅当<code>key</code>不存在时将<code>key</code>的值设为<code>value</code>；若给定的<code>key</code>已经存在，则<code>SETNX</code>不做任何动作。设置成功时返回<code>1</code>，否则返回<code>0</code>。</p>
+</blockquote>
+<p>具体流程步骤：</p>
+<ol>
+<li>客户端先请求服务端，会拿到一个能代表这次请求业务的唯一字段；</li>
+<li>将该字段以<code>SETNX</code>的方式存入<code>Redis</code>中，并根据业务设置相应的超时时间；</li>
+<li>如果设置成功，证明这是第一次请求，则执行后续的业务逻辑；</li>
+<li>如果设置失败，则代表已经执行过当前请求，直接返回。</li>
+</ol>
+<h3 id="4-实例：自定义注解实现API幂等处理（基于Redis实现）"><a href="#4-实例：自定义注解实现API幂等处理（基于Redis实现）" class="headerlink" title="4. 实例：自定义注解实现API幂等处理（基于Redis实现）"></a>4. 实例：自定义注解实现API幂等处理（基于Redis实现）</h3><h4 id="4-1-引入redis支持"><a href="#4-1-引入redis支持" class="headerlink" title="4.1 引入redis支持"></a>4.1 引入redis支持</h4><ol>
+<li><p><code>pom.xml</code>引入<code>Redis</code>的依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- redis依赖包 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 排除lettuce包，使用jedis代替--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.lettuce<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lettuce-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>redis.clients<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jedis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- aop切面 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-aop<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置文件<code>application.yml</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  redis:</span><br><span class="line">    host: 127.0.0.1</span><br><span class="line">    port: 6379</span><br><span class="line">    password: 123456</span><br><span class="line">    #Redis数据库索引（默认为0）</span><br><span class="line">    database: 0</span><br><span class="line">    #连接池最大连接数（使用负值表示没有限制）</span><br><span class="line">    jedis:</span><br><span class="line">      pool:</span><br><span class="line">        max-active: 50</span><br><span class="line">        #连接池最大阻塞等待时间（使用负值表示没有限制）</span><br><span class="line">        max-wait: -1</span><br><span class="line">        #连接池中的最大空闲连接</span><br><span class="line">        max-idle: 20</span><br><span class="line">        #连接池中的最小空闲连接</span><br><span class="line">        min-idle: 2</span><br><span class="line">    #连接超时时间（毫秒）</span><br><span class="line">    timeout: 5000</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试<code>Redis</code>连接</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">RedisTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="keyword">private</span> RedisTemplate&lt;String,String &gt; redisTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">simpleTest</span><span class="params">()</span> &#123;</span><br><span class="line">        ValueOperations&lt;String,String&gt; valueOperations = redisTemplate.opsForValue();</span><br><span class="line">        <span class="type">String</span> <span class="variable">key</span> <span class="operator">=</span> <span class="string">&quot;RedisTemplateTest-simpleTest-001&quot;</span>;</span><br><span class="line">        valueOperations.set(key,key+key);</span><br><span class="line">        System.out.println(valueOperations.get(key));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="4-2-编码实现"><a href="#4-2-编码实现" class="headerlink" title="4.2 编码实现"></a>4.2 编码实现</h4><ol>
+<li>添加幂等异常</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.demo;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 处理幂等相关异常</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> : Charles</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> : 2021/3/1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">IdempotentException</span> <span class="keyword">extends</span> <span class="title class_">RuntimeException</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">IdempotentException</span><span class="params">(String message)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(message);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getMessage</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>.getMessage();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>自定义幂等注解</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.demo;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.*;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 自定义幂等注解</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> : Charles</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> : 2021/3/1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Target(ElementType.METHOD)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Idempotent &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 前缀属性，作为redis缓存Key的一部分。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    String <span class="title function_">prefix</span><span class="params">()</span> <span class="keyword">default</span> <span class="string">&quot;idempotent_&quot;</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 需要的参数名数组</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    String[] keys();</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 幂等过期时间（秒），即：在此时间段内，对API进行幂等处理。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="type">int</span> <span class="title function_">expire</span><span class="params">()</span> <span class="keyword">default</span> <span class="number">3</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 提示错误码，也可自定义为字符串直接提醒</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="type">int</span> <span class="title function_">errorCode</span><span class="params">()</span> <span class="keyword">default</span> <span class="number">1001</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>幂等切面</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.demo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> lombok.extern.slf4j.Slf4j;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.ProceedingJoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Around;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Aspect;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Pointcut;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.reflect.MethodSignature;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.autoconfigure.condition.ConditionalOnClass;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.LocalVariableTableParameterNameDiscoverer;</span><br><span class="line"><span class="keyword">import</span> org.springframework.data.redis.core.RedisCallback;</span><br><span class="line"><span class="keyword">import</span> org.springframework.data.redis.core.RedisTemplate;</span><br><span class="line"><span class="keyword">import</span> org.springframework.expression.EvaluationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.expression.Expression;</span><br><span class="line"><span class="keyword">import</span> org.springframework.expression.ExpressionParser;</span><br><span class="line"><span class="keyword">import</span> org.springframework.expression.spel.standard.SpelExpressionParser;</span><br><span class="line"><span class="keyword">import</span> org.springframework.expression.spel.support.StandardEvaluationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"><span class="keyword">import</span> redis.clients.jedis.commands.JedisCommands;</span><br><span class="line"><span class="keyword">import</span> redis.clients.jedis.params.SetParams;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.annotation.Resource;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 幂等切面</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> : Charles</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> : 2021/3/1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@ConditionalOnClass(RedisTemplate.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">IdempotentAspect</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">LOCK_SUCCESS</span> <span class="operator">=</span> <span class="string">&quot;OK&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="keyword">private</span> RedisTemplate&lt;String,String&gt; redisTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 切入点,根据自定义Idempotent实际路径进行调整</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Pointcut(&quot;@annotation(com.example.demo.Idempotent)&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">executeIdempotent</span><span class="params">()</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Around(&quot;executeIdempotent()&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">around</span><span class="params">(ProceedingJoinPoint joinPoint)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">        <span class="comment">// 获取参数对象列表</span></span><br><span class="line">        Object[] args = joinPoint.getArgs();</span><br><span class="line">      	<span class="comment">//获取方法</span></span><br><span class="line">        <span class="type">Method</span> <span class="variable">method</span> <span class="operator">=</span> ((MethodSignature) joinPoint.getSignature()).getMethod();</span><br><span class="line">        <span class="comment">// 得到方法名</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">methodName</span> <span class="operator">=</span> method.getName();</span><br><span class="line">        <span class="comment">// 获取参数数组</span></span><br><span class="line">        String[] parameters = <span class="keyword">new</span> <span class="title class_">LocalVariableTableParameterNameDiscoverer</span>().getParameterNames(method);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//获取幂等注解</span></span><br><span class="line">        <span class="type">Idempotent</span> <span class="variable">idempotent</span> <span class="operator">=</span> method.getAnnotation(Idempotent.class);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 初始化springEL表达式解析器实例</span></span><br><span class="line">        <span class="type">ExpressionParser</span> <span class="variable">parser</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SpelExpressionParser</span>();</span><br><span class="line">        <span class="comment">// 初始化解析内容上下文</span></span><br><span class="line">        <span class="type">EvaluationContext</span> <span class="variable">context</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StandardEvaluationContext</span>();</span><br><span class="line">        <span class="comment">// 把参数名和参数值放入解析内容上下文里</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; parameters.length; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (args[i] != <span class="literal">null</span>) &#123;</span><br><span class="line">            	<span class="comment">// 添加解析对象目标</span></span><br><span class="line">                context.setVariable(parameters[i], args[i]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 解析定义key对应的值，拼接成key</span></span><br><span class="line">        <span class="type">StringBuilder</span> <span class="variable">idempotentKey</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuilder</span>(idempotent.prefix() + <span class="string">&quot;:&quot;</span> + methodName);</span><br><span class="line">        <span class="keyword">for</span> (String s : idempotent.keys()) &#123;</span><br><span class="line">            <span class="comment">// 解析对象</span></span><br><span class="line">            <span class="type">Expression</span> <span class="variable">expression</span> <span class="operator">=</span> parser.parseExpression(s);</span><br><span class="line">            idempotentKey.append(<span class="string">&quot;:&quot;</span>).append(expression.getValue(context));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 通过 setnx 确保只有一个接口能够正常访问</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">result</span> <span class="operator">=</span> redisTemplate.execute(</span><br><span class="line">            (RedisCallback&lt;String&gt;) connection -&gt; (</span><br><span class="line">                (JedisCommands) connection.getNativeConnection()</span><br><span class="line">            ).set(</span><br><span class="line">                idempotentKey.toString(),</span><br><span class="line">                idempotentKey.toString(),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">SetParams</span>().nx().ex(idempotent.expire())</span><br><span class="line">            )</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (LOCK_SUCCESS.equals(result)) &#123;</span><br><span class="line">            <span class="keyword">return</span> joinPoint.proceed();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            log.error(<span class="string">&quot;API幂等处理, key=&quot;</span> + idempotentKey);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IdempotentException</span>(<span class="string">&quot;API幂等处理, key=&quot;</span> + idempotentKey);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-3-幂等注解的使用"><a href="#4-3-幂等注解的使用" class="headerlink" title="4.3 幂等注解的使用"></a>4.3 幂等注解的使用</h4><ol>
+<li><p>接口添加<code>@Idempotent</code>注解</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Idempotent(prefix=&quot;idempotent&quot;, keys=&#123;&quot;#id&quot;, &quot;#str&quot;&#125;, expire=5)</span></span><br><span class="line"><span class="meta">@PostMapping(&quot;/test&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">testApi</span><span class="params">(Integer id, String str)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;测试幂等API:&quot;</span> + id + str;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>连续调用API测试</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -X POST <span class="string">&quot;http://localhost:8080/test?id=1002&amp;str=TestIdempotentParameterString&quot;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试结果</p>
+</li>
+</ol>
+<p>第一次调用<code>/test</code>，会正常返回<code>测试幂等API:1002TestIdempotentParameterString</code>；<br>并且在<code>5</code>秒内，<code>Redis</code>会存在<code>key</code>为<code>idempotent:testApi:1002:TestIdempotentParameterString</code>的唯一值。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; keys &quot;idempotent:testApi:1002:TestIdempotentParameterString&quot;</span><br><span class="line">1) &quot;idempotent:testApi:1002:TestIdempotentParameterString&quot;</span><br></pre></td></tr></table></figure>
+
+<p>再次调用<code>/test</code>，会返回异常。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;timestamp&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2021-03-01T06:42:14.282+00:00&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;path&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/test&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="number">500</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;error&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Internal Server Error&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;message&quot;</span><span class="punctuation">:</span> <span class="string">&quot;API幂等处理, key=idempotent:testApi:1002:TestIdempotentParameterString&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;requestId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;b42b9639-8&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;trace&quot;</span><span class="punctuation">:</span> <span class="string">&quot;com.example.demo.IdempotentException: API幂等处理, key=idempotent:testApi:1002:TestIdempotentParameterString\r\n\tat com.example.demo.IdempotentAspect.around ... 中间省略 ... (FastThreadLocalRunnable.java:30)\r\n\t\tat java.lang.Thread.run(Thread.java:748)\r\n&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BD%BF%E7%94%A8%E5%B9%82%E7%AD%89%E7%9A%84%E5%9C%BA%E6%99%AF"><span class="toc-text">1. 使用幂等的场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%B9%82%E7%AD%89%E6%80%A7%E8%AE%BE%E8%AE%A1"><span class="toc-text">2. 幂等性设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-text">3. 解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-Token%E6%9C%BA%E5%88%B6%E5%AE%9E%E7%8E%B0"><span class="toc-text">3.1 Token机制实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-%E5%9F%BA%E4%BA%8EMySQL%E5%AE%9E%E7%8E%B0"><span class="toc-text">3.2 基于MySQL实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-%E5%9F%BA%E4%BA%8ERedis%E5%AE%9E%E7%8E%B0"><span class="toc-text">3.3 基于Redis实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%AE%9E%E4%BE%8B%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3%E5%AE%9E%E7%8E%B0API%E5%B9%82%E7%AD%89%E5%A4%84%E7%90%86%EF%BC%88%E5%9F%BA%E4%BA%8ERedis%E5%AE%9E%E7%8E%B0%EF%BC%89"><span class="toc-text">4. 实例：自定义注解实现API幂等处理（基于Redis实现）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-%E5%BC%95%E5%85%A5redis%E6%94%AF%E6%8C%81"><span class="toc-text">4.1 引入redis支持</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-%E7%BC%96%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">4.2 编码实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-%E5%B9%82%E7%AD%89%E6%B3%A8%E8%A7%A3%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-text">4.3 幂等注解的使用</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/2021/02/17/spring-boot-idempotent.html">http://chaooo.github.io/2021/02/17/spring-boot-idempotent.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2020/12/29/env-nginx.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          「环境配置」Nginx常用配置详解
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/02/25/spring-reactive-webflux.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          「Spring Reactive Stack」Spring WebFlux响应式Web框架入门
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/12/30/spring-security-permission.html">「Spring Security」前后端分离权限控制-指令级权限</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/27/spring-security-vue.html">「Spring Security」前后端分离菜单权限控制-前端动态路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/spring-security-rbac.html">「Spring Security」前后端分离后台菜单权限控制</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/10/spring-security-token.html">「Spring Security」基于Redis的Token自动续签优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/09/spring-security-jwt.html">「Spring Security」整合 JWT 实现无状态登录示例</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 10.71px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 16.43px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.71px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12.14px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12.14px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.43px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.43px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 17.14px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12.14px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12.14px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12.14px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.57px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.71px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 14.29px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.71px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.86px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.57px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 14.29px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.86px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.57px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 14.29px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.43px;">hexo</a> <a href="/tags/java/" style="font-size: 15.71px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 17.86px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 12.14px;">并发编程</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 10px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.29px;">环境配置</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年12月</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年11月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p style="display:none;">
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+      repo: 'https://github.com/chaooo/BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

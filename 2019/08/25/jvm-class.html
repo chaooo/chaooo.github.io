@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>「深入JVM」 类文件结构 与 类加载机制 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-jvm-class" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      「深入JVM」 类文件结构 与 类加载机制
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2019-08-25T11:29:48.000Z" itemprop="datePublished">2019年08月25日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/JVM/">JVM</a>
+  </div>
+
+      
+        <span class="article-views" style="display:none;">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2019/08/25/jvm-class.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="1-类文件结构"><a href="#1-类文件结构" class="headerlink" title="1. 类文件结构"></a>1. 类文件结构</h3><p>Class 文件是一组以 <strong>8 位字节</strong>为基础单位的二进制流，各个数据<strong>严格按照顺序紧凑的排列</strong>在 Class 文件中，中间无任何分隔符，这使得整个 Class 文件中存储的内容几乎全部都是程序运行的必要数据，没有空隙存在。当遇到需要占用 8 位字节以上空间的数据项时，会按照高位在前的方式分割成若干个 8 位字节进行存储。<br>Java 虚拟机规范规定 Class 文件格式采用一种类似与 C 语言结构体的伪结构体来存储数据，这种伪结构体中只有两种数据类型：<strong>无符号数</strong>和<strong>表</strong>。<span id="more"></span></p>
+<ul>
+<li><strong>无符号数</strong>：属于基本数据类型，以 u1、u2、u4、u8 来代表 1 个字节、2 个字节、4 个字节、8 个字节的无符号数， 无符号数可以用来描述数字、索引引用、数量值或者按照 UTF-8 编码构成字符串值。</li>
+<li><strong>表</strong>：由多个无符号数或者其他表作为数据项构成的复合数据类型，所有表都习惯性地以「_info」结尾。表用于描述有层次关系的复合结构的数据，整个 Class 文件就是一张表。</li>
+</ul>
+<p>根据 Java 虚拟机规范，类文件由单个 ClassFile 结构组成：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">ClassFile &#123;</span><br><span class="line">    u4             magic;                <span class="comment">//Class文件的标志(魔数)</span></span><br><span class="line">    u2             minor_version;        <span class="comment">//Class的小版本号</span></span><br><span class="line">    u2             major_version;        <span class="comment">//Class的大版本号</span></span><br><span class="line">    u2             constant_pool_count;  <span class="comment">//常量池的数量</span></span><br><span class="line">    cp_info        constant_pool[constant_pool_count-<span class="number">1</span>];<span class="comment">//常量池</span></span><br><span class="line">    u2             access_flags;         <span class="comment">//Class的访问标记</span></span><br><span class="line">    u2             this_class;           <span class="comment">//当前类</span></span><br><span class="line">    u2             super_class;          <span class="comment">//父类</span></span><br><span class="line">    u2             interfaces_count;     <span class="comment">//接口</span></span><br><span class="line">    u2             interfaces[interfaces_count];<span class="comment">//一个类可以实现多个接口</span></span><br><span class="line">    u2             fields_count;          <span class="comment">//Class文件的字段属性</span></span><br><span class="line">    field_info     fields[fields_count];  <span class="comment">//一个类会可以有个字段</span></span><br><span class="line">    u2             methods_count;         <span class="comment">//Class文件的方法数量</span></span><br><span class="line">    method_info    methods[methods_count];<span class="comment">//一个类可以有个多个方法</span></span><br><span class="line">    u2             attributes_count;      <span class="comment">//此类的属性表中的属性数</span></span><br><span class="line">    attribute_info attributes[attributes_count];<span class="comment">//属性表集合</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2019/08/25/jvm-class/JVM-class.png"></p>
+<h4 id="1-1-魔数-Magic-Number"><a href="#1-1-魔数-Magic-Number" class="headerlink" title="1.1 魔数 (Magic Number)"></a>1.1 魔数 (Magic Number)</h4><ul>
+<li>Class 文件的<strong>0~3 字节</strong>(前四个字节: ca fe ba be)</li>
+<li>作用: 确定这个文件是否为一个能被虚拟机接收的 Class 文件</li>
+</ul>
+<h4 id="1-2-Class-文件版本"><a href="#1-2-Class-文件版本" class="headerlink" title="1.2 Class 文件版本"></a>1.2 Class 文件版本</h4><ul>
+<li><strong>4~7 字节</strong>, 其中 4<del>5 次版本号,6</del>7 主版本号(如 jdk8 主版本号是: 00 34)</li>
+</ul>
+<h4 id="1-3-常量池"><a href="#1-3-常量池" class="headerlink" title="1.3 常量池"></a>1.3 常量池</h4><ul>
+<li><strong>8~9 字节</strong>表示 16 进制常量池数量,其后紧跟具体常量池, 常量池的数量是 <code>constant_pool_count-1</code>（<strong>常量池计数器是从 1 开始计数的，将第 0 项常量空出来是有特殊考虑的，索引值为 0 代表“不引用任何一个常量池项”</strong>）</li>
+<li>常量池主要存放两大常量: <strong>字面量</strong>和<strong>符号引用</strong><ul>
+<li>字面量: Java 语言层面的常量概念(String,final 等)</li>
+<li>符号引用: 编译原理方面的概念(类和接口的全限定名\字段的名称和描述符\方法的名称和描述符)</li>
+</ul>
+</li>
+<li>常量池中每一项常量都是一个表，这<strong>14 种表</strong>有一个共同的特点：<strong>开始的第一位是一个 u1 类型的标志位 -tag 来标识常量的类型，代表当前这个常量属于哪种常量类型</strong></li>
+<li>.class 文件可以通过<code>javap -v class类名</code> 指令来看一下其常量池中的信息(<code>javap -v class类名-&gt; temp.txt</code> ：将结果输出到 temp.txt 文件)</li>
+</ul>
+<h4 id="1-4-类的访问标志与继承信息"><a href="#1-4-类的访问标志与继承信息" class="headerlink" title="1.4 类的访问标志与继承信息"></a>1.4 类的访问标志与继承信息</h4><ul>
+<li>在常量池结束之后，紧接着的<strong>两个字节</strong>代表访问标志，这个标志用于识别一些类或者接口层次的访问信息，包括：这个 Class 是类还是接口，是否为 public 或者 abstract 类型，如果是类的话是否声明为 final 等等.</li>
+<li>access_flags 中一共有 16 个标志位可以使用，当前只定义了其中的 8 个，没有使用到的标志位要求一律为 0。</li>
+</ul>
+<h4 id="1-5-当前类索引-this-父类索引-super-与接口索引集合-interfaces"><a href="#1-5-当前类索引-this-父类索引-super-与接口索引集合-interfaces" class="headerlink" title="1.5 当前类索引(this),父类索引(super)与接口索引集合(interfaces)"></a>1.5 当前类索引(<code>this</code>),父类索引(<code>super</code>)与接口索引集合(<code>interfaces</code>)</h4><ul>
+<li>类索引用于确定这个类的全限定名，父类索引用于确定这个类的父类的全限定名，由于 Java 语言的单继承，所以父类索引只有一个，除了 java.lang.Object 之外，所有的 java 类都有父类，因此除了 java.lang.Object 外，所有 Java 类的父类索引都不为 0。</li>
+<li>接口索引集合用来描述这个类实现了那些接口，这些被实现的接口将按 implents(如果这个类本身是接口的话则是 extends) 后的接口顺序从左到右排列在接口索引集合中。</li>
+</ul>
+<h4 id="1-6-成员变量信息-Feild"><a href="#1-6-成员变量信息-Feild" class="headerlink" title="1.6 成员变量信息(Feild)"></a>1.6 成员变量信息(Feild)</h4><ul>
+<li>字段表（field info）用于描述接口或类中声明的变量。字段包括类级变量以及实例变量，但不包括在方法内部声明的局部变量。</li>
+<li>字段信息包括：字段的作用域（public、private、protected 修饰符）、是实例变量还是类变量（static 修饰符）、可变性（final）、并发可见性（volatile 修饰符，是否强制从主内存读写）、可否被序列化（transient 修饰符）、字段数据类型（基本类型、对象、数组）、字段名称，以上修饰符都是布尔类型。</li>
+<li>方法和字段的描述符作用是用来描述字段的数据类型、方法的参数列表（包括数量、类型以及顺序）和返回值。</li>
+<li>根描述规则，基本数据类型（byte、char、double、float、int、long、short、boolean）以及代表无返回值的 void 类型都用一个大写字符来表示，对象类型使用字符 L 加对象的全限定名来表示。<ul>
+<li>B: 基本类型 byte</li>
+<li>C: 基本类型 char</li>
+<li>D: 基本类型 double</li>
+<li>F: 基本类型 float</li>
+<li>I: 基本类型</li>
+<li>J: 基本类型 long</li>
+<li>S: 基本类型 short</li>
+<li>Z: 基本类型 boolean</li>
+<li>V: 特殊类型 void</li>
+<li>L: 对象类型，如 Ljava&#x2F;lang&#x2F;Object</li>
+</ul>
+</li>
+</ul>
+<h4 id="1-7-方法信息-Method"><a href="#1-7-方法信息-Method" class="headerlink" title="1.7 方法信息(Method)"></a>1.7 方法信息(Method)</h4><ul>
+<li><code>methods_count</code> 表示方法的数量，而 <code>method_info</code> 表示的方法表。</li>
+<li>Class 文件存储格式中对方法的描述与对字段的描述几乎采用了完全一致的方式。方法表的结构如同字段表一样，依次包括了访问标志、名称索引、描述符索引、属性表集合几项。</li>
+</ul>
+<h4 id="1-8-附加属性信息"><a href="#1-8-附加属性信息" class="headerlink" title="1.8 附加属性信息"></a>1.8 附加属性信息</h4><ul>
+<li><code>attributes_count</code>表示属性表中的属性个数, <code>attribute_info</code> 表示属性表</li>
+<li>在 Class 文件，字段表，方法表中都可以携带自己的属性表集合，以用于描述某些场景专有的信息。与 Class 文件中其它的数据项目要求的顺序、长度和内容不同，属性表集合的限制稍微宽松一些，不再要求各个属性表具有严格的顺序，并且只要不与已有的属性名重复，任何人实现的编译器都可以向属性表中写 入自己定义的属性信息，Java 虚拟机运行时会忽略掉它不认识的属性。</li>
+</ul>
+<h3 id="2-字节码指令"><a href="#2-字节码指令" class="headerlink" title="2. 字节码指令"></a>2. 字节码指令</h3><p>Java 字节码指令就是 Java 虚拟机能够识别、可执行的指令，可以说是 Jvm 的最小执行单元。javac 命令会将 Java 源文件编译成字节码文件，即.class 文件，其中就包含了大量的字节码指令，javap 命令可以解析字节码(.class 文件)，将字节码内部逻辑以可读的方式呈现出来 (<code>javap -v -p HelloWorld</code>)。</p>
+<ul>
+<li>按指令的功能分为如下几类：<ol>
+<li><strong>存储和加载类指令</strong>：主要包括 load 系列(将一个局部变量加载到操作数栈)、store 系列(将一个数值从操作数栈存储到局部变量表)和 ldc&#x2F;push&#x2F;const 系列(将一个常量加载到操作数栈)，主要用于在<strong>局部变量表</strong>、<strong>操作数栈</strong>和<strong>常量池</strong>三者之间进行<strong>数据调度</strong>；<ul>
+<li>例如: <code>iload_0</code>表示从当前栈帧局部变量表中 0 号位置取 int 类型的数值加载到操作数栈</li>
+</ul>
+</li>
+<li><strong>对象操作指令</strong>（创建与读写访问）：比如我们刚刚的 putfield 和 getfield 就属于读写访问的指令，此外还有 putstatic&#x2F;getstatic，还有 new 系列指令，以及 instanceof 等指令。</li>
+<li><strong>操作数栈管理指令</strong>：如 pop 和 dup，他们只对操作数栈进行操作。</li>
+<li>类型转换指令和运算指令：如 add(加)&#x2F;sub(减)&#x2F;mul(乘)&#x2F;div(除)&#x2F;l2i&#x2F;d2f 等系列指令，实际上这类指令一般也只对操作数栈进行操作。</li>
+<li>控制跳转指令：这类里包含常用的 if 系列指令以及 goto 类指令。</li>
+<li><strong>方法调用和返回指令</strong>：主要包括 invoke 系列指令和 return 系列指令。这类指令也意味这一个方法空间的开辟和结束，即 invoke 会唤醒一个新的 java 方法小宇宙（新的栈和局部变量表），而 return 则意味着这个宇宙的结束回收。</li>
+</ol>
+</li>
+<li>从指令操作的数据类型来讲：指令开头或尾部的一些字母，就往往表明了它所能操作的数据类型：<ul>
+<li>a 对应对象，表示指令操作对象性数据，比如 aload 和 astore、areturn 等等。</li>
+<li>i 对应整形。也就有 iload，istore 等 i 系列指令。</li>
+<li>f 对应浮点型，l 对应 long，b 对应 byte，d 对应 double，c 对应 char。</li>
+<li>ia 对应 int array，aa 对应 object array，da 对应 double array。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-编译期处理-语法糖"><a href="#3-编译期处理-语法糖" class="headerlink" title="3. 编译期处理(语法糖)"></a>3. 编译期处理(语法糖)</h3><p><strong>语法糖</strong>: 指 Java 编译器把.java 源码编译为.class 字节码过程中,自动生成和转换的一些代码. 如:默认构造器,自动拆装箱等.</p>
+<ol>
+<li><strong>默认构造器</strong>: <code>public class Candy&#123;&#125;</code> 编译后为: <code>public class Candy&#123;public Candy()&#123;super();&#125;&#125;</code></li>
+<li><strong>自动拆装箱</strong>: <code>Integer x=1;int y=x;</code> 编译后为: <code>Integer x=Integer.valueOf(1);int y=x.intValue();</code></li>
+<li><strong>泛型擦除</strong>: 擦除的是字节码上的泛型信息.</li>
+<li><strong>泛型反射</strong>: 通过反射获得泛型信息</li>
+<li><strong>可变参数</strong>: <code>String... args</code> 可以是一个<code>String[] args</code></li>
+<li><strong>foreach</strong>: 集合相当于获取迭代器 Iterator</li>
+<li><strong>switch</strong>: Jdk7 开始可以配合 String 和枚举<ul>
+<li>switch-String: 执行了两遍 switch,第一遍根据字符串的 hashCode 和 equals 将字符串转换为相应的 byte 类型,第二遍利用 byte 执行比较.</li>
+<li>switch-枚举: 会为当前类生成一个静态内部类(合成类,仅 JVM 使用,对我们不可见),用来映射枚举类的枚举编号(从 0 开始)与数组元素的关系,数组大小即为枚举元素的个数,里面存储 case 用来对比的数字,根据这个数字执行 switch</li>
+</ul>
+</li>
+<li><strong>枚举类</strong>: 继承 Enum 并且用 final 修饰类,构造方法私有,枚举量被编译成本类的 final 类变量,定义私有静态枚举量数组$VALUES,静态方法 values()用来返回定义的枚举量数组的 clone(),静态方法 valueOf()调用父类 valueOf(本类.class,名称)根据类型和名称得到相应实例</li>
+<li><strong>try-with-resources</strong>: 无论 try 块的异常还是关闭资源时的异常都不会丢。可以在 try-with-resources 语句中同时处理多个资源。<ul>
+<li>在 Java 7&#x2F;8 ，try-with-resources 语句中必须声明要关闭的资源。通过这种方式声明的资源属于隐式 final。</li>
+<li>Java 9 中甚至能使用预先创建的资源，只要所引用的资源声明为 final 或者是 effective final。</li>
+<li>在幕后施展魔法的是 AutoCloseable 或者 Closeable 接口，它们与 try-with-resources 语句协同工作。</li>
+</ul>
+</li>
+<li><strong>重写桥接</strong>: 子类重写方法返回值可以是父类返回值的子类,JVM 内部使用了桥接方法(synthetic bridge 修饰)重写父类方法并返回子类重写的同名方法,并且没有命名冲突,仅对 jvm 可见.</li>
+<li><strong>匿名内部类</strong>: 内部创建了 final 修饰的实现类, 匿名内部类引用局部变量时,局部变量必须是 final 的:因为内部创建实现类时,将值赋给其对象的 valx 属性,valx 属性没有机会再跟着一起变化.</li>
+</ol>
+<h3 id="4-类加载阶段"><a href="#4-类加载阶段" class="headerlink" title="4. 类加载阶段"></a>4. 类加载阶段</h3><ol>
+<li>隐式加载：new</li>
+<li>显式加载：loadClass、forName 等(需要调用 Class 的 newInstance 方法获取实例)</li>
+<li>类的装载阶段：**<code>加载 --&gt; 链接 --&gt; 初始化</code>**<ul>
+<li>加载：通过 Classloader 加载 class 文件字节码，生成 class 对象</li>
+<li>链接：校验–&gt;准备–&gt;解析<ul>
+<li>校验：检查加载的 Class 的正确性和安全性</li>
+<li>准备：为变量分配存储空间并设置类变量初始值</li>
+<li>解析：JVM 将常量池内的符号引用转换为直接引用</li>
+</ul>
+</li>
+<li>初始化：执行类变量赋值和静态代码块</li>
+</ul>
+</li>
+</ol>
+<h4 id="4-1-加载"><a href="#4-1-加载" class="headerlink" title="4.1 加载"></a>4.1 加载</h4><ul>
+<li>将类的字节码载入方法区中,内部采用 C++的 instanceKlass 描述 java 类, 它的重要 field 有:<ul>
+<li><code>_java_mirror</code>:Java 类的镜像, <code>_super</code>:父类, <code>_field</code>:成员变量, <code>_methods</code>:方法, <code>_constants</code>:常量池, <code>_class_loader</code>:类加载器, <code>_vtable</code>:虚方法表, <code>_itable</code>:接口方法表</li>
+</ul>
+</li>
+<li>如果这个类还有父类没加载,先加载父类</li>
+<li><strong>加载和链接可能是交替运行的</strong></li>
+</ul>
+<blockquote>
+<p><code>instanceKlass</code>这样的元数据是存储在方法区(元空间),但<code>_java_mirror</code>存储在堆中; 可通过 HSDB 工具查看.</p>
+</blockquote>
+<h4 id="4-2-链接"><a href="#4-2-链接" class="headerlink" title="4.2 链接"></a>4.2 链接</h4><ol>
+<li>验证: 验证类是否符合 JVM 规范,安全性检查</li>
+<li>准备: 为 static 变量分配空间,设置默认值<ul>
+<li>jdk7 开始, static 变量存储于<code>_java_mirror</code>末尾, jdk7 之前是 instanceKlass 末尾.</li>
+<li>static 变量分配空间和赋值是两个步骤, 分配空间在准备阶段完成,赋值在初始化阶段完成</li>
+<li>如果 static 变量是 final 的<strong>基本类型或字符串常量</strong>,那么编译阶段值就确定了,赋值在准备阶段完成</li>
+<li>如果 static 变量是 final 的<strong>引用类型</strong>,那么赋值还是会在初始化阶段完成</li>
+</ul>
+</li>
+<li>解析: 将常量池中的符号引用解析为直接引用(确切知道类,方法,属性在内存中的位置)</li>
+</ol>
+<h4 id="4-3-初始化"><a href="#4-3-初始化" class="headerlink" title="4.3 初始化"></a>4.3 初始化</h4><ul>
+<li>初始化即调用<code>&lt;cinit&gt;()V</code>方法,虚拟机会<strong>保证</strong>这个类的[<strong>构造方法</strong>]<strong>线程安全</strong></li>
+<li><strong>发生的时机</strong>: 概括的说,类初始化是[<strong>懒惰的</strong>]<ul>
+<li>main 方法所在的类的,总会被首先初始化</li>
+<li>首次访问这个类的静态变量或静态方法时</li>
+<li>子类初始化, 如果父类没有初始化,会引发</li>
+<li>子类访问父类静态变量, 只会触发父类的初始化</li>
+<li>Class.forName 和 new 操作 导致初始化</li>
+</ul>
+</li>
+<li><strong>不会</strong>导致类初始化的情况<ul>
+<li>访问类的 static final 静态常量(基本类型和字符串常量)<strong>不会</strong>触发初始化</li>
+<li>类对象.class 不会</li>
+<li>创建该类的数组 不会</li>
+<li>类加载器的 loadClass 方法 不会</li>
+<li>Class.forName 的第二个参数为 false 时 不会</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-4-应用实例-懒惰初始化单例模式-线程安全"><a href="#4-4-应用实例-懒惰初始化单例模式-线程安全" class="headerlink" title="4.4 应用实例-懒惰初始化单例模式(线程安全)"></a>4.4 应用实例-懒惰初始化单例模式(线程安全)</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Singleton</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="comment">// 内部类中保存单例</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">LazyHolder</span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Singleton</span> <span class="variable">SINGLETON</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Singleton</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 第一次调用getInstance,才会导致内部类加载和初始化其静态成员</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> LazyHolder.SINGLETON;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-类加载器"><a href="#5-类加载器" class="headerlink" title="5. 类加载器"></a>5. 类加载器</h3><p>以 JDK8 为例:</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>加载哪的类</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bootstrap ClassLoader</td>
+<td>JAVA_HOME&#x2F;jre&#x2F;lib</td>
+<td>启动类加载器, 最顶层, 打印显示为 null</td>
+</tr>
+<tr>
+<td>Extension ClassLoader</td>
+<td>JAVA_HOME&#x2F;jre&#x2F;lib&#x2F;ext</td>
+<td>扩展类加载器, 第二级, 打印显示为$ExtClassLoader</td>
+</tr>
+<tr>
+<td>Application ClassLoader</td>
+<td>classpath</td>
+<td>应用程序类加载器, 第三级, 打印显示为$AppClassLoader</td>
+</tr>
+<tr>
+<td>自定义类加载器</td>
+<td>自定义</td>
+<td>上级为 Application</td>
+</tr>
+</tbody></table>
+<h4 id="5-1-类加载器-双亲委派机制"><a href="#5-1-类加载器-双亲委派机制" class="headerlink" title="5.1 类加载器-双亲委派机制"></a>5.1 类加载器-双亲委派机制</h4><ul>
+<li>类加载器在接到加载类的请求时，首先将加载任务<strong>委托给上级加载器</strong>，依次递归，如果上级加载器可以完成类加载任务，就成功返回；只有上级加载器无法完成此加载任务时，才自己去加载。</li>
+<li>这种双亲委派模式的好处，一个可以避免类的重复加载，另外也避免了 java 的核心 API 被篡改。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * loadClass方法的实现方式</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">protected</span> Class&lt;?&gt; loadClass(String name, <span class="type">boolean</span> resolve)</span><br><span class="line">    <span class="keyword">throws</span> ClassNotFoundException</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (getClassLoadingLock(name)) &#123;</span><br><span class="line">        <span class="comment">// First, check if the class has already been loaded</span></span><br><span class="line">        <span class="comment">//「1」 检查该类是否已经加载</span></span><br><span class="line">        <span class="type">Class</span> <span class="variable">c</span> <span class="operator">=</span> findLoadedClass(name);</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="type">long</span> <span class="variable">t0</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (parent != <span class="literal">null</span>) &#123;</span><br><span class="line">                    <span class="comment">//「2」 有上级的话,委派上级 loadClass</span></span><br><span class="line">                    c = parent.loadClass(name, <span class="literal">false</span>);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">//「3」 如果没有上级了(ExtClassLoader),则委派BootstrapClassLoader</span></span><br><span class="line">                    c = findBootstrapClassOrNull(name);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">                <span class="comment">// ClassNotFoundException thrown if class not found</span></span><br><span class="line">                <span class="comment">// from the non-null parent class loader</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (c == <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="comment">// If still not found, then invoke findClass in order to find the class.</span></span><br><span class="line">                <span class="type">long</span> <span class="variable">t1</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line">                <span class="comment">//「4」 每一级都找不到,调用findClass(每个类加载器自己扩展)来加载</span></span><br><span class="line">                c = findClass(name);</span><br><span class="line"></span><br><span class="line">                <span class="comment">// this is the defining class loader; record the stats</span></span><br><span class="line">                sun.misc.PerfCounter.getParentDelegationTime().addTime(t1 - t0);</span><br><span class="line">                sun.misc.PerfCounter.getFindClassTime().addElapsedTimeFrom(t1);</span><br><span class="line">                sun.misc.PerfCounter.getFindClasses().increment();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (resolve) &#123;</span><br><span class="line">            resolveClass(c);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> c;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-2-线程上下文类加载器"><a href="#5-2-线程上下文类加载器" class="headerlink" title="5.2 线程上下文类加载器"></a>5.2 线程上下文类加载器</h4><ul>
+<li>Java 提供了很多服务提供者接口(Service Provider Interface，SPI),允许第三方为这些接口提供实现(常见的 SPI 有 JDBC、JCE、JNDI、JAXP 和 JBI 等)。</li>
+<li>SPI 接口中的代码经常需要加载具体的实现类; SPI 的接口由 Java 核心库来提供，实现类可能是作为 Java 应用所依赖的 jar 包被包含进来，可以通过类路径（CLASSPATH）来找到。</li>
+<li>SPI 的接口是 Java 核心库的一部分，是由引导类加载器来加载的；引导类加载器是无法找到 SPI 的实现类的,这时候需要抛弃双亲委派加载链模式，使用线程上下文里的类加载器加载类。</li>
+<li>类 java.lang.Thread 中的方法 getContextClassLoader()和 setContextClassLoader(ClassLoader cl)用来获取和设置线程的上下文类加载器。</li>
+<li>Java 默认的 线程上下文类加载器 是 应用程序类加载器(AppClassLoader)。</li>
+</ul>
+<h4 id="5-3-何时使用-Thread-getContextClassLoader"><a href="#5-3-何时使用-Thread-getContextClassLoader" class="headerlink" title="5.3 何时使用 Thread.getContextClassLoader()?"></a>5.3 何时使用 Thread.getContextClassLoader()?</h4><ul>
+<li>总的说来动态加载资源时，一般只有两种选择，当前类加载器和线程上下文类加载器。当前类加载器是指当前方法所在类的加载器。这个类加载器是运行时类解析使用的加载器，Class.forName(String)和 Class.getResource(String)也使用该类加载器。代码中 X.class 的写法使用的类加载器也是这个类加载器。</li>
+<li>该如何选择类加载器？<ul>
+<li>如若代码是限于某些特定框架，这些框架有着特定加载规则，则不要做任何改动，让框架开发者来保证其工作（比如应用服务器提供商，尽管他们并不能总是做对）。如在 Web 应用和 EJB 中，要使用 Class.gerResource 来加载资源。</li>
+<li>在其他情况下，我们可以自己来选择最合适的类加载器。可以使用策略模式来设计选择机制。其思想是将“总是使用上下文类加载器”或者“总是使用当前类加载器”的决策同具体实现逻辑分离开。往往设计之初是很难预测何种类加载策略是合适的，该设计能够让你可以后来修改类加载策略。</li>
+<li>一般来说，上下文类加载器要比当前类加载器更适合于框架编程，而当前类加载器则更适合于业务逻辑编程。</li>
+</ul>
+</li>
+</ul>
+<h4 id="5-4-类加载器与-Web-容器"><a href="#5-4-类加载器与-Web-容器" class="headerlink" title="5.4 类加载器与 Web 容器"></a>5.4 类加载器与 Web 容器</h4><p>以 Apache Tomcat 来说，每个 Web 应用都有一个对应的类加载器实例。<strong>该类加载器也使用代理模式，所不同的是它是首先尝试去加载某个类，如果找不到再代理给父类加载器。这与一般类加载器的顺序是相反的。这是 Java Servlet 规范中的推荐做法，其目的是使得 Web 应用自己的类的优先级高于 Web 容器提供的类</strong>。这种代理模式的一个例外是：Java 核心库的类是不在查找范围之内的。这也是为了保证 Java 核心库的类型安全。</p>
+<ul>
+<li>绝大多数情况下，Web 应用的开发人员不需要考虑与类加载器相关的细节。下面给出几条简单的原则：<ol>
+<li>每个 Web 应用自己的 Java 类文件和使用的库的 jar 包，分别放在 WEB-INF&#x2F;classes 和 WEB-INF&#x2F;lib 目录下面。</li>
+<li>多个应用共享的 Java 类文件和 jar 包，分别放在 Web 容器指定的由所有 Web 应用共享的目录下面。</li>
+<li>当出现找不到类的错误时，检查当前类的类加载器和当前线程的上下文类加载器是否正确。</li>
+</ol>
+</li>
+</ul>
+<h4 id="5-5-自定义类加载器"><a href="#5-5-自定义类加载器" class="headerlink" title="5.5 自定义类加载器"></a>5.5 自定义类加载器</h4><ol>
+<li>什么时候需要自定义类加载器<ul>
+<li>加载非 classpath 路径的任意路径类文件</li>
+<li>都是通过接口来使用实现,希望解耦时,常用于框架设计</li>
+<li>这些类希望予以隔离,不同应用的同名类都可以加载,不冲突,常见于 tomcat 容器</li>
+</ul>
+</li>
+<li>如何自定义类加载器<ol>
+<li>继承 ClassLoader 类</li>
+<li>重写 findClass(String className)方法</li>
+<li>读取(加载)类文件的字节码。</li>
+<li>调用 ClassLoader 超类的 defineClass 方法，向虚拟机提供字节码。</li>
+<li>使用者调用该自定义类加载器的 loadClass 方法</li>
+</ol>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.nio.file.Files;</span><br><span class="line"><span class="keyword">import</span> java.nio.file.Paths;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyClassLoader</span> <span class="keyword">extends</span> <span class="title class_">ClassLoader</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> name 类名称</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> Class&lt;?&gt; findClass(String name) <span class="keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">String</span> <span class="variable">cname</span> <span class="operator">=</span> <span class="string">&quot;E:\\myclasspath\\&quot;</span> + name.replace(<span class="string">&#x27;.&#x27;</span>, <span class="string">&#x27;/&#x27;</span>) + <span class="string">&quot;.class&quot;</span>;</span><br><span class="line">            <span class="type">byte</span>[] classBytes = Files.readAllBytes(Paths.get(cname));</span><br><span class="line">            Class&lt;?&gt; cl = defineClass(name, classBytes, <span class="number">0</span>, classBytes.length);</span><br><span class="line">            <span class="keyword">if</span> (cl == <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">ClassNotFoundException</span>(name);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> cl;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            System.out.print(e);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">ClassNotFoundException</span>(name);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-运行期-JVM-自动优化"><a href="#6-运行期-JVM-自动优化" class="headerlink" title="6. 运行期 JVM 自动优化"></a>6. 运行期 JVM 自动优化</h3><p>Java 程序最初是通过解释器进行解释执行的，当程序需要迅速启动和执行时，解释器可以首先发挥作用，省去编译时间，立即执行；当程序运行后，随着时间的推移，编译器逐渐发挥作用，把越来越多的代码编译成本地代码，获得更高的执行效率。<strong>解释执行节约内存，编译执行提升效率</strong>。 同时，解释器可以作为编译器激进优化时的一个“逃生门”，让编译器根据概率选择一些大多数时候都能提升运行速度的优化手段，当激进优化的假设不成立，则通过逆优化退回到解释状态继续执行。<br>HotSpot 虚拟机中内置了两个即时编译器，分别称为**Client Compiler(C1 编译器)<strong>和</strong>Server Compiler(C2 编译器)**，默认采用 Interpreter(解释器)与其中一个编译器直接配合的方式工作，使用哪个编译器取决于虚拟机运行的模式，也可以自己去指定。</p>
+<ul>
+<li><p>分层编译策略, JVM 将执行状态分成了 5 个层次: 1. 0 层, 解释执行 2. 1 层, 使用 C1 即时编译器编译执行(不带 profiling) 3. 2 层, 使用 C1 即时编译器编译执行(带基本的 profiling) 4. 3 层, 使用 C1 即时编译器编译执行(带完全的 profiling) 5. 4 层, 使用 C2 即时编译器编译执行</p>
+<blockquote>
+<p>profiling 是指在运行过程中收集一些程序执行状态的数据,例如[方法的调用次数],[循环的回边次数]等</p>
+</blockquote>
+</li>
+<li><p>即时编译器(JIT)与解释器的区别</p>
+<ul>
+<li>解释器是将字节码解释为机器码,下次即便遇到相同的字节码,仍会执行重复的解释</li>
+<li>JIT 是将一些字节码编译为机器码并存入 CodeCache,下次遇到相同的代码,直接执行,无需再编译</li>
+<li>解释器是将字节码解释为针对所有平台都通用的机器码</li>
+<li>JIT 会根据平台类型,生成平台特定的机器码</li>
+</ul>
+</li>
+<li><p>对于占据大部分的不常用的代码,我们无需耗费时间将其编译成机器码,而是采用解释执行的方式运行;另一方面,对于占据小部分的热点代码,我们则可以将其编译成机器码,以达到理想的运行速度;</p>
+</li>
+<li><p>执行效率: <code>Interpreter &lt; C1 &lt; C2</code>, 总的目标是发现热点代码(hotpot 名称的由来)优化之.</p>
+</li>
+</ul>
+<h4 id="6-1-公共子表达式消除"><a href="#6-1-公共子表达式消除" class="headerlink" title="6.1 公共子表达式消除"></a>6.1 公共子表达式消除</h4><p>如果一个表达式 E 已经计算过了，并且先前的计算到现在 E 中所有变量的值都没有发生变化，那么 E 的这次出现就成为了公共表达式，可以直接用之前的结果替换。<br>例：int d &#x3D; (c _ b) _ 12 + a + (a + b _ c) &#x3D;&gt; int d &#x3D; E _ 12 + a + (a + E)</p>
+<h4 id="6-2-数组边界检查消除"><a href="#6-2-数组边界检查消除" class="headerlink" title="6.2 数组边界检查消除"></a>6.2 数组边界检查消除</h4><p>Java 语言中访问数组元素都要进行上下界的范围检查，每次读写都有一次条件判定操作，这无疑是一种负担。编译器只要通过数据流分析就可以判定循环变量的取值范围永远在数组长度以内，那么整个循环中就可以把上下界检查消除，这样可以省很多次的条件判断操作。</p>
+<h4 id="6-3-方法内联"><a href="#6-3-方法内联" class="headerlink" title="6.3 方法内联"></a>6.3 方法内联</h4><p>方法内联能去除方法调用的成本，同时也为其他优化建立了良好的基础，因此各种编译器一般会把内联优化放在优化序列的最靠前位置，然而由于 Java 对象的方法默认都是虚方法，在编译期无法确定方法版本，就无法内联。</p>
+<ul>
+<li>因此方法调用都需要在运行时进行多态选择，为了解决虚方法的内联问题，Java 虚拟机团队引入了“类型继承关系分析(CHA)”的技术。<ol>
+<li>在内联时，若是非虚方法，则可以直接内联</li>
+<li>遇到虚方法，首先根据 CHA 判断此方法是否有多个目标版本，若只有一个，可以直接内联，但是需要预留一个“逃生门”，称为守护内联，若在程序的后续执行过程中，加载了导致继承关系发生变化的新类，就需要抛弃已经编译的代码，退回到解释状态执行，或者重新编译。</li>
+<li>若 CHA 判断此方法有多个目标版本，则编译器会使用“内联缓存”，第一次调用缓存记录下方法接收者的版本信息，并且每次调用都比较版本，若一致则可以一直使用，若不一致则取消内联，查找虚方法表进行方法分派。</li>
+</ol>
+</li>
+</ul>
+<h4 id="6-4-逃逸分析"><a href="#6-4-逃逸分析" class="headerlink" title="6.4 逃逸分析"></a>6.4 逃逸分析</h4><p>分析对象动态作用域，当一个方法被定以后，它可能被外部方法所引用，称为方法逃逸，甚至还有可能被外部线程访问到，称为线程逃逸。</p>
+<ul>
+<li>若能证明一个对象不会逃逸到方法或线程之外，这可以通过栈上分配、同步消除、标量替换来进行优化。<ol>
+<li>栈上分配：如果确定一个对象不会逃逸，则可以让它分配在栈上，对象所占用的内存空间就可以随栈帧出栈而销毁。这样可以减小垃圾收集系统的压力。</li>
+<li>同步消除：线程同步相对耗时，如果确定一个变量不会逃逸出线程，那这个变量的读写不会有竞争，则对这个变量实施的同步措施也就可以消除掉。</li>
+<li>标量替换：如果逃逸分析证明一个对象不会被外部访问，并且这个对象可以被拆散的话，那么程序真正执行的时候可以不创建这个对象，改为直接创建它的成员变量，这样就可以在栈上分配。</li>
+</ol>
+</li>
+</ul>
+<h3 id="7-反射机制"><a href="#7-反射机制" class="headerlink" title="7. 反射机制"></a>7. 反射机制</h3><p>简单说，反射机制是程序在运行时能够获取自身的信息。在 java 中，只要给定类的名字，那么就可以通过反射机制来获得类的所有信息。<br>Class 反射对象描述的是类的语义结构，通过 class 对象，可以获取构造器，成员变量，方法等类元素的反射对象，并且可以用编程的方法通过这些反射对象对目标对象进行操作。<br>这些反射类在 java.lang.reflect 包中定义，下面是最主要的三个类：</p>
+<ol>
+<li>Constructor：类的构造函数反射类：<ul>
+<li>通过 Class#getConstructors()方法可以获得类的所有构造函数的反射对象数组。</li>
+<li>其中最主要的方法是 newInstance(Object[] args),通过该方法可以创建一个对象类的实例，功能和 new 一样。在 jdk5.0 之后，提供了 newInstance(Object…args)更为灵活。</li>
+</ul>
+</li>
+<li>Method：类方法的反射类。<ul>
+<li>通过 Class#getDeclaredMethods()方法可以获取所有方法的反射类对象数组 Method[].其中最主要的方法是:</li>
+<li>invoke(String name,class parameterTypes),和 invoke(Object obj,Object…args)。同时也还有很多其他方法</li>
+<li>Class getReturnType（）：获取方法的返回值类型</li>
+<li>Class[] getParameterTypes（）：获取方法的参数数组</li>
+</ul>
+</li>
+<li>Field：类成员变量的反射类，<ul>
+<li>通过 Class#getDeclareFields（）可以获取类成员变量反射的数组。</li>
+<li>Class#getDeclareField（String  name）获取某特定名称的反射对象。</li>
+<li>最主要的方法是：set(Object obj,Object value),为目标对象的成员变量赋值。如果是基础类型还可以这样赋值 setInt(),setString()…</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>java 还提供了包的反射类和注解的反射类。</li>
+<li>总结:java 反射体系保证了通过程序化的方式访问目标对象的所有元素，对于 private 和 protected 成员变量或者方法，也是可以访问的。</li>
+</ul>
+<h4 id="7-1-反射中，Class-forName-和-classloader-的区别"><a href="#7-1-反射中，Class-forName-和-classloader-的区别" class="headerlink" title="7.1 反射中，Class.forName 和 classloader 的区别"></a>7.1 反射中，Class.forName 和 classloader 的区别</h4><ul>
+<li>Class.forName()得到的 Class 是完成初始化的</li>
+<li>而 ClassLoader.loadClass()得到的 Class 是还没有链接的。</li>
+<li>Spring IoC 为了加快初始化速度，因此大量使用了延时加载技术。而使用 classloader 不需要执行类中的初始化代码，可以加快加载速度，把类的初始化工作留到实际使用到这个类的时候。</li>
+</ul>
+<h4 id="7-2-哪里用到反射机制？"><a href="#7-2-哪里用到反射机制？" class="headerlink" title="7.2 哪里用到反射机制？"></a>7.2 哪里用到反射机制？</h4><ul>
+<li>JDBC 中，利用反射动态加载了数据库驱动程序。</li>
+<li>Web 服务器中利用反射调用了 Sevlet 的服务方法。</li>
+<li>Eclispe 等开发工具利用反射动态刨析对象的类型与结构，动态提示对象的属性和方法。</li>
+<li>很多框架都用到反射机制，注入属性，调用方法，如 Spring。</li>
+</ul>
+<h4 id="7-3-反射机制的优缺点？"><a href="#7-3-反射机制的优缺点？" class="headerlink" title="7.3 反射机制的优缺点？"></a>7.3 反射机制的优缺点？</h4><p>优点：可以动态执行，在运行期间根据业务功能动态执行方法、访问属性，最大限度发挥了 java 的灵活性。<br>缺点：对性能有影响，这类操作总是慢于直接执行 java 代码。</p>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%B1%BB%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84"><span class="toc-text">1. 类文件结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-%E9%AD%94%E6%95%B0-Magic-Number"><span class="toc-text">1.1 魔数 (Magic Number)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-Class-%E6%96%87%E4%BB%B6%E7%89%88%E6%9C%AC"><span class="toc-text">1.2 Class 文件版本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="toc-text">1.3 常量池</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-%E7%B1%BB%E7%9A%84%E8%AE%BF%E9%97%AE%E6%A0%87%E5%BF%97%E4%B8%8E%E7%BB%A7%E6%89%BF%E4%BF%A1%E6%81%AF"><span class="toc-text">1.4 类的访问标志与继承信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5-%E5%BD%93%E5%89%8D%E7%B1%BB%E7%B4%A2%E5%BC%95-this-%E7%88%B6%E7%B1%BB%E7%B4%A2%E5%BC%95-super-%E4%B8%8E%E6%8E%A5%E5%8F%A3%E7%B4%A2%E5%BC%95%E9%9B%86%E5%90%88-interfaces"><span class="toc-text">1.5 当前类索引(this),父类索引(super)与接口索引集合(interfaces)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-6-%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F%E4%BF%A1%E6%81%AF-Feild"><span class="toc-text">1.6 成员变量信息(Feild)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-7-%E6%96%B9%E6%B3%95%E4%BF%A1%E6%81%AF-Method"><span class="toc-text">1.7 方法信息(Method)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-8-%E9%99%84%E5%8A%A0%E5%B1%9E%E6%80%A7%E4%BF%A1%E6%81%AF"><span class="toc-text">1.8 附加属性信息</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%AD%97%E8%8A%82%E7%A0%81%E6%8C%87%E4%BB%A4"><span class="toc-text">2. 字节码指令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%BC%96%E8%AF%91%E6%9C%9F%E5%A4%84%E7%90%86-%E8%AF%AD%E6%B3%95%E7%B3%96"><span class="toc-text">3. 编译期处理(语法糖)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E9%98%B6%E6%AE%B5"><span class="toc-text">4. 类加载阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-%E5%8A%A0%E8%BD%BD"><span class="toc-text">4.1 加载</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-%E9%93%BE%E6%8E%A5"><span class="toc-text">4.2 链接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">4.3 初始化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-4-%E5%BA%94%E7%94%A8%E5%AE%9E%E4%BE%8B-%E6%87%92%E6%83%B0%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F-%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8"><span class="toc-text">4.4 应用实例-懒惰初始化单例模式(线程安全)</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="toc-text">5. 类加载器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8-%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6"><span class="toc-text">5.1 类加载器-双亲委派机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-%E7%BA%BF%E7%A8%8B%E4%B8%8A%E4%B8%8B%E6%96%87%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="toc-text">5.2 线程上下文类加载器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-3-%E4%BD%95%E6%97%B6%E4%BD%BF%E7%94%A8-Thread-getContextClassLoader"><span class="toc-text">5.3 何时使用 Thread.getContextClassLoader()?</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-4-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E4%B8%8E-Web-%E5%AE%B9%E5%99%A8"><span class="toc-text">5.4 类加载器与 Web 容器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-5-%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="toc-text">5.5 自定义类加载器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E8%BF%90%E8%A1%8C%E6%9C%9F-JVM-%E8%87%AA%E5%8A%A8%E4%BC%98%E5%8C%96"><span class="toc-text">6. 运行期 JVM 自动优化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-%E5%85%AC%E5%85%B1%E5%AD%90%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B6%88%E9%99%A4"><span class="toc-text">6.1 公共子表达式消除</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-%E6%95%B0%E7%BB%84%E8%BE%B9%E7%95%8C%E6%A3%80%E6%9F%A5%E6%B6%88%E9%99%A4"><span class="toc-text">6.2 数组边界检查消除</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-%E6%96%B9%E6%B3%95%E5%86%85%E8%81%94"><span class="toc-text">6.3 方法内联</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-4-%E9%80%83%E9%80%B8%E5%88%86%E6%9E%90"><span class="toc-text">6.4 逃逸分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6"><span class="toc-text">7. 反射机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-1-%E5%8F%8D%E5%B0%84%E4%B8%AD%EF%BC%8CClass-forName-%E5%92%8C-classloader-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">7.1 反射中，Class.forName 和 classloader 的区别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-%E5%93%AA%E9%87%8C%E7%94%A8%E5%88%B0%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%EF%BC%9F"><span class="toc-text">7.2 哪里用到反射机制？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-3-%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9%EF%BC%9F"><span class="toc-text">7.3 反射机制的优缺点？</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/2019/08/25/jvm-class.html">http://chaooo.github.io/2019/08/25/jvm-class.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2019/08/23/jvm-stack.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          「深入JVM」 运行时数据区 与 垃圾回收机制
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/08/27/jvm-jmm.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          「深入JVM」内存模型JMM 与 锁机制
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/12/30/spring-security-permission.html">「Spring Security」前后端分离权限控制-指令级权限</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/27/spring-security-vue.html">「Spring Security」前后端分离菜单权限控制-前端动态路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/spring-security-rbac.html">「Spring Security」前后端分离后台菜单权限控制</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/10/spring-security-token.html">「Spring Security」基于Redis的Token自动续签优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/09/spring-security-jwt.html">「Spring Security」整合 JWT 实现无状态登录示例</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 10.71px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 16.43px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.71px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12.14px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12.14px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.43px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.43px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 17.14px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12.14px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12.14px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12.14px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.57px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.71px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 14.29px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.71px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.86px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.57px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 14.29px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.86px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.57px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 14.29px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.43px;">hexo</a> <a href="/tags/java/" style="font-size: 15.71px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 17.86px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 12.14px;">并发编程</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 10px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.29px;">环境配置</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年12月</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年11月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p style="display:none;">
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+      repo: 'https://github.com/chaooo/BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

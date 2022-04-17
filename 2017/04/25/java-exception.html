@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>「Java教程」异常处理机制 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-java-exception" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      「Java教程」异常处理机制
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2017-04-25T00:34:31.000Z" itemprop="datePublished">2017年04月25日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/java-learn/">Java教程</a>
+  </div>
+
+      
+        <span class="article-views" style="display:none;">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2017/04/25/java-exception.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>Java语言提供了完善的异常处理机制。正确运用这套机制，有助于提高程序的健壮性。</p>
+<span id="more"></span>
+
+<h3 id="1-基本概念"><a href="#1-基本概念" class="headerlink" title="1. 基本概念"></a>1. 基本概念</h3><ul>
+<li>异常用于在Java语言中描述运行阶段发生的错误。</li>
+<li>在Java中有一个定义好的规则Throwable（可以抛出的）</li>
+<li>java.lang.Throwable类是所有错误(Error)和异常(Exception)的超类。<ul>
+<li>Error类主要用于描述比较严重无法编码解决的错误，如：JVM内存资源耗尽等。</li>
+<li>Exception类主要用于描述比较轻微可以编码解决的错误，如：文件损坏、非法输入等。</li>
+</ul>
+</li>
+<li>java.lang.Exception类是所有异常的超类，主要分为两大类：<ul>
+<li>RuntimeException - 运行时异常，也叫非检测性异常</li>
+<li>IOException和其他异常 - 其他异常也叫做检测性异常</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>注意：当程序运行过程中发生异常而又没有手动处理时，则由java虚拟机采用默认方式处理，即打印异常名称、原因、发生位置并终止程序。在开发中尽量使用条件判断避免异常的发生。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Throwable类</span><br><span class="line">    |————Exception类</span><br><span class="line">        |————RuntimeException异常</span><br><span class="line">            |————ArithmeticException类</span><br><span class="line">            |————ArrayIndexOutOfBoundsException类</span><br><span class="line">            |————NullPointerException类</span><br><span class="line">            |————ClassCastException类</span><br><span class="line">            |————NumberFormatException类</span><br><span class="line">        |————IOException和其他异常</span><br><span class="line">    |————Error类</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="2-异常的分支结构"><a href="#2-异常的分支结构" class="headerlink" title="2. 异常的分支结构"></a>2. 异常的分支结构</h3><h4 id="2-1-运行时异常（非检查异常）"><a href="#2-1-运行时异常（非检查异常）" class="headerlink" title="2.1 运行时异常（非检查异常）"></a>2.1 运行时异常（非检查异常）</h4><ol>
+<li>Error和RuntimeException都算作运行时异常</li>
+<li>javac编译的时候，不会提示和发现的，</li>
+<li>在程序编写时不要求必须做处理，如果我们愿意可以添加处理手段(try throws)</li>
+<li>要求大家出现这样异常的时候 知道怎么产生及如何修改<ul>
+<li>InputMisMatchException 输入不匹配<ul>
+<li>int value &#x3D; input.nextInt();&#x2F;&#x2F;   abc</li>
+</ul>
+</li>
+<li>*NumberFormatException 数字格式化<ul>
+<li>int value &#x3D; Integer.parseInt(“123.45”);</li>
+</ul>
+</li>
+<li>NegativeArraySizeException 数组长度负数<ul>
+<li>int[] array &#x3D; new int[-2];</li>
+</ul>
+</li>
+<li>*ArrayIndexOutOfBoundsException 数组索引越界<ul>
+<li>int[] array &#x3D; {1,2,3};</li>
+<li>array[5];</li>
+</ul>
+</li>
+<li>*5NullPointerException 空指针异常<ul>
+<li>int[][] array &#x3D; new int[3][];</li>
+<li>array[0][0] &#x3D;10;</li>
+<li>Person p &#x3D; null;</li>
+<li>p.getName();</li>
+</ul>
+</li>
+<li>ArithmeticException 数字异常<ul>
+<li>10&#x2F;0    整数不允许除以0    Infinity小数除以0会产生无穷</li>
+</ul>
+</li>
+<li>*ClassCastException 造型异常<ul>
+<li>Person p &#x3D; new Teacher();</li>
+<li>Student s &#x3D; (Student)p;</li>
+</ul>
+</li>
+<li>*StringIndexOutOfBoundsException 字符串越界<ul>
+<li>String str &#x3D; “abc”;</li>
+<li>str.charAt(5);</li>
+</ul>
+</li>
+<li>*IndexOutOfBoundsException 集合越界<ul>
+<li>List家族</li>
+<li>ArrayList  list &#x3D; new ArrayList();</li>
+<li>list.add(); list.add(); list.add();</li>
+<li>list.get(5);</li>
+</ul>
+</li>
+<li>IllegalArgumentException 非法参数异常<ul>
+<li>ArrayList  list &#x3D; new ArrayList(-1);</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="2-2-编译时异常-检查异常"><a href="#2-2-编译时异常-检查异常" class="headerlink" title="2.2 编译时异常(检查异常)"></a>2.2 编译时异常(检查异常)</h4><ul>
+<li>除了Error和RuntimeException以外其他的异常</li>
+<li>javac编译的时候，强制要求我们必须为这样的异常做处理(try或throws)</li>
+<li>因为这样的异常在程序运行过程中极有可能产生问题的</li>
+<li>异常产生后后续的所有执行就停止</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//eg: InterruptException</span></span><br><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">    Thread.sleep(<span class="number">5000</span>);</span><br><span class="line">&#125;<span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="3-添加处理异常的手段"><a href="#3-添加处理异常的手段" class="headerlink" title="3. 添加处理异常的手段"></a>3. 添加处理异常的手段</h3><ul>
+<li>处理异常不是 异常消失了</li>
+<li>处理异常指的是：处理掉异常之后，后续的代码不会因为此异常而终止执行</li>
+<li>两种手段：<ul>
+<li>异常的捕获：try{}catch(){}[ finally{} ]</li>
+<li>throws抛出</li>
+</ul>
+</li>
+<li>final，finally，finalize区别<ul>
+<li>final：特征修饰符，修饰变量，属性，方法，类<ul>
+<li>修饰变量：基本类型:值不能改变；引用类型:地址不能改变(如果变量没有初值,给一次机会赋值)</li>
+<li>修饰属性：特点与修饰变量类似(要求必须给属性赋初始值,否则编译报错)</li>
+<li>修饰方法：不能被子类重写</li>
+<li>修饰类：不能被其他的子类继承</li>
+</ul>
+</li>
+<li>finally：处理异常手段的一部分<ul>
+<li>try{}catch(){}后面的一个部分</li>
+<li>这个部分可有可无，如果有只能含有一份，且必须执行</li>
+</ul>
+</li>
+<li>finalize：是Object类中的一个protected方法<ul>
+<li>对象没有任何引用指向的时候 – 会被GC回收</li>
+<li>当对象回收的时候 默认调用finalize方法</li>
+<li>若想要看到对象回收的效果，可以重写 public void finalize(){}</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-异常的捕获"><a href="#4-异常的捕获" class="headerlink" title="4. 异常的捕获"></a>4. 异常的捕获</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">    可能发生异常的代码;</span><br><span class="line">&#125;<span class="keyword">catch</span>(异常类型 引用变量)&#123;</span><br><span class="line">    针对该异常的处理代码;</span><br><span class="line">&#125;<span class="keyword">catch</span> ...</span><br><span class="line"><span class="keyword">finally</span>&#123;</span><br><span class="line">    无论是否发生异常都要执行的代码;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>处理异常放在方法内部 可能会出现的小问题<ul>
+<li>如果在方法内部含有返回值，不管返回值return关键字在哪里，finally一定会执行完毕，返回值的具体结果得看情况。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public String test() &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        //...可能产生异常的的代码</span><br><span class="line">        return &quot;值1&quot;;//事先约定好 返回值</span><br><span class="line">    &#125;catch(Exception e)&#123;</span><br><span class="line">        e.printStackTrace();//打印输出异常的名字</span><br><span class="line">    &#125;finally &#123;</span><br><span class="line">        System.out.println(&quot;finally块执行啦&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    return &quot;值2&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>上述执行结果：若try中代码块产生异常return返回 <strong>值2</strong>，若try中无异常则return返回 <strong>值1</strong>，无论return在哪finally都会执行。</li>
+</ul>
+<blockquote>
+<p>异常捕获的注意事项：</p>
+<ul>
+<li>当需要多分catch分子时，切记小类型应该放在大类型的前面；</li>
+<li>懒人写法：catch(Exception e){…}</li>
+<li>finally通常用于善后处理，如：关闭已经打开的文件等。</li>
+</ul>
+</blockquote>
+<h3 id="5-异常的抛出"><a href="#5-异常的抛出" class="headerlink" title="5. 异常的抛出"></a>5. 异常的抛出</h3><ul>
+<li>当程序中发生异常又不方便直接处理时，可以将异常转移给方法调用者进行处理，这个过程叫做异常的抛出。</li>
+<li>语法格式：访问权限 返回值类型 方法名(形参列表) throws 异常类型1,异常类型2,…{} ，<br><br>如：<code>public void show() throw Exception &#123;&#125;</code></li>
+<li>重写方法的抛出规则：<ul>
+<li>不抛出异常</li>
+<li>抛出父类异常中的子类异常</li>
+<li>抛出和父类一样的异常</li>
+<li>不能抛出同级不一样的异常</li>
+<li>不能抛出更大的异常</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-自定义异常"><a href="#6-自定义异常" class="headerlink" title="6. 自定义异常"></a>6. 自定义异常</h3><ul>
+<li>可以根据需要自定义异常类。</li>
+<li>自定义异常的方式：<ul>
+<li>继承Exception或者异常的子类。</li>
+<li>提供两个构造，无参构造和String做参数的构造。</li>
+</ul>
+</li>
+<li>异常的手段<ul>
+<li>如果继承是RuntimeException—-&gt;运行时异常(不需要必须添加处理手段)</li>
+<li>如果继承是Exception—–&gt;编译时异常(必须添加处理手段)</li>
+</ul>
+</li>
+<li>类中可以写带String参数的构造方法，可以做细致的说明</li>
+<li>通过throw关键字，new一个异常的对象</li>
+<li>主动产生异常：<code>throw new 异常类型();</code></li>
+</ul>
+<h3 id="7-总结"><a href="#7-总结" class="headerlink" title="7. 总结"></a>7. 总结</h3><ul>
+<li>1.在开发中尽量使用条件判断避免异常的发生;</li>
+<li>2.若实在避免不了，则进行异常捕获；</li>
+<li>3.若实在捕获不了，则进行异常抛出；</li>
+<li>4.若需要使用针对性异常，则自定义异常。</li>
+</ul>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-text">1. 基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%BC%82%E5%B8%B8%E7%9A%84%E5%88%86%E6%94%AF%E7%BB%93%E6%9E%84"><span class="toc-text">2. 异常的分支结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-%E8%BF%90%E8%A1%8C%E6%97%B6%E5%BC%82%E5%B8%B8%EF%BC%88%E9%9D%9E%E6%A3%80%E6%9F%A5%E5%BC%82%E5%B8%B8%EF%BC%89"><span class="toc-text">2.1 运行时异常（非检查异常）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-%E7%BC%96%E8%AF%91%E6%97%B6%E5%BC%82%E5%B8%B8-%E6%A3%80%E6%9F%A5%E5%BC%82%E5%B8%B8"><span class="toc-text">2.2 编译时异常(检查异常)</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%B7%BB%E5%8A%A0%E5%A4%84%E7%90%86%E5%BC%82%E5%B8%B8%E7%9A%84%E6%89%8B%E6%AE%B5"><span class="toc-text">3. 添加处理异常的手段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%BC%82%E5%B8%B8%E7%9A%84%E6%8D%95%E8%8E%B7"><span class="toc-text">4. 异常的捕获</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%BC%82%E5%B8%B8%E7%9A%84%E6%8A%9B%E5%87%BA"><span class="toc-text">5. 异常的抛出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E8%87%AA%E5%AE%9A%E4%B9%89%E5%BC%82%E5%B8%B8"><span class="toc-text">6. 自定义异常</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E6%80%BB%E7%BB%93"><span class="toc-text">7. 总结</span></a></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/2017/04/25/java-exception.html">http://chaooo.github.io/2017/04/25/java-exception.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2017/04/17/java-collection.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          「Java教程」集合框架
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/05/05/java-io.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          「Java教程」IO机制
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/12/30/spring-security-permission.html">「Spring Security」前后端分离权限控制-指令级权限</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/27/spring-security-vue.html">「Spring Security」前后端分离菜单权限控制-前端动态路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/spring-security-rbac.html">「Spring Security」前后端分离后台菜单权限控制</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/10/spring-security-token.html">「Spring Security」基于Redis的Token自动续签优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/09/spring-security-jwt.html">「Spring Security」整合 JWT 实现无状态登录示例</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 10.71px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 16.43px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.71px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12.14px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12.14px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.43px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.43px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 17.14px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12.14px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12.14px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12.14px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.57px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.71px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 14.29px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.71px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.86px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.57px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 14.29px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.86px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.57px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 14.29px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.43px;">hexo</a> <a href="/tags/java/" style="font-size: 15.71px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 17.86px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 12.14px;">并发编程</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 10px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.29px;">环境配置</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年12月</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年11月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p style="display:none;">
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+      repo: 'https://github.com/chaooo/BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>「Docker」Docker容器与镜像的使用 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-docker-image" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      「Docker」Docker容器与镜像的使用
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2020-05-07T03:56:53.000Z" itemprop="datePublished">2020年05月07日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/env/">环境配置</a>
+  </div>
+
+      
+        <span class="article-views" style="display:none;">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2020/05/07/docker-image.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="1-Docker客户端"><a href="#1-Docker客户端" class="headerlink" title="1. Docker客户端"></a>1. Docker客户端</h2><p>docker客户端非常简单，我们可以直接输入<code>docker</code>命令来查看到Docker客户端的所有命令选项。<span id="more"></span></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost jenkins]# docker</span><br></pre></td></tr></table></figure>
+
+<p>可以通过命令<code>docker &lt;command&gt; --help</code>更深入的了解指定的Docker命令使用方法。<br>例如我们要查看<code>docker stats</code>指令的具体使用方法：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost jenkins]# docker stats --help</span><br><span class="line">Usage:	docker stats [OPTIONS] [CONTAINER...]</span><br><span class="line">Display a live stream of container(s) resource usage statistics</span><br><span class="line">Options:</span><br><span class="line">  -a, --all             Show all containers (default shows just running)</span><br><span class="line">      --format string   Pretty-print images using a Go template</span><br><span class="line">      --no-stream       Disable streaming stats and only pull the first result</span><br><span class="line">      --no-trunc        Do not truncate output</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="2-Docker镜像-Image-使用"><a href="#2-Docker镜像-Image-使用" class="headerlink" title="2. Docker镜像(Image)使用"></a>2. Docker镜像(Image)使用</h2><p>当运行容器时，使用的镜像如果在本地中不存在，docker就会自动从docker镜像仓库中下载，默认是从<a target="_blank" rel="noopener" href="https://hub.docker.com/">Docker Hub</a>公共镜像源下载。</p>
+<ol>
+<li>查看现有的镜像(Image)<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost jenkins]# docker image ls</span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">hello-world         latest              bf756fb1ae65        10 months ago       13.3kB</span><br></pre></td></tr></table></figure></li>
+</ol>
+<blockquote>
+<ul>
+<li>各个选项说明:<ul>
+<li>REPOSTITORY：表示镜像的仓库源</li>
+<li>TAG：镜像的标签(同一仓库源可以有多个 TAG，代表这个仓库源的不同个版本)</li>
+<li>IMAGE ID：镜像ID</li>
+<li>CREATED：镜像创建时间</li>
+<li>SIZE：镜像大小</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<ol start="2">
+<li>获取一个新的镜像<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost jenkins]# docker pull &lt;REPOSITORY:TAG&gt;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<blockquote>
+<p>使用 REPOSTITORY:TAG 来定义不同的镜像，如ubuntu仓库源15.10的版本：<code>ubuntu:15.10</code>。</p>
+</blockquote>
+<h3 id="2-1-查找镜像"><a href="#2-1-查找镜像" class="headerlink" title="2.1 查找镜像"></a>2.1 查找镜像</h3><p>我们可以从<a target="_blank" rel="noopener" href="https://hub.docker.com/">Docker Hub</a>网站来搜索镜像。<br>也可以使用<code>docker search</code>命令来搜索镜像。比如我们需要一个httpd的镜像来作为我们的web服务。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost jenkins]# docker search httpd</span><br><span class="line">NAME                                    DESCRIPTION                                     STARS               OFFICIAL            AUTOMATED</span><br><span class="line">httpd                                   The Apache HTTP Server Project                  3248                [OK]                </span><br><span class="line">centos/httpd                                                                            33                                      [OK]</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<ul>
+<li>NAME：镜像仓库源的名称</li>
+<li>DESCRIPTION：镜像的描述</li>
+<li>OFFICIAL：是否docker官方发布</li>
+</ul>
+</blockquote>
+<h3 id="2-2-创建镜像"><a href="#2-2-创建镜像" class="headerlink" title="2.2 创建镜像"></a>2.2 创建镜像</h3><ul>
+<li>当我们从docker镜像仓库中下载的镜像不能满足我们的需求时，我们可以通过以下两种方式对镜像进行更改。<ol>
+<li>使用<code>Dockerfile</code>指令来创建一个新的镜像</li>
+<li>从已经创建的容器中更新镜像，并且提交这个镜像</li>
+</ol>
+</li>
+</ul>
+<ol>
+<li><p>需要创建一个Dockerfile文件，文件名必须是Dockerfile</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost jenkins]# vim Dockerfile</span><br><span class="line">FROM centos</span><br><span class="line">RUN yum -y install httpd</span><br><span class="line">RUN yum -y install net-tools</span><br><span class="line">RUN yum -y install elinks</span><br><span class="line">CMD [&quot;/bin/bash&quot;]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>构建镜像，使用<code>docker build</code>进行镜像的构建，最后需要指定Dockerfile文件所在路径；</p>
+<ul>
+<li>看到最后输出两条Successfully则构建成功。</li>
+<li>它会根据文件中写的内容，使用centos镜像实例化一个容器，进入容器中执行三个yum命令<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost jenkins]# docker build -t jenkins/centos-http-net /home/jenkins</span><br><span class="line">Successfully built 09266c896243</span><br><span class="line">Successfully tagged jenkins/centos-http-net:latest</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>查看已经构建好的镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost jenkins]# docker images</span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">hello-world         latest              bf756fb1ae65        10 months ago       13.3kB</span><br><span class="line">jenkins/centos-http-net   latest    09266c896243   10 seconds ago   581MB</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>镜像构建过程<br>在构建命令执行时输出的一大堆信息中，是执行Dockerfile中的每一行，最关键的几行信息如下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">Step 1/5 : FROM centos  # 调用centos</span><br><span class="line"> 5e35e350aded   # centos镜像id</span><br><span class="line">  </span><br><span class="line">Step 2/5 : RUN yum install httpd -y</span><br><span class="line"> Running in a16ddf07c140  # 运行一个临时容器来执行install httpd</span><br><span class="line">Removing intermediate container a16ddf07c140  # 完成后删除临时的容器id</span><br><span class="line"> b51207823459  # 生成一个镜像</span><br><span class="line">  </span><br><span class="line">Step 3/5 : RUN yum install net-tools -y</span><br><span class="line"> Running in 459c8823018a # 运行一个临时容器执行install net-tools</span><br><span class="line">Removing intermediate container 459c8823018a # 完成后删除临时容器id</span><br><span class="line"> 5b6c30a532d4  # 再生成一个镜像</span><br><span class="line"> </span><br><span class="line">Step 4/5 : RUN yum install elinks -y</span><br><span class="line"> Running in a2cb490f9b2f  # 运行一个临时容器执行install elinks</span><br><span class="line">Removing intermediate container a2cb490f9b2f # 完成后删除临时容器id</span><br><span class="line"> 24ba4735814b # 生成一个镜像</span><br><span class="line"> </span><br><span class="line">Step 5/5 : CMD [&quot;/bin/bash&quot;]</span><br><span class="line"> Running in 792333c88ba8  # 运行临时容器，执行/bin/bash</span><br><span class="line">Removing intermediate container 792333c88ba8  # 完成后删除临时容器id</span><br><span class="line"> 09266c896243  # 生成镜像</span><br><span class="line">Successfully built 09266c896243  # 最终成功后的镜像id就是最后生成的镜像id</span><br></pre></td></tr></table></figure>
+<p>每一步生成一个镜像，都属于一个docker commit的执行结果<br>在这个过程中一共生成了三个镜像层，都会被存储在graph中，包括层与层之间的关系，查看docker images中生成的镜像id是否为最后生成的镜像id，FROM和CMD都不算做镜像层</p>
+</li>
+</ol>
+<p>通过<code>docker history</code>也可以看到简单的构建过程，看到的是三个yum就是形成的三个镜像层</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost jenkins]# docker history chai/centos-http-net:latest </span><br><span class="line">IMAGE         CREATED          CREATED BY                                      SIZE    COMMENT</span><br><span class="line">09266c896243  17 minutes ago   /bin/sh -c #(nop)  CMD [&quot;/bin/bash&quot;]            0B                  </span><br><span class="line">24ba4735814b  17 minutes ago   /bin/sh -c yum install elinks -y                121MB               </span><br><span class="line">5b6c30a532d4  18 minutes ago   /bin/sh -c yum install net-tools -y             112MB               </span><br><span class="line">b51207823459  18 minutes ago   /bin/sh -c yum install httpd -y                 145MB               </span><br><span class="line">5e35e350aded  4 months ago     /bin/sh -c #(nop)  CMD [&quot;/bin/bash&quot;]            0B                  </span><br><span class="line">&lt;missing&gt;     4 months ago     /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B                  </span><br><span class="line">&lt;missing&gt;     4 months ago     /bin/sh -c #(nop) ADD file:45a381049c52b5664…   203MB</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-Docker容器-Container"><a href="#3-Docker容器-Container" class="headerlink" title="3. Docker容器(Container)"></a>3. Docker容器(Container)</h2><p>镜像(Image)的概念更多偏向于一个环境包，这个环境包可以移动到任意的Docker平台中去运行；<br>而容器(Container)就是你运行环境包的实例，换句话说container是images的一种具体表现形式。</p>
+<ul>
+<li>容器相关命令：<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">docker container ls，列出现在正在运行的容器</span><br><span class="line">docker container ls -a，列出所有的容器，包括没有在运行的</span><br><span class="line">docker ps -a，列出所有的容器，包括没有在运行的</span><br><span class="line">docker run -it centos，交互式运行容器的方法，这样的话运行之后contianer不会退出，但是这个对话关闭这个，contianer还是就会退出了</span><br><span class="line">docker container rm container_id，可以删除一个容器（注意，这里的id可以是完整的容器id，也可以是缩写，只要是可以和别的id区分开的就可以了）</span><br><span class="line">docker rm container_id，默认就是去删除container的，所以是和docker container rm id是一样的</span><br><span class="line">docker images，和docker image ls是一样的，显示本机的所有镜像</span><br><span class="line">docker image rm image_id，删除image，可以是image_id或者image_name</span><br><span class="line">docker rmi id，是和docker image rm id一样的，是简写</span><br><span class="line">docker container ls -aq，只会显示出容器的id，在批量删除容器的时候有用</span><br><span class="line">docker rm $(docker container ls -aq)，删除所有的容器</span><br><span class="line">docker rm $(docker ps -aq)，也是删除所有的容器</span><br><span class="line">docker rm $(docker container ls -f &quot;status=exited&quot; -q)，删除所有不在运行的容器</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="4-Dockerfile文件语法"><a href="#4-Dockerfile文件语法" class="headerlink" title="4. Dockerfile文件语法"></a>4. Dockerfile文件语法</h2><p>常用构建镜像指令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">FROM  # 指定base镜像</span><br><span class="line">MAINTAINER # 指定镜像作者，后面根任意字符串</span><br><span class="line">COPY # 把文件从host复制到镜像内</span><br><span class="line">  COPY src dest</span><br><span class="line">  COPY [&quot;src&quot;,&quot;dest&quot;]</span><br><span class="line">  src:只能是文件</span><br><span class="line">ADD # 用法和COPY一样，唯一不同时src可以是压缩包，表示解压缩到dest位置，src也可以是目录</span><br><span class="line">ENV # 设置环境变量可以被接下来的镜像层引用，并且会加入到镜像中</span><br><span class="line">  ENV MY_VERSION 1.3</span><br><span class="line">  RUN yum -y install http-$MY_VERSION</span><br><span class="line"><span class="meta">  # </span><span class="language-bash">当进入该镜像的容器中<span class="built_in">echo</span> <span class="variable">$MY_VERSION</span>会输出1.3</span></span><br><span class="line">EXPOSE # 指定容器中的进程监听的端口（接口），会在docker ps -a中的ports中显示</span><br><span class="line">  EXPOSE 80</span><br><span class="line">VOLUME # 容器卷，后面会讲到，把host的路径mount到容器中</span><br><span class="line">  VOLUME /root/htdocs /usr/local/apahce2/htdocs</span><br><span class="line">WORKDIR # 为后续的镜像层设置工作路径</span><br><span class="line">        # 如果不设置，Dockerfile文件中的每一条命令都会返回到初始状态</span><br><span class="line">        # 设置一次后，会一直在该路经执行之后的分层，需要WORKDIR /回到根目录</span><br><span class="line">CMD # 启动容器后默认运行的命令，使用构建完成的镜像实例化为容器时，进入后默认执行的命令</span><br><span class="line">    # 这个命令会被docker run启动命令替代</span><br><span class="line">    # 如：docker -it --rm centos echo &quot;hello&quot;</span><br><span class="line">    # echo &quot;hello&quot;会替代CMD运行的命令</span><br><span class="line">  CMD [&quot;nginx&quot;, &quot;-g&quot;, &quot;daemon off&quot;]  # 该镜像实例化后的容器，进入后运行nginx启动服务</span><br><span class="line">ENTRYPOINT # 容器启动时运行的命令，不会被docker run的启动命令替代</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-1-RUN-x2F-CMD-x2F-ENTRYPOINT区别"><a href="#4-1-RUN-x2F-CMD-x2F-ENTRYPOINT区别" class="headerlink" title="4.1 RUN&#x2F;CMD&#x2F;ENTRYPOINT区别"></a>4.1 RUN&#x2F;CMD&#x2F;ENTRYPOINT区别</h3><ol>
+<li><code>RUN</code>：执行命令并创建新的镜像层，主要用于安装软件包</li>
+<li><code>ENTRYPOINT</code>和<code>CMD</code>都算作是启动指令，也就是必须启动容器才会去执行的指令，一般用来启动运行程序使用；当ENTRYPOINT和CMD同时存在时，ENTRYPOINT生效。</li>
+<li><code>ENTRYPOINT</code>和<code>CMD</code>使用格式：<ul>
+<li>shell格式： 会始终调用一个shell程序去执行命令，如<code>ENTRYPOINT echo &quot;hello $name&quot;</code></li>
+<li>exec格式：<code>CMD [&quot;命令&quot;, &quot;选项&quot;, &quot;参数&quot;]</code>、<code>ENTRYPOINT [&quot;命令&quot;, &quot;选项&quot;, &quot;参数&quot;]</code><ul>
+<li>exec格式下无法去调用ENV定义的变量，如果非要让exec格式去读取变量的话，它的命令的位置就要使用一个shell环境。因为变量的读取就是使用shell去读取的。如：ENTRYPOINT [“&#x2F;bin&#x2F;sh”, “-c”, “echo hello,$变量名”]</li>
+<li>当使用exec格式时，ENTRYPOINT的第一个参数被识别为命令，CMD的参数按顺序变为ENTRYPOINT命令的参数</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Docker%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-text">1. Docker客户端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Docker%E9%95%9C%E5%83%8F-Image-%E4%BD%BF%E7%94%A8"><span class="toc-text">2. Docker镜像(Image)使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%9F%A5%E6%89%BE%E9%95%9C%E5%83%8F"><span class="toc-text">2.1 查找镜像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E5%88%9B%E5%BB%BA%E9%95%9C%E5%83%8F"><span class="toc-text">2.2 创建镜像</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Docker%E5%AE%B9%E5%99%A8-Container"><span class="toc-text">3. Docker容器(Container)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Dockerfile%E6%96%87%E4%BB%B6%E8%AF%AD%E6%B3%95"><span class="toc-text">4. Dockerfile文件语法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-RUN-x2F-CMD-x2F-ENTRYPOINT%E5%8C%BA%E5%88%AB"><span class="toc-text">4.1 RUN&#x2F;CMD&#x2F;ENTRYPOINT区别</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/2020/05/07/docker-image.html">http://chaooo.github.io/2020/05/07/docker-image.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Docker/" rel="tag">Docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/env/" rel="tag">环境配置</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2020/05/06/docker-install.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          「Docker」Docker简介与安装（Linux环境centos）
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/06/05/env-linux.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          「环境配置」Linux常用命令整理
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/12/30/spring-security-permission.html">「Spring Security」前后端分离权限控制-指令级权限</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/27/spring-security-vue.html">「Spring Security」前后端分离菜单权限控制-前端动态路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/spring-security-rbac.html">「Spring Security」前后端分离后台菜单权限控制</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/10/spring-security-token.html">「Spring Security」基于Redis的Token自动续签优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/09/spring-security-jwt.html">「Spring Security」整合 JWT 实现无状态登录示例</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 10.71px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 16.43px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.71px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12.14px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12.14px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.43px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.43px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 17.14px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12.14px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12.14px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12.14px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.57px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.71px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 14.29px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.71px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.86px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.57px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 14.29px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.86px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.57px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 14.29px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.43px;">hexo</a> <a href="/tags/java/" style="font-size: 15.71px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 17.86px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 12.14px;">并发编程</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 10px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.29px;">环境配置</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年12月</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年11月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p style="display:none;">
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+      repo: 'https://github.com/chaooo/BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

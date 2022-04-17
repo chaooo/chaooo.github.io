@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>「深入JVM」内存模型JMM 与 锁机制 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-jvm-jmm" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      「深入JVM」内存模型JMM 与 锁机制
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2019-08-27T09:30:45.000Z" itemprop="datePublished">2019年08月27日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/JVM/">JVM</a>
+  </div>
+
+      
+        <span class="article-views" style="display:none;">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2019/08/27/jvm-jmm.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="Java-内存模型-Java-Memory-Model"><a href="#Java-内存模型-Java-Memory-Model" class="headerlink" title="Java 内存模型(Java Memory Model)"></a>Java 内存模型(Java Memory Model)</h3><p>Java Memory Model(JMM)描述了 Java 程序中各种变量(线程共享变量)的访问规则，以及在 JVM 中将变量存储到内存中和从内存中读取变量这样的底层细节(可见性,有序性,原子性)。</p>
+<ul>
+<li>所有的变量都存储在主内存中</li>
+<li>每个线程都有自己的独立的工作内存，里面保存该线程使用到的变量的副本(来自主内存的拷贝)</li>
+<li>JMM 规定： + 线程对共享变量的所有操作都必须在自己的工作内存中进行，不能直接从主内存中读写。 + 不同线程之间无法直接访问其他线程工作内存中的变量，线程间变量值的传递需要通过主内存来完成。<span id="more"></span></li>
+</ul>
+<p><img src="/2019/08/27/jvm-jmm/JMM.png"></p>
+<h3 id="1-JMM-同步八种操作"><a href="#1-JMM-同步八种操作" class="headerlink" title="1. JMM-同步八种操作"></a>1. JMM-同步八种操作</h3><p>JMM 模型下,线程间通信必须要经过主内存。<br>JMM 数据原子操作:<code>lock -&gt; read -&gt; load -&gt; use -&gt; assign -&gt; store -&gt; write -&gt; unlock</code></p>
+<ol>
+<li><strong>lock</strong>（锁定）：将<strong>主内存</strong>变量加锁，标识为线程独占状态</li>
+<li><strong>read</strong>（读取）：从<strong>主内存</strong>读取数据到工作内存</li>
+<li><strong>load</strong>（载入）：将读取的数据写入<strong>工作内存</strong></li>
+<li><strong>use</strong>（使用）：将<strong>工作内存</strong>数据传递给执行引擎来计算</li>
+<li><strong>assign</strong>（赋值）：将计算好的值赋值给<strong>工作内存</strong>的变量</li>
+<li><strong>store</strong>（存储）：把<strong>工作内存</strong>数据存储到主内存</li>
+<li><strong>write</strong>（写入）：把 store 过来的变量值赋值给<strong>主内存</strong>的变量</li>
+<li><strong>unlock</strong>（解锁）：将<strong>主内存</strong>变量解锁，释放后的变量才可以被其他线程锁定。</li>
+</ol>
+<p>在执行上述八种基本操作时，必须满足如下规则：</p>
+<ol>
+<li>从主复制到工作,必须按顺序执行<code>read-&gt;load</code>操作; 从工作同步到主内存,必须按顺序执行<code>store-&gt;write</code>操作; 但不保证必须是连续执行</li>
+<li>不允许<code>read-&gt;load</code>、<code>store-&gt;write</code>操作之一单独出现</li>
+<li>assign 操作改变数据后必须同步到主内存,不允许把没有发生过 assign 操作的数据同步到主内存</li>
+<li>一个新的变量只能在主内存中诞生，不允许在工作内存中直接使用一个未被初始化（load 或 assign）的变量</li>
+<li>一个变量在同一时刻只允许一条线程对其进行 lock 操作,lock 和 unlock 必须成对出现</li>
+<li>lock 操作会清空工作内存中此变量的值，执行引擎使用前需要重新执行 load 或 assign 操作初始化变量的值</li>
+<li>不允许去 unlock 一个未被锁定 或 被其他线程锁定的变量</li>
+<li>unlock 之前，必须先同步到主内存中（执行 store 和 write 操作）</li>
+</ol>
+<h3 id="2-JMM-原子性"><a href="#2-JMM-原子性" class="headerlink" title="2. JMM-原子性"></a>2. JMM-原子性</h3><p>和数据库事务中的原子性一样，满足原子性特性的操作是不可中断的，要么全部执行成功要么全部执行失败。<br>Synchronized 能够实现：<strong>原子性</strong>(同步) 和 可见性</p>
+<ul>
+<li>JMM 关于 synchronized 的两条规定：<ol>
+<li>线程解锁前，必须把共享变量的最新值刷新到主内存中</li>
+<li>线程加锁时，将清空工作内存中共享变量的值，从而使用共享变量时需要从内存中重新读取最新的值（注意：加锁与解锁需要是同一把锁）</li>
+</ol>
+</li>
+<li>线程执行互斥代码的过程：<ol>
+<li>获得互斥锁</li>
+<li>清空工作内存</li>
+<li>从主内存拷贝变量的最新副本到工作内存</li>
+<li>执行代码</li>
+<li>将更改后的共享变量的值刷新到主内存</li>
+<li>释放互斥锁</li>
+</ol>
+</li>
+</ul>
+<h3 id="2-JMM-可见性"><a href="#2-JMM-可见性" class="headerlink" title="2. JMM-可见性"></a>2. JMM-可见性</h3><p>多个线程访问同一个共享变量时，其中一个线程对这个共享变量值的修改，其他线程能够立刻获得修改以后的值。<br>volatile 能够实现<strong>可见性</strong>，但不保证原子性</p>
+<ul>
+<li><p>深入来说：通过加入内存屏障和禁止重排序优化来实现的。</p>
+<ul>
+<li>对 volatile 变量执行写操作时，会在写操作后加入一条 store 屏蔽指令</li>
+<li>对 volatile 变量执行读操作时，会在读操作前加入一条 load 屏蔽指令</li>
+</ul>
+</li>
+<li><p>通俗地讲：volatile 变量在每次被线程访问时，都强迫从主内存中重读该变量的值，而当该变量发生变化时，又会强迫线程将最新的值刷新到主内存。这样任何时刻，不同的线程总能看到该变量的最新值。</p>
+</li>
+<li><p>线程写 volatile 变量的过程：</p>
+<ol>
+<li>改变线程工作内存中 volatile 变量副本的值</li>
+<li>将改变后的副本的值从工作内存刷新到主内存</li>
+</ol>
+</li>
+<li><p>线程读 volatile 变量的过程：</p>
+<ol>
+<li>从主内存中读取 volatile 变量的最新值到线程的工作内存中</li>
+<li>从工作内存中读取 volatile 变量的副本</li>
+</ol>
+</li>
+</ul>
+<h4 id="2-1-happens-before-规则"><a href="#2-1-happens-before-规则" class="headerlink" title="2.1 happens-before 规则"></a>2.1 happens-before 规则</h4><p>在 JMM 中，如果一个操作执行的结果需要对另一个操作可见，那么这 2 个操作之间必须要存在 happens-before 关系。</p>
+<ul>
+<li>定义: 如果一个操作在另一个操作之前发生(happens-before),那么第一个操作的执行结果将对第二个操作可见, 而且第一个操作的执行顺序排在第二个操作之前。</li>
+<li>两个操作之间存在 happens-before 关系，并不意味着一定要按照 happens-before 原则制定的顺序来执行。如果重排序之后的执行结果与按照 happens-before 关系来执行的结果一致，那么这种重排序并不非法。</li>
+</ul>
+<ul>
+<li>happens-before 规则：<ol>
+<li>程序次序规则：在一个线程内一段代码的执行结果是有序的。就是还会指令重排，但是随便它怎么排，结果是按照我们代码的顺序生成的不会变！</li>
+<li>锁定规则：一个 unLock 操作先行发生于后面对同一个锁的 lock 操作；论是单线程还是多线程，必须要先释放锁，然后其他线程才能进行 lock 操作</li>
+<li>volatile 变量规则：就是如果一个线程先去写一个 volatile 变量，然后一个线程去读这个变量，那么这个写操作的结果一定对读的这个线程可见。</li>
+<li>传递规则：如果操作 A 先行发生于操作 B，而操作 B 又先行发生于操作 C，则可以得出操作 A 先行发生于操作 C</li>
+<li>线程启动规则：在主线程 A 执行过程中，启动子线程 B，那么线程 A 在启动子线程 B 之前对共享变量的修改结果对线程 B 可见</li>
+<li>线程终止规则：在主线程 A 执行过程中，子线程 B 终止，那么线程 B 在终止之前对共享变量的修改结果在线程 A 中可见。</li>
+<li>线程中断规则：对线程 interrupt()方法的调用先行发生于被中断线程代码检测到中断事件的发生，可以通过 Thread.interrupted()检测到是否发生中断</li>
+<li>对象终结规则：这个也简单的，就是一个对象的初始化的完成，也就是构造函数执行的结束一定 happens-before 它的 finalize()方法。</li>
+</ol>
+</li>
+</ul>
+<h3 id="3-JMM-有序性"><a href="#3-JMM-有序性" class="headerlink" title="3. JMM-有序性"></a>3. JMM-有序性</h3><p>编译器和处理器为了优化程序性能而对指令序列进行重排序，也就是你编写的代码顺序和最终执行的指令顺序是不一致的，重排序可能会导致多线程程序出现内存可见性问题。</p>
+<ul>
+<li>我们编写的源代码到最终执行的指令，会经过三种重排序:<ul>
+<li>源代码–&gt;<strong>编译器优化重排序</strong>–&gt;<strong>指令级并行重排序</strong>–&gt;<strong>内存系统重排序</strong>–&gt;最终执行的指令</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-1-as-if-serial-语义"><a href="#3-1-as-if-serial-语义" class="headerlink" title="3.1 as-if-serial 语义"></a>3.1 as-if-serial 语义</h4><p>as-if-serial 语义：不管怎么重排序(编译器和处理器为了提高并行度做的优化),(单线程)程序的执行结果不会改变。编译器、runtime 和处理器都必须遵守 as-if-serial 语义。<br>多线程中程序交错执行时, 重排序可能造成内存可见性问题, 可能会改变程序的执行结果。</p>
+<ul>
+<li><p>有序性规则表现在以下两种场景: 线程内和线程间</p>
+<ol>
+<li>线程内: 指令会按照一种“串行”(as-if-serial)的方式执行，此种方式已经应用于顺序编程语言。</li>
+<li>线程间: 一个线程“观察”到其他线程并发地执行非同步的代码时，任何代码都有可能交叉执行。唯一起作用的约束是：对于同步方法，同步块以及 volatile 字段的操作仍维持相对有序。</li>
+</ol>
+</li>
+<li><p>As-if-serial 只是保障单线程不会出问题，所以有序性保障，可以理解为把 As-if-serial 扩展到多线程，那么在多线程中也不会出现问题</p>
+<ul>
+<li>从底层的角度来看，是借助于处理器提供的相关指令内存屏障来实现的</li>
+<li>对于 Java 语言本身来说，Java 已经帮我们与底层打交道，我们不会直接接触内存屏障指令，java 提供的关键字 synchronized 和 volatile，可以达到这个效果，保障有序性（借助于显式锁 Lock 也是一样的，Lock 逻辑与 synchronized 一致）</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-2-著名的双检锁-double-checked-locking-模式实现单例"><a href="#3-2-著名的双检锁-double-checked-locking-模式实现单例" class="headerlink" title="3.2 著名的双检锁(double-checked locking)模式实现单例"></a>3.2 著名的双检锁(double-checked locking)模式实现单例</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line">    <span class="comment">// volatile保证happens-before规则,重排序被禁止</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> <span class="type">Singleton</span> <span class="variable">INSTANCE</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton</span><span class="params">()</span> &#123;&#125;</span><br><span class="line">    <span class="keyword">public</span> Singleton <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 实例没创建,才进入内部的synchronized代码块</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> == INSTANCE) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (Singleton.class) &#123;</span><br><span class="line">                <span class="comment">// 判断其他线程是否已经创建实例</span></span><br><span class="line">                <span class="keyword">if</span> (<span class="literal">null</span> == INSTANCE) &#123;</span><br><span class="line">                    INSTANCE = <span class="keyword">new</span> <span class="title class_">Singleton</span>();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果不用 volatile 修饰 INSTANCE,可能造成访问的是一个初始化未完成的对象; 使用了 volatile 关键字后，重排序被禁止，所有的写（write）操作都将发生在读（read）操作之前。</p>
+</blockquote>
+<h3 id="4-锁机制"><a href="#4-锁机制" class="headerlink" title="4. 锁机制"></a>4. 锁机制</h3><ul>
+<li>锁的状态总共有四种：无锁状态、偏向锁、轻量级锁和重量级锁。随着锁的竞争，锁可以从偏向锁升级到轻量级锁，再升级的重量级锁（但是<strong>锁的升级是单向的</strong>，也就是说只能从低到高升级，不会出现锁的降级）。</li>
+<li>锁的状态是通过对象监视器在<strong>对象头</strong>中的字段来表明的。 四种状态会随着竞争的情况逐渐升级，而且是不可逆的过程，即不可降级。 这四种状态都不是 Java 语言中的锁，而是 Jvm 为了提高锁的获取与释放效率而做的优化(<strong>使用 synchronized 时</strong>)。</li>
+</ul>
+<h4 id="4-1-对象头-Mark"><a href="#4-1-对象头-Mark" class="headerlink" title="4.1 对象头 Mark"></a>4.1 对象头 Mark</h4><ul>
+<li>Mark Word,对象头的标记,32 位: 描述对象的 hash,锁信息,垃圾回收标记,分代年龄<ul>
+<li>指向锁记录的指针</li>
+<li>指向 monitor 的指针</li>
+<li>GC 标记</li>
+<li>偏向锁线程 ID</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-2-偏向锁"><a href="#4-2-偏向锁" class="headerlink" title="4.2 偏向锁"></a>4.2 偏向锁</h4><p>Java 偏向锁(Biased Locking)是 Java6 引入的一项多线程优化</p>
+<ul>
+<li>大部分情况锁是没有竞争的,所以可以通过偏向锁来提高性能;</li>
+<li>所谓偏向,就是偏心,即锁会偏向于当前已经占有锁的线程,总是由同一线程多次获得;</li>
+<li>会在对象头和栈帧中的锁记录里存储锁偏向的线程 ID</li>
+<li>只要没有竞争,获得偏向锁的线程,在将来进入同步块,不需要做同步</li>
+<li>当其他线程请求相同的锁时,偏向模式结束</li>
+<li>-XX:+UseBiasedLocking(默认开启)</li>
+<li>在竞争激烈的场合,偏向锁会增加系统负担</li>
+</ul>
+<h4 id="4-3-轻量级锁"><a href="#4-3-轻量级锁" class="headerlink" title="4.3 轻量级锁"></a>4.3 轻量级锁</h4><p>轻量级锁是指当锁是偏向锁的时候，被另一个线程所访问，偏向锁就会升级为轻量级锁，其他线程会通过自旋的形式尝试获取锁，不会阻塞，提高性能。</p>
+<ul>
+<li>普通的锁处理性能不够理想,轻量级锁是一种快速的锁定方法.</li>
+<li>过程: 如果对象没有被锁定:<ol>
+<li>将对象头的 Mark 指针保存到锁对象中</li>
+<li>将对象头设置为指向锁的指针(在线程栈空间中)</li>
+</ol>
+</li>
+<li>如果轻量级锁失败,表示存在竞争,升级为重量级锁(常规锁)</li>
+<li>在没有锁竞争的情况下,减少传统锁使用 OS 互斥量产生的性能损耗</li>
+<li>在竞争激烈的场合,轻量级锁会多做很多额外操作,导致性能下降</li>
+</ul>
+<h4 id="4-4-自旋锁"><a href="#4-4-自旋锁" class="headerlink" title="4.4 自旋锁"></a>4.4 自旋锁</h4><p>自旋锁是指尝试获取锁的线程不会立即阻塞，而是采用循环的方式去尝试获取锁，这样的好处是减少线程上下文切换的消耗，缺点是循环会消耗 CPU。</p>
+<ul>
+<li>当竞争存在时,如果线程可以很快获得锁,那么可以不在 OS 层挂起线程,让线程做几个空操作(自旋)</li>
+<li>如果同步块很长,自旋失败,会降低系统性能</li>
+<li>如果同步块很短,自旋成功,节省线程挂起切换时间,提升系统性能</li>
+</ul>
+<h4 id="4-5-重量级锁"><a href="#4-5-重量级锁" class="headerlink" title="4.5 重量级锁"></a>4.5 重量级锁</h4><p>重量级锁是指当锁为轻量级锁的时候，另一个线程虽然是自旋，但自旋不会一直持续下去，当自旋一定次数的时候，还没有获取到锁，就会进入阻塞，该锁膨胀为重量级锁。重量级锁会让其他申请的线程进入阻塞，性能降低。</p>
+<h4 id="4-6-synchronized-的执行过程："><a href="#4-6-synchronized-的执行过程：" class="headerlink" title="4.6 synchronized 的执行过程："></a>4.6 synchronized 的执行过程：</h4><ol>
+<li>检测 Mark Word 里面是不是当前线程的 ID，如果是，表示当前线程处于偏向锁</li>
+<li>如果不是，则使用 CAS 将当前线程的 ID 替换 Mard Word，如果成功则表示当前线程获得偏向锁，置偏向标志位 1</li>
+<li>如果失败，则说明发生竞争，撤销偏向锁，进而升级为轻量级锁。</li>
+<li>当前线程使用 CAS 将对象头的 Mark Word 替换为锁记录指针，如果成功，当前线程获得锁</li>
+<li>如果失败，表示其他线程竞争锁，当前线程便尝试使用自旋来获取锁。</li>
+<li>如果自旋成功则依然处于轻量级状态。</li>
+<li>如果自旋失败，则升级为重量级锁。</li>
+</ol>
+<blockquote>
+<p>以上几种锁都是 JVM 自己内部实现，当我们执行 synchronized 同步块的时候 jvm 会根据启用的锁和当前线程的争用情况，决定如何执行同步操作；</p>
+</blockquote>
+<h3 id="5-Java-语言层面对锁的优化"><a href="#5-Java-语言层面对锁的优化" class="headerlink" title="5. Java 语言层面对锁的优化"></a>5. Java 语言层面对锁的优化</h3><ol>
+<li><strong>减少锁持有时间</strong><ul>
+<li>不需要同步执行的代码，能不放在同步快里面执行就不要放在同步快内，可以让锁尽快释放；</li>
+</ul>
+</li>
+<li><strong>减少锁的粒度</strong><ul>
+<li>它的思想是将物理上的一个锁，拆成逻辑上的多个锁，增加并行度，从而降低锁竞争。它的思想也是用空间来换时间；</li>
+<li>java 中很多数据结构都是采用这种方法提高并发操作的效率：<ul>
+<li>ConcurrentHashMap: 使用 Segment 数组,Segment 继承自 ReenTrantLock，所以每个 Segment 就是个可重入锁，每个 Segment 有一个 HashEntry&lt; K,V &gt;数组用来存放数据，put 操作时，先确定往哪个 Segment 放数据，只需要锁定这个 Segment，执行 put，其它的 Segment 不会被锁定；所以数组中有多少个 Segment 就允许同一时刻多少个线程存放数据，这样增加了并发能力。</li>
+<li>LongAdder:实现思路也类似 ConcurrentHashMap，LongAdder 有一个根据当前并发状况动态改变的 Cell 数组，Cell 对象里面有一个 long 类型的 value 用来存储值;开始没有并发争用的时候或者是 cells 数组正在初始化的时候，会使用 cas 来将值累加到成员变量的 base 上，在并发争用的情况下，LongAdder 会初始化 cells 数组，在 Cell 数组中选定一个 Cell 加锁，数组有多少个 cell，就允许同时有多少线程进行修改，最后将数组中每个 Cell 中的 value 相加，在加上 base 的值，就是最终的值；cell 数组还能根据当前线程争用情况进行扩容，初始长度为 2，每次扩容会增长一倍，直到扩容到大于等于 cpu 数量就不再扩容，这也就是为什么 LongAdder 比 cas 和 AtomicInteger 效率要高的原因，后面两者都是 volatile+cas 实现的，他们的竞争维度是 1，LongAdder 的竞争维度为“Cell 个数+1”为什么要+1？因为它还有一个 base，如果竞争不到锁还会尝试将数值加到 base 上；</li>
+</ul>
+</li>
+<li>拆锁的粒度不能无限拆，最多可以将一个锁拆为当前 CPU 数量即可；</li>
+</ul>
+</li>
+<li><strong>锁粗化</strong><ul>
+<li>大部分情况下我们是要让锁的粒度最小化，锁的粗化则是要增大锁的粒度(如:循环内的操作);</li>
+</ul>
+</li>
+<li><strong>锁分离</strong><ul>
+<li>使用读写锁: ReentrantReadWriteLock 是一个读写锁，读操作加读锁，可以并发读，写操作使用写锁，只能单线程写；</li>
+<li>读写分离: CopyOnWriteArrayList 、CopyOnWriteArraySet<ul>
+<li>CopyOnWrite 容器即写时复制的容器。通俗的理解是当我们往一个容器添加元素的时候，不直接往当前容器添加，而是先将当前容器进行 Copy，复制出一个新的容器，然后新的容器里添加元素，添加完元素之后，再将原容器的引用指向新的容器。这样做的好处是我们可以对 CopyOnWrite 容器进行并发的读，而不需要加锁，因为当前容器不会添加任何元素。所以 CopyOnWrite 容器也是一种读写分离的思想，读和写不同的容器</li>
+<li>CopyOnWrite 并发容器用于读多写少的并发场景，因为，读的时候没有锁，但是对其进行更改的时候是会加锁的，否则会导致多个线程同时复制出多个副本，各自修改各自的；</li>
+</ul>
+</li>
+<li>LinkedBlockingQueue: LinkedBlockingQueue 也体现了这样的思想，在队列头入队，在队列尾出队，入队和出队使用不同的锁，相对于 LinkedBlockingArray 只有一个锁效率要高；</li>
+</ul>
+</li>
+<li><strong>锁消除</strong><ul>
+<li>在即时编译时,如果发现不可能被共享的对象,则可以消除对象的锁操作</li>
+</ul>
+</li>
+<li><strong>无锁</strong>(如 CAS)<ul>
+<li>如果需要同步的操作执行速度非常快，并且线程竞争并不激烈，这时候使用 CAS 效率会更高，因为加锁会导致线程的上下文切换，如果上下文切换的耗时比同步操作本身更耗时，且线程对资源的竞争不激烈，使用 volatiled+CAS 操作会是非常高效的选择；</li>
+</ul>
+</li>
+<li>消除缓存行的伪共享<ul>
+<li>除了我们在代码中使用的同步锁和 jvm 自己内置的同步锁外，还有一种隐藏的锁就是缓存行，它也被称为性能杀手。在多核 cup 的处理器中，每个 cup 都有自己独占的一级缓存、二级缓存，甚至还有一个共享的三级缓存，为了提高性能，cpu 读写数据是以缓存行为最小单元读写的；32 位的 cpu 缓存行为 32 字节，64 位 cup 的缓存行为 64 字节，这就导致了一些问题。</li>
+</ul>
+</li>
+</ol>
+<h3 id="6-CAS-与原子类"><a href="#6-CAS-与原子类" class="headerlink" title="6. CAS 与原子类"></a>6. CAS 与原子类</h3><p>CAS 即<code>Compare and Swap</code>翻译过来就是比较并替换, 它体现了一种乐观锁的思想 (synchronized 为悲观锁思想);</p>
+<ul>
+<li>结合 CAS 和 volatile 可以实现<strong>无锁并发</strong>(非阻塞同步),适用于竞争不激烈,多核 CPU 的场景下(竞争激烈,重试频繁发生会影响效率);</li>
+<li>CAS 算法涉及到三个操作数: 内存值 V, 旧值 A, 新值 B; 当且仅当 V&#x3D;&#x3D;A 时，CAS 用新值 B 来更新 V，否则不会执行任何操作（比较和替换是一个原子操作）。一般情况下是一个自旋操作，即不断的重试。</li>
+<li>CAS 底层依赖一个 Unsafe 类来直接调用操作系统底层的 CAS 指令;</li>
+</ul>
+<h4 id="6-1-Unsafe-类"><a href="#6-1-Unsafe-类" class="headerlink" title="6.1 Unsafe 类"></a>6.1 Unsafe 类</h4><p>java 中 CAS 操作依赖于 Unsafe 类，Unsafe 类所有方法都是 native 的，直接调用操作系统底层资源执行相应任务，它可以像 C 一样操作内存指针，是非线程安全的。</p>
+<ul>
+<li>Unsafe 里的 CAS 操作相关实现: compareAndSwapObject,compareAndSwapInt,compareAndSwapLong</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//第一个参数o为给定对象，offset为对象内存的偏移量，通过这个偏移量迅速定位字段并设置或获取该字段的值，</span></span><br><span class="line"><span class="comment">//expected表示期望值，x表示要设置的值，下面3个方法都通过CAS原子指令执行操作。</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">native</span> <span class="type">boolean</span> <span class="title function_">compareAndSwapObject</span><span class="params">(Object o, <span class="type">long</span> offset,Object expected, Object x)</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">native</span> <span class="type">boolean</span> <span class="title function_">compareAndSwapInt</span><span class="params">(Object o, <span class="type">long</span> offset,<span class="type">int</span> expected,<span class="type">int</span> x)</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">native</span> <span class="type">boolean</span> <span class="title function_">compareAndSwapLong</span><span class="params">(Object o, <span class="type">long</span> offset,<span class="type">long</span> expected,<span class="type">long</span> x)</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="6-2-原子操作类"><a href="#6-2-原子操作类" class="headerlink" title="6.2 原子操作类"></a>6.2 原子操作类</h4><p>并发包 JUC(java.util.concurrent)中的原子操作类(Atomic 系列),底层是基于<code>CAS + volatile</code>实现的.</p>
+<ul>
+<li>AtomicBoolean：原子更新布尔类型</li>
+<li>AtomicInteger：原子更新整型</li>
+<li>AtomicLong：原子更新长整型</li>
+</ul>
+<p>下面看 AtomicInteger 类的部分源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AtomicInteger</span> <span class="keyword">extends</span> <span class="title class_">Number</span> <span class="keyword">implements</span> <span class="title class_">java</span>.io.Serializable&#123;</span><br><span class="line">    <span class="comment">//获取指针类Unsafe</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Unsafe</span> <span class="variable">unsafe</span> <span class="operator">=</span> Unsafe.getUnsafe();</span><br><span class="line">    <span class="comment">//省略...获取内存偏移量等</span></span><br><span class="line">    <span class="comment">//如果当前值为expect，则设置为update(当前值指的是value变量)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="type">boolean</span> <span class="title function_">compareAndSet</span><span class="params">(<span class="type">int</span> expect, <span class="type">int</span> update)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> unsafe.compareAndSwapInt(<span class="built_in">this</span>, valueOffset, expect, update);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//当前值加1返回旧值，底层CAS操作</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="type">int</span> <span class="title function_">getAndIncrement</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> unsafe.getAndAddInt(<span class="built_in">this</span>, valueOffset, <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//省略...其他方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>AtomicInteger 基本是基于 Unsafe 类中 CAS 相关操作实现的，是无锁操作。<br>再看 Unsafe 类中的 getAndAddInt()方法，该方法执行一个 CAS 操作，保证线程安全。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Unsafe类中的getAndAddInt方法(JDK8)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="type">int</span> <span class="title function_">getAndAddInt</span><span class="params">(Object o, <span class="type">long</span> offset, <span class="type">int</span> delta)</span> &#123;</span><br><span class="line">    <span class="type">int</span> v;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        v = getIntVolatile(o, offset);</span><br><span class="line">    &#125; <span class="keyword">while</span> (!compareAndSwapInt(o, offset, v, v + delta));</span><br><span class="line">    <span class="keyword">return</span> v;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可看出 getAndAddInt 通过一个 while 循环不断的重试更新要设置的值，直到成功为止，调用的是 Unsafe 类中的 compareAndSwapInt 方法，是一个 CAS 操作方法。</p>
+<h4 id="6-3-CAS-操作中可能会带来的-ABA-问题"><a href="#6-3-CAS-操作中可能会带来的-ABA-问题" class="headerlink" title="6.3 CAS 操作中可能会带来的 ABA 问题"></a>6.3 CAS 操作中可能会带来的 ABA 问题</h4><p>ABA 问题是指在 CAS 操作时，其他线程将变量值 A 改为了 B，但是又被改回了 A，等到本线程使用期望值 A 与当前变量进行比较时，发现变量 A 没有变，于是 CAS 就将 A 值进行了交换操作，但是实际上该值已经被其他线程改变过，这与乐观锁的设计思想不符合。</p>
+<ul>
+<li><strong>无法正确判断这个变量是否已被修改过</strong>，一般称这种情况为 ABA 问题。</li>
+<li>ABA 问题一般不会有太大影响，产生几率也比较小。但是并不排除极特殊场景下会造成影响，因此需要解决方法：<ul>
+<li>AtomicStampedReference 类</li>
+<li>AtomicMarkableReference 类</li>
+</ul>
+</li>
+<li><strong>AtomicStampedReference 类</strong>: 一个带有时间戳的对象引用，每次修改时，不但会设置新的值，还会记录修改时间。在下一次更新时，不但会对比当前值和期望值，还会对比当前时间和期望值对应的修改时间，只有二者都相同，才会做出更新。解决了反复读写时，无法预知值是否已被修改的窘境。<ul>
+<li>底层实现为：一个键值对 Pair 存储数据和时间戳，并构造 volatile 修饰的私有实例；两者都符合预期才会调用 Unsafe 的 compareAndSwapObject 方法执行数值和时间戳替换。</li>
+</ul>
+</li>
+<li>AtomicMarkableReference 类: 一个 boolean 值的标识，true 和 false 两种切换状态表示是否被修改。不靠谱。</li>
+</ul>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Java-%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B-Java-Memory-Model"><span class="toc-text">Java 内存模型(Java Memory Model)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-JMM-%E5%90%8C%E6%AD%A5%E5%85%AB%E7%A7%8D%E6%93%8D%E4%BD%9C"><span class="toc-text">1. JMM-同步八种操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-JMM-%E5%8E%9F%E5%AD%90%E6%80%A7"><span class="toc-text">2. JMM-原子性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-JMM-%E5%8F%AF%E8%A7%81%E6%80%A7"><span class="toc-text">2. JMM-可见性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-happens-before-%E8%A7%84%E5%88%99"><span class="toc-text">2.1 happens-before 规则</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-JMM-%E6%9C%89%E5%BA%8F%E6%80%A7"><span class="toc-text">3. JMM-有序性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-as-if-serial-%E8%AF%AD%E4%B9%89"><span class="toc-text">3.1 as-if-serial 语义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-%E8%91%97%E5%90%8D%E7%9A%84%E5%8F%8C%E6%A3%80%E9%94%81-double-checked-locking-%E6%A8%A1%E5%BC%8F%E5%AE%9E%E7%8E%B0%E5%8D%95%E4%BE%8B"><span class="toc-text">3.2 著名的双检锁(double-checked locking)模式实现单例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E9%94%81%E6%9C%BA%E5%88%B6"><span class="toc-text">4. 锁机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-%E5%AF%B9%E8%B1%A1%E5%A4%B4-Mark"><span class="toc-text">4.1 对象头 Mark</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-%E5%81%8F%E5%90%91%E9%94%81"><span class="toc-text">4.2 偏向锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81"><span class="toc-text">4.3 轻量级锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-4-%E8%87%AA%E6%97%8B%E9%94%81"><span class="toc-text">4.4 自旋锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-5-%E9%87%8D%E9%87%8F%E7%BA%A7%E9%94%81"><span class="toc-text">4.5 重量级锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-6-synchronized-%E7%9A%84%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="toc-text">4.6 synchronized 的执行过程：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Java-%E8%AF%AD%E8%A8%80%E5%B1%82%E9%9D%A2%E5%AF%B9%E9%94%81%E7%9A%84%E4%BC%98%E5%8C%96"><span class="toc-text">5. Java 语言层面对锁的优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-CAS-%E4%B8%8E%E5%8E%9F%E5%AD%90%E7%B1%BB"><span class="toc-text">6. CAS 与原子类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-Unsafe-%E7%B1%BB"><span class="toc-text">6.1 Unsafe 类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C%E7%B1%BB"><span class="toc-text">6.2 原子操作类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-CAS-%E6%93%8D%E4%BD%9C%E4%B8%AD%E5%8F%AF%E8%83%BD%E4%BC%9A%E5%B8%A6%E6%9D%A5%E7%9A%84-ABA-%E9%97%AE%E9%A2%98"><span class="toc-text">6.3 CAS 操作中可能会带来的 ABA 问题</span></a></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/2019/08/27/jvm-jmm.html">http://chaooo.github.io/2019/08/27/jvm-jmm.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2019/08/25/jvm-class.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          「深入JVM」 类文件结构 与 类加载机制
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/10/06/concurrent-collection.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          「并发编程」JUC并发容器类
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/12/30/spring-security-permission.html">「Spring Security」前后端分离权限控制-指令级权限</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/27/spring-security-vue.html">「Spring Security」前后端分离菜单权限控制-前端动态路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/spring-security-rbac.html">「Spring Security」前后端分离后台菜单权限控制</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/10/spring-security-token.html">「Spring Security」基于Redis的Token自动续签优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/09/spring-security-jwt.html">「Spring Security」整合 JWT 实现无状态登录示例</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 10.71px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 16.43px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.71px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12.14px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12.14px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.43px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.43px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 17.14px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12.14px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12.14px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12.14px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.57px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.71px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 14.29px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.71px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.86px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.57px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 14.29px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.86px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.57px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 14.29px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.43px;">hexo</a> <a href="/tags/java/" style="font-size: 15.71px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 17.86px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 12.14px;">并发编程</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 10px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.29px;">环境配置</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年12月</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年11月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p style="display:none;">
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+      repo: 'https://github.com/chaooo/BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>「Java教程」语法基础 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-java-grammar" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      「Java教程」语法基础
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2017-04-07T09:33:54.000Z" itemprop="datePublished">2017年04月07日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/java-learn/">Java教程</a>
+  </div>
+
+      
+        <span class="article-views" style="display:none;">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2017/04/07/java-grammar.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>这是<strong>Java教程</strong>的第一篇，梳理Java基础知识是学习其他专业知识的第一步阶梯；要想精通编程必须通过大量的编程训练，在实践中掌握编程知识，培养编程能力，并逐步理解和掌握程序设计的思想和方法。</p>
+<span id="more"></span>
+
+<h3 id="1-数据类型"><a href="#1-数据类型" class="headerlink" title="1. 数据类型"></a>1. 数据类型</h3><h4 id="1-1-两大类："><a href="#1-1-两大类：" class="headerlink" title="1.1 两大类："></a>1.1 两大类：</h4><ol>
+<li>基本数据类型：<code>byte</code>, <code>short</code>, <code>int</code>, <code>long</code>, <code>float</code>, <code>double</code>, <code>boolean</code>, <code>char</code>。</li>
+<li>引用类型：数组，类（抽象类）<code>class</code>，接口<code>interface</code>，枚举<code>enum</code>，注解<code>@interface</code>。</li>
+</ol>
+<blockquote>
+<p>注：单个字节表示<code>8</code>位二进制位，最左边表示符号位（<code>0</code>：正，<code>1</code>：负）。</p>
+</blockquote>
+<h4 id="1-2-整数类型（byte-short-int-long）"><a href="#1-2-整数类型（byte-short-int-long）" class="headerlink" title="1.2 整数类型（byte, short, int, long）"></a>1.2 整数类型（byte, short, int, long）</h4><ol>
+<li><code>byte</code>： 1字节，范围<code>-2^7 ~ 2^7-1</code>，即<code>-128-127</code>。</li>
+<li><code>short</code>: 2字节，范围<code>-2^15 ~ 2^15-1</code>，即<code>-32768 ~ 32767</code>。</li>
+<li><code>int</code>: 4个字节，范围<code>-2^31 ~ 2^31-1</code>，即<code>正负21亿</code>之间。</li>
+<li><code>long</code>： 8个字节，范围<code>-2^63 ~ 2^63-1</code>，比<code>int</code>更大。如果要表示<code>long</code>类型数值，需要<code>L</code>或<code>l</code>结尾。</li>
+</ol>
+<h4 id="1-3-浮点类型（float，double）"><a href="#1-3-浮点类型（float，double）" class="headerlink" title="1.3 浮点类型（float，double）"></a>1.3 浮点类型（float，double）</h4><ol>
+<li><code>float</code>：4个字节，单精度浮点数，取到小数点后<code>7</code>位有效数字。如果表示<code>float</code>类型数值，需要<code>F</code>或<code>f</code>结尾。</li>
+<li><code>double</code>：8个字节，双精度浮点数，取到小数点后<code>15</code>位有效数字。如果表示<code>double</code>类型数值，需要<code>D</code>或<code>d</code>结尾。</li>
+</ol>
+<blockquote>
+<p>扩展：浮点运算有时会有误差，为了实现精确运算可使用<code>java.math.BigDecimal</code>类型加以描述。</p>
+</blockquote>
+<h4 id="1-5-字符类型（char）"><a href="#1-5-字符类型（char）" class="headerlink" title="1.5 字符类型（char）"></a>1.5 字符类型（char）</h4><ol>
+<li><strong>char</strong>：2个字节，表示单个字符的数据类型。事实是一个16位无符号整数，值是对应字符的编码，如：<code>&#39;a&#39;</code>,<code>&#39;1&#39;</code>,<code>&#39;中&#39;</code> 等。</li>
+</ol>
+<ul>
+<li>开发中很少用到char类型，而使用String类型描述的多个字符组成的字符串，使用双引号<code>&quot;&quot;</code>引起来。</li>
+<li>需记住的ASII码字符：<code>&#39;a&#39;:97</code>，<code>&#39;A&#39;:65</code>，<code>&#39;0&#39;:48</code>，<code>空格:32</code>，<code>换行符:10</code></li>
+<li>常用转义符(逃逸字符)：<code>\t</code>:制表符，<code>\n</code>:换行，<code>\&quot;</code>，<code>\&#39;</code>，<code>\\</code>:反斜杠本身，<code>\b</code>:回退一格，<code>\r</code>:回车</li>
+<li>字符类型计算<ul>
+<li>一个字符加一个数字，得到<code>Unicode</code>码表中那个数之后的字符</li>
+<li>两个字符相减得到它们在表中的距离</li>
+<li><code>char</code>也可以和<code>int</code>之间相互赋值</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-变量与常量"><a href="#2-变量与常量" class="headerlink" title="2. 变量与常量"></a>2. 变量与常量</h3><h4 id="2-1-常量"><a href="#2-1-常量" class="headerlink" title="2.1 常量"></a>2.1 常量</h4><ul>
+<li>常量是一个值，在程序运行的过程中不能再次发生改变</li>
+<li>基本类型的值都可以认为是常量：<code>4</code>,<code>3.4</code>,<code>&#39;a&#39;</code>,<code>true</code>；引用类型<code>String</code>类的值<code>&quot;abc&quot;</code>视为常量。</li>
+<li>常量存储在常量缓冲区(常量池)中，有且只有一份,常量池中的值默认空间大小<code>int(32bit)</code>,<code>double(64bit)</code>。</li>
+</ul>
+<h4 id="2-2-变量"><a href="#2-2-变量" class="headerlink" title="2.2 变量"></a>2.2 变量</h4><ul>
+<li>变量是在栈内存中开辟的一块内存空间，程序执行过程中可以改变；</li>
+<li>变量空间在创建的时候（声明变量），必须指定数据类型，变量空间的名字</li>
+<li>变量空间，里面只能存储一个内容（值&#x2F;引用）</li>
+<li>空间内的类容的类型与定义时一致，内容可以改变</li>
+<li>内存结构与执行过程：类的定义，编译，加载空间各个区，变量赋值</li>
+</ul>
+<h4 id="2-3-标识符（变量）命名规则"><a href="#2-3-标识符（变量）命名规则" class="headerlink" title="2.3 标识符（变量）命名规则"></a>2.3 标识符（变量）命名规则</h4><ol>
+<li>必须字母，数字，下划线以及美元$等组成，且首位非数字。</li>
+<li>不能使用<code>Java</code>语言中的关键字，如<code>class</code>，<code>static</code>，<code>void</code>，<code>int</code>等。</li>
+<li>区分大小写，长度无限制，但不能过长，尽量见名知意。</li>
+</ol>
+<h4 id="2-3-命名的规约"><a href="#2-3-命名的规约" class="headerlink" title="2.3 命名的规约"></a>2.3 命名的规约</h4><ul>
+<li>类名字：首字母大写，如果两个以上的单词，所有首字母都大写</li>
+<li>变量名：首字母小写，如果两个以上的单词，之后的首字母大写</li>
+<li>遵循驼峰式命名规约，所有名字都需要见名知义，为了增强程序的可读性</li>
+</ul>
+<h3 id="3-数据类型之间的转换"><a href="#3-数据类型之间的转换" class="headerlink" title="3. 数据类型之间的转换"></a>3. 数据类型之间的转换</h3><h4 id="3-1-基本数据类型之间转换"><a href="#3-1-基本数据类型之间转换" class="headerlink" title="3.1 基本数据类型之间转换"></a>3.1 基本数据类型之间转换</h4><ol>
+<li>自动类型转换：从小类型到大类型自动转换</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">byte --&gt; short --&gt; int --&gt; long --&gt; float --&gt; double</span><br><span class="line">          char -----^</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>强制类型转换：需在被转换数据前加上类型，会造成精度损失或者溢出</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">long big = 1024L\*1024\*1024;</span><br><span class="line">int i = (int)big;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2其他数据类型之间转换"><a href="#3-2其他数据类型之间转换" class="headerlink" title="3.2其他数据类型之间转换"></a>3.2其他数据类型之间转换</h4><ul>
+<li>同种大类型之间才能发生转换<ul>
+<li>基本–基本   可以直接转换(自动 强制)</li>
+<li>引用–引用   可以直接转化(自动 强制 – 上转型 下转型)</li>
+<li>基本–引用   不可以直接进行转化(间接-桥梁-包装类)</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>小数据类型一致:整型–&gt;整型 &#x2F; 浮点–&gt;浮点<ul>
+<li>比较内存空间的大小</li>
+<li>大数据类型空间可以直接接受小数据类型的值(自动转换)</li>
+<li>小数据类型空间不可以直接接受大数据类型的值(强制类型转换)</li>
+<li>强制类型转换,写法好用,但是需要注意取值范围的问题,丢失一部分数据</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">byte a = 1;   int b = a;//自动直接转化就可以</span><br><span class="line">int a = 1;  byte b = (byte)a;//需要强制类型转换</span><br><span class="line">float x = 3.4F;   double y = x;//自动直接转化</span><br><span class="line">double x = 3.4; float y = (float)x;//强制转换</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>小数据类型不一致:整型–&gt;浮点<ul>
+<li>比较精确程度</li>
+<li>浮点型的精确程度更高</li>
+<li>任何一个浮点型空间都可以直接接受一个整型的值</li>
+<li>反之需要进行强制类型转换(强行将小数点之后的部分去掉,只保留整数)</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int a = 1;  float b = a;//自动直接转化</span><br><span class="line">float a =1.0F;  int b = (int)a;//强制类型转换</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>整型–&gt;字符<ul>
+<li>每一个字符都对应这一个<code>Unicode</code>码   a–97</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">char x = &#x27;a&#x27;;  int y = x;//自动转化  y--97</span><br><span class="line">int x = 97; char y = (char)x;//强制的转化</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>布尔类型很特殊<ul>
+<li>不能与其他基本类型之间发生转化</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-运算符"><a href="#4-运算符" class="headerlink" title="4. 运算符"></a>4. 运算符</h3><ol>
+<li>算术运算符： <code>+</code>，<code>-</code>，<code>*</code>，<code>/</code>，<code>%</code></li>
+<li>关系运算符： <code>&gt;</code>，<code>&lt;</code>，<code>&gt;=</code>，<code>&lt;=</code>，<code>==</code>，<code>!=</code></li>
+<li>自增减运算符： <code>++</code>，<code>--</code></li>
+<li>逻辑运算符： <code>&amp;&amp;</code>，<code>||</code>，<code>！</code>（短路特性：逻辑与<code>&amp;&amp;</code>运算，若第一个条件为假,跳过第二个条件；逻辑或<code>||</code>运算，若第一个条件为真，跳过第二个条件）</li>
+<li>三目运算符： 条件 ? 表达式1 ： 表达式2</li>
+<li>赋值运算符：<code>=</code>，<code>+=</code>，<code>-=</code>，<code>*=</code>，<code>=</code></li>
+</ol>
+<h3 id="5-循环"><a href="#5-循环" class="headerlink" title="5. 循环"></a>5. 循环</h3><ol>
+<li><code>while</code>循环和<code>for</code>循环完全可以互换。</li>
+<li><code>while</code>循环主要用于明确循环条件，但不明确循环次数的场合</li>
+<li><code>for</code>循环主要用于明确次数或范围的场合</li>
+<li><code>while(true)</code> 等价于 <code>for(;;)</code>，表示无限循环。</li>
+</ol>
+<h3 id="6-数组"><a href="#6-数组" class="headerlink" title="6. 数组"></a>6. 数组</h3><h4 id="6-1-一维数组"><a href="#6-1-一维数组" class="headerlink" title="6.1 一维数组"></a>6.1 一维数组</h4><ul>
+<li><code>数组类型[] 数组名 = new 数据类型[长度]</code> ：动态方式</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">数组类型[] 数组名 = <span class="keyword">new</span> 数据类型[长度] <span class="comment">//动态方式</span></span><br><span class="line"><span class="type">int</span>[] arr = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">5</span>];</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">数组类型[] 数组名 = &#123;初始值<span class="number">1</span>, 初始值<span class="number">1</span>, 初始值<span class="number">1</span>, ...&#125; <span class="comment">//静态方式</span></span><br><span class="line"><span class="type">int</span>[] arr = &#123;<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>&#125;;</span><br><span class="line"><span class="comment">/*特殊方式：*/</span> <span class="type">int</span>[] arr = <span class="keyword">new</span> <span class="title class_">int</span>[]&#123;<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="6-2-二维数组"><a href="#6-2-二维数组" class="headerlink" title="6.2 二维数组"></a>6.2 二维数组</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">数组类型[][] 数组名 = <span class="keyword">new</span> 数据类型[行数][列数]</span><br><span class="line"><span class="type">int</span>[][] arr = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">5</span>][<span class="number">6</span>];</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">数组类型[][] 数组名 = &#123;&#123;初始值<span class="number">1</span>, 初始值<span class="number">1</span>, 初始值<span class="number">1</span>&#125;,&#123;值<span class="number">2</span>,...&#125; ...&#125;</span><br><span class="line"><span class="type">int</span>[] arr = &#123;&#123;<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>&#125;, &#123;<span class="number">01</span>, <span class="number">5</span>, <span class="number">3</span>&#125;, &#123;<span class="number">8</span>, <span class="number">20</span>, <span class="number">6</span>&#125;&#125;;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>二维数组<code>arr.length</code>表示行数，<code>arr[0].length</code>表示此行的长度</p>
+</blockquote>
+<h3 id="7-函数"><a href="#7-函数" class="headerlink" title="7. 函数"></a>7. 函数</h3><ul>
+<li>函数是一块代码，接收零个或多个参数，做一件事情，并返回零个或一个值。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">sum</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span>&#123;</span><br><span class="line">  <span class="type">int</span> i;</span><br><span class="line">  <span class="type">int</span> sum=<span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span>(i=a; i&lt;=b; i++)&#123;</span><br><span class="line">    sum += i;</span><br><span class="line">  &#125;</span><br><span class="line">  System.out.println(a +<span class="string">&quot;到&quot;</span>+ b +<span class="string">&quot;的和是&quot;</span>+ sum);</span><br><span class="line">  <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>函数的调用：<code>函数名(参数值)</code>; 即使没有参数也需要<code>()</code>,<code>()</code>起到了调用函数的作用，如果有参数，则需要给出正确的数量和顺序</li>
+<li>函数的返回：<code>return</code>停止函数的执行，并返回一个值，可以再赋值给变量，传递给另一个函数，甚至可以丢弃，有时候要的是副作用。</li>
+</ul>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">1. 数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-%E4%B8%A4%E5%A4%A7%E7%B1%BB%EF%BC%9A"><span class="toc-text">1.1 两大类：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-%E6%95%B4%E6%95%B0%E7%B1%BB%E5%9E%8B%EF%BC%88byte-short-int-long%EF%BC%89"><span class="toc-text">1.2 整数类型（byte, short, int, long）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-%E6%B5%AE%E7%82%B9%E7%B1%BB%E5%9E%8B%EF%BC%88float%EF%BC%8Cdouble%EF%BC%89"><span class="toc-text">1.3 浮点类型（float，double）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5-%E5%AD%97%E7%AC%A6%E7%B1%BB%E5%9E%8B%EF%BC%88char%EF%BC%89"><span class="toc-text">1.5 字符类型（char）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%8F%98%E9%87%8F%E4%B8%8E%E5%B8%B8%E9%87%8F"><span class="toc-text">2. 变量与常量</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-%E5%B8%B8%E9%87%8F"><span class="toc-text">2.1 常量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-%E5%8F%98%E9%87%8F"><span class="toc-text">2.2 变量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-%E6%A0%87%E8%AF%86%E7%AC%A6%EF%BC%88%E5%8F%98%E9%87%8F%EF%BC%89%E5%91%BD%E5%90%8D%E8%A7%84%E5%88%99"><span class="toc-text">2.3 标识符（变量）命名规则</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-%E5%91%BD%E5%90%8D%E7%9A%84%E8%A7%84%E7%BA%A6"><span class="toc-text">2.3 命名的规约</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="toc-text">3. 数据类型之间的转换</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B9%8B%E9%97%B4%E8%BD%AC%E6%8D%A2"><span class="toc-text">3.1 基本数据类型之间转换</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2%E5%85%B6%E4%BB%96%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B9%8B%E9%97%B4%E8%BD%AC%E6%8D%A2"><span class="toc-text">3.2其他数据类型之间转换</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-text">4. 运算符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%BE%AA%E7%8E%AF"><span class="toc-text">5. 循环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E6%95%B0%E7%BB%84"><span class="toc-text">6. 数组</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-%E4%B8%80%E7%BB%B4%E6%95%B0%E7%BB%84"><span class="toc-text">6.1 一维数组</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-%E4%BA%8C%E7%BB%B4%E6%95%B0%E7%BB%84"><span class="toc-text">6.2 二维数组</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E5%87%BD%E6%95%B0"><span class="toc-text">7. 函数</span></a></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/2017/04/07/java-grammar.html">http://chaooo.github.io/2017/04/07/java-grammar.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2016/12/29/bluelake.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          BlueLake博客主题的详细配置
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/04/10/java-object.html" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">newer</strong>
+      <div class="article-nav-title">
+        
+          「Java教程」面向对象
+        
+      </div>
+    </a>
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/12/30/spring-security-permission.html">「Spring Security」前后端分离权限控制-指令级权限</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/27/spring-security-vue.html">「Spring Security」前后端分离菜单权限控制-前端动态路由</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/13/spring-security-rbac.html">「Spring Security」前后端分离后台菜单权限控制</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/10/spring-security-token.html">「Spring Security」基于Redis的Token自动续签优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/12/09/spring-security-jwt.html">「Spring Security」整合 JWT 实现无状态登录示例</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 10.71px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 16.43px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.71px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12.14px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12.14px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.43px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.43px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 17.14px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12.14px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12.14px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12.14px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.57px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.71px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 14.29px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.71px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.86px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.57px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 14.29px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.86px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.57px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 14.29px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.43px;">hexo</a> <a href="/tags/java/" style="font-size: 15.71px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 17.86px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 12.14px;">并发编程</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 10px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.29px;">环境配置</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年12月</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年11月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p style="display:none;">
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+  
+<script src="/localshare/js/social-share.js"></script>
+
+  
+<script src="/localshare/js/qrcode.js"></script>
+
+
+
+
+
+  
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+  
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'dd644e0a840b03bbb238',
+      clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+      repo: 'https://github.com/chaooo/BlogComments',
+      owner: 'chaooo',
+      admin: ['chaooo'],
+      id: md5(window.location.pathname),
+      distractionFreeMode: false,
+      language: 'zh-CN',
+      pagerDirection: 'last'
+    });
+    gitalk.render('comments');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+</body>
+</html>

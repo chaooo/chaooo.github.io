@@ -41,7 +41,7 @@
 <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
 
   
-<meta name="generator" content="Hexo 5.3.0"></head>
+<meta name="generator" content="Hexo 6.0.0"></head>
 
 <body>
   <div id="container">
@@ -94,7 +94,7 @@
 
       <div class="outer">
         <section id="main">
-  <article id="post-shell编程入门（五）shell脚本部署Java应用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <article id="post-spring-reactive-redis" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-inner">
     
     
@@ -102,7 +102,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/article/20201119.html">shell编程入门（五）shell脚本部署Java应用</a>
+      <a class="p-name article-title" href="/2021/03/04/spring-reactive-redis.html">「Spring Reactive Stack」响应式方式访问Redis</a>
     </h1>
   
 
@@ -113,17 +113,17 @@
       
       <span class="article-date">
   <i class="fa fa-date"></i>
-  <time class="dt-published" datetime="2020-11-19T07:28:30.000Z" itemprop="datePublished">2020年11月19日</time>
+  <time class="dt-published" datetime="2021-03-04T11:01:42.000Z" itemprop="datePublished">2021年03月04日</time>
 </span>
       
   <div class="article-category">
     <i class="fa fa-classify"></i>
-    <a class="article-category-link" href="/categories/shell/">shell编程</a>
+    <a class="article-category-link" href="/categories/SpringReactive/">SpringReactive</a>
   </div>
 
       
       
-<a href="/article/20201119.html#comments" class="article-comment-link">
+<a href="/2021/03/04/spring-reactive-redis.html#comments" class="article-comment-link">
   
   <i class="fa fa-commt"></i>
   留言
@@ -133,131 +133,16 @@
     </div>
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <a id="more"></a>
-
-<h3><span id="1-根据pid获取进程信息">1. 根据PID获取进程信息</span></h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="bash"><span class="comment"># Function: 根据用户输入的PID，过滤出该PID所有的信息</span></span></span><br><span class="line"><span class="meta">#</span></span><br><span class="line"></span><br><span class="line"><span class="bash"><span class="built_in">read</span> -p <span class="string">&quot;请输入要查询的PID: &quot;</span> P</span></span><br><span class="line">n=`ps -aux| awk &#x27;$2~/^&#x27;$P&#x27;$/&#123;print $11&#125;&#x27;|wc -l`</span><br><span class="line">if [ $n -eq 0 ];then</span><br><span class="line"> echo &quot;该PID不存在！&quot;</span><br><span class="line"> exit</span><br><span class="line">fi</span><br><span class="line">echo &quot;--------------------------------&quot;</span><br><span class="line">echo &quot;进程PID: $P&quot;</span><br><span class="line">echo &quot;进程命令：`ps -aux| awk &#x27;$2~/^&#x27;$P&#x27;$/&#123;print $11&#125;&#x27;`&quot;</span><br><span class="line">echo &quot;进程所属用户: `ps -aux| awk &#x27;$2~/^&#x27;$P&#x27;$/&#123;print $1&#125;&#x27;`&quot;</span><br><span class="line">echo &quot;CPU占用率：`ps -aux| awk &#x27;$2~/^&#x27;$P&#x27;$/&#123;print $3&#125;&#x27;`%&quot;</span><br><span class="line">echo &quot;内存占用率：`ps -aux| awk &#x27;$2~/^&#x27;$P&#x27;$/&#123;print $4&#125;&#x27;`%&quot;</span><br><span class="line">echo &quot;进程开始运行的时刻：`ps -aux| awk &#x27;$2~/^&#x27;$P&#x27;$/&#123;print $9&#125;&#x27;`&quot;</span><br><span class="line">echo &quot;进程运行的时间：`ps -aux| awk &#x27;$2~/^&#x27;$P&#x27;$/&#123;print $10&#125;&#x27;`&quot;</span><br><span class="line">echo &quot;进程状态：`ps -aux| awk &#x27;$2~/^&#x27;$P&#x27;$/&#123;print $8&#125;&#x27;`&quot;</span><br><span class="line">echo &quot;进程虚拟内存：`ps -aux| awk &#x27;$2~/^&#x27;$P&#x27;$/&#123;print $5&#125;&#x27;`&quot;</span><br><span class="line">echo &quot;进程共享内存：`ps -aux| awk &#x27;$2~/^&#x27;$P&#x27;$/&#123;print $6&#125;&#x27;`&quot;</span><br><span class="line">echo &quot;--------------------------------&quot;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>若执行出现权限不够，为shell文件增加执行权限:<code>chmod +x test.sh</code></p>
-</blockquote>
-<h3><span id="2-使用shell脚本部署jar包">2. 使用Shell脚本部署Jar包</span></h3><p>将跳板机上(或本地服务器)的jar包文件拷贝到发布服务器，然后通过发布服务器上的脚本实现旧jar包的备份，新jar包的启动。</p>
-<ul>
-<li>实现部署的操作：拷贝jar包到服务器 -&gt; 备份旧服务jar包 -&gt; 启动新服务jar包</li>
-<li>使用命令：<code>./begin.sh demo-0.0.1-SNAPSHOT.jar</code></li>
-</ul>
-<ol start="2">
-<li>跳板机(本地服务器)的脚本begin.sh</li>
-</ol>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">fileName=$1</span><br><span class="line">if [ -z &quot;$fileName&quot; ]; then</span><br><span class="line">    echo &quot;文件名不能为空&quot;</span><br><span class="line">    exit 0</span><br><span class="line">fi</span><br><span class="line">echo &quot;开始拷贝jar文件【$fileName】到192.168.2.100&quot;</span><br><span class="line">scp $fileName cmuser@192.168.2.100:/usr/local/test/$fileName.prev</span><br><span class="line">echo &quot;文件传输结束，准备启动192.168.2.100的部署脚本&quot;</span><br><span class="line">ssh cmuser@192.168.2.100 /usr/local/test/demo-deploy.sh $fileName</span><br></pre></td></tr></table></figure>
-<p>通过上面的跳板机上的代码，我们知道跳板机最终会调用发布服务器上<code>/usr/local/test/demo-deploy.sh</code>这个shell脚本命令。</p>
-<ol start="3">
-<li>发布服务器脚本demo-deploy.sh</li>
-</ol>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/usr/bin/env bash</span></span><br><span class="line">echo &quot;服务器开始部署服务&quot;</span><br><span class="line">projectname=&quot;demo&quot;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 打开文件所属的目录，不然远程执行会找不到当前目录</span></span><br><span class="line">cd /usr/local/test</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 新的jar包会当成参数传过来</span></span><br><span class="line">newJar=$1</span><br><span class="line">echo &quot;新的jar为：$newJar&quot; </span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果新的jar包为空则退出</span></span><br><span class="line">if [ -z &quot;$newJar&quot; ]; then</span><br><span class="line">    echo &quot;新的jar不能为空&quot;</span><br><span class="line">    exit 0</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 获取旧的jar包名称，当然可能是空的，也可能跟当前名称一致</span></span><br><span class="line">oldJar=$(ps -ef | grep $&#123;projectname&#125;|grep -v &#x27;demo-deploy.sh&#x27;|grep -v grep|awk &#x27;&#123;print $10&#125;&#x27;|cut -d &#x27;/&#x27; -f 2)</span><br><span class="line">echo &quot;当前运行的旧的jar包为：$oldJar&quot; </span><br><span class="line"><span class="meta">#</span><span class="bash">如果新的jar包为空则退出</span></span><br><span class="line">if [ -z &quot;$oldJar&quot; ]; then</span><br><span class="line">    echo &quot;没有启动的demo服务&quot;</span><br><span class="line">else</span><br><span class="line">    # 如果旧的进程还在就将旧的进程杀掉</span><br><span class="line">    oldId=`ps -ef|grep $&#123;projectname&#125;|grep -v &quot;$0&quot;|grep -v &quot;grep&quot;|awk &#x27;&#123;print $2&#125;&#x27;`</span><br><span class="line">    echo &quot;$oldId&quot;</span><br><span class="line">    echo &quot;kill old process start ...&quot;</span><br><span class="line">    for id in $oldId</span><br><span class="line">    do</span><br><span class="line">        kill -9 $id</span><br><span class="line">        echo &quot;killed $id&quot;</span><br><span class="line">    done</span><br><span class="line">    echo &quot;kill old process end&quot;</span><br><span class="line">    # 获取当前时间戳</span><br><span class="line">    suffix=&quot;.bak-&quot;`date &#x27;+%s%3N&#x27;`;</span><br><span class="line">    echo $suffix;</span><br><span class="line">    # 将旧的jar包进行备份</span><br><span class="line">    mv $oldJar $&#123;oldJar&#125;$&#123;suffix&#125;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 开始启动新的进程</span></span><br><span class="line">mv $&#123;1&#125;.prev $&#123;1&#125;</span><br><span class="line">nohup java -jar $&#123;1&#125; &gt; run.txt 2&gt;&amp;1 &amp;</span><br><span class="line">echo &quot;服务启动查看进程:&quot;</span><br><span class="line">echo `ps -ef | grep $&#123;projectname&#125;|grep -v &#x27;demo-deploy.sh&#x27;|grep -v grep`</span><br></pre></td></tr></table></figure>
-<ol start="4">
-<li>演示<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 跳板机</span></span><br><span class="line">[cmuser@localhost test]$ ./begin.sh demo-0.0.1-SNAPSHOT.jar</span><br><span class="line">开始拷贝jar文件【demo-0.0.1-SNAPSHOT.jar】到192.168.2.100</span><br><span class="line">cmuser@192.168.2.100&#x27;s password: </span><br><span class="line">demo-0.0.1-SNAPSHOT.jar                                                                                                                                                                                 100%   20MB  11.2MB/s   00:01    </span><br><span class="line">文件传输结束，准备启动192.168.2.100的部署脚本</span><br><span class="line">cmuser@192.168.2.100&#x27;s password: </span><br><span class="line">服务器开始部署服务</span><br><span class="line">新的jar为：demo-0.0.1-SNAPSHOT.jar</span><br><span class="line">当前运行的旧的jar包为：demo-0.0.1-SNAPSHOT.jar</span><br><span class="line">2581</span><br><span class="line">kill old process start ...</span><br><span class="line">killed 2581</span><br><span class="line">kill old process end</span><br><span class="line">.bak-20201117</span><br><span class="line">服务启动查看进程:</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 发布服务器(部署前pid:2581)</span></span><br><span class="line">[cmuser@192.168.2.100 test]$ ps -ef | grep demo</span><br><span class="line">cmuser    2581     1 16 17:03 ?        00:00:06 java -jar demo-0.0.1-SNAPSHOT.jar</span><br><span class="line"></span><br><span class="line">[cmuser@192.168.2.100 test]$ ll</span><br><span class="line">total 40260</span><br><span class="line">-rw-rw-r--. 1 cmuser  cmuser  20606107 Nov 18 15:45 demo-0.0.1-SNAPSHOT.jar</span><br><span class="line">-rw-rw-r--. 1 cmuser  cmuser  20606111 Nov 18 15:06 demo-0.0.1-SNAPSHOT.jar.bak-1605685530423</span><br><span class="line">-rwxrwxr-x. 1 jenkins jenkins     1356 Nov 17 17:56 demo-deploy.sh</span><br><span class="line">-rwxrwxrwx. 1 jenkins jenkins     1207 Nov 18 15:45 run.txt</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 发布服务器(部署后:2653)</span></span><br><span class="line">[cmuser@192.168.2.100 test]$ ps -ef | grep demo</span><br><span class="line">cmuser    2653     1 59 17:04 ?        00:00:07 java -jar demo-0.0.1-SNAPSHOT.jar</span><br></pre></td></tr></table></figure></li>
-</ol>
-
-        
-        
-          <blockquote id="copyright">
-              <p>原文链接: <a href="http://chaooo.github.io/page/3/index.html">http://chaooo.github.io/page/3/index.html</a></p>
-              <p>版权声明: 转载请注明出处.</p>
-          </blockquote>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <div class="article-tag-wrap">
-          
-    <div class="article-reward">
-        <a id="reward-btn" href="javascript:;">打赏</a>
-        <div id="reward-content">
-            <h6 class="reward-tit">“感谢你的支持，我会继续努力！”</h6>
-            <div>
-                <div class="reward-code">
-                    <img class="type-code" src="/css/images/wechat.jpg">
-                    <img class="er-code" src="/css/images/wechat-pay.jpg">
-                </div>
-                <div class="reward-code">
-                    <img class="type-code" src="/css/images/alipay.jpg">
-                    <img class="er-code" src="/css/images/alipay-pay.jpg">
-                </div>
-            </div>
-            <p class="reward-desc">扫码打赏，感谢支持</p>
-        </div>
-    </div>
-
-
-          
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li></ul>
-
-          
-    <div class="social-share">
-      <span>分享到:</span>
-    </div>
-
-
-
-        </div>
-      
-      
-      
-    </footer>
-  </div>
-</article>
-
-
-  <article id="post-shell编程入门（四）文本处理" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/article/20201118.html">shell编程入门（四）文本处理</a>
-    </h1>
-  
-
-
-      </header>
-    
-    <div class="article-meta">
-      
-      <span class="article-date">
-  <i class="fa fa-date"></i>
-  <time class="dt-published" datetime="2020-11-18T02:22:01.000Z" itemprop="datePublished">2020年11月18日</time>
-</span>
-      
-  <div class="article-category">
-    <i class="fa fa-classify"></i>
-    <a class="article-category-link" href="/categories/shell/">shell编程</a>
-  </div>
-
-      
-      
-<a href="/article/20201118.html#comments" class="article-comment-link">
-  
-  <i class="fa fa-commt"></i>
-  留言
-</a>
-
-
-    </div>
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h3 id="1-文件查找命令"><a href="#1-文件查找命令" class="headerlink" title="1. 文件查找命令"></a>1. 文件查找命令</h3><h4 id="1-1-find命令"><a href="#1-1-find命令" class="headerlink" title="1.1 find命令"></a>1.1 find命令</h4><p>语法格式：<code>find 搜索路径 [选项] 搜索内容</code></p>
+        <p><code>Spring Data Redis</code>中同时支持了<code>Jedis</code>客户端和<code>Lettuce</code>客户端。但是仅<code>Lettuce</code>是支持<code>Reactive</code>方式的操作；这里选择默认的<code>Lettuce</code>客户端。
       
     </div>
     <footer class="article-footer">
       
         
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li></ul>
 
         <p class="article-more-link">
-          <a href="/article/20201118.html#more">Read More</a>
+          <a href="/2021/03/04/spring-reactive-redis.html#more">Read More</a>
         </p>
       
       
@@ -267,7 +152,7 @@
 </article>
 
 
-  <article id="post-shell编程入门（三）函数的用法" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <article id="post-spring-reactive-r2dbc" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-inner">
     
     
@@ -275,7 +160,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/article/20201117.html">shell编程入门（三）函数的用法</a>
+      <a class="p-name article-title" href="/2021/03/03/spring-reactive-r2dbc.html">「Spring Reactive Stack」使用R2DBC访问MySQL</a>
     </h1>
   
 
@@ -286,17 +171,17 @@
       
       <span class="article-date">
   <i class="fa fa-date"></i>
-  <time class="dt-published" datetime="2020-11-17T04:22:01.000Z" itemprop="datePublished">2020年11月17日</time>
+  <time class="dt-published" datetime="2021-03-03T13:01:42.000Z" itemprop="datePublished">2021年03月03日</time>
 </span>
       
   <div class="article-category">
     <i class="fa fa-classify"></i>
-    <a class="article-category-link" href="/categories/shell/">shell编程</a>
+    <a class="article-category-link" href="/categories/SpringReactive/">SpringReactive</a>
   </div>
 
       
       
-<a href="/article/20201117.html#comments" class="article-comment-link">
+<a href="/2021/03/03/spring-reactive-r2dbc.html#comments" class="article-comment-link">
   
   <i class="fa fa-commt"></i>
   留言
@@ -306,17 +191,16 @@
     </div>
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h3 id="1-Shell-函数定义"><a href="#1-Shell-函数定义" class="headerlink" title="1. Shell 函数定义"></a>1. Shell 函数定义</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function name() &#123;</span><br><span class="line">    # 函数要执行的代码</span><br><span class="line">    [return value]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>函数的简化写法可以省略<code>function</code>或<code>()</code>之一，不过还是推荐标准写法，才能做到做到“见名知意”。</p>
+        <p><code>MySQL</code>等一系列的关系型数据库也在<code>R2DBC</code>等包的帮助下支持响应式。<br><code>R2DBC</code>基于<code>Reactive Streams</code>反应流规范，它是一个开放的规范，为驱动程序供应商和使用方提供接口(<code>r2dbc-spi</code>)，与<code>JDBC</code>的阻塞特性不同，它提供了完全反应式的<strong>非阻塞API</strong>与<strong>关系型数据库</strong>交互。
       
     </div>
     <footer class="article-footer">
       
         
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li></ul>
 
         <p class="article-more-link">
-          <a href="/article/20201117.html#more">Read More</a>
+          <a href="/2021/03/03/spring-reactive-r2dbc.html#more">Read More</a>
         </p>
       
       
@@ -326,7 +210,7 @@
 </article>
 
 
-  <article id="post-shell编程入门（二）变量的用法与数学运算" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <article id="post-spring-reactive-exception" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-inner">
     
     
@@ -334,7 +218,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/article/20201116.html">shell编程入门（二）变量的用法与数学运算</a>
+      <a class="p-name article-title" href="/2021/03/02/spring-reactive-exception.html">「Spring Reactive Stack」Reactor异常处理</a>
     </h1>
   
 
@@ -345,17 +229,17 @@
       
       <span class="article-date">
   <i class="fa fa-date"></i>
-  <time class="dt-published" datetime="2020-11-16T02:32:01.000Z" itemprop="datePublished">2020年11月16日</time>
+  <time class="dt-published" datetime="2021-03-02T12:12:42.000Z" itemprop="datePublished">2021年03月02日</time>
 </span>
       
   <div class="article-category">
     <i class="fa fa-classify"></i>
-    <a class="article-category-link" href="/categories/shell/">shell编程</a>
+    <a class="article-category-link" href="/categories/SpringReactive/">SpringReactive</a>
   </div>
 
       
       
-<a href="/article/20201116.html#comments" class="article-comment-link">
+<a href="/2021/03/02/spring-reactive-exception.html#comments" class="article-comment-link">
   
   <i class="fa fa-commt"></i>
   留言
@@ -365,47 +249,17 @@
     </div>
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h3 id="1-变量替换"><a href="#1-变量替换" class="headerlink" title="1. 变量替换"></a>1. 变量替换</h3><table>
-<thead>
-<tr>
-<th>语法</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>$&#123;变量#匹配规则&#125;</code></td>
-<td>从变量<strong>开头</strong>进行规则匹配，将符合<strong>最短</strong>的数据删除</td>
-</tr>
-<tr>
-<td><code>$&#123;变量##匹配规则&#125;</code></td>
-<td>从变量<strong>开头</strong>进行规则匹配，将符合<strong>最长</strong>的数据删除【贪婪模式】</td>
-</tr>
-<tr>
-<td><code>$&#123;变量%匹配规则&#125;</code></td>
-<td>从变量<strong>尾部</strong>进行规则匹配，将符合<strong>最短</strong>的数据删除</td>
-</tr>
-<tr>
-<td><code>$&#123;变量%%匹配规则&#125;</code></td>
-<td>从变量<strong>尾部</strong>进行规则匹配，将符合<strong>最长</strong>的数据删除【贪婪模式】</td>
-</tr>
-<tr>
-<td><code>$&#123;变量/旧字符串/新字符串&#125;</code></td>
-<td>变量内容符合旧字符串，则<strong>第一个</strong>旧字符串会被新字符串取代</td>
-</tr>
-<tr>
-<td><code>$&#123;变量//旧字符串/新字符串&#125;</code></td>
-<td>变量内容符合旧字符串，则<strong>全部的</strong>旧字符串会被新字符串取代</td>
-</tr>
-</tbody></table>
+        <p>不管是在响应式编程还是普通的程序设计中，异常处理都是一个非常重要的方面。</p>
+<p>对于<code>Flux</code>或者<code>Mono</code>来说，所有的异常都是一个终止的操作，即使你使用了异常处理，原生成序列也不会继续。<br>但是如果你对异常进行了处理，那么它会将<code>oneError</code>信号转换成为新的序列的开始，并将替换掉之前上游产生的序列。
       
     </div>
     <footer class="article-footer">
       
         
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li></ul>
 
         <p class="article-more-link">
-          <a href="/article/20201116.html#more">Read More</a>
+          <a href="/2021/03/02/spring-reactive-exception.html#more">Read More</a>
         </p>
       
       
@@ -415,7 +269,7 @@
 </article>
 
 
-  <article id="post-shell编程入门（一）初识Shell编程" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <article id="post-spring-reactive-webflux" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-inner">
     
     
@@ -423,7 +277,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/article/20201115.html">shell编程入门（一）初识Shell编程</a>
+      <a class="p-name article-title" href="/2021/02/25/spring-reactive-webflux.html">「Spring Reactive Stack」Spring WebFlux响应式Web框架入门</a>
     </h1>
   
 
@@ -434,17 +288,17 @@
       
       <span class="article-date">
   <i class="fa fa-date"></i>
-  <time class="dt-published" datetime="2020-11-15T01:16:56.000Z" itemprop="datePublished">2020年11月15日</time>
+  <time class="dt-published" datetime="2021-02-25T07:50:42.000Z" itemprop="datePublished">2021年02月25日</time>
 </span>
       
   <div class="article-category">
     <i class="fa fa-classify"></i>
-    <a class="article-category-link" href="/categories/shell/">shell编程</a>
+    <a class="article-category-link" href="/categories/SpringReactive/">SpringReactive</a>
   </div>
 
       
       
-<a href="/article/20201115.html#comments" class="article-comment-link">
+<a href="/2021/02/25/spring-reactive-webflux.html#comments" class="article-comment-link">
   
   <i class="fa fa-commt"></i>
   留言
@@ -454,28 +308,18 @@
     </div>
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h3 id="1-Shell概述"><a href="#1-Shell概述" class="headerlink" title="1. Shell概述"></a>1. Shell概述</h3><ol>
-<li>Shell简介<ul>
-<li>shell是操作系统提供给我们用户来访问系统资源的一个<strong>接口</strong>。</li>
-<li>shell同时还是一个Linux下的<strong>命令行解释器</strong>，类似Windows下的cmd。</li>
-<li>shell 同时还是解释型的脚本语言：运行时翻译，执行一条语句翻译一条，每次执行程序都需要进行解释。</li>
-</ul>
-</li>
-<li>Shell的发展<ul>
-<li>shell有多个版本：Bourne Shell，C Shell，Korn Shell，Bash Shell。现在广泛使用的是 Bash Shell，也就是Linux中默认内嵌的Shell。</li>
-</ul>
-</li>
-<li>Shell脚本<ul>
-<li><code>Shell脚本</code>(shell script)，是一种为Shell编写的脚本程序。
+        <p><img src="/2021/02/25/spring-reactive-webflux/up-ee8803006ea5a4169467074917d6fdd0b12.webp"></p>
+<p><code>Spring WebFlux</code>是<code>Spring Framework 5.0</code>中引入的以<code>Reactor</code>为基础的响应式编程<code>Web</code>框架。</p>
+<p><strong>WebFlux</strong> 的异步处理是基于<code>Reactor</code>实现的，是将输入流适配成<code>Mono</code>或<code>Flux</code>进行统一处理。
       
     </div>
     <footer class="article-footer">
       
         
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li></ul>
 
         <p class="article-more-link">
-          <a href="/article/20201115.html#more">Read More</a>
+          <a href="/2021/02/25/spring-reactive-webflux.html#more">Read More</a>
         </p>
       
       
@@ -485,7 +329,7 @@
 </article>
 
 
-  <article id="post-Linux常用命令整理" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <article id="post-spring-boot-idempotent" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-inner">
     
     
@@ -493,7 +337,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/article/20201114.html">Linux常用命令整理</a>
+      <a class="p-name article-title" href="/2021/02/17/spring-boot-idempotent.html">Java接口幂等性设计及实例</a>
     </h1>
   
 
@@ -504,17 +348,17 @@
       
       <span class="article-date">
   <i class="fa fa-date"></i>
-  <time class="dt-published" datetime="2020-11-14T03:16:56.000Z" itemprop="datePublished">2020年11月14日</time>
+  <time class="dt-published" datetime="2021-02-17T06:12:42.000Z" itemprop="datePublished">2021年02月17日</time>
 </span>
       
   <div class="article-category">
     <i class="fa fa-classify"></i>
-    <a class="article-category-link" href="/categories/linux-learn/">Linux入门</a>
+    <a class="article-category-link" href="/categories/Spring/">Spring</a>
   </div>
 
       
       
-<a href="/article/20201114.html#comments" class="article-comment-link">
+<a href="/2021/02/17/spring-boot-idempotent.html#comments" class="article-comment-link">
   
   <i class="fa fa-commt"></i>
   留言
@@ -524,18 +368,311 @@
     </div>
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h3 id="1-常用基础命令"><a href="#1-常用基础命令" class="headerlink" title="1. 常用基础命令"></a>1. 常用基础命令</h3><ol>
-<li><p>文件管理</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ls          # 显示指定工作目录下的内容及属性信息</span><br><span class="line">cp          # 复制文件或目录</span><br><span class="line">mkdir       # 创建目录</span><br><span class="line">mv          # 移动或改名文件</span><br><span class="line">pwd         # 显示当前路径</span><br></pre></td></tr></table></figure>
+        <p><strong>幂等性</strong>：多次调用方法或者接口不会改变业务状态，可以保证重复调用的结果和单次调用的结果一致。<br><code>select</code>和<code>delete</code>操作具有天然幂等性：<code>select</code>多次结果总是一致，<code>delete</code>第一次执行后继续再执行也不会对数据有影响；<br>一般没有幂等性而出现异常的操作：<code>insert</code>操作，<code>update</code>操作，混合类型操作(同时包含增删改等)。
       
     </div>
     <footer class="article-footer">
       
         
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shell/" rel="tag">Shell</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a></li></ul>
 
         <p class="article-more-link">
-          <a href="/article/20201114.html#more">Read More</a>
+          <a href="/2021/02/17/spring-boot-idempotent.html#more">Read More</a>
+        </p>
+      
+      
+      
+    </footer>
+  </div>
+</article>
+
+
+  <article id="post-env-nginx" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/12/29/env-nginx.html">「环境配置」Nginx常用配置详解</a>
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2020-12-29T10:07:05.000Z" itemprop="datePublished">2020年12月29日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/env/">环境配置</a>
+  </div>
+
+      
+      
+<a href="/2020/12/29/env-nginx.html#comments" class="article-comment-link">
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>Nginx 的配置系统由一个主配置文件和其他一些辅助的配置文件构成。这些配置文件均是纯文本文件，全部位于Nginx安装目录下的<code>conf</code>目录下。</p>
+<p>Nginx配置文件中每个指令必须有<code>;</code>结束。以<code>#</code>开头的行会被当做注释。</p>
+<p>配置文件通常命名为<code>nginx.conf</code>并且默认放置在<code>/usr/local/nginx/conf</code>，<code>/etc/nginx</code>，或<code>/usr/local/etc/nginx</code>。</p>
+      
+    </div>
+    <footer class="article-footer">
+      
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/env/" rel="tag">环境配置</a></li></ul>
+
+        <p class="article-more-link">
+          <a href="/2020/12/29/env-nginx.html#more">Read More</a>
+        </p>
+      
+      
+      
+    </footer>
+  </div>
+</article>
+
+
+  <article id="post-env-centos8-git-gogs" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/11/25/env-centos8-git-gogs.html">「环境配置」Centos 8 私人Git服务器搭建(Gogs)</a>
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2020-11-25T10:11:23.000Z" itemprop="datePublished">2020年11月25日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/env/">环境配置</a>
+  </div>
+
+      
+      
+<a href="/2020/11/25/env-centos8-git-gogs.html#comments" class="article-comment-link">
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="1-创建gogs用户"><a href="#1-创建gogs用户" class="headerlink" title="1. 创建gogs用户"></a>1. 创建gogs用户</h3><p>为Gogs创建一个MySQL用户<code>gogs</code>
+      
+    </div>
+    <footer class="article-footer">
+      
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/" rel="tag">Git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/env/" rel="tag">环境配置</a></li></ul>
+
+        <p class="article-more-link">
+          <a href="/2020/11/25/env-centos8-git-gogs.html#more">Read More</a>
+        </p>
+      
+      
+      
+    </footer>
+  </div>
+</article>
+
+
+  <article id="post-env-centos8-nexus" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/11/25/env-centos8-nexus.html">「环境配置」使用Nexus搭建Maven私服（CentOS 8）</a>
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2020-11-25T10:11:23.000Z" itemprop="datePublished">2020年11月25日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/env/">环境配置</a>
+  </div>
+
+      
+      
+<a href="/2020/11/25/env-centos8-nexus.html#comments" class="article-comment-link">
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><strong>Maven私服</strong> 就是在内网架设一个<code>Maven仓库服务器</code>，在代理远程仓库的同时维护本地仓库。<br>当我们需要下载一些构件（artifact）时，如果本地仓库没有，再去私服下载，私服没有，再去中央仓库下载。
+      
+    </div>
+    <footer class="article-footer">
+      
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Maven/" rel="tag">Maven</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/env/" rel="tag">环境配置</a></li></ul>
+
+        <p class="article-more-link">
+          <a href="/2020/11/25/env-centos8-nexus.html#more">Read More</a>
+        </p>
+      
+      
+      
+    </footer>
+  </div>
+</article>
+
+
+  <article id="post-env-centos8-tomcat9" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/11/20/env-centos8-tomcat9.html">「环境配置」Tomcat9安装及多实例多应用配置(CentOS 8)</a>
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2020-11-20T10:11:23.000Z" itemprop="datePublished">2020年11月20日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/env/">环境配置</a>
+  </div>
+
+      
+      
+<a href="/2020/11/20/env-centos8-tomcat9.html#comments" class="article-comment-link">
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="1-Tomcat9安装"><a href="#1-Tomcat9安装" class="headerlink" title="1. Tomcat9安装"></a>1. Tomcat9安装</h3><p>使用wget获取：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://mirrors.aliyun.com/apache/tomcat/tomcat-9/v9.0.41/bin/apache-tomcat-9.0.41.tar.gz</span><br></pre></td></tr></table></figure>
+<p>下载之后如果没有进入别的文件夹，压缩包一般是在&#x2F;root下面。进入&#x2F;root下面进行解压：
+      
+    </div>
+    <footer class="article-footer">
+      
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/env/" rel="tag">环境配置</a></li></ul>
+
+        <p class="article-more-link">
+          <a href="/2020/11/20/env-centos8-tomcat9.html#more">Read More</a>
+        </p>
+      
+      
+      
+    </footer>
+  </div>
+</article>
+
+
+  <article id="post-env-centos8-nfs" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/08/10/env-centos8-nfs.html">「环境配置」CentOS 8 安装和配置 NFS 服务器</a>
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2020-08-10T10:11:23.000Z" itemprop="datePublished">2020年08月10日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/env/">环境配置</a>
+  </div>
+
+      
+      
+<a href="/2020/08/10/env-centos8-nfs.html#comments" class="article-comment-link">
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>网络文件系统（NFS）是一个分布式文件系统协议，它允许你通过网络共享远程文件夹。</p>
+<p>NFS 协议默认是不加密的，不提供用户身份鉴别。服务端通过限定客户端的 IP 地址和端口来限制访问。
+      
+    </div>
+    <footer class="article-footer">
+      
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NFS/" rel="tag">NFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/env/" rel="tag">环境配置</a></li></ul>
+
+        <p class="article-more-link">
+          <a href="/2020/08/10/env-centos8-nfs.html#more">Read More</a>
         </p>
       
       
@@ -548,7 +685,7 @@
 
     <nav id="page-nav">
 
-<a class="extend prev" rel="prev" href="/page/2/">上一页</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="extend next" rel="next" href="/page/4/">下一页</a>
+<a class="extend prev" rel="prev" href="/page/2/">上一页</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/4/">下一页</a>
 </nav>
 
 
@@ -563,23 +700,23 @@
       <ul>
         
           <li>
-            <a href="/article/20210102.html">Nginx常用配置详解</a>
+            <a href="/2021/12/30/spring-security-permission.html">「Spring Security」前后端分离权限控制-指令级权限</a>
           </li>
         
           <li>
-            <a href="/article/20201225.html">使用Nexus搭建Maven私服（CentOS 8）</a>
+            <a href="/2021/12/27/spring-security-vue.html">「Spring Security」前后端分离菜单权限控制-前端动态路由</a>
           </li>
         
           <li>
-            <a href="/article/20201222.html">Centos 8 私人Git服务器搭建(Gogs)</a>
+            <a href="/2021/12/13/spring-security-rbac.html">「Spring Security」前后端分离后台菜单权限控制</a>
           </li>
         
           <li>
-            <a href="/article/20201221.html">Tomcat9安装及多实例多应用配置(CentOS 8)</a>
+            <a href="/2021/12/10/spring-security-token.html">「Spring Security」基于Redis的Token自动续签优化</a>
           </li>
         
           <li>
-            <a href="/article/20201218.html">CentOS 8 安装和配置 NFS 服务器</a>
+            <a href="/2021/12/09/spring-security-jwt.html">「Spring Security」整合 JWT 实现无状态登录示例</a>
           </li>
         
       </ul>
@@ -592,7 +729,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/BlueLake/" style="font-size: 11px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 18px;">CentOS</a> <a href="/tags/Docker/" style="font-size: 11px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12px;">ElasticStack</a> <a href="/tags/FastDFS/" style="font-size: 11px;">FastDFS</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/Java/" style="font-size: 18px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 19px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 11px;">Nginx</a> <a href="/tags/Redis/" style="font-size: 12px;">Redis</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Shell/" style="font-size: 14px;">Shell</a> <a href="/tags/Spring/" style="font-size: 17px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 12px;">SpringBoot</a> <a href="/tags/Tomcat/" style="font-size: 10px;">Tomcat</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 12px;">hexo</a> <a href="/tags/java/" style="font-size: 16px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/sublime/" style="font-size: 10px;">sublime</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/ssafe/" style="font-size: 13px;">安全认证</a> <a href="/tags/tool/" style="font-size: 11px;">工具</a> <a href="/tags/concurrent/" style="font-size: 12px;">并发编程</a> <a href="/tags/open-source/" style="font-size: 10px;">开源</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/other/" style="font-size: 10px;">杂谈</a> <a href="/tags/env/" style="font-size: 11px;">环境配置</a>
+      <a href="/tags/BlueLake/" style="font-size: 10.71px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 16.43px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.71px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 12.14px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 12.14px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.43px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.43px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 17.14px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 12.14px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 12.14px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 17.14px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 12.14px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.57px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.71px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 14.29px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.71px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.86px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.57px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 14.29px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.86px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.57px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 14.29px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.43px;">hexo</a> <a href="/tags/java/" style="font-size: 15.71px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 17.86px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 12.14px;">并发编程</a> <a href="/tags/db/" style="font-size: 15px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 10px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.29px;">环境配置</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
     </div>
   </div>
 
@@ -601,7 +738,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/docker-learn/">Docker入门</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客折腾</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">Java知识梳理</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jenkins-learn/">Jenkins入门</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux-learn/">Linux入门</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/nginx/">Nginx配置</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/shell/">shell编程</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/tool/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/other/">杂谈</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">2</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -611,7 +748,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年01月</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">25</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年10月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015年12月</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年12月</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年12月</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年12月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年11月</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年06月</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年12月</a><span class="archive-list-count">5</span></li></ul>
     </div>
   </div>
 
@@ -621,34 +758,13 @@
   <div class="widget-wrap">
     <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat/" rel="tag">Tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sublime/" rel="tag">sublime</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">48</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ssafe/" rel="tag">安全认证</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tool/" rel="tag">工具</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/open-source/" rel="tag">开源</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/other/" rel="tag">杂谈</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">2</span></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
 
   
     
-  <div class="widget-wrap">
-    <h3 class="widget-title"><i class="fa fa-link"></i> 友情链接</h3>
-    <div class="widget">
-      <ul>
-      
-        <li>
-          <a target="_blank" rel="noopener" href="https://github.com/chaooo">chaooo</a>
-        </li>
-      
-        <li>
-          <a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake">BlueLake主题</a>
-        </li>
-      
-        <li>
-          <a target="_blank" rel="noopener" href="http://weibo.com/zhengchaooo">秋过冬漫长</a>
-        </li>
-      
-      </ul>
-    </div>
-  </div>
-
 
   
 </aside>
@@ -665,7 +781,7 @@
         <span> | </span><a href="/about/">联系博主</a>
       </p>
       
-        <p>
+        <p style="display:none;">
           <i class="fa fa-visitors"></i>
           <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
           ，
@@ -674,11 +790,8 @@
         </p>
       
       <p>
-        <span>Copyright &copy; 2021 郑超(Charles·Zheng).</span>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
         <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
-        
-            <span>Count by <a href="http://busuanzi.ibruce.info/" target="_blank">busuanzi.</a></span>
-        
         <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
       </p>
     </div>
@@ -703,16 +816,6 @@
 
 
 
-
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?cd92a502fdfe53acccbd238129f12e5c";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
 
 
 
@@ -740,8 +843,8 @@ var _hmt = _hmt || [];
   <script>
     var gitalk = new Gitalk({
       clientID: 'dd644e0a840b03bbb238',
-      clientSecret: 'de8b7f88cfa9812e15f93e986181d1c2194ba6e8',
-      repo: 'BlogComments',
+      clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+      repo: 'https://github.com/chaooo/BlogComments',
       owner: 'chaooo',
       admin: ['chaooo'],
       id: md5(window.location.pathname),
