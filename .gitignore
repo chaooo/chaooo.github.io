@@ -1,9 +1,8 @@
 .DS_Store
+Thumbs.db
+db.json
+*.log
 node_modules/
-dist/
 public/
-themes/
-.deploy_git/
-npm-debug.log
-yarn-error.log
-themes/BlueLake
+.deploy*/
+_multiconfig.yml
