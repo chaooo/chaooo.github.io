@@ -41,6 +41,7 @@
 <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
 
   
+  
 <meta name="generator" content="Hexo 6.0.0"></head>
 
 <body>
@@ -366,6 +367,7 @@
 
 
 
+
       
     </footer>
   </div>
@@ -480,7 +482,8 @@
 </footer>
 
     </div>
-    
+  </div>
+  
 <script src="/js/jquery-3.4.1.min.js"></script>
 
 
@@ -505,52 +508,60 @@
 
 
 
+
   
+    
 <script src="/localshare/js/social-share.js"></script>
 
-  
+    
 <script src="/localshare/js/qrcode.js"></script>
 
-
+  
+  
 
 
 
   
+    
 <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
 
-  
+    
 <script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
 
-  <script>
-    var gitalk = new Gitalk({
-      clientID: 'dd644e0a840b03bbb238',
-      clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
-      repo: 'https://github.com/chaooo/BlogComments',
-      owner: 'chaooo',
-      admin: ['chaooo'],
-      id: md5(window.location.pathname),
-      distractionFreeMode: false,
-      language: 'zh-CN',
-      pagerDirection: 'last'
-    });
-    gitalk.render('comments');
-  </script>
+    <script>
+      var gitalk = new Gitalk({
+        clientID: 'dd644e0a840b03bbb238',
+        clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+        repo: 'BlogComments',
+        owner: 'chaooo',
+        admin: ['chaooo'],
+        id: md5(window.location.pathname),
+        distractionFreeMode: false,
+        language: 'zh-CN',
+        pagerDirection: 'last'
+      });
+      gitalk.render('comments');
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-  </div>
 </body>
 </html>
