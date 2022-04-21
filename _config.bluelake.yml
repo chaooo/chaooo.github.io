@@ -109,12 +109,21 @@ about:
 gitalk:
   enable: true
   owner: chaooo ## Your GitHub ID, e.g. username
-  repo: https://github.com/chaooo/BlogComments ## The repository to store your comments, make sure you're the repo's owner, e.g. gitalk.github.io
+  repo: BlogComments ## The repository to store your comments, make sure you're the repo's owner, e.g. gitalk.github.io
   client_id: dd644e0a840b03bbb238 ## GitHub client ID, e.g. 75752dafe7907a897619
   client_secret: d0150281d9691f1d856ca44d6f620dd28782c48e ## GitHub client secret, e.g. ec2fb9054972c891289640354993b662f4cccc50
   admin: chaooo ## Github repo owner and collaborators, only these guys can initialize github issues.
   language: 'zh-CN' ## Language
   pagerDirection: last # Comment sorting direction, available values are last and first.
+
+# giteement评论（基于Gitee issues）
+giteement:
+  enable: false
+  owner: 'chaoo'  # 你的码云账号英文名
+  repo: 'blog-comments' # 存储评论的仓库的仓库名称(需要在码云仓库创建公开仓库)
+  redirect_uri: 'https://chaoo.gitee.io'   # 应用回调地址(请和配置的第三方应用保持一致)
+  client_id: #4ec96c34e83a4767d762a5a321ae15d9b8456d552c146afda829b815d51abfd2 ## GitHub client ID, e.g. 75752dafe7907a897619
+  client_secret: #d2cf268817c7099b010f4ff7053f79dca3e32105da449318d8ae87f82782d531 ## GitHub client secret, e.g. ec2fb9054972c891289640354993b662f4cccc50
 
 # Valine comment. https://valine.js.org
 valine:
