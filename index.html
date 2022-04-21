@@ -95,68 +95,6 @@
 
       <div class="outer">
         <section id="main">
-  <article id="post-bluelake" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2016/12/29/bluelake.html">BlueLake博客主题的详细配置</a>
-    </h1>
-  
-
-
-      </header>
-    
-    <div class="article-meta">
-      
-        <span class='article-top'>【已置顶】</span>
-      
-      <span class="article-date">
-  <i class="fa fa-date"></i>
-  <time class="dt-published" datetime="2016-12-29T03:25:33.000Z" itemprop="datePublished">2016年12月29日</time>
-</span>
-      
-  <div class="article-category">
-    <i class="fa fa-classify"></i>
-    <a class="article-category-link" href="/categories/hexo/">Hexo博客</a>
-  </div>
-
-      
-      
-<a href="/2016/12/29/bluelake.html#comments" class="article-comment-link">
-  
-  <i class="fa fa-commt"></i>
-  留言
-</a>
-
-
-    </div>
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h3 id="2021年2月3日更新："><a href="#2021年2月3日更新：" class="headerlink" title="2021年2月3日更新："></a>2021年2月3日更新：</h3><p><a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake">BlueLake主题</a>主题写了有些年头了，随着Hexo升级到5.X，BlueLake很多配置已经过时，在使用中难免出现问题。</p>
-<p>所以，我利用工作之余抽了些时间进行了大改版，主题模板引擎由Jade(Pug)换成了EJS，以landscape为原型进行二次开发；保留BlueLake主题老版本的其他功能，如原生JS实现站内搜索功能，本地分享等；新添加了一些新的功能，如打赏模块，集成新的三方评论等等。</p>
-<p>说了这么多不如你亲自体验来的直接，BlueLake主题地址：<a target="_blank" rel="noopener" href="https://github.com/chaooo/hexo-theme-BlueLake%E3%80%82">https://github.com/chaooo/hexo-theme-BlueLake。</a></p>
-      
-    </div>
-    <footer class="article-footer">
-      
-        
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li></ul>
-
-        <p class="article-more-link">
-          <a href="/2016/12/29/bluelake.html#more">Read More</a>
-        </p>
-      
-      
-      
-    </footer>
-  </div>
-</article>
-
-
   <article id="post-spring-security-permission" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-inner">
     
@@ -681,6 +619,64 @@
 
         <p class="article-more-link">
           <a href="/2021/11/12/spring-cloud-feign.html#more">Read More</a>
+        </p>
+      
+      
+      
+    </footer>
+  </div>
+</article>
+
+
+  <article id="post-spring-cloud-config" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2021/11/09/spring-cloud-config.html">「SpringCloud」Config配置中心</a>
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2021-11-09T10:01:00.000Z" itemprop="datePublished">2021年11月09日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/SpringCloud/">SpringCloud</a>
+  </div>
+
+      
+      
+<a href="/2021/11/09/spring-cloud-config.html#comments" class="article-comment-link">
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="1-Spring-Cloud-Config简介"><a href="#1-Spring-Cloud-Config简介" class="headerlink" title="1. Spring Cloud Config简介"></a>1. Spring Cloud Config简介</h3><p><code>Spring Cloud Config</code>可以为微服务架构中的应用提供集中化的外部配置支持，它分为服务端和客户端两个部分。<br>服务端被称为分布式配置中心，它是个独立的应用，可以从配置仓库获取配置信息并提供给客户端使用。<br>客户端可以通过配置中心来获取配置信息，在启动时加载配置。<br><code>Spring Cloud Config</code>默认采用<code>Git</code>来存储配置信息，所以天然就支持配置信息的版本管理，并且可以使用<code>Git</code>客户端来方便地管理和访问配置信息。
+      
+    </div>
+    <footer class="article-footer">
+      
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Config/" rel="tag">Config</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li></ul>
+
+        <p class="article-more-link">
+          <a href="/2021/11/09/spring-cloud-config.html#more">Read More</a>
         </p>
       
       

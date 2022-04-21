@@ -145,11 +145,11 @@
     <lastmod>2022-04-14</lastmod>
   </url>
   <url>
-    <loc>http://chaooo.github.io/2020/04/08/jenkins-maven.html</loc>
+    <loc>http://chaooo.github.io/2020/04/04/jenkins-install.html</loc>
     <lastmod>2022-04-14</lastmod>
   </url>
   <url>
-    <loc>http://chaooo.github.io/2020/04/04/jenkins-install.html</loc>
+    <loc>http://chaooo.github.io/2020/04/08/jenkins-maven.html</loc>
     <lastmod>2022-04-14</lastmod>
   </url>
   <url>
@@ -165,6 +165,10 @@
     <lastmod>2022-04-14</lastmod>
   </url>
   <url>
+    <loc>http://chaooo.github.io/2020/11/25/env-centos8-nexus.html</loc>
+    <lastmod>2022-04-14</lastmod>
+  </url>
+  <url>
     <loc>http://chaooo.github.io/2020/08/02/env-centos8-fastdfs.html</loc>
     <lastmod>2022-04-14</lastmod>
   </url>
@@ -174,10 +178,6 @@
   </url>
   <url>
     <loc>http://chaooo.github.io/2020/08/10/env-centos8-nfs.html</loc>
-    <lastmod>2022-04-14</lastmod>
-  </url>
-  <url>
-    <loc>http://chaooo.github.io/2020/11/25/env-centos8-nexus.html</loc>
     <lastmod>2022-04-14</lastmod>
   </url>
   <url>
@@ -217,11 +217,11 @@
     <lastmod>2022-04-14</lastmod>
   </url>
   <url>
-    <loc>http://chaooo.github.io/2020/05/06/docker-install.html</loc>
+    <loc>http://chaooo.github.io/2020/05/07/docker-image.html</loc>
     <lastmod>2022-04-14</lastmod>
   </url>
   <url>
-    <loc>http://chaooo.github.io/2020/05/07/docker-image.html</loc>
+    <loc>http://chaooo.github.io/2020/05/06/docker-install.html</loc>
     <lastmod>2022-04-14</lastmod>
   </url>
   <url>
@@ -297,11 +297,11 @@
     <lastmod>2022-04-14</lastmod>
   </url>
   <url>
-    <loc>http://chaooo.github.io/2018/08/22/database-base.html</loc>
+    <loc>http://chaooo.github.io/2018/10/17/database-mongodb.html</loc>
     <lastmod>2022-04-14</lastmod>
   </url>
   <url>
-    <loc>http://chaooo.github.io/2018/10/17/database-mongodb.html</loc>
+    <loc>http://chaooo.github.io/2018/08/22/database-base.html</loc>
     <lastmod>2022-04-14</lastmod>
   </url>
   <url>
@@ -405,11 +405,11 @@
     <lastmod>2022-04-14</lastmod>
   </url>
   <url>
-    <loc>http://chaooo.github.io/2018/05/11/spring-ssm.html</loc>
+    <loc>http://chaooo.github.io/2018/04/15/spring-transaction.html</loc>
     <lastmod>2022-04-14</lastmod>
   </url>
   <url>
-    <loc>http://chaooo.github.io/2018/04/15/spring-transaction.html</loc>
+    <loc>http://chaooo.github.io/2018/05/11/spring-ssm.html</loc>
     <lastmod>2022-04-14</lastmod>
   </url>
   <url>

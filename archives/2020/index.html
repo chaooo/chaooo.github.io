@@ -123,9 +123,9 @@
   
   <ul class="archive-article archive-type-post">
   <li class="archive-article-inner">
-    <a href="/2020/11/25/env-centos8-git-gogs.html">
+    <a href="/2020/11/25/env-centos8-nexus.html">
       <time class="dt-published" datetime="2020-11-25T10:11:23.000Z" itemprop="datePublished">2020年11月25日</time>
-      | <span class="archive-article-title">「环境配置」Centos 8 私人Git服务器搭建(Gogs)</span>
+      | <span class="archive-article-title">「环境配置」使用Nexus搭建Maven私服（CentOS 8）</span>
     </a>
   </li>
 </ul>
@@ -135,9 +135,9 @@
   
   <ul class="archive-article archive-type-post">
   <li class="archive-article-inner">
-    <a href="/2020/11/25/env-centos8-nexus.html">
+    <a href="/2020/11/25/env-centos8-git-gogs.html">
       <time class="dt-published" datetime="2020-11-25T10:11:23.000Z" itemprop="datePublished">2020年11月25日</time>
-      | <span class="archive-article-title">「环境配置」使用Nexus搭建Maven私服（CentOS 8）</span>
+      | <span class="archive-article-title">「环境配置」Centos 8 私人Git服务器搭建(Gogs)</span>
     </a>
   </li>
 </ul>
@@ -561,6 +561,44 @@
 
 
 
+
+  
+    
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+    
+<script src="//cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+
+    <script>
+      var gitalk = new Gitalk({
+        clientID: 'dd644e0a840b03bbb238',
+        clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+        repo: 'BlogComments',
+        owner: 'chaooo',
+        admin: ['chaooo'],
+        id: md5(window.location.pathname),
+        distractionFreeMode: false,
+        language: 'zh-CN',
+        pagerDirection: 'last'
+      });
+      gitalk.render('comments');
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
 
 
 

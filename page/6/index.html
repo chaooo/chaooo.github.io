@@ -95,69 +95,6 @@
 
       <div class="outer">
         <section id="main">
-  <article id="post-authenticate-shiro-login" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/01/18/authenticate-shiro-login.html">「安全认证」基于Shiro前后端分离的认证与授权(一.认证篇)</a>
-    </h1>
-  
-
-
-      </header>
-    
-    <div class="article-meta">
-      
-      <span class="article-date">
-  <i class="fa fa-date"></i>
-  <time class="dt-published" datetime="2020-01-18T15:26:02.000Z" itemprop="datePublished">2020年01月18日</time>
-</span>
-      
-  <div class="article-category">
-    <i class="fa fa-classify"></i>
-    <a class="article-category-link" href="/categories/safe/">安全认证</a>
-  </div>
-
-      
-      
-<a href="/2020/01/18/authenticate-shiro-login.html#comments" class="article-comment-link">
-  
-  <i class="fa fa-commt"></i>
-  留言
-</a>
-
-
-    </div>
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h3 id="1-开始之前"><a href="#1-开始之前" class="headerlink" title="1. 开始之前"></a>1. 开始之前</h3><h4 id="1-1-技术选型"><a href="#1-1-技术选型" class="headerlink" title="1.1 技术选型"></a>1.1 技术选型</h4><p>选用<code>SpringBoot+Shiro+JWT</code>实现登录认证，结合<code>Redis</code>服务实现<code>token</code>的续签，前端选用<code>Vue</code>动态构造路由及更细粒度的操作权限控制。</p>
-<ul>
-<li>前后端分离项目中，我们一般采用的是无状态登录：服务端不保存任何客户端请求者信息，客户端需要自己携带着信息去访问服务端，并且携带的信息可以被服务端辨认。</li>
-<li>而<code>Shiro</code>默认的拦截跳转都是跳转<code>url</code>页面，拦截校验机制恰恰使用的<code>session</code>；而前后端分离后，后端并无权干涉页面跳转。</li>
-<li>因此前后端分离项目中使用<code>Shiro</code>就需要对其进行改造，我们可以在整合<code>Shiro</code>的基础上自定义登录校验，继续整合<code>JWT</code>(或者 oauth2.0 等)，使其成为支持服务端无状态登录，即<code>token</code>登录。</li>
-<li>在<code>Vue</code>项目中，只需要根据登录用户的权限信息动态的加载路由列表就可以动态的构造出访问菜单。
-      
-    </div>
-    <footer class="article-footer">
-      
-        
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/safe/" rel="tag">安全认证</a></li></ul>
-
-        <p class="article-more-link">
-          <a href="/2020/01/18/authenticate-shiro-login.html#more">Read More</a>
-        </p>
-      
-      
-      
-    </footer>
-  </div>
-</article>
-
-
   <article id="post-authenticate-shiro" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-inner">
     
@@ -738,6 +675,69 @@
 
         <p class="article-more-link">
           <a href="/2019/08/25/jvm-class.html#more">Read More</a>
+        </p>
+      
+      
+      
+    </footer>
+  </div>
+</article>
+
+
+  <article id="post-jvm-stack" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/08/23/jvm-stack.html">「深入JVM」 运行时数据区 与 垃圾回收机制</a>
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2019-08-23T15:15:19.000Z" itemprop="datePublished">2019年08月23日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/JVM/">JVM</a>
+  </div>
+
+      
+      
+<a href="/2019/08/23/jvm-stack.html#comments" class="article-comment-link">
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="Java-虚拟机运行时数据区"><a href="#Java-虚拟机运行时数据区" class="headerlink" title="Java 虚拟机运行时数据区"></a>Java 虚拟机运行时数据区</h3><ol>
+<li>程序计数器（Program Counter Register）</li>
+<li>本地方法栈（Native Method Stack）</li>
+<li>Java 虚拟机栈（VM Stack）</li>
+<li>Java 堆（Heap）（线程共享）</li>
+<li>方法区（Method Area）（线程共享）
+      
+    </div>
+    <footer class="article-footer">
+      
+        
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a></li></ul>
+
+        <p class="article-more-link">
+          <a href="/2019/08/23/jvm-stack.html#more">Read More</a>
         </p>
       
       
