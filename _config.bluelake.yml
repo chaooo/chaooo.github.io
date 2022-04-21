@@ -93,11 +93,11 @@ reward:
 
 # About page
 about:
-  photo_url: http://cdn.itdn.top/blog/themeauthor.jpg ## Your photo e.g. http://cdn.itdn.top/blog/themeauthor.jpg
+  photo_url: /themeauthor.jpg ## Your photo e.g. http://cdn.itdn.top/blog/themeauthor.jpg
   items:
     - label: email
-      url: mailto:zhenggchaoo@gmail.com ## Your email with mailto: e.g.  mailto:zhenggchaoo@gmail.com
-      title: zhenggchaoo@gmail.com ## Your email e.g.  zhenggchaoo@gmail.com
+      url: mailto:chaoles@foxmail.com ## Your email with mailto: e.g.  mailto:chaoles@foxmail.com
+      title: chaoles@foxmail.com ## Your email e.g.  chaoles@foxmail.com
     - label: github
       url: https://github.com/chaooo ## Your github'url e.g.  https://github.com/chaooo
       title: chaooo ## Your github'name e.g.  chaooo
