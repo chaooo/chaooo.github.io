@@ -993,20 +993,6 @@
   </url>
   
   <url>
-    <loc>http://chaooo.github.io/tags/java/</loc>
-    <lastmod>2022-07-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://chaooo.github.io/tags/concurrent/</loc>
-    <lastmod>2022-07-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://chaooo.github.io/tags/bower/</loc>
     <lastmod>2022-07-20</lastmod>
     <changefreq>weekly</changefreq>
@@ -1021,6 +1007,20 @@
   </url>
   
   <url>
+    <loc>http://chaooo.github.io/tags/java/</loc>
+    <lastmod>2022-07-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://chaooo.github.io/tags/concurrent/</loc>
+    <lastmod>2022-07-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>http://chaooo.github.io/tags/db/</loc>
     <lastmod>2022-07-20</lastmod>
     <changefreq>weekly</changefreq>
@@ -1028,14 +1028,14 @@
   </url>
   
   <url>
-    <loc>http://chaooo.github.io/tags/mongodb/</loc>
+    <loc>http://chaooo.github.io/tags/data-structure/</loc>
     <lastmod>2022-07-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://chaooo.github.io/tags/data-structure/</loc>
+    <loc>http://chaooo.github.io/tags/mongodb/</loc>
     <lastmod>2022-07-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1119,6 +1119,13 @@
   </url>
   
   <url>
+    <loc>http://chaooo.github.io/tags/FastDFS/</loc>
+    <lastmod>2022-07-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>http://chaooo.github.io/tags/Git/</loc>
     <lastmod>2022-07-20</lastmod>
     <changefreq>weekly</changefreq>
@@ -1127,13 +1134,6 @@
   
   <url>
     <loc>http://chaooo.github.io/tags/Gogs/</loc>
-    <lastmod>2022-07-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://chaooo.github.io/tags/FastDFS/</loc>
     <lastmod>2022-07-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1154,14 +1154,14 @@
   </url>
   
   <url>
-    <loc>http://chaooo.github.io/tags/Tomcat9/</loc>
+    <loc>http://chaooo.github.io/tags/NFS/</loc>
     <lastmod>2022-07-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://chaooo.github.io/tags/NFS/</loc>
+    <loc>http://chaooo.github.io/tags/Tomcat9/</loc>
     <lastmod>2022-07-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1175,14 +1175,14 @@
   </url>
   
   <url>
-    <loc>http://chaooo.github.io/tags/Shell/</loc>
+    <loc>http://chaooo.github.io/tags/RocketMQ/</loc>
     <lastmod>2022-07-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://chaooo.github.io/tags/RocketMQ/</loc>
+    <loc>http://chaooo.github.io/tags/Shell/</loc>
     <lastmod>2022-07-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1343,6 +1343,13 @@
   </url>
   
   <url>
+    <loc>http://chaooo.github.io/tags/Permissions/</loc>
+    <lastmod>2022-07-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>http://chaooo.github.io/tags/RBAC/</loc>
     <lastmod>2022-07-20</lastmod>
     <changefreq>weekly</changefreq>
@@ -1351,13 +1358,6 @@
   
   <url>
     <loc>http://chaooo.github.io/tags/Token/</loc>
-    <lastmod>2022-07-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://chaooo.github.io/tags/Permissions/</loc>
     <lastmod>2022-07-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1387,14 +1387,14 @@
   </url>
   
   <url>
-    <loc>http://chaooo.github.io/categories/concurrent/</loc>
+    <loc>http://chaooo.github.io/categories/env/</loc>
     <lastmod>2022-07-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://chaooo.github.io/categories/env/</loc>
+    <loc>http://chaooo.github.io/categories/concurrent/</loc>
     <lastmod>2022-07-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
