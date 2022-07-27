@@ -33,9 +33,9 @@
     <category term="数据结构" scheme="http://chaooo.github.io/categories/data-structure/"/>
     
     
-    <category term="数据结构" scheme="http://chaooo.github.io/tags/data-structure/"/>
-    
     <category term="算法" scheme="http://chaooo.github.io/tags/algorithm/"/>
+    
+    <category term="数据结构" scheme="http://chaooo.github.io/tags/data-structure/"/>
     
   </entry>
   
@@ -56,9 +56,9 @@
     <category term="数据结构" scheme="http://chaooo.github.io/categories/data-structure/"/>
     
     
-    <category term="数据结构" scheme="http://chaooo.github.io/tags/data-structure/"/>
-    
     <category term="算法" scheme="http://chaooo.github.io/tags/algorithm/"/>
+    
+    <category term="数据结构" scheme="http://chaooo.github.io/tags/data-structure/"/>
     
   </entry>
   
@@ -67,7 +67,7 @@
     <link href="http://chaooo.github.io/2022/02/26/data-structure-complexity.html"/>
     <id>http://chaooo.github.io/2022/02/26/data-structure-complexity.html</id>
     <published>2022-02-26T10:12:38.000Z</published>
-    <updated>2022-07-27T05:22:18.885Z</updated>
+    <updated>2022-07-27T06:04:07.799Z</updated>
     
     <content type="html"><![CDATA[<p>数据结构与算法解决的是：如何让计算机更快时间、更省空间的解决问题。<br>因此需要从执行时间和占用空间两个维度来评估数据结构和算法的性能，二者统称为复杂度。<br>复杂度描述的是算法执行时间或占用系统空间与数据规模的增长关系。</p><span id="more"></span><p>和性能测试相比，复杂度分析有不依赖执行环境、成本低、效率高、易操作、指导性强的特点。<br>掌握复杂度分析，将能编写出性能更优的代码，有利于降低系统开发和维护成本。</p><h3 id="1-时间复杂度与空间复杂度"><a href="#1-时间复杂度与空间复杂度" class="headerlink" title="1. 时间复杂度与空间复杂度"></a>1. 时间复杂度与空间复杂度</h3><p>大O表示法：所有代码的执行时间<code>T(n)</code>与每行代码的执行次数<code>f(n)</code>成正比，用<code>T(n) = O(f(n))</code>表示，其中<code>n</code>表示数据规模的大小</p><ul><li><code>T(n) = O(f(n))</code>表示<em>算法的执行时间与数据规模之间的增长关系</em>，所以也叫<em>渐进时间复杂度</em>（asymptotic time complexity），简称<strong>时间复杂度</strong>。</li><li>类比一下，S(n)&#x3D;O(f(n))表示<strong>空间复杂度</strong>全称就是<em>渐进空间复杂度</em>（asymptotic space complexity），表示<em>算法的存储空间与数据规模之间的增长关系</em>。</li></ul><h3 id="2-复杂度量级"><a href="#2-复杂度量级" class="headerlink" title="2. 复杂度量级"></a>2. 复杂度量级</h3><ul><li>多项式量级：随着数据规模的增长，算法的执行时间和空间占用，按照多项式的比例增长。这类有：<ul><li>常量阶<code>O(1)</code></li><li>对数阶<code>O(logn)</code></li><li>线性阶<code>O(n)</code></li><li>线性对数阶<code>O(nlogn)</code></li><li>平方阶<code>O(n^2)</code>、立方阶<code>O(n^3)</code>、···、k次方阶<code>O(n^k)</code></li></ul></li><li>非多项式量级NP（NP：Non-Deterministic Polynomial，非确定多项式）：随着数据规模的增长，算法的执行时间和空间占用暴增，这类算法性能极差。非多项式量级只有两个：指数阶<code>O(2^n)</code> 和 阶乘阶<code>O(n!)</code>。</li></ul><p><img src="/2022/02/26/data-structure-complexity/complexity.png"></p><ul><li>复杂度分析法则<ol><li>单段代码看高频：比如循环。</li><li>多段代码取最大：比如一段代码中有单循环和多重循环，那么取多重循环的复杂度。</li><li>嵌套代码求乘积：比如递归、多重循环等</li><li>多个规模求加法：比如方法有两个参数控制两个循环的次数，那么这时就取二者复杂度相加。</li></ol></li></ul><h3 id="3-复杂度分析的4个概念"><a href="#3-复杂度分析的4个概念" class="headerlink" title="3.复杂度分析的4个概念"></a>3.复杂度分析的4个概念</h3><p>代码复杂度在不同情况下出现量级差别时，为了更全面，更准确的描述代码的时间复杂度，所以引入这4个概念。大多数情况下，是不需要区别分析它们的。</p><ol><li>最好时间复杂度（best case time complexity）：代码在最理想情况下执行的时间复杂度。</li><li>最坏时间复杂度（worst case time complexity）：代码在最坏情况下执行的时间复杂度。</li><li>平均时间复杂度（average case time complexity）：用代码在所有情况下执行的次数的加权平均值表示。<ul><li>分析：代码在不同情况下复杂度出现量级差别，则用代码所有可能情况下执行次数的加权平均值表示。</li></ul></li><li>均摊时间复杂度（amortized time complexity）：在代码执行的所有复杂度情况中绝大部分是低级别的复杂度，个别情况是高级别复杂度且发生具有时序关系时，可以将个别高级别复杂度均摊到低级别复杂度上。均摊结果一般都等于低级别复杂度。<ul><li>分析：两个条件满足时使用：①代码在绝大多数情况下是低级别复杂度，只有极少数情况是高级别复杂度；②低级别和高级别复杂度出现具有时序规律。均摊结果一般都等于低级别复杂度。</li></ul></li></ol>]]></content>
     
@@ -79,9 +79,9 @@
     <category term="数据结构" scheme="http://chaooo.github.io/categories/data-structure/"/>
     
     
-    <category term="数据结构" scheme="http://chaooo.github.io/tags/data-structure/"/>
-    
     <category term="算法" scheme="http://chaooo.github.io/tags/algorithm/"/>
+    
+    <category term="数据结构" scheme="http://chaooo.github.io/tags/data-structure/"/>
     
   </entry>
   
