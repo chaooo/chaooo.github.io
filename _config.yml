@@ -100,6 +100,7 @@ tag_map:
   环境配置: env
   并发编程: concurrent
   数据结构: data-structure
+  算法: algorithm
   网络协议: network-protocol
   幂等: idempotent
   
