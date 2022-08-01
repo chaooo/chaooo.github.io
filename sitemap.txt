@@ -1,3 +1,5 @@
+http://chaooo.github.io/2022/03/18/data-structure-hashtable.html
+http://chaooo.github.io/2022/03/12/data-structure-skiplist.html
 http://chaooo.github.io/2022/02/26/data-structure-complexity.html
 http://chaooo.github.io/2022/03/05/data-structure-stack-queue.html
 http://chaooo.github.io/2022/02/28/data-structure-array-linked-list.html
