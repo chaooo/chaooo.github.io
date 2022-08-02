@@ -114,6 +114,7 @@ gitalk:
   client_id: dd644e0a840b03bbb238 ## GitHub client ID, e.g. 75752dafe7907a897619
   client_secret: d0150281d9691f1d856ca44d6f620dd28782c48e ## GitHub client secret, e.g. ec2fb9054972c891289640354993b662f4cccc50
   admin: chaooo ## Github repo owner and collaborators, only these guys can initialize github issues.
+  proxy: http://47.107.48.218/github/login/oauth/access_token
   language: 'zh-CN' ## Language
   # pagerDirection: last # Comment sorting direction, available values are last and first.
 
