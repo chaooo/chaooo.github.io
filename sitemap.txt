@@ -1,3 +1,5 @@
+http://chaooo.github.io/2022/04/25/data-structure-redblacktree.html
+http://chaooo.github.io/2022/04/15/data-structure-avltree.html
 http://chaooo.github.io/2022/04/08/data-structure-binarytree.html
 http://chaooo.github.io/2022/03/25/data-structure-hashalgorithm.html
 http://chaooo.github.io/2022/03/18/data-structure-hashtable.html

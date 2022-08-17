@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://chaooo.github.io/2022/04/25/data-structure-redblacktree.html</loc>
+    <lastmod>2022-08-17</lastmod>
+  </url>
+  <url>
+    <loc>http://chaooo.github.io/2022/04/15/data-structure-avltree.html</loc>
+    <lastmod>2022-08-17</lastmod>
+  </url>
+  <url>
     <loc>http://chaooo.github.io/2022/04/08/data-structure-binarytree.html</loc>
-    <lastmod>2022-08-16</lastmod>
+    <lastmod>2022-08-17</lastmod>
   </url>
   <url>
     <loc>http://chaooo.github.io/2022/03/25/data-structure-hashalgorithm.html</loc>
