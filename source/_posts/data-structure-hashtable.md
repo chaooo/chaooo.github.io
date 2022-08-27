@@ -1,5 +1,5 @@
 ---
-title: 「数据结构与算法」散列表
+title: 「数据结构与算法」散列表（Hash Table）
 date: 2022-03-18 17:46:12
 tags: [算法, 数据结构]
 categories: 数据结构

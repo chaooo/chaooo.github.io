@@ -1,5 +1,5 @@
 ---
-title: 「数据结构与算法」红黑树
+title: 「数据结构与算法」红黑树（Red-Black Tree）
 date: 2022-04-25 19:05:10
 tags: [算法, 数据结构]
 categories: 数据结构
