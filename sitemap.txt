@@ -1,3 +1,4 @@
+http://chaooo.github.io/2022/06/02/data-structure-binary-search.html
 http://chaooo.github.io/2022/05/25/data-structure-sort.html
 http://chaooo.github.io/2022/04/25/data-structure-redblacktree.html
 http://chaooo.github.io/2022/03/18/data-structure-hashtable.html
