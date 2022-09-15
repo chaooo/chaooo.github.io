@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://chaooo.github.io/2022/06/25/data-structure-text-pattern-algorithm.html</loc>
+    <lastmod>2022-09-15</lastmod>
+  </url>
+  <url>
     <loc>http://chaooo.github.io/2022/06/02/data-structure-binary-search.html</loc>
     <lastmod>2022-09-02</lastmod>
   </url>

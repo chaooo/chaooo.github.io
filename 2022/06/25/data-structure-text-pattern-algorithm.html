@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>「数据结构与算法」单模式字符串匹配算法（BF、RK、KMP、BM） | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-data-structure-text-pattern-algorithm" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      「数据结构与算法」单模式字符串匹配算法（BF、RK、KMP、BM）
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2022-06-25T13:15:00.000Z" itemprop="datePublished">2022年06月25日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/data-structure/">数据结构</a>
+  </div>
+
+      
+        <span class="article-views" style="display:none;">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2022/06/25/data-structure-text-pattern-algorithm.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>介绍字符串匹配算法之前，先定义几个概念：</p>
+<ul>
+<li><strong>主串</strong><code>Text</code>: 长度记作 <code>n</code>；</li>
+<li><strong>模式串</strong><code>Pattern</code>: 长度记作 <code>m</code>，并且 <code>m&lt;=n</code>。</li>
+<li>有效位移<code>s</code>（Valid Shift）：即模式串在主串中出现，并且位置移动 <code>s</code> 次。<br><img src="/2022/06/25/data-structure-text-pattern-algorithm/01_01.png"></li>
+</ul>
+<h3 id="1-BF-算法"><a href="#1-BF-算法" class="headerlink" title="1. BF 算法"></a>1. BF 算法</h3><p>BF（Brute Force）算法，中文叫作暴力匹配算法，也叫朴素匹配算法。</p>
+<p>从主串的首或尾开始逐个匹配字母（比较顺序没有限制）。<br><code>BF 算法</code>的思想可以用一句话来概括：在主串中，检查从起始位置 <code>0</code> 开始到 <code>n-m</code> 位置且长度为 <code>m</code> 的 <code>n-m+1</code> 个子串，看有没有跟模式串匹配的。如下图：</p>
+<p><img src="/2022/06/25/data-structure-text-pattern-algorithm/01_02.png"></p>
+<p><code>BF 算法</code>从名字可以看出，这种算法的字符串匹配方式很“暴力”，当然也就会比较简单、好懂，但相应的性能也不高。<br>我们每次都比对 <code>m</code> 个字符，要比对 <code>n-m+1</code> 次，所以，这种算法的最坏情况时间复杂度是 <code>O(n*m)</code>。</p>
+<p>尽管理论上，<code>BF 算法</code>的时间复杂度很高，是 <code>O(n*m)</code>，但在实际的开发中，它却是一个比较常用的字符串匹配算法。原因有两点。</p>
+<ul>
+<li>第一，实际的软件开发中，大部分情况下，模式串和主串的长度都不会太长。而且每次模式串与主串中的子串匹配的时候，当中途遇到不能匹配的字符的时候，就可以就停止了，不需要把 <code>m</code> 个字符都比对一下。所以，尽管理论上的最坏情况时间复杂度是 <code>O(n*m)</code>，但是，统计意义上，大部分情况下，算法执行效率要比这个高很多。</li>
+<li>第二，朴素字符串匹配算法思想简单，代码实现也非常简单。在工程中，在满足性能要求的前提下，简单是首选。这也是我们常说的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/KISS%E5%8E%9F%E5%88%99">KISS（Keep it Simple and Stupid）设计原则</a>。</li>
+</ul>
+<h4 id="1-1-BF-算法总结"><a href="#1-1-BF-算法总结" class="headerlink" title="1.1 BF 算法总结"></a>1.1 BF 算法总结</h4><p><code>BF 算法</code>（Brute Force）是最简单、粗暴的字符串匹配算法，它的实现思路是，拿模式串与主串中是所有子串匹配，看是否有能匹配的子串。<br>尽管理论上的最坏情况时间复杂度很高，是 <code>O(n*m)</code>（<code>n</code>、<code>m</code> 表示主串和模式串的长度）。<br>但在实际的开发中，它却是一个比较常用的字符串匹配算法。因为这种算法实现简单，对于处理小规模的字符串匹配很好用。</p>
+<h4 id="1-2-Java代码实现"><a href="#1-2-Java代码实现" class="headerlink" title="1.2 Java代码实现"></a>1.2 Java代码实现</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 字符串暴力匹配算法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> text 主串</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> pattern 模式串</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">bf</span><span class="params">(String text, String pattern)</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> text.length();</span><br><span class="line">    <span class="type">int</span> <span class="variable">m</span> <span class="operator">=</span> pattern.length();</span><br><span class="line">    <span class="keyword">if</span> (n &lt; m) &#123;<span class="keyword">return</span> -<span class="number">1</span>;&#125;</span><br><span class="line">    <span class="comment">// i表示主串与模式串对齐的第一个字符</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt;= n - m) &#123;</span><br><span class="line">        <span class="type">int</span> j;</span><br><span class="line">        <span class="comment">// 模式串从后往前匹配</span></span><br><span class="line">        <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt;= m-<span class="number">1</span>; ++j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (text.charAt(i+j) != pattern.charAt(j))&#123;</span><br><span class="line">                <span class="keyword">break</span>; <span class="comment">// j为已匹配的字符串下一个字符的下标</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (j == m) &#123;</span><br><span class="line">            <span class="comment">// 匹配成功，返回主串与模式串第一个匹配的字符的位置</span></span><br><span class="line">            <span class="keyword">return</span> i;</span><br><span class="line">        &#125;</span><br><span class="line">        i += <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2-RK-算法"><a href="#2-RK-算法" class="headerlink" title="2. RK 算法"></a>2. RK 算法</h3><p>RK（Rabin-Karp）算法，是由它的两位发明者 Rabin 和 Karp 的名字来命名的。这个算法算是 <code>BF 算法</code>的升级版。</p>
+<p><code>BF 算法</code>中，如果主串长度为 <code>n</code>，模式串长度为 <code>m</code>，那在主串中，就会有 <code>n-m+1</code> 个长度为 <code>m</code> 的子串与模式串匹配。但是，每次检查主串与子串是否匹配，需要依次比对每个字符，所以 <code>BF 算法</code>的时间复杂度就比较高，是 <code>O(n*m)</code>。</p>
+<p><code>RK 算法</code>的思路：通过哈希算法对主串中的 <code>n-m+1</code> 个子串分别求哈希值，然后逐个与模式串的哈希值比较大小。如果某个子串的哈希值与模式串相等，那就说明对应的子串和模式串匹配了。因为哈希值是一个数字，数字之间比较是否相等是非常快速的，所以模式串和子串比较的效率就提高了。</p>
+<p>整个<code>RK 算法</code>包含两部分：<br>第一部分，计算子串哈希值；通过设计特殊的哈希算法，只需要扫描一遍主串就能计算出所有子串的哈希值了，所以这部分的时间复杂度是 <code>O(n)</code>。<br>第二部分，模式串哈希值与每个子串哈希值之间的比较的时间复杂度是 <code>O(1)</code>，总共需要比较 <code>n-m+1</code> 个子串的哈希值，所以，这部分的时间复杂度也是 <code>O(n)</code>。<br>所以，<code>RK 算法</code>整体的时间复杂度就是 <code>O(n)</code>。<br>但是，当存在哈希冲突的时候，有可能存在子串和模式串的哈希值虽然是相同的，但是两者本身并不匹配。极端情况下，如果存在大量的冲突，每次都要再对比子串和模式串本身，那时间复杂度就会退化成 <code>O(n*m)</code>。但也不要太悲观，一般情况下，冲突不会很多，<code>RK 算法</code>的效率还是比 <code>BF 算法</code>高的。</p>
+<h4 id="2-1-RK-算法总结"><a href="#2-1-RK-算法总结" class="headerlink" title="2.1 RK 算法总结"></a>2.1 RK 算法总结</h4><p><code>RK 算法</code>（Rabin-Karp）是对每个子串分别求哈希值，然后拿子串的哈希值与模式串的哈希值比较，减少了比较的时间。<br>理想情况下，<code>RK 算法</code>的时间复杂度是 <code>O(n)</code>。不过这样的效率取决于哈希算法的设计方法，如果存在冲突的情况下，时间复杂度可能会退化。极端情况下，哈希算法大量冲突，时间复杂度就退化为 <code>O(n*m)</code>。</p>
+<h4 id="2-2-Java代码实现"><a href="#2-2-Java代码实现" class="headerlink" title="2.2 Java代码实现"></a>2.2 Java代码实现</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Rabin-Karp算法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> text 主串</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> pattern 模式串</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">rk</span><span class="params">(String text, String pattern)</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> text.length();</span><br><span class="line">    <span class="type">int</span> <span class="variable">m</span> <span class="operator">=</span> pattern.length();</span><br><span class="line">    <span class="keyword">if</span> (n &lt; m) &#123; <span class="keyword">return</span> -<span class="number">1</span>; &#125;</span><br><span class="line">    <span class="comment">// 对模式串与第一个字串求哈希值</span></span><br><span class="line">    <span class="type">Integer</span> <span class="variable">patternCode</span> <span class="operator">=</span> pattern.hashCode();</span><br><span class="line">    <span class="type">String</span> <span class="variable">sub</span> <span class="operator">=</span> text.substring(<span class="number">0</span>, m);</span><br><span class="line">    <span class="type">int</span> <span class="variable">subCode</span> <span class="operator">=</span> sub.hashCode();</span><br><span class="line">    <span class="comment">// 对主串中的n-m+1个子串分别求哈希值</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; n - m + <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="comment">// 哈希值相同，才进一步确认</span></span><br><span class="line">        <span class="keyword">if</span> (patternCode.equals(subCode) &amp;&amp; sub.equals(pattern)) &#123;</span><br><span class="line">            <span class="keyword">return</span> i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 继续下一个子串</span></span><br><span class="line">        i++;</span><br><span class="line">        sub = text.substring(i, i + m);</span><br><span class="line">        subCode = sub.hashCode();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="3-KMP-算法"><a href="#3-KMP-算法" class="headerlink" title="3. KMP 算法"></a>3. KMP 算法</h3><p>KMP（Knuth Morris Pratt）算法，是最常用的之一。它以三个发明者命名，很多时候，提到字符串匹配，我们首先想到的就是<code>KMP 算法</code>。</p>
+<p><code>KMP 算法</code>的核心思想：<br>在模式串与主串匹配的过程中，当遇到不可匹配的字符的时候，我们希望找到一些规律，可以将模式串往后多滑动几位，跳过那些肯定不会匹配的情况。</p>
+<p>先了解几个概念：</p>
+<ul>
+<li><strong>前缀</strong>：指除了最后一个字符以外，一个字符串的全部头部组合；</li>
+<li><strong>后缀</strong>：指除了第一个字符以外，一个字符串的全部尾部组合；</li>
+<li><strong>部分匹配值</strong>：”前缀”和”后缀”的最长的共有元素的长度。</li>
+</ul>
+<p>以模式串”ABCDABD”为例：</p>
+<table>
+<thead>
+<tr>
+<th align="left">子串</th>
+<th align="left">前缀</th>
+<th align="left">后缀</th>
+<th align="left">共有</th>
+<th align="left">长度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">A</td>
+<td align="left">空</td>
+<td align="left">空</td>
+<td align="left">-</td>
+<td align="left">0</td>
+</tr>
+<tr>
+<td align="left">AB</td>
+<td align="left">[A]</td>
+<td align="left">[B]</td>
+<td align="left">-</td>
+<td align="left">0</td>
+</tr>
+<tr>
+<td align="left">ABC</td>
+<td align="left">[A, AB]</td>
+<td align="left">[BC, C]</td>
+<td align="left">-</td>
+<td align="left">0</td>
+</tr>
+<tr>
+<td align="left">ABCD</td>
+<td align="left">[A, AB, ABC]</td>
+<td align="left">[BCD, CD, D]</td>
+<td align="left">-</td>
+<td align="left">0</td>
+</tr>
+<tr>
+<td align="left">ABCDA</td>
+<td align="left">[A, AB, ABC, ABCD]</td>
+<td align="left">[BCDA, CDA, DA, A]</td>
+<td align="left">A</td>
+<td align="left">1</td>
+</tr>
+<tr>
+<td align="left">ABCDAB</td>
+<td align="left">[A, AB, ABC, ABCD, ABCDA]</td>
+<td align="left">[BCDAB, CDAB, DAB, AB, B]</td>
+<td align="left">AB</td>
+<td align="left">2</td>
+</tr>
+<tr>
+<td align="left">ABCDABD</td>
+<td align="left">[A, AB, ABC, ABCD, ABCDA, ABCDAB]</td>
+<td align="left">[BCDABD, CDABD, DABD, ABD, BD, D]</td>
+<td align="left">-</td>
+<td align="left">0</td>
+</tr>
+</tbody></table>
+<p>所以模式串”ABCDABD”的《部分匹配表》是：</p>
+<table>
+<thead>
+<tr>
+<th align="left">模式串</th>
+<th align="left">A</th>
+<th align="left">B</th>
+<th align="left">C</th>
+<th align="left">D</th>
+<th align="left">A</th>
+<th align="left">B</th>
+<th align="left">D</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">部分匹配表</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">2</td>
+<td align="left">0</td>
+</tr>
+</tbody></table>
+<p>“部分匹配”的实质是，有时候，字符串头部和尾部会有重复。比如，”ABCDAB”之中有两个”AB”，那么它的”部分匹配值”就是<code>2</code>（”AB”的长度）。搜索词移动的时候，第一个”AB”向后移动<code>4</code>位（字符串长度-部分匹配值），就可以来到第二个”AB”的位置。<br>所以<code>KMP 算法</code>的后移规律：</p>
+<blockquote>
+<p>移动位数 &#x3D; 已匹配的字符数 - 对应的部分匹配值</p>
+</blockquote>
+<p>根据这个规律，我们以模式串”ABCDABD”来匹配字符串”BBC ABCDAB ABCDABCDABDE”。<code>KMP 算法</code>的匹配顺序是按照模式串下标从小到大。</p>
+<p><img src="/2022/06/25/data-structure-text-pattern-algorithm/01_07.png"></p>
+<p>逐位比较，不匹配就移一位；直到主串有一个字符与模式串的第一个字符相同为止。</p>
+<p><img src="/2022/06/25/data-structure-text-pattern-algorithm/01_08.png"></p>
+<p>已知空格与”D”不匹配时，前面<code>6</code>个字符”ABCDAB”是匹配的。查表可知，最后一个匹配字符”B”对应的”部分匹配值”为<code>2</code>，因此按照规律<code>移动位数 = 已匹配的字符数 - 对应的部分匹配值</code>算出向后移动的位数：<code>6 - 2</code> 等于<code>4</code>，所以将搜索词向后移动<code>4</code>位。</p>
+<p><img src="/2022/06/25/data-structure-text-pattern-algorithm/01_09.png"></p>
+<p>因为空格与”C”不匹配，搜索词还要继续往后移。这时，已匹配的字符数为<code>2</code>（”AB”），对应的”部分匹配值”为<code>0</code>。所以，<code>移动位数 = 2 - 0</code>，于是将搜索词向后移<code>2</code>位。<br>按照规律<code>移动位数 = 已匹配的字符数 - 对应的部分匹配值</code>算出向后移动的位数：<code>2 - 0</code> 等于<code>2</code>，所以将搜索词向后移动<code>2</code>位。<br>继续逐位比较，因为空格与”A”不匹配，继续后移<code>1</code>位。</p>
+<p><img src="/2022/06/25/data-structure-text-pattern-algorithm/01_10.png"></p>
+<p>逐位比较，直到发现”C”与”D”不匹配。于是，<code>移动位数 = 6 - 2</code>，继续将搜索词向后移动<code>4</code>位。<br>逐位比较，直到搜索词的最后一位，发现完全匹配，于是搜索完成。</p>
+<h4 id="3-1-KMP-算法总结"><a href="#3-1-KMP-算法总结" class="headerlink" title="3.1 KMP 算法总结"></a>3.1 KMP 算法总结</h4><p><code>KMP 算法</code>（Knuth Morris Pratt）的核心是利用匹配失败后的信息，尽量减少模式串与主串的匹配次数以达到快速匹配的目的。具体实现就是通过一个<code>next()</code>函数实现，函数本身包含了模式串的局部匹配信息。<code>KMP 算法</code>的时间复杂度<code>O(m+n)</code>。</p>
+<h4 id="3-2-KMP-算法的JAVA-代码实现"><a href="#3-2-KMP-算法的JAVA-代码实现" class="headerlink" title="3.2 KMP 算法的JAVA 代码实现"></a>3.2 KMP 算法的JAVA 代码实现</h4><p><strong>部分匹配值</strong>是模式串中子串”前缀”和”后缀”的<strong>最长</strong>的共有元素的长度。<br>《部分匹配表》在代码中定义为 <strong>next 数组</strong>，很多书中也叫<strong>失效函数</strong>（failure function）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 实现next()函数</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> pattern 模式串</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span>[] kmpNext(String pattern)&#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">m</span> <span class="operator">=</span> pattern.length();</span><br><span class="line">    <span class="comment">// 声明部分匹配表数组 next，用于存储部分匹配值</span></span><br><span class="line">    <span class="type">int</span>[] next = <span class="keyword">new</span> <span class="title class_">int</span>[m];</span><br><span class="line">    <span class="comment">// 第一个字符没有前后缀，最长匹配值为 0</span></span><br><span class="line">    next[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 循环模式串，计算部分匹配表，i初始化为 1</span></span><br><span class="line">    <span class="comment">// j用于记录部分匹配值</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>,j = <span class="number">0</span>; i &lt; m; i++)&#123;</span><br><span class="line">        <span class="comment">// ④ 在0~i中，j&gt;0 并且 pattern.charAt(j) != pattern.charAt(i)时，</span></span><br><span class="line">        <span class="comment">//   表示上一轮比较，前后缀部分匹配值为j。</span></span><br><span class="line">        <span class="comment">//   上一轮比较时，下标[0~j-1]是前后缀最长相同字符串。</span></span><br><span class="line">        <span class="comment">//   下标[j-1]的部分匹配值表示为next[j-1]，即j=next[j-1];</span></span><br><span class="line">        <span class="keyword">while</span>(j &gt; <span class="number">0</span> &amp;&amp; pattern.charAt(j) != pattern.charAt(i))&#123;</span><br><span class="line">            j = next[j - <span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// ① 在0~i中，j=0 并且 pattern.charAt(j) != pattern.charAt(i)时，</span></span><br><span class="line">        <span class="comment">//   表示前后缀字符串集合中没有相同字符串，next[i]=j（同next[i]=0）</span></span><br><span class="line">        <span class="comment">// ② 在0~i中，j=0 并且 pattern.charAt(j) == pattern.charAt(i)时，</span></span><br><span class="line">        <span class="comment">//   表示前后缀字符串集合中有 1 个相同字符串，j++;next[i]=j;（同next[i]=1）</span></span><br><span class="line">        <span class="comment">// ③ 在0~i中，j&gt;0 并且 pattern.charAt(j) == pattern.charAt(i)时，</span></span><br><span class="line">        <span class="comment">//   表示上一轮比较，前后缀部分匹配值为j。这轮为j+1。因此j++;next[i]=j;</span></span><br><span class="line">        <span class="keyword">if</span>(pattern.charAt(i) == pattern.charAt(j))&#123;</span><br><span class="line">            j++;</span><br><span class="line">        &#125;</span><br><span class="line">        next[i] = j;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>KMP 算法</code>的框架代码，比较模式串和主串。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">kmp</span><span class="params">(String text, String pattern)</span>&#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> text.length();</span><br><span class="line">    <span class="type">int</span> <span class="variable">m</span> <span class="operator">=</span> pattern.length();</span><br><span class="line">    <span class="keyword">if</span> (n &lt; m) &#123; <span class="keyword">return</span> -<span class="number">1</span>; &#125;</span><br><span class="line">    <span class="comment">// 计算出部分匹配表</span></span><br><span class="line">    <span class="type">int</span>[] next = kmpNext(pattern);</span><br><span class="line">    <span class="comment">// i表示主串与模式串对齐的第一个字符</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt;= n - m) &#123;</span><br><span class="line">        <span class="type">int</span> j;</span><br><span class="line">        <span class="comment">// 模式串从后往前匹配</span></span><br><span class="line">        <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt;= m-<span class="number">1</span>; ++j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (text.charAt(i+j) != pattern.charAt(j))&#123;</span><br><span class="line">                <span class="keyword">break</span>; <span class="comment">// j为已匹配的字符串下一个字符的下标</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (j == m) &#123;</span><br><span class="line">            <span class="keyword">return</span> i; <span class="comment">// 匹配成功，返回主串与模式串第一个匹配的字符的位置</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> <span class="variable">s</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (j &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// 后移位数 = 已匹配的字符数j - 对应的部分匹配值next[j-1]</span></span><br><span class="line">            s = j - next[j-<span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        i += s;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="4-BM-算法"><a href="#4-BM-算法" class="headerlink" title="4. BM 算法"></a>4. BM 算法</h3><p>BM（Boyer-Moore）算法，也是以两位发明者名字命名的字符串匹配算法。<code>BM 算法</code>不仅效率高，而且构思巧妙，容易理解。</p>
+<p><code>BM 算法</code>的核心思想：<br>我们把模式串和主串的匹配过程，看作模式串在主串中不停地往后滑动。当模式串和主串某个字符不匹配的时候，能够跳过一些肯定不会匹配的情况，将模式串往后多滑动几位。</p>
+<p>BM 算法包含两部分，分别是<strong>坏字符</strong>规则（bad character rule）和<strong>好后缀</strong>规则（good suffix shift）。</p>
+<h4 id="4-1-坏字符规则"><a href="#4-1-坏字符规则" class="headerlink" title="4.1 坏字符规则"></a>4.1 坏字符规则</h4><p><code>BM 算法</code>的匹配顺序比较特别，它是按照模式串下标从大到小的顺序，倒着匹配的。<br>当发现某个字符没法匹配的时候，我们把这个没有匹配的字符叫作”<strong>坏字符</strong>“（bad character）。</p>
+<p><img src="/2022/06/25/data-structure-text-pattern-algorithm/01_03.png"><br>如上图，从尾部开始比较，发现”S”与”E”不匹配，所以”S”就是”坏字符”。<br>并且，”S”不包含在模式串”EXAMPLE”之中，也就是说，可以把模式串直接移到”S”的后一位。</p>
+<p><img src="/2022/06/25/data-structure-text-pattern-algorithm/01_04.png"><br>如上图，依然从尾部开始比较，发现”P”与”E”不匹配，所以”P”是”坏字符”。<br>但是，”P”包含在模式串”EXAMPLE”之中。所以，将模式串后移两位，两个”P”对齐。</p>
+<p>由此我们总结出<strong>坏字符规则</strong>：</p>
+<blockquote>
+<p>后移位数 &#x3D; 坏字符(对应模式串)的位置 - 模式串中的上一次出现位置</p>
+<p>（如果”坏字符”不包含在模式串中，则上一次出现位置为 <code>-1</code>）</p>
+</blockquote>
+<p>如上图，”P”作为”坏字符”为例，出现在模式串的第6位（从0开始编号），在模式串中的上一次出现位置为4，所以后移<code>6 - 4 = 2</code> 位。<br>再以前面”坏字符”的”S”为例，它出现在第6位，上一次出现位置是 -1（即未出现），则整个模式串后移 <code>6 - (-1) = 7</code> 位。</p>
+<h4 id="4-2-好后缀规则"><a href="#4-2-好后缀规则" class="headerlink" title="4.2 好后缀规则"></a>4.2 好后缀规则</h4><p>好后缀规则实际上跟坏字符规则的思路很类似。<br>从尾部开始比较，我们把所有尾部匹配的字符串称为”<strong>好后缀</strong>“（good suffix）。</p>
+<p><img src="/2022/06/25/data-structure-text-pattern-algorithm/01_05.png"><br>如上图，从尾部开始比较，”E”与”E”匹配；”LE”与”LE”匹配；”PLE”与”PLE”匹配；”MPLE”与”MPLE”匹配。<br>所以，”MPLE”、”PLE”、”LE”、”E”都是好后缀。<br>比较前一位，发现”I”与”A”不匹配。所以，”I”是”坏字符”。</p>
+<p><strong>好后缀规则</strong>：</p>
+<blockquote>
+<p>后移位数 &#x3D; 好后缀的位置 - 模式串中的上一次出现位置</p>
+</blockquote>
+<p>举例来说，<br>如果模式串”ABCDAB”的后一个”AB”是”好后缀”。那么<em>好后缀的位置</em>是 <code>5</code>（取最后的”B”的值），<em>模式串中的上一次出现位置</em>是 <code>1</code>（第一个”B”的位置），所以后移<code>5 - 1 = 4</code>位。<br>如果模式串”ABCDEF”的”EF”是好后缀，则<em>好后缀的位置</em>是<code>5</code> ，<em>上一次出现的位置</em>是<code>-1</code>（即未出现），所以后移<code>5 - (-1) = 6</code>位。</p>
+<ul>
+<li>好后缀规则三个注意点：<ol>
+<li>“好后缀”的位置以最后一个字符为准。<ul>
+<li>假定”ABCDEF”的”EF”是好后缀，则它的位置以”F”为准，即5。</li>
+</ul>
+</li>
+<li>如果”好后缀”在搜索词中只出现一次，则它的上一次出现位置为 -1。<ul>
+<li>比如，”EF”在”ABCDEF”之中只出现一次，则它的上一次出现位置为-1（即未出现）。</li>
+</ul>
+</li>
+<li>如果”好后缀”有多个，则除了最长的那个”好后缀”，其他”好后缀”的上一次出现位置必须在头部。<ul>
+<li>比如，假定”BABCDAB”的”好后缀”是”DAB”、”AB”、”B”，此时计算上一次出现位置是第0位，采用好后缀”B”计算。这个规则也可以这样表达：如果最长的那个”好后缀”只出现一次，则可以把搜索词改写成如下形式进行位置计算”(DA)BABCDAB”，即虚拟加入最前面的”DA”。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<p>回到上图的例子。此时，所有的”好后缀”（MPLE、PLE、LE、E）之中，只有”E”在”EXAMPLE”还出现在头部，所以好后缀规则是后移<code>6 - 0 = 6</code>位。<br>而”I”是”坏字符”，坏字符规则后移<code>2 - (-1) = 3</code>位。<br>可以看到，”坏字符规则”只能移3位，”好后缀规则”可以移6位。所以，<code>BM 算法</code>的基本思想是，<strong>每次后移这两个规则之中的较大值</strong>。</p>
+<p>更巧妙的是，这两个规则的移动位数，只与搜索词有关，与原字符串无关。因此，可以预先计算生成《坏字符规则表》和《好后缀规则表》。使用时，只要查表比较一下就可以了。</p>
+<p><img src="/2022/06/25/data-structure-text-pattern-algorithm/01_06.png"><br>继续从尾部开始比较，”P”与”E”不匹配，因此”P”是”坏字符”。根据”坏字符规则”，后移 <code>6 - 4 = 2</code>位；<br>从尾部开始逐位比较，发现全部匹配，于是搜索结束。</p>
+<h4 id="4-3-BM-算法总结"><a href="#4-3-BM-算法总结" class="headerlink" title="4.3 BM 算法总结"></a>4.3 BM 算法总结</h4><p><code>BM 算法</code>（Boyer-Moore）核心思想是，利用模式串本身的特点，在模式串中某个字符与主串不能匹配的时候，将模式串往后多滑动几位，以此来减少不必要的字符比较，提高匹配的效率。<code>BM 算法</code>构建的规则有两类，坏字符规则和好后缀规则。</p>
+<h4 id="4-4-BM-算法的JAVA-代码实现"><a href="#4-4-BM-算法的JAVA-代码实现" class="headerlink" title="4.4 BM 算法的JAVA 代码实现"></a>4.4 BM 算法的JAVA 代码实现</h4><p><code>BM 算法</code>的框架代码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">bm</span><span class="params">(String text, String pattern)</span>&#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> text.length();</span><br><span class="line">    <span class="type">int</span> <span class="variable">m</span> <span class="operator">=</span> pattern.length();</span><br><span class="line">    <span class="keyword">if</span> (n &lt; m) &#123; <span class="keyword">return</span> -<span class="number">1</span>; &#125;</span><br><span class="line">    <span class="comment">// 计算 坏字符规则表，记录模式串中每个字符最后出现的位置</span></span><br><span class="line">    Map&lt;Character, Integer&gt; badCharRules = generateBadCharRules(pattern);</span><br><span class="line">    <span class="comment">// 计算 好后缀规则表，记录好后缀位置对应后移的位数</span></span><br><span class="line">    <span class="type">int</span>[] goodSuffixRules = generateGoodSuffix(pattern.toCharArray());</span><br><span class="line">    <span class="comment">// i表示主串与模式串对齐的第一个字符</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt;= n - m) &#123;</span><br><span class="line">        <span class="type">int</span> j;</span><br><span class="line">        <span class="comment">// 模式串从后往前匹配</span></span><br><span class="line">        <span class="keyword">for</span> (j = m - <span class="number">1</span>; j &gt;= <span class="number">0</span>; --j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (text.charAt(i+j) != pattern.charAt(j))&#123;</span><br><span class="line">                <span class="keyword">break</span>; <span class="comment">// 坏字符对应模式串中的下标是j</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (j &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// 匹配成功，返回主串与模式串第一个匹配的字符的位置</span></span><br><span class="line">            <span class="keyword">return</span> i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 后移位数 = 坏字符(对应模式串)的位置 - 坏字符在模式串中最后出现位置</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">s1</span> <span class="operator">=</span> j - getBadCharPosition(badCharRules, text.charAt(i + j));</span><br><span class="line">        <span class="comment">// 好后缀后移位数</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">s2</span> <span class="operator">=</span> goodSuffixRules[j];</span><br><span class="line">        <span class="comment">//后移这两个规则之中的较大值</span></span><br><span class="line">        i += Math.max(s1, s2);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="4-4-1-坏字符规则表"><a href="#4-4-1-坏字符规则表" class="headerlink" title="4.4.1 坏字符规则表"></a>4.4.1 坏字符规则表</h5><p>计算模式串中每个字符最后出现的位置。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 坏字符规则表</span></span><br><span class="line"><span class="comment"> * 记录模式串中每个字符最后出现的位置</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> Map&lt;Character, Integer&gt; <span class="title function_">generateBadCharRules</span><span class="params">(String pattern)</span> &#123;</span><br><span class="line">    Map&lt;Character, Integer&gt; bmBc = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;(pattern.length());</span><br><span class="line">    <span class="comment">// 选择最靠后的那个，因为这样不会让模式串滑动过多，导致本来可能匹配的情况被滑动略过</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>; j &lt; pattern.length(); j++) &#123;</span><br><span class="line">        bmBc.put(pattern.charAt(j), j);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> bmBc;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 获取坏字符在模式串中最后出现位置</span></span><br><span class="line"><span class="comment"> * 未出现返回 -1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">getBadCharPosition</span><span class="params">(Map&lt;Character, Integer&gt; badChar, Character c)</span>&#123;</span><br><span class="line">    <span class="type">Integer</span> <span class="variable">a</span> <span class="operator">=</span> badChar.get(c);</span><br><span class="line">    <span class="keyword">return</span> a == <span class="literal">null</span> ? -<span class="number">1</span> : a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="4-4-2-好后缀规则表"><a href="#4-4-2-好后缀规则表" class="headerlink" title="4.4.2 好后缀规则表"></a>4.4.2 好后缀规则表</h5><p>好后缀规则表，用来记录好后缀位置对应后移的位数。<br>为了实现好后缀规则，需要定义一个<code>suffix</code>数组，用来记录模式串中匹配上好后缀的子串长度。<br>其中，<code>suffix[i] = s</code>满足<code>pattern[i-s,i] == pattern[m-1-s,m-1]</code>，<code>m</code>是模式串的长度。如下图：<code>pattern[i-4,i]</code>和<code>pattern[m-5,m-1]</code>字符相同。<br><img src="/2022/06/25/data-structure-text-pattern-algorithm/01_11.png"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 计算后缀长度数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> pattern 模式串字符</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span>[] getSuffix(<span class="type">char</span>[] pattern)&#123;</span><br><span class="line">    <span class="comment">// 初始化</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">m</span> <span class="operator">=</span> pattern.length;</span><br><span class="line">    <span class="type">int</span>[] suffix = <span class="keyword">new</span> <span class="title class_">int</span>[m];</span><br><span class="line">    <span class="comment">// 计算</span></span><br><span class="line">    suffix[m-<span class="number">1</span>] = m;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> m-<span class="number">2</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">q</span> <span class="operator">=</span> i;</span><br><span class="line">        <span class="keyword">while</span> (q &gt;= <span class="number">0</span> &amp;&amp; pattern[q] == pattern[q+m-<span class="number">1</span>-i])&#123;</span><br><span class="line">            q--;</span><br><span class="line">        &#125;</span><br><span class="line">        suffix[i] = i-q;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 返回后缀长度数组</span></span><br><span class="line">    <span class="keyword">return</span> suffix;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有了<code>suffix</code>数组，就可以定义好后缀忽略映射<code>bmgs</code>数组。<br><code>suffix[i]</code>表示模式串中匹配上好后缀的子串长度（<code>i</code>表示子串的末位置）；<br><code>bmgs[j]</code>表示好后缀位置对应后移的位数（<code>j</code>表示好后缀前一个字符的位置，即坏字符的位置）。<br>根据<strong>好后缀规则</strong>：<code>后移位数 = 好后缀的位置 - 模式串中的上一次出现位置</code>，构建<code>bmgs</code>数组分为三种情况：</p>
+<ul>
+<li>①模式串没有子串匹配上好后缀，也没有最大前缀。<ul>
+<li>后移位数为<code>m-1-(-1)</code>，即<code>bmgs[j]=m</code>。</li>
+</ul>
+</li>
+<li>②模式串没有子串匹配上好后缀，但有最大前缀。<ul>
+<li>后移位数为<code>m-1-i</code>，即<code>bmgs[j] = m-1-i</code>。<br><img src="/2022/06/25/data-structure-text-pattern-algorithm/01_13.png"></li>
+</ul>
+</li>
+<li>③模式串有子串匹配上好后缀。<ul>
+<li>后移位数为<code>m-1-i</code>，即<code>bmgs[j] = m-1-i; j=m-1-suffix[i]</code>。<br><img src="/2022/06/25/data-structure-text-pattern-algorithm/01_12.png"></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 好后缀忽略映射（后移位数数组）</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> pattern 模式串字符</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span>[] generateGoodSuffix(<span class="type">char</span>[] pattern)&#123;</span><br><span class="line">    <span class="comment">// 初始化</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">m</span> <span class="operator">=</span> pattern.length;</span><br><span class="line">    <span class="type">int</span>[] bmgs = <span class="keyword">new</span> <span class="title class_">int</span>[m];</span><br><span class="line">    <span class="comment">// 获取后缀长度数组</span></span><br><span class="line">    <span class="type">int</span>[] suffix = getSuffix(pattern);</span><br><span class="line">    <span class="comment">// 赋值默认值</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; j &lt; m; ++j) &#123;</span><br><span class="line">        bmgs[j] = m;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 模式串没有没有子串匹配上好后缀，但有最大前缀</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> m-<span class="number">1</span>, j = <span class="number">0</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (suffix[i] == i+<span class="number">1</span>)&#123;</span><br><span class="line">            <span class="keyword">for</span> (; j &lt; m-<span class="number">1</span>-i; ++j) &#123;</span><br><span class="line">                <span class="keyword">if</span>(bmgs[j] == m)&#123;</span><br><span class="line">                    bmgs[j] = m-<span class="number">1</span>-i;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 模式串有子串匹配上好后缀（多个取最左）</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; m-<span class="number">1</span>; ++i) &#123;</span><br><span class="line">        bmgs[m-<span class="number">1</span>-suffix[i]] = m-<span class="number">1</span>-i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 返回忽略数组</span></span><br><span class="line">    <span class="keyword">return</span> bmgs;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-BF-%E7%AE%97%E6%B3%95"><span class="toc-text">1. BF 算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-BF-%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93"><span class="toc-text">1.1 BF 算法总结</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-Java%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">1.2 Java代码实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-RK-%E7%AE%97%E6%B3%95"><span class="toc-text">2. RK 算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-RK-%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93"><span class="toc-text">2.1 RK 算法总结</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-Java%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">2.2 Java代码实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-KMP-%E7%AE%97%E6%B3%95"><span class="toc-text">3. KMP 算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-KMP-%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93"><span class="toc-text">3.1 KMP 算法总结</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-KMP-%E7%AE%97%E6%B3%95%E7%9A%84JAVA-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">3.2 KMP 算法的JAVA 代码实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-BM-%E7%AE%97%E6%B3%95"><span class="toc-text">4. BM 算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-%E5%9D%8F%E5%AD%97%E7%AC%A6%E8%A7%84%E5%88%99"><span class="toc-text">4.1 坏字符规则</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-%E5%A5%BD%E5%90%8E%E7%BC%80%E8%A7%84%E5%88%99"><span class="toc-text">4.2 好后缀规则</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-BM-%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93"><span class="toc-text">4.3 BM 算法总结</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-4-BM-%E7%AE%97%E6%B3%95%E7%9A%84JAVA-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">4.4 BM 算法的JAVA 代码实现</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#4-4-1-%E5%9D%8F%E5%AD%97%E7%AC%A6%E8%A7%84%E5%88%99%E8%A1%A8"><span class="toc-text">4.4.1 坏字符规则表</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-4-2-%E5%A5%BD%E5%90%8E%E7%BC%80%E8%A7%84%E5%88%99%E8%A1%A8"><span class="toc-text">4.4.2 好后缀规则表</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/2022/06/25/data-structure-text-pattern-algorithm.html">http://chaooo.github.io/2022/06/25/data-structure-text-pattern-algorithm.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/" rel="tag">算法</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2022/06/02/data-structure-binary-search.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          「数据结构与算法」二分查找
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/06/25/data-structure-text-pattern-algorithm.html">「数据结构与算法」单模式字符串匹配算法（BF、RK、KMP、BM）</a>
+          </li>
+        
+          <li>
+            <a href="/2022/06/02/data-structure-binary-search.html">「数据结构与算法」二分查找</a>
+          </li>
+        
+          <li>
+            <a href="/2022/05/25/data-structure-sort.html">「数据结构与算法」排序算法</a>
+          </li>
+        
+          <li>
+            <a href="/2022/05/10/data-structure-graph.html">「数据结构与算法」图（Graph）</a>
+          </li>
+        
+          <li>
+            <a href="/2022/05/02/data-structure-heap.html">「数据结构与算法」堆（Heap）</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 10.63px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 15.63px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.63px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 11.88px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 11.88px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.25px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.25px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 16.25px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 11.88px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 11.88px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 16.25px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 11.88px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.13px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.63px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 13.75px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.63px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.5px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.75px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 13.75px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.5px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.13px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 13.75px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.25px;">hexo</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 16.88px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 11.88px;">并发编程</a> <a href="/tags/db/" style="font-size: 14.38px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 18.13px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.38px;">环境配置</a> <a href="/tags/algorithm/" style="font-size: 17.5px;">算法</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022年</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">算法</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p style="display:none;">
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow">粤ICP备19039226号</a>
+      </p>
+      <p>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+  </div>
+  
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+    
+<script src="/localshare/js/social-share.js"></script>
+
+    
+<script src="/localshare/js/qrcode.js"></script>
+
+  
+  
+
+
+
+  
+    
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+    
+<script src="//cdn.bootcdn.net/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
+
+    <script>
+      var gitalk = new Gitalk({
+        clientID: 'dd644e0a840b03bbb238',
+        clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+        repo: 'BlogComments',
+        owner: 'chaooo',
+        admin: ['chaooo'],
+        proxy: 'https://cors-server-ecru.vercel.app/github_access_token',
+        id: md5(window.location.pathname),
+        distractionFreeMode: false,
+        language: 'zh-CN',
+        pagerDirection: 'last'
+      });
+      gitalk.render('comments');
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+
+
+
+
+</body>
+</html>
