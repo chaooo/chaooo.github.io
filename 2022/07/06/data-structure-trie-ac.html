@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>「数据结构与算法」Trie 树 与 AC 自动机 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-data-structure-trie-ac" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      「数据结构与算法」Trie 树 与 AC 自动机
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2022-07-06T12:25:00.000Z" itemprop="datePublished">2022年07月06日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/data-structure/">数据结构</a>
+  </div>
+
+      
+        <span class="article-views" style="display:none;">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2022/07/06/data-structure-trie-ac.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><code>Trie 树</code>，也叫“字典树”、“前缀树”。它是一种有序树形结构。是一种专门处理字符串匹配的数据结构，用来解决在一组字符串集合中快速查找某个字符串的问题。<br><code>AC 自动机</code>以**<code>Trie 树</code>的结构<strong>为基础，结合</strong><code>KMP</code>的思想**建立的，是一种用于解决多模式匹配问题的经典算法。</p>
+<span id="more"></span>
+
+<h3 id="1-Trie-树"><a href="#1-Trie-树" class="headerlink" title="1. Trie 树"></a>1. Trie 树</h3><p><code>Trie 树</code>的本质，就是利用字符串之间的公共前缀，将重复的前缀合并在一起。</p>
+<p>举例说明一下。我们有<code>6</code>个字符串：<code>how，hi，her，hello，so，see</code>。构造出来<code>Trie 树</code>的结构就是下面这个图中的样子。</p>
+<p><img src="/2022/07/06/data-structure-trie-ac/02_01.webp"></p>
+<p>其中，根节点不包含任何信息。每个节点表示一个字符串中的字符，从根节点到红色节点的一条路径表示一个字符串（注意：红色节点表示一个单词的结尾，红色节点并不都是叶子节点）。</p>
+<p><code>Trie 树</code>构造的分解过程：</p>
+<p><img src="/2022/07/06/data-structure-trie-ac/02_02.webp"><br><img src="/2022/07/06/data-structure-trie-ac/02_03.webp"></p>
+<p>当我们在 <code>Trie 树</code>中查找一个字符串的时候，比如查找字符串“her”，从 <code>Trie 树</code>的根节点开始匹配。如图所示，绿色的路径就是在 <code>Trie 树</code>中匹配的路径。</p>
+<p><img src="/2022/07/06/data-structure-trie-ac/02_04.webp"></p>
+<h4 id="1-1-Trie-树-的实现"><a href="#1-1-Trie-树-的实现" class="headerlink" title="1.1 Trie 树 的实现"></a>1.1 Trie 树 的实现</h4><p><code>Trie 树</code>是一个多叉树。假如这个字典只包括<code>26</code>个英文字母（暂且都定为小写），那么这个树的深度会由具体单词不一样而定。但是它的广度范围是可以提前确定好的。对于每个节点，广度最大为<code>26</code>。（因为每个节点的下一个字母（即后缀点）只可能是<code>26</code>个字母。）<br>每个节点存储为<code>26</code>个元素(<code>a-z</code>)的数组，下标<code>0-25</code>存储子节点数组的位置，子节点数组仍然为<code>26</code>个元素的数组。我们在数组中下标为<code>0</code>的位置，存储指向子节点<code>a</code>的指针，下标为<code>1</code>的位置存储指向子节点<code>b</code>的指针，以此类推，下标为<code>25</code>的位置，存储的是指向的子节点<code>z</code>的指针。如果某个字符的子节点不存在，我们就在对应的下标的位置存储<code>null</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">TrieNode</span> &#123;</span><br><span class="line">  <span class="type">char</span> data;</span><br><span class="line">  TrieNode children[<span class="number">26</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当我们在 <code>Trie 树</code>中查找字符串的时候，我们就可以通过字符的<code>ASCII</code>码减去<code>a</code>的<code>ASCII</code>码，迅速找到匹配的子节点的指针。<br>比如，<code>d</code>的<code>ASCII</code>码减去<code>a</code>的<code>ASCII</code>码就是<code>3</code>，那子节点<code>d</code>的指针就存储在数组中下标为<code>3</code>的位置中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Trie</span> &#123;</span><br><span class="line">  <span class="comment">// 根节点存储无意义字符</span></span><br><span class="line">  <span class="keyword">private</span> <span class="type">TrieNode</span> <span class="variable">root</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TrieNode</span>(<span class="string">&#x27;/&#x27;</span>);</span><br><span class="line">  <span class="comment">// 往Trie树中插入一个字符串</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">insert</span><span class="params">(<span class="type">char</span>[] text)</span> &#123;</span><br><span class="line">    <span class="type">TrieNode</span> <span class="variable">p</span> <span class="operator">=</span> root;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; text.length; ++i) &#123;</span><br><span class="line">      <span class="type">int</span> <span class="variable">index</span> <span class="operator">=</span> text[i] - <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">      <span class="keyword">if</span> (p.children[index] == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="type">TrieNode</span> <span class="variable">newNode</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TrieNode</span>(text[i]);</span><br><span class="line">        p.children[index] = newNode;</span><br><span class="line">      &#125;</span><br><span class="line">      p = p.children[index];</span><br><span class="line">    &#125;</span><br><span class="line">    p.isEndingChar = <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 在Trie树中查找一个字符串</span></span><br><span class="line">  <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">find</span><span class="params">(<span class="type">char</span>[] pattern)</span> &#123;</span><br><span class="line">    <span class="type">TrieNode</span> <span class="variable">p</span> <span class="operator">=</span> root;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; pattern.length; ++i) &#123;</span><br><span class="line">      <span class="type">int</span> <span class="variable">index</span> <span class="operator">=</span> pattern[i] - <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">      <span class="comment">// 不存在pattern</span></span><br><span class="line">      <span class="keyword">if</span> (p.children[index] == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      p = p.children[index];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 不能完全匹配，只是前缀</span></span><br><span class="line">    <span class="keyword">if</span> (p.isEndingChar == <span class="literal">false</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="comment">// 找到pattern</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TrieNode</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">char</span> data;</span><br><span class="line">    <span class="keyword">public</span> TrieNode[] children = <span class="keyword">new</span> <span class="title class_">TrieNode</span>[<span class="number">26</span>];</span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="variable">isEndingChar</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">TrieNode</span><span class="params">(<span class="type">char</span> data)</span> &#123;</span><br><span class="line">      <span class="built_in">this</span>.data = data;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2-Trie-树-的复杂度"><a href="#1-2-Trie-树-的复杂度" class="headerlink" title="1.2 Trie 树 的复杂度"></a>1.2 Trie 树 的复杂度</h4><p>构建<code>Trie 树</code>的过程，需要扫描所有的字符串，时间复杂度是 <code>O(n)</code>（<code>n</code> 表示所有字符串的长度和）。<br>但是一旦构建成功之后，后续的查询操作会非常高效，时间复杂度是 <code>O(k)</code>（<code>k</code>表示要查找的字符串的长度）。<br>所以<code>Trie 树</code>的查找时间复杂度<code>O(k)</code>是可以忽略不计的。</p>
+<p><code>Trie 树</code>用的是一种空间换时间的思路，用数组来存储一个节点的子节点的指针。如果字符串中包含从<code>a-z</code>这<code>26</code>个字符，那每个节点都要存储一个长度为<code>26</code>的数组，如果字符串中不仅包含小写字母，还包含大写字母、数字、甚至是中文，那需要的存储空间就更多了。所以，也就是说，在某些情况下，<code>Trie 树</code>不一定会节省存储空间。在重复的前缀并不多的情况下，<code>Trie 树</code>不但不能节省内存，还有可能会浪费更多的内存。<br><code>Trie 树</code>尽管有可能很浪费内存，但是确实非常高效。那为了解决这个内存问题，我们可以稍微牺牲一点查询的效率，将每个节点中的数组换成其他数据结构，来存储一个节点的子节点指针。比如有序数组、跳表、散列表、红黑树等。</p>
+<p><code>Trie 树</code>可以应用于 搜索引擎的搜索关键词提示、输入法自动补全功能、IDE 代码编辑器自动补全功能、浏览器网址输入的自动补全功能等等。</p>
+<h3 id="2-AC-自动机"><a href="#2-AC-自动机" class="headerlink" title="2. AC 自动机"></a>2. AC 自动机</h3><p><code>AC 自动机</code>（Aho-Corasick Automaton）算法，是一种用于解决多模式匹配问题的经典算法。自动机是一个数学模型，自动机的结构就是一张<strong>有向图</strong>。通过将模式串预处理为确定有限状态自动机，扫描文本一遍就能结束。其复杂度为O(n)，即与模式串的数量和长度无关。<br><code>AC 自动机</code>以**<code>Trie 树</code>的结构<strong>为基础，结合</strong><code>KMP</code>的思想**建立的。<br>简单来说，建立一个<code>AC 自动机</code>有两个步骤：</p>
+<ol>
+<li>基础的<code>Trie 树</code>结构：将所有的模式串构成一棵<code>Trie 树</code>。</li>
+<li><code>KMP</code> 的思想：对<code>Trie 树</code>上所有的结点构造失配指针（相当于<code>KMP</code>中的失效函数<code>next</code>数组）。<br>然后就可以利用它进行<strong>多模式匹配</strong>了。</li>
+</ol>
+<blockquote>
+<ul>
+<li>单模式串匹配算法，是在一个模式串和一个主串之间进行匹配，也就是说，在一个主串中查找一个模式串。</li>
+<li>多模式串匹配算法，就是在多个模式串和一个主串之间做匹配，也就是说，<strong>在一个主串中查找多个模式串</strong>。</li>
+</ul>
+</blockquote>
+<p>举个<code>AC自动机</code>的构建的例子：假设文本串是<code>shisherhis</code>，模式串有<code>4</code>个，分别为<code>&#123;he,her,his,she&#125;</code>，我们用模式串建一颗<code>Trie 树</code>。如下图：</p>
+<p><img src="/2022/07/06/data-structure-trie-ac/02_05.png"></p>
+<p>紫色虚线表示<strong>失配指针</strong>，失配指针的作用是在这个模式串失配后快速跳到下一个有可能成功匹配的模式串来匹配，即利用已知信息来加速匹配。如下图：</p>
+<p><img src="/2022/07/06/data-structure-trie-ac/02_06.png"></p>
+<p>其实，构建<strong>失配指针</strong>其实就是在找<strong>最长的与当前失配模式串后缀(已匹配后缀)相同的与下一个模式串的前缀</strong>，其实最长的话就可以保证每个有可能匹配的模式串都匹配到，假设当前节点模式串失配了，就跳最大的前缀，如果又失配，就又到最大前缀的最大前缀，直到没有为止，这样就可以保证全部考虑到。<br>画个图来理解：<br><img src="/2022/07/06/data-structure-trie-ac/02_07.png"></p>
+<p>计算每个节点的失败指针这个过程看起来有些复杂。其实，如果我们把树中相同深度的节点放到同一层，那么某个节点的失败指针只有可能出现在它所在层的上层。<br>可以像<code>KMP 算法</code>那样，当我们要求某个节点的失败指针的时候，我们通过已经求得的、深度更小的那些节点的失败指针来推导。也就是说，我们可以逐层依次来求解每个节点的失败指针。所以，失败指针的构建过程，是一个按层遍历的过程（广度优先搜索(BFS)）。</p>
+<blockquote>
+<ul>
+<li><code>广度优先搜索（Breadth-First-Search）</code>，简称 <code>BFS</code>。直观地讲，它其实就是一种“地毯式”层层推进的搜索策略，即先查找离起始顶点最近的，然后是次近的，依次往外搜索。</li>
+<li><code>深度优先搜索（Depth-First-Search）</code>，简称 <code>DFS</code>。它会尽可能深地搜索分支，最直观的例子就是“走迷宫”，即走迷宫发现走不通的时候，你就回退到上一个岔路口，重新选择一条路继续走，直到最终找到出口。</li>
+</ul>
+</blockquote>
+<h3 id="3-AC-自动机的-Java-实现"><a href="#3-AC-自动机的-Java-实现" class="headerlink" title="3. AC 自动机的 Java 实现"></a>3. AC 自动机的 Java 实现</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * AC 自动机的 Java 实现</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AC</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 本示例中的AC自动机只处理 英文类型的字符串；</span></span><br><span class="line"><span class="comment">     * ASCII码到目前为止共定义了128个字符；</span></span><br><span class="line"><span class="comment">     * 包括大小写字母、数字0-9、标点符号，以及在英文中使用的特殊控制字符。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">ASCII</span> <span class="operator">=</span> <span class="number">128</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 根结点不存储任何字符信息</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Node root;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 匹配结果集合，key表示模式串，value表示模式串在文本串出现的位置</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> HashMap&lt;String, List&lt;Integer&gt;&gt; result = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 内部静态类，用于表示AC自动机的每个结点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Node</span>&#123;</span><br><span class="line">        <span class="comment">/** 该结点对应的字符 */</span></span><br><span class="line">        <span class="keyword">public</span> <span class="type">char</span> data;</span><br><span class="line">        <span class="comment">/** 深度：根节点到这个节点所经历的路径（边数）*/</span></span><br><span class="line">        <span class="keyword">public</span> <span class="type">int</span> <span class="variable">depth</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="comment">/** ASCII == 128, 所以这里相当于128叉树 */</span></span><br><span class="line">        <span class="keyword">public</span> Node[] children = <span class="keyword">new</span> <span class="title class_">Node</span>[ASCII];</span><br><span class="line">        <span class="comment">/** 失配指针 */</span></span><br><span class="line">        Node fail;</span><br><span class="line">        <span class="comment">/** 是否结尾字符 */</span></span><br><span class="line">        <span class="keyword">public</span> <span class="type">boolean</span> <span class="variable">isWord</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="comment">/** 构造函数 */</span></span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">Node</span><span class="params">()</span> &#123;&#125;</span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">Node</span><span class="params">(<span class="type">char</span> data)</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.data = data;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 通过模式串构建 Trie树</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">buildTrieTree</span><span class="params">(String[] patterns)</span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (String pattern : patterns) &#123;</span><br><span class="line">            <span class="comment">// 初始化匹配结果集合</span></span><br><span class="line">            result.put(pattern, <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;Integer&gt;());</span><br><span class="line">            <span class="comment">// 通过模式串构建 Trie树</span></span><br><span class="line">            <span class="type">Node</span> <span class="variable">p</span> <span class="operator">=</span> root;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; pattern.length(); ++i) &#123;</span><br><span class="line">                <span class="type">char</span> <span class="variable">ch</span> <span class="operator">=</span> pattern.charAt(i);</span><br><span class="line">                <span class="keyword">if</span> (p.children[ch] == <span class="literal">null</span>) &#123;</span><br><span class="line">                    p.children[ch] = <span class="keyword">new</span> <span class="title class_">Node</span>(pattern.charAt(i));</span><br><span class="line">                    p.children[ch].depth = p.depth + <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                p = p.children[ch];</span><br><span class="line">            &#125;</span><br><span class="line">            p.isWord = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 对 Trie树 上所有的结点构造失配指针</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">buildFailurePointer</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// LinkedList 实现了 Queue 接口，可作为队列使用(先进先出)</span></span><br><span class="line">        Queue&lt;Node&gt; queue = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">        <span class="comment">// 单独处理根结点下的第一层子结点</span></span><br><span class="line">        <span class="keyword">for</span> (Node x : root.children)&#123;</span><br><span class="line">            <span class="keyword">if</span>(x != <span class="literal">null</span>)&#123;</span><br><span class="line">                <span class="comment">// 根结点的所有孩子结点的fail都指向根结点</span></span><br><span class="line">                x.fail = root;</span><br><span class="line">                <span class="comment">// 所有根结点的孩子结点入队列</span></span><br><span class="line">                queue.add(x);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span>(!queue.isEmpty())&#123;</span><br><span class="line">            <span class="comment">// 出队列结点的孩子结点的fail指向</span></span><br><span class="line">            <span class="type">Node</span> <span class="variable">p</span> <span class="operator">=</span> queue.remove();</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; p.children.length; i++)&#123;</span><br><span class="line">                <span class="keyword">if</span>(p.children[i] != <span class="literal">null</span>)&#123;</span><br><span class="line">                    <span class="comment">// 孩子结点入队列</span></span><br><span class="line">                    queue.add(p.children[i]);</span><br><span class="line">                    <span class="comment">// 从p.fail开始找起</span></span><br><span class="line">                    <span class="type">Node</span> <span class="variable">f</span> <span class="operator">=</span> p.fail;</span><br><span class="line">                    <span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">                        <span class="comment">// 向上找到了根结点还没有找到(没有公共前缀)</span></span><br><span class="line">                        <span class="keyword">if</span>(f == <span class="literal">null</span>)&#123;</span><br><span class="line">                            p.children[i].fail = root;</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="comment">// 有公共前缀</span></span><br><span class="line">                        <span class="keyword">if</span>(f.children[i] != <span class="literal">null</span>)&#123;</span><br><span class="line">                            p.children[i].fail = f.children[i];</span><br><span class="line">                            <span class="keyword">break</span>;</span><br><span class="line">                        &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">                            <span class="comment">// 继续向上寻找</span></span><br><span class="line">                            f = f.fail;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 构造AC自动机</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> patterns 多模式串</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">AC</span><span class="params">(String[] patterns)</span> &#123;</span><br><span class="line">        root = <span class="keyword">new</span> <span class="title class_">Node</span>();</span><br><span class="line">        buildTrieTree(patterns);</span><br><span class="line">        buildFailurePointer();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 匹配所有的模式串</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> text 文本串（主串）</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> HashMap&lt;String, List&lt;Integer&gt;&gt; <span class="title function_">match</span><span class="params">(String text)</span>&#123;</span><br><span class="line">        <span class="type">Node</span> <span class="variable">p</span> <span class="operator">=</span> root;</span><br><span class="line">        <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(i &lt; text.length())&#123;</span><br><span class="line">            <span class="comment">// 文本串中的字符</span></span><br><span class="line">            <span class="type">char</span> <span class="variable">ch</span> <span class="operator">=</span> text.charAt(i);</span><br><span class="line">            <span class="comment">// 在AC自动机中找文本串中的字符ch</span></span><br><span class="line">            <span class="keyword">if</span>(p.children[ch] != <span class="literal">null</span>)&#123;</span><br><span class="line">                <span class="comment">// 找到了，自动机进入下一状态</span></span><br><span class="line">                p = p.children[ch];</span><br><span class="line">                <span class="keyword">if</span>(p.isWord)&#123;</span><br><span class="line">                    <span class="comment">// 模式串匹配成功，存入结果集result</span></span><br><span class="line">                    <span class="type">String</span> <span class="variable">pattern</span> <span class="operator">=</span> text.substring(i - p.depth + <span class="number">1</span>, i + <span class="number">1</span>);</span><br><span class="line">                    result.get(pattern).add(i - p.depth + <span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// 模式串的中间某部分字符可能正好包含另一个模式串</span></span><br><span class="line">                <span class="keyword">if</span>(p.fail != <span class="literal">null</span> &amp;&amp; p.fail.isWord)&#123;</span><br><span class="line">                    <span class="type">String</span> <span class="variable">pattern</span> <span class="operator">=</span> text.substring(i - p.fail.depth + <span class="number">1</span>, i + <span class="number">1</span>);</span><br><span class="line">                    result.get(pattern).add(i - p.fail.depth + <span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// 文本串索引自增，指向下一个文本串中的字符</span></span><br><span class="line">                i++;</span><br><span class="line">            &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="comment">// 没找到（p.children[ch] == null）,</span></span><br><span class="line">                <span class="comment">// 失配指针发挥作用的地</span></span><br><span class="line">                p = p.fail;</span><br><span class="line">                <span class="comment">// 到根结点还未找到，说明文本串中以ch作为结束的字符片段不是任何目标字符串的前缀，</span></span><br><span class="line">                <span class="comment">// 状态机重置(从root开始重新匹配)，比较下一个字符</span></span><br><span class="line">                <span class="keyword">if</span>(p == <span class="literal">null</span>)&#123;</span><br><span class="line">                    p = root;</span><br><span class="line">                    i++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 文本串扫描完毕，返回结果集</span></span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>AC自动机 测试</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">testAC</span><span class="params">()</span> &#123;</span><br><span class="line">    String[] patterns = &#123;<span class="string">&quot;he&quot;</span>,<span class="string">&quot;her&quot;</span>,<span class="string">&quot;his&quot;</span>,<span class="string">&quot;she&quot;</span>&#125;;</span><br><span class="line">    <span class="type">String</span> <span class="variable">text</span> <span class="operator">=</span> <span class="string">&quot;shisherhis&quot;</span>;</span><br><span class="line">    <span class="comment">// 构造AC自动机</span></span><br><span class="line">    <span class="type">AC</span> <span class="variable">ac</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AC</span>(patterns);</span><br><span class="line">    <span class="comment">// AC自动机匹配文本串</span></span><br><span class="line">    HashMap&lt;String, List&lt;Integer&gt;&gt; result = ac.match(text);</span><br><span class="line"></span><br><span class="line">    System.out.println(<span class="string">&quot;文本串“&quot;</span>+ text + <span class="string">&quot;”的匹配结果：&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (Map.Entry&lt;String, List&lt;Integer&gt;&gt; entry : result.entrySet())&#123;</span><br><span class="line">        System.out.println(entry.getKey()+<span class="string">&quot; : &quot;</span> + entry.getValue());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">文本串“shisherhis”的匹配结果：</span><br><span class="line">she : [3]</span><br><span class="line">his : [1, 7]</span><br><span class="line">her : [4]</span><br><span class="line">he : [4]</span><br></pre></td></tr></table></figure>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Trie-%E6%A0%91"><span class="toc-text">1. Trie 树</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-Trie-%E6%A0%91-%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-text">1.1 Trie 树 的实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-Trie-%E6%A0%91-%E7%9A%84%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="toc-text">1.2 Trie 树 的复杂度</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-AC-%E8%87%AA%E5%8A%A8%E6%9C%BA"><span class="toc-text">2. AC 自动机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-AC-%E8%87%AA%E5%8A%A8%E6%9C%BA%E7%9A%84-Java-%E5%AE%9E%E7%8E%B0"><span class="toc-text">3. AC 自动机的 Java 实现</span></a></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/2022/07/06/data-structure-trie-ac.html">http://chaooo.github.io/2022/07/06/data-structure-trie-ac.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/" rel="tag">算法</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2022/06/25/data-structure-text-pattern-algorithm.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          「数据结构与算法」单模式字符串匹配算法（BF、RK、KMP、BM）
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/07/06/data-structure-trie-ac.html">「数据结构与算法」Trie 树 与 AC 自动机</a>
+          </li>
+        
+          <li>
+            <a href="/2022/06/25/data-structure-text-pattern-algorithm.html">「数据结构与算法」单模式字符串匹配算法（BF、RK、KMP、BM）</a>
+          </li>
+        
+          <li>
+            <a href="/2022/06/02/data-structure-binary-search.html">「数据结构与算法」二分查找</a>
+          </li>
+        
+          <li>
+            <a href="/2022/05/25/data-structure-sort.html">「数据结构与算法」排序算法</a>
+          </li>
+        
+          <li>
+            <a href="/2022/05/10/data-structure-graph.html">「数据结构与算法」图（Graph）</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 10.63px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 15.63px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.63px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 11.88px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 11.88px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.25px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.25px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 16.25px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 11.88px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 11.88px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 16.25px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 11.88px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.13px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.63px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 13.75px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.63px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.5px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.75px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 13.75px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.5px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.13px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 13.75px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.25px;">hexo</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 16.88px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 11.88px;">并发编程</a> <a href="/tags/db/" style="font-size: 14.38px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 18.13px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.38px;">环境配置</a> <a href="/tags/algorithm/" style="font-size: 17.5px;">算法</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">16</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022年</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">算法</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p style="display:none;">
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow">粤ICP备19039226号</a>
+      </p>
+      <p>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+  </div>
+  
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+    
+<script src="/localshare/js/social-share.js"></script>
+
+    
+<script src="/localshare/js/qrcode.js"></script>
+
+  
+  
+
+
+
+  
+    
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+    
+<script src="//cdn.bootcdn.net/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
+
+    <script>
+      var gitalk = new Gitalk({
+        clientID: 'dd644e0a840b03bbb238',
+        clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+        repo: 'BlogComments',
+        owner: 'chaooo',
+        admin: ['chaooo'],
+        proxy: 'https://cors-server-ecru.vercel.app/github_access_token',
+        id: md5(window.location.pathname),
+        distractionFreeMode: false,
+        language: 'zh-CN',
+        pagerDirection: 'last'
+      });
+      gitalk.render('comments');
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+
+
+
+
+</body>
+</html>

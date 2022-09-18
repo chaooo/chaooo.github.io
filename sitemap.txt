@@ -1,3 +1,5 @@
+http://chaooo.github.io/2022/07/06/data-structure-trie-ac.html
+http://chaooo.github.io/2022/05/10/data-structure-graph.html
 http://chaooo.github.io/2022/06/25/data-structure-text-pattern-algorithm.html
 http://chaooo.github.io/2022/06/02/data-structure-binary-search.html
 http://chaooo.github.io/2022/05/25/data-structure-sort.html
@@ -5,7 +7,6 @@ http://chaooo.github.io/2022/04/25/data-structure-redblacktree.html
 http://chaooo.github.io/2022/03/18/data-structure-hashtable.html
 http://chaooo.github.io/2022/03/12/data-structure-skiplist.html
 http://chaooo.github.io/2022/03/05/data-structure-stack-queue.html
-http://chaooo.github.io/2022/05/10/data-structure-graph.html
 http://chaooo.github.io/2022/05/02/data-structure-heap.html
 http://chaooo.github.io/2022/04/15/data-structure-avltree.html
 http://chaooo.github.io/2022/04/08/data-structure-binarytree.html
