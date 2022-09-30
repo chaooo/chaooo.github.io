@@ -1,3 +1,4 @@
+http://chaooo.github.io/2022/07/25/data-structure-algorithm-method.html
 http://chaooo.github.io/2022/07/06/data-structure-trie-ac.html
 http://chaooo.github.io/2022/05/10/data-structure-graph.html
 http://chaooo.github.io/2022/06/25/data-structure-text-pattern-algorithm.html
