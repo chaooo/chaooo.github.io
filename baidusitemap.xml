@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://chaooo.github.io/2022/07/25/data-structure-algorithm-method.html</loc>
-    <lastmod>2022-09-30</lastmod>
+    <loc>http://chaooo.github.io/2022/08/15/data-structure-b-tree.html</loc>
+    <lastmod>2022-10-11</lastmod>
   </url>
   <url>
     <loc>http://chaooo.github.io/2022/07/06/data-structure-trie-ac.html</loc>
-    <lastmod>2022-09-18</lastmod>
+    <lastmod>2022-10-11</lastmod>
+  </url>
+  <url>
+    <loc>http://chaooo.github.io/2022/07/25/data-structure-algorithm-method.html</loc>
+    <lastmod>2022-09-30</lastmod>
   </url>
   <url>
     <loc>http://chaooo.github.io/2022/05/10/data-structure-graph.html</loc>

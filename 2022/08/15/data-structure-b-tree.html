@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>「数据结构与算法」B 树 与 B+ 树 | 秋过冬漫长</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+    <meta name="description" content="郑超的个人博客，Charles·Zheng&#39;s blog.">
+  
+  
+    <meta name="keywords" content="技术博客, 前端, JavaScript, Charles">
+  
+  
+    <link rel="alternate" href="/atom.xml" title="秋过冬漫长" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+    
+<link rel="stylesheet" href="/localshare/css/share.css">
+
+  
+  
+    
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+
+  
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">秋过冬漫长</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">没有比脚更长的路，走过去，前面是个天！</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        
+          <a class="main-nav-link" href="/."><i class="fa fa-home"></i> 首页</a>
+        
+          <a class="main-nav-link" href="/archives/"><i class="fa fa-archive"></i> 归档</a>
+        
+          <a class="main-nav-link" href="/about/"><i class="fa fa-user"></i> 关于</a>
+        
+          <a class="main-nav-link" href="/atom.xml"><i class="fa fa-rss"></i> 订阅</a>
+        
+      </nav>
+    </div>
+    <div id="search-form">
+      <div id="result-mask" class="hide"></div>
+      <label><input id="search-key" type="text" autocomplete="off" placeholder="搜索"></label>
+      <div id="result-wrap" class="hide">
+        <div id="search-result"></div>
+      </div>
+      <div class="hide">
+        <template id="search-tpl">
+          <div class="item">
+            <a href="/{path}" title="{title}">
+              <div class="title">{title}</div>
+              <div class="time">{date}</div>
+              <div class="tags">{tags}</div>
+            </a>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-data-structure-b-tree" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      「数据结构与算法」B 树 与 B+ 树
+    </h1>
+  
+
+
+      </header>
+    
+    <div class="article-meta">
+      
+      <span class="article-date">
+  <i class="fa fa-date"></i>
+  <time class="dt-published" datetime="2022-08-15T10:12:00.000Z" itemprop="datePublished">2022年08月15日</time>
+</span>
+      
+  <div class="article-category">
+    <i class="fa fa-classify"></i>
+    <a class="article-category-link" href="/categories/data-structure/">数据结构</a>
+  </div>
+
+      
+        <span class="article-views" style="display:none;">
+  <i class="fa fa-views"></i>
+  <i id="busuanzi_container_page_pv">
+      <i id="busuanzi_value_page_pv"></i>
+  </i>
+</span>
+
+      
+      
+<a href="/2022/08/15/data-structure-b-tree.html#comments" class="article-comment-link">
+  
+    
+    
+    
+    
+    
+  
+  <i class="fa fa-commt"></i>
+  留言
+</a>
+
+
+    </div>
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>一般情况，我们可以把整个数据结构存储到计算机的主存中；可如果数据更多装不下主存，那么意味着必须把数据结构放到磁盘上。<br>此时“大<code>O</code>模型”不再适用，因为大<code>O</code>分析假设所有操作耗时都是相同的，所以涉及到<strong>磁盘I&#x2F;O</strong>就不再适用了。与内存相比，磁盘必须花成倍的时间来存取一个数据元素，这是因为磁盘的机械部件读写数据的速度远远赶不上纯电子媒体的内存。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">【CPU】 &lt;---&gt; 【内存】 &lt;--I/O--&gt; 【磁盘】</span><br></pre></td></tr></table></figure>
+<p>当在大量数据存储中，查询时我们不能一下子将所有数据加载到内存中，只能逐一加载磁盘页，每个磁盘页对应树的节点。造成大量磁盘<code>I/O</code>操作（最坏情况下为树的高度）。<br>平衡二叉树由于树深度过大而造成磁盘I&#x2F;O读写过于频繁，进而导致效率低下。<br>为了减少磁盘<code>I/O</code>操作的次数，就你必须降低树的深度，将“瘦高”的树变得“矮胖”。<br>所以，就引入了<code>B 树</code>。<code>B 树</code>利用多个分支（称为子树）的节点，减少获取记录时所经历的节点数，从而达到节省存取时间的目的。</p>
+<span id="more"></span>
+
+<h3 id="1-B-树（B-Tree）"><a href="#1-B-树（B-Tree）" class="headerlink" title="1. B 树（B Tree）"></a>1. B 树（B Tree）</h3><p><code>B 树</code>（B-Tree），是一种<strong>平衡的多路查找树</strong>，主要面向于动态查找，常用于文件系统中。<br><code>B 树</code>中，节点的子树最大数目称为 <strong>B 树的阶</strong>。</p>
+<ul>
+<li>一颗<strong>m 阶</strong><code>B 树</code>（m叉树）或为空树，或满足：<ul>
+<li>叶子节点都出现在同一层，且不带信息。</li>
+<li>树中每个节点最多有<code>m</code>棵子树。</li>
+<li>叶子节点的父节点称为<strong>终端节点</strong>，若根节点不是终端节点，则至少有两棵子树。</li>
+<li>除根节点外的所有非终端节点至少有<code>m/2</code>棵子树。</li>
+<li>非终端节点都包括数据：<code>&#123;n,A0, K1,A1, K2,A2..., Kn,An&#125;</code>，其中<code>n</code>为关键字个数(取值范围是<code>[(m/2)-1,m-1]</code>,向上取整)，<code>Ki</code>为关键字，<code>Ai</code>为指向子树根节点的指针，且指针<code>Ai</code>所指子树中所有节点的关键字均大于<code>Ki</code>且小于 <code>K&#123;i+1&#125;</code>（即关键字有序）。</li>
+</ul>
+</li>
+</ul>
+<p>节点的结构：<br><img src="/2022/08/15/data-structure-b-tree/04_01.png"></p>
+<p>一般情况下，<code>B 树</code>的叶子节点可以看做外部节点，即查找失败的点，实际上这些节点并不存在，指向这些节点的指针都为<code>NULL</code>；<br><code>B 树</code>是树高平衡的，此外，<code>B 树</code>中每个节点中关键字的个数为<code>子树个数-1</code>。</p>
+<h4 id="1-1-构建-B-树（插入）"><a href="#1-1-构建-B-树（插入）" class="headerlink" title="1.1 构建 B 树（插入）"></a>1.1 构建 B 树（插入）</h4><p><code>B 树</code>也是从空树开始，但是在插入新的关键字时并不是每次都向树中插入新的节点。</p>
+<ul>
+<li>对于<code>m</code>阶的<code>B 树</code>来说，节点中包含关键字的个数<code>n</code>的范围是<code>[(m/2)-1,m-1]</code>，在插入新的关键字时，首先向最底层的某个终端节点中添加:<ul>
+<li>若节点中关键字个数<code>n</code>小于<code>m-1</code>，则直接插入成功；</li>
+<li>若节点中关键字个数<code>n</code>等于<code>m-1</code>，插入后<code>n&gt;m-1</code>引起节点分裂；以该节点中间关键字为分界，取中间关键字（偶数个数，中间两个随机选取）插入到父节点中；</li>
+<li>重复上面动作，直到所有节点符合B 树的规则<code>[(m/2)-1,m-1]</code>；最坏的情况一直分裂到根节点，生成新的根节点，高度增加<code>1</code>；</li>
+</ul>
+</li>
+</ul>
+<p>如图，有一颗<code>3</code>阶 <code>B 树</code>（深度为<code>4</code>）：<br><img src="/2022/08/15/data-structure-b-tree/04_02.png"><br>分别插入关键字 <code>30</code>、<code>26</code>、<code>85</code>、<code>7</code>。<br>（<code>3</code>阶 <code>B 树</code>节点中关键字个数<code>n</code>的范围是<code>[(m/2)-1,m-1]</code>向上取整，即<code>[1,2]</code>，插入后<code>n&gt;2</code>就分裂）。</p>
+<ul>
+<li>插入关键字<code>30</code>：<br><img src="/2022/08/15/data-structure-b-tree/04_04.gif"></li>
+</ul>
+<p>插入关键字<code>30</code>的过程：【45】–&gt;【24】–&gt;【37】直接插入变成【30,37】</p>
+<ul>
+<li>插入关键字<code>26</code>：<br><img src="/2022/08/15/data-structure-b-tree/04_05.gif"></li>
+</ul>
+<p>插入关键字<code>26</code>的过程：【45】–&gt;【24】–&gt;【30,37】；<br><code>26</code>插入【30,37】节点后变成【26,30,37】其关键字个数<code>n&gt;2</code>分裂：①<code>37</code>存储到新的节点【37】，②<code>30</code>存储到父节点变成【24,30】，同时<code>30</code>的右侧的指针指向新节点【37】。</p>
+<ul>
+<li>插入关键字<code>85</code>：<br><img src="/2022/08/15/data-structure-b-tree/04_06.gif"></li>
+</ul>
+<p>插入关键字<code>85</code>的过程：【45】–&gt;【53,90】–&gt;【61,70】；<br><code>85</code>插入【61,70】节点后变成【61,70,85】其关键字个数<code>n&gt;2</code>分裂：①<code>85</code>存储到新的节点【85】，②<code>70</code>存储到父节点变成【53,70,90】，同时<code>70</code>的右侧的指针指向新节点【85】。<br>节点【53,70,90】分裂：①<code>90</code>存储到新的节点【90】，②<code>70</code>存储到父节点变成【45,70】，同时<code>70</code>的右侧的指针指向新节点【90】。</p>
+<ul>
+<li>插入关键字<code>7</code>：<br><img src="/2022/08/15/data-structure-b-tree/04_07.gif"></li>
+</ul>
+<p>插入关键字<code>7</code>的过程：【45,70】–&gt;【24,30】–&gt;【3,12】该节点关键字为<code>2</code>等于<code>m-1</code>；<br><code>7</code>插入【3,12】节点后变成【3,7,12】其关键字个数<code>n&gt;2</code>分裂：①<code>12</code>存储到新的节点【12】，②<code>7</code>存储到父节点变成【7,24,30】，同时<code>7</code>的右侧的指针指向新节点【12】。<br>节点【7,24,30】分裂：①<code>30</code>存储到新的节点【30】，②<code>24</code>存储到根节点变成【24,45,70】，同时<code>24</code>的右侧的指针指向新节点【30】。<br>根节点【24,45,70】分裂：①<code>70</code>存储到新的节点【70】，②【45】变成新的根节点，同时【45】的右侧的指针指向新节点【70】；【45】的左侧的指针指向【24】。</p>
+<h4 id="1-2-B-树的删除"><a href="#1-2-B-树的删除" class="headerlink" title="1.2 B 树的删除"></a>1.2 B 树的删除</h4><p>在<code>B 树</code>中删除关键字时，首先找到该关键字所在节点，然后在节点中对关键字进行删除；首先判断该关键字是否有子节点，如果没有，直接删除；如果有，删除后则上移子节点中的某相近关键字(“左子节点最右关键字”或“右子节点最左关键字”)到此节点中。<br>然后是移动之后的情况：</p>
+<ul>
+<li>某节点中关键字个数<code>n</code>小于<code>m/2-1</code>（向上取整），则需要看其左右相邻兄弟节点是否丰满：<ul>
+<li>①如果有一个丰满（节点中关键字个数<code>n</code>大于<code>m/2-1</code>），则向父节点借一个关键字来满足条件，上移该丰满节点最后或最前一个关键字到父节点中；</li>
+<li>②如果其相邻兄弟都不丰满，则该节点与其相邻的某一兄弟节点进行“合并”成一个节点；</li>
+</ul>
+</li>
+</ul>
+<p>如图，有一颗<code>5</code>阶 <code>B 树</code>（深度为<code>4</code>）：<br><img src="/2022/08/15/data-structure-b-tree/04_03.png"></p>
+<p>依次删除依次删除<code>8</code>、<code>20</code>、<code>18</code>、<code>5</code>。<br>（<code>5</code>阶 <code>B 树</code>节点中关键字个数<code>n</code>的范围是<code>[(m/2)-1,m-1]</code>向上取整，即<code>[2,4]</code>，关键要领：关键字个数小于<code>2</code>就合并，大于<code>4</code>就分裂）。</p>
+<ul>
+<li>删除关键字<code>8</code>：<br><img src="/2022/08/15/data-structure-b-tree/04_08.gif"></li>
+</ul>
+<p>删除<code>8</code>，首先查找<code>8</code>，<code>8</code>在一个终端节点【8,11,12】中，删除后该节点关键字个数<code>n=2</code>，符合<code>B 树</code>规则<code>[2,4]</code>，操作很简单，节点中删除关键字后面的关键字向前移动，也就是只需要移动<code>11</code>至原来<code>8</code>的位置，移动<code>12</code>至<code>11</code>的位置。</p>
+<ul>
+<li>删除关键字<code>20</code>：<br><img src="/2022/08/15/data-structure-b-tree/04_09.gif"></li>
+</ul>
+<p>删除<code>20</code>,因为<code>20</code>在节点【17，20】中不是终端节点，上移其孩子节点中的某相近关键字(<code>19</code>或<code>23</code>)，若上移<code>19</code>该子节点关键字个数<code>n&lt;2</code>则还需额外操作，所以<code>23</code>上移到<code>20</code>的位置，该子节点关键字个数为<code>3</code>，无需进行合并操作。</p>
+<ul>
+<li>删除关键字<code>18</code>：<br><img src="/2022/08/15/data-structure-b-tree/04_10.gif"></li>
+</ul>
+<p>删除<code>18</code>，<code>18</code>在一个终端节点【18,19】中，但是该节点中关键字个数<code>n=2</code>，删除后就小于<code>2</code>，没达标，而相邻右兄弟节点比较丰满，则先向父节点借一个关键字<code>23</code>下移到该删除节点中，代替原来<code>19</code>的位置，<code>19</code>前移；然后将丰满兄弟节点的<code>24</code>上移到父节点中。</p>
+<ul>
+<li>删除关键字<code>5</code>：<br><img src="/2022/08/15/data-structure-b-tree/04_11.gif"></li>
+</ul>
+<p>删除<code>5</code>，<code>5</code>在一个终端节点中且关键字个数<code>n=2</code>，删除后就小于<code>2</code>，没达标，而相邻右兄弟节点都不丰满，所以需要该节点与某相邻兄弟节点进行<strong>合并操作</strong>：子节点【1,3】【6】，父节点【4,7】；首先将父节点的关键字<code>4</code>下移到删除的节点中变成【4,6】,然后合并【1,3】与【4,6】变成一个节点【1,3,4,6】。<br>此时，你会发现父节点只包含一个关键字<code>7</code>，<code>n=1</code>没达标<code>[2,4]</code>，而相邻右兄弟节点都不丰满，只能进行合并，而根节点中的唯一关键字<code>13</code>下移到子节点，这样，<strong>树的高度减少一层</strong>，根节点变成【7,13,17,24】。</p>
+<h3 id="2-磁盘I-x2F-O-与-预读"><a href="#2-磁盘I-x2F-O-与-预读" class="headerlink" title="2. 磁盘I&#x2F;O 与 预读"></a>2. 磁盘I&#x2F;O 与 预读</h3><p>计算机存储设备一般分为：<strong>内存储器</strong>(main memory)和<strong>外存储器</strong>(external memory)。 </p>
+<ul>
+<li>内存储器为<strong>内存</strong>，内存存取速度快，但容量小，价格昂贵，且数据不能长期保存(数据断电就没了)。</li>
+<li>外存储器为<strong>磁盘读取</strong>，磁盘读取数据靠的是机械运动，每次读取数据花费的时间可以分为<strong>寻道时间</strong>、<strong>旋转延迟</strong>、<strong>传输时间</strong>三个部分：<ul>
+<li>寻道时间指磁臂移动到指定磁道所需要的时间，主流磁盘一般在<code>5ms</code>以下；</li>
+<li>旋转延迟指的是磁盘转速，比如一个磁盘<code>7200</code>转，表示每分钟能转<code>7200</code>次，也就是说<code>1</code>秒钟能转<code>120</code>次，旋转延迟就是<code>1/120/2 = 4.17ms</code>；</li>
+<li>传输时间指的是从磁盘读出或将数据写入磁盘的时间，一般在零点几毫秒，相对于前两个时间可以忽略不计。</li>
+</ul>
+</li>
+</ul>
+<p>那么粗略计算一次磁盘I&#x2F;O的时间约<code>5+4.17 = 9ms</code>左右，但要知道一台<code>500-MIPS</code>的机器每秒可以执行<code>5亿</code>条指令，因为指令依靠的是电的性质，换句话说执行一次I&#x2F;O的时间可以执行<code>40万</code>条指令，数据库动辄十万百万乃至千万级数据，每次<code>9</code>毫秒的时间，显然是个灾难。</p>
+<p>由于磁盘IO的高耗时操作，计算机系统做了很多优化，当一次磁盘I&#x2F;O时，不仅会读取当前磁盘地址的数据，还会把相邻的数据也一起读到内存中，因为一般情况下，其相邻的数据很快也会被访问到，这就是局部预读性原理。<br>由于磁盘顺序读取的效率很高（不需要寻道时间，只需很少的旋转时间），因此对于具有局部性的程序来说，<strong>预读可以提高I&#x2F;O效率</strong>。<br>预读的长度一般为页（page）的整倍数。页是计算机管理存储器的逻辑块，硬件及操作系统往往将主存和磁盘存储区分割为连续的大小相等的块，每个存储块称为一页（在许多操作系统中，页得大小通常为<code>4k</code>或<code>8k</code>），主存和磁盘以页为单位交换数据。当程序要读取的数据不在主存中时，会触发一个缺页异常，此时系统会向磁盘发出读盘信号，磁盘会找到数据的起始位置并向后连续读取一页或几页载入内存中，然后异常返回，程序继续运行。</p>
+<p>内存(<code>ns</code>级别) &lt;&lt; 磁盘(<code>ms</code>级别)，相差<code>100000</code>倍；为了避免1次外存访问，宁愿访问内存100+次，所以将最常用的数据存储在最快的存储器中。</p>
+<p>索引查询的数据主要受限于磁盘的I&#x2F;O速度，查询I&#x2F;O次数越少，速度越快，所以<code>B 树</code>的结构才应需求而生；<code>B 树</code>的每个节点的关键字可以视为一次I&#x2F;O读取，树的高度表示最多的I&#x2F;O次数，在相同数量的总关键字个数下，每个节点的关键字个数越多，高度越低，查询所需的I&#x2F;O次数越少；<br>假设，一次磁盘一次I&#x2F;O数据为8K，索引用int(4字节)类型数据建立，理论上一个节点最多可以为2000个关键字，2000<em>2000</em>2000&#x3D;8000000000，80亿条的数据只需3次I&#x2F;O（理论值），可想而知，<code>B 树</code>做为索引的查询效率有多高；</p>
+<h3 id="3-B-树（B-Tree）"><a href="#3-B-树（B-Tree）" class="headerlink" title="3. B+ 树（B+ Tree）"></a>3. B+ 树（B+ Tree）</h3><p><code>B+ 树</code>是应文件系统所需而产生的<code>B 树</code>的变形树，严格意义上来讲，其已经不是一棵树了。<br>由于 <code>B+ 树</code>的非叶节点不含有实际数据，因此磁盘页中可以容纳更多节点关键字，也就是说同样数据情况下，<code>B+ 树</code>会 <code>B 树</code>更加“矮胖”，因此查询效率更快，磁盘读写代价更低。<br><code>B+ 树</code>的叶子节点包含了全部的数据，任何关键字的查找必须走一条从根节点到叶子节点的路。所有关键字查询的路径长度相同，导致每一个数据的查询效率相当；所以查询效率是稳定的。<br><code>B 树</code>在提高了I&#x2F;O性能的同时并没有解决关键字遍历效率低下的问题，范围查找时<code>B 树</code>只能挨个中序遍历比较大小。由于 <code>B+ 树</code>的叶子节点是一个有序链表，只需在叶子节点上遍历即可。</p>
+<p>各种资料上<code>B+ 树</code>的定义各有不同，一种定义是关键字个数与子树个数相同。这里我们采取维基百科上所定义的方式，即关键字个数比子树个数小<code>1</code>，即对于<code>m</code>阶的<code>B+ 树</code>来说，最多有<code>m-1</code>个关键字，最多<code>m</code>个子树。<br>除此之外<code>B+ 树</code>还有以下要求：<strong>非叶子节点不存数据仅用作索引</strong>，非叶子节点的关键字都在它的下一级子树中同样存在，最后<strong>所有数据都存储在叶子节点中</strong>，每个叶子节点都<strong>存有相邻叶子节点的指针</strong>，叶子节点本身依关键字的大小自小而大顺序链接。根节点的关键字个数最少可以只有<code>1</code>个。</p>
+<p><img src="/2022/08/15/data-structure-b-tree/04_12.png"></p>
+<ul>
+<li><code>B+ 树</code>的特性：<ul>
+<li>所有关键字都出现在叶子节点的链表中（稠密索引），且链表中的关键字恰好是有序的；</li>
+<li>不可能在非叶子节点命中；</li>
+<li>非叶子节点相当于是叶子节点的索引（稀疏索引），叶子节点相当于是存储（关键字）数据的数据层；</li>
+<li>更适合文件索引系统；</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-1-构建-B-树（插入）"><a href="#3-1-构建-B-树（插入）" class="headerlink" title="3.1 构建 B+ 树（插入）"></a>3.1 构建 B+ 树（插入）</h4><p><code>B+ 树</code>的插入操作全部都在<strong>叶子节点</strong>上进行，且不能破坏关键字自小而大的顺序；</p>
+<ul>
+<li>对于<code>m</code>阶的<code>B+ 树</code>来说，根据维基百科上的定义节点中包含关键字的个数<code>n</code>的范围是<code>[(m/2)-1,m-1]</code>（根节点的关键字个数最少可以只有<code>1</code>个），在插入新的关键字时：<ul>
+<li>若节点中关键字个数<code>n</code>小于<code>m-1</code>，则直接插入成功；</li>
+<li>若节点中关键字个数<code>n</code>等于<code>m-1</code>，插入后<code>n&gt;m-1</code>引起节点分裂；以该节点中间关键字为分界，取中间关键字（偶数个数，中间两个随机选取）上移至父节点中；</li>
+<li>重复上面动作，直到所有节点符合<code>B+ 树</code>关键字个数的规则；</li>
+</ul>
+</li>
+</ul>
+<p>如图，构建一颗<code>3</code>阶 <code>B+ 树</code>：<code>10</code>、<code>56</code>、<code>90</code>、<code>5</code>、<code>20</code>、<code>80</code>。</p>
+<p><img src="/2022/08/15/data-structure-b-tree/04_13.gif"></p>
+<ul>
+<li>插入<code>10</code>、<code>56</code>，直接插入成功节点变成【10,56】；</li>
+<li>插入<code>90</code>:<br><img src="/2022/08/15/data-structure-b-tree/04_14.gif"></li>
+</ul>
+<p><code>90</code>插入后节点后变成【10,56,90】其关键字个数<code>n&gt;2</code>分裂成【10】【56,90】，<code>56</code>上移至父节点中变成【56】，同时<code>56</code>的左指针指向【10】，<code>56</code>的右指针指向【56,90】；</p>
+<ul>
+<li>插入<code>5</code>，找到节点【10】，直接插入变成【5,10】；</li>
+<li>插入<code>20</code>:<br><img src="/2022/08/15/data-structure-b-tree/04_15.gif"></li>
+</ul>
+<p>插入<code>20</code>，找到节点【5,10】，插入后变成【5,10,20】分裂成【5】【10,20】，<code>10</code>上移至父节点中变成【10,56】，同时<code>10</code>的左指针指向【5】，<code>10</code>的右指针指向【10,20】；</p>
+<ul>
+<li>插入<code>80</code>:<br><img src="/2022/08/15/data-structure-b-tree/04_16.gif"></li>
+</ul>
+<p>插入<code>80</code>，找到节点【56,90】，插入后变成【56,80,90】分裂成【56】【80,90】，<code>80</code>上移至父节点中变成【10,56,80】，同时<code>80</code>的左指针指向【56】，<code>80</code>的右指针指向【80,90】；此时节点【10,56,80】继续分裂成【10】【80】，<code>56</code>上移至父节点中变成【56】，同时<code>56</code>的左指针指向【10】，<code>56</code>的右指针指向【80】；</p>
+<h4 id="3-2-B-树的删除"><a href="#3-2-B-树的删除" class="headerlink" title="3.2 B+ 树的删除"></a>3.2 B+ 树的删除</h4><p><code>B+ 树</code>的删除操作也仅在<strong>叶子节点</strong>上进行；<br>删除时，如果不破坏<code>B+ 树</code>本身的性质，直接完成操作；<br>删除时还要注意有时需要更改其父节点中的索引值；<br>在删除关键字后，如果导致其节点中关键字个数不足，有两种方法：一种是向兄弟节点去借，另外一种是同兄弟节点合并（与<code>B 树</code>类似）。</p>
+<p>如图，有一颗<code>5</code>阶 <code>B+ 树</code>：<br><img src="/2022/08/15/data-structure-b-tree/04_17.png"></p>
+<ul>
+<li>删除<code>53</code>:<br><img src="/2022/08/15/data-structure-b-tree/04_18.gif"></li>
+</ul>
+<p>删除<code>53</code>后，节点【50】关键字不足，向兄弟节点借一个最相近的<code>68</code>后变成【50,68】，兄弟节点变成【69,70,71】，父节点索引由原来的<code>68</code>变成<code>69</code>；</p>
+<ul>
+<li>删除<code>69</code>:<br><img src="/2022/08/15/data-structure-b-tree/04_19.gif"></li>
+</ul>
+<p>删除<code>69</code>后，节点【70,71】不破坏<code>B+ 树</code>本身的性质，只需更改父节点索引为<code>70</code>即可；</p>
+<ul>
+<li>删除<code>70</code>:<br><img src="/2022/08/15/data-structure-b-tree/04_20.gif"></li>
+</ul>
+<p>删除<code>70</code>后，节点【71】关键字不足，兄弟节点也不丰满，与兄弟节点合并为【50,68,71】，合并后只有一个叶子节点，树的高度减一；</p>
+<h3 id="4-B-树（B-Tree）"><a href="#4-B-树（B-Tree）" class="headerlink" title="4. B* 树（B* Tree）"></a>4. B* 树（B* Tree）</h3><p><code>B* 树</code>是<code>B+ 树</code>的变形树，其也非严格意义上的树。<br><code>B* 树</code>在<code>B+ 树</code>的基础上进行了改进，<strong>在<code>B+ 树</code>的非根和非叶子节点上行增加了指向兄弟的指针</strong>，且规定<code>m</code>阶树非叶节点关键字个数至少为<code>(2/3)m</code>，即块的最低使用率为<code>2/3</code>，可以看出，<code>B* 树</code>空间利用率更高。</p>
+<h3 id="5-InnoDB-存储引擎"><a href="#5-InnoDB-存储引擎" class="headerlink" title="5. InnoDB 存储引擎"></a>5. InnoDB 存储引擎</h3><p><code>InnoDB</code>是<code>MySQL</code>的默认事务引擎，也是目前最重要、使用最广泛的存储引擎。</p>
+<ul>
+<li>在<code>InnoDB</code>中，表都是根据主键顺序以索引的形式存放的，这种存储方式的表称为索引组织表。</li>
+<li><code>InnoDB</code>使用了<code>B+树</code>索引模型，所以数据都是存储在<code>B+树</code>中的。</li>
+<li>每一个索引在<code>InnoDB</code>里面对应一棵<code>B+树</code>，每一张表其实就是多个 <code>B+树</code>，即一个主键索引树和多个非主键索引树。<ul>
+<li>主键索引的叶子节点存的是整行数据。主键索引也被称为聚簇索引（clustered index）。</li>
+<li>非主键索引的叶子节点内容是主键索引的引用。非主键索引也被称为二级索引（secondary index）。</li>
+</ul>
+</li>
+</ul>
+<p>执行查询的效率，使用主键索引 &gt; 使用非主键索引 &gt; 不使用索引（从主索引 <code>B+树</code>的叶子节点进行遍历）。<br>使用非主键索引查询会触发回表，因为非主键索引只存储主键索引的引用，我们需要多扫描一棵索引树。因此，我们在应用中应该尽量使用主键查询。</p>
+<blockquote>
+<p>参考资料：<br><a target="_blank" rel="noopener" href="https://www.cs.helsinki.fi/u/mluukkai/tirak2010/B-tree.pdf">B+ 树 外文文档</a></p>
+</blockquote>
+
+        
+            <div id="toc-article">
+                
+  <div class="widget-wrap" id="toc-wrap">
+    <h3 class="widget-title"><i class="fa fa-toc"></i> 文章目录</h3>
+    <div class="widget">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-B-%E6%A0%91%EF%BC%88B-Tree%EF%BC%89"><span class="toc-text">1. B 树（B Tree）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-%E6%9E%84%E5%BB%BA-B-%E6%A0%91%EF%BC%88%E6%8F%92%E5%85%A5%EF%BC%89"><span class="toc-text">1.1 构建 B 树（插入）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-B-%E6%A0%91%E7%9A%84%E5%88%A0%E9%99%A4"><span class="toc-text">1.2 B 树的删除</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%A3%81%E7%9B%98I-x2F-O-%E4%B8%8E-%E9%A2%84%E8%AF%BB"><span class="toc-text">2. 磁盘I&#x2F;O 与 预读</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-B-%E6%A0%91%EF%BC%88B-Tree%EF%BC%89"><span class="toc-text">3. B+ 树（B+ Tree）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-%E6%9E%84%E5%BB%BA-B-%E6%A0%91%EF%BC%88%E6%8F%92%E5%85%A5%EF%BC%89"><span class="toc-text">3.1 构建 B+ 树（插入）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-B-%E6%A0%91%E7%9A%84%E5%88%A0%E9%99%A4"><span class="toc-text">3.2 B+ 树的删除</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-B-%E6%A0%91%EF%BC%88B-Tree%EF%BC%89"><span class="toc-text">4. B* 树（B* Tree）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-InnoDB-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E"><span class="toc-text">5. InnoDB 存储引擎</span></a></li></ol>
+    </div>
+  </div>
+
+
+            </div>
+        
+        
+          <blockquote id="copyright">
+              <p>原文链接: <a href="http://chaooo.github.io/2022/08/15/data-structure-b-tree.html">http://chaooo.github.io/2022/08/15/data-structure-b-tree.html</a></p>
+              <p>版权声明: 转载请注明出处.</p>
+          </blockquote>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div class="article-tag-wrap">
+          
+
+          
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/" rel="tag">算法</a></li></ul>
+
+          
+    <div class="social-share">
+      <span>分享到:</span>
+    </div>
+
+
+
+        </div>
+      
+      
+        
+<nav id="article-nav">
+  
+    <a href="/2022/07/25/data-structure-algorithm-method.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">older</strong>
+      <div class="article-nav-title">
+        
+          「数据结构与算法」常见算法思想
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+      
+      
+        
+  <div id="comments"></div>
+
+
+
+
+
+
+
+
+
+      
+    </footer>
+  </div>
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-posts"></i> 最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/08/15/data-structure-b-tree.html">「数据结构与算法」B 树 与 B+ 树</a>
+          </li>
+        
+          <li>
+            <a href="/2022/07/25/data-structure-algorithm-method.html">「数据结构与算法」常见算法思想</a>
+          </li>
+        
+          <li>
+            <a href="/2022/07/06/data-structure-trie-ac.html">「数据结构与算法」Trie 树 与 AC 自动机</a>
+          </li>
+        
+          <li>
+            <a href="/2022/06/25/data-structure-text-pattern-algorithm.html">「数据结构与算法」单模式字符串匹配算法（BF、RK、KMP、BM）</a>
+          </li>
+        
+          <li>
+            <a href="/2022/06/02/data-structure-binary-search.html">「数据结构与算法」二分查找</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/BlueLake/" style="font-size: 10.63px;">BlueLake</a> <a href="/tags/CentOS/" style="font-size: 15.63px;">CentOS</a> <a href="/tags/Config/" style="font-size: 10px;">Config</a> <a href="/tags/Docker/" style="font-size: 10.63px;">Docker</a> <a href="/tags/ElasticSearch/" style="font-size: 11.88px;">ElasticSearch</a> <a href="/tags/ElasticStack/" style="font-size: 11.88px;">ElasticStack</a> <a href="/tags/Eureka/" style="font-size: 10px;">Eureka</a> <a href="/tags/FastDFS/" style="font-size: 11.25px;">FastDFS</a> <a href="/tags/Gateway/" style="font-size: 10px;">Gateway</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/Gogs/" style="font-size: 10px;">Gogs</a> <a href="/tags/JVM/" style="font-size: 11.25px;">JVM</a> <a href="/tags/JWT/" style="font-size: 10px;">JWT</a> <a href="/tags/Java/" style="font-size: 16.25px;">Java</a> <a href="/tags/Javascript/" style="font-size: 10px;">Javascript</a> <a href="/tags/Jenkins/" style="font-size: 11.88px;">Jenkins</a> <a href="/tags/Kibana/" style="font-size: 11.88px;">Kibana</a> <a href="/tags/Linux/" style="font-size: 16.25px;">Linux</a> <a href="/tags/LogStash/" style="font-size: 11.88px;">LogStash</a> <a href="/tags/Maven/" style="font-size: 10px;">Maven</a> <a href="/tags/MySQL/" style="font-size: 13.13px;">MySQL</a> <a href="/tags/NFS/" style="font-size: 10px;">NFS</a> <a href="/tags/Nexus/" style="font-size: 10px;">Nexus</a> <a href="/tags/Nginx/" style="font-size: 10.63px;">Nginx</a> <a href="/tags/OpenFeign/" style="font-size: 10px;">OpenFeign</a> <a href="/tags/Permissions/" style="font-size: 10px;">Permissions</a> <a href="/tags/RBAC/" style="font-size: 10px;">RBAC</a> <a href="/tags/Reactor/" style="font-size: 10px;">Reactor</a> <a href="/tags/Redis/" style="font-size: 13.75px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 10.63px;">RocketMQ</a> <a href="/tags/SSE/" style="font-size: 10px;">SSE</a> <a href="/tags/SVN/" style="font-size: 10px;">SVN</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Shell/" style="font-size: 12.5px;">Shell</a> <a href="/tags/Spring/" style="font-size: 18.75px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 13.75px;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 12.5px;">SpringCloud</a> <a href="/tags/SpringReactive/" style="font-size: 13.13px;">SpringReactive</a> <a href="/tags/SpringSecurity/" style="font-size: 13.75px;">SpringSecurity</a> <a href="/tags/Thymeleaf/" style="font-size: 10px;">Thymeleaf</a> <a href="/tags/Token/" style="font-size: 10px;">Token</a> <a href="/tags/Tomcat9/" style="font-size: 10px;">Tomcat9</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/WebClient/" style="font-size: 10px;">WebClient</a> <a href="/tags/WebFlux/" style="font-size: 10px;">WebFlux</a> <a href="/tags/YApi/" style="font-size: 10px;">YApi</a> <a href="/tags/bower/" style="font-size: 10px;">bower</a> <a href="/tags/hexo/" style="font-size: 11.25px;">hexo</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/mongodb/" style="font-size: 10px;">mongodb</a> <a href="/tags/back-end/" style="font-size: 20px;">后端开发</a> <a href="/tags/safe/" style="font-size: 16.88px;">安全认证</a> <a href="/tags/idempotent/" style="font-size: 10px;">幂等</a> <a href="/tags/concurrent/" style="font-size: 11.88px;">并发编程</a> <a href="/tags/db/" style="font-size: 14.38px;">数据库</a> <a href="/tags/data-structure/" style="font-size: 18.13px;">数据结构</a> <a href="/tags/env/" style="font-size: 19.38px;">环境配置</a> <a href="/tags/algorithm/" style="font-size: 17.5px;">算法</a> <a href="/tags/network-protocol/" style="font-size: 10px;">网络协议</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-classify"></i> 分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ElasticStack/">ElasticStack</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">Hexo博客</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-learn/">Java教程</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringCloud/">SpringCloud</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringReactive/">SpringReactive</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/safe/">安全认证</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/concurrent/">并发编程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/db/">数据库</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/data-structure/">数据结构</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/env/">环境配置</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/network-protocol/">网络协议</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-archive"></i> 归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/">2022年</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021年</a><span class="archive-list-count">24</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020年</a><span class="archive-list-count">26</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019年</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018年</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017年</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016年</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title"><i class="fa fa-tag"></i> 标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/BlueLake/" rel="tag">BlueLake</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Config/" rel="tag">Config</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/" rel="tag">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticSearch/" rel="tag">ElasticSearch</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ElasticStack/" rel="tag">ElasticStack</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Eureka/" rel="tag">Eureka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FastDFS/" rel="tag">FastDFS</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gateway/" rel="tag">Gateway</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Git/" rel="tag">Git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Gogs/" rel="tag">Gogs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JWT/" rel="tag">JWT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Javascript/" rel="tag">Javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Jenkins/" rel="tag">Jenkins</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kibana/" rel="tag">Kibana</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LogStash/" rel="tag">LogStash</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/" rel="tag">Maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NFS/" rel="tag">NFS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/" rel="tag">Nexus</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/" rel="tag">Nginx</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenFeign/" rel="tag">OpenFeign</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Permissions/" rel="tag">Permissions</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/" rel="tag">RBAC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reactor/" rel="tag">Reactor</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/" rel="tag">RocketMQ</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SSE/" rel="tag">SSE</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVN/" rel="tag">SVN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/" rel="tag">Sentinel</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/" rel="tag">Shell</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringReactive/" rel="tag">SpringReactive</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringSecurity/" rel="tag">SpringSecurity</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Thymeleaf/" rel="tag">Thymeleaf</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Token/" rel="tag">Token</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tomcat9/" rel="tag">Tomcat9</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebClient/" rel="tag">WebClient</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebFlux/" rel="tag">WebFlux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/YApi/" rel="tag">YApi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/bower/" rel="tag">bower</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mongodb/" rel="tag">mongodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/back-end/" rel="tag">后端开发</a><span class="tag-list-count">71</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/safe/" rel="tag">安全认证</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/idempotent/" rel="tag">幂等</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/concurrent/" rel="tag">并发编程</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/db/" rel="tag">数据库</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/data-structure/" rel="tag">数据结构</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/env/" rel="tag">环境配置</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">算法</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/network-protocol/" rel="tag">网络协议</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+</aside>
+        
+      </div>
+      <a id="totop" href="#top"></a>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      <p>
+        <a href="/sitemap.xml">网站地图</a>
+        <span> | </span><a href="/atom.xml">订阅本站</a>
+        <span> | </span><a href="/about/">联系博主</a>
+      </p>
+      
+        <p style="display:none;">
+          <i class="fa fa-visitors"></i>
+          <i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>
+          ，
+          <i class="fa fa-views"></i>
+          <i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>
+        </p>
+      
+      <p>
+        <a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow">粤ICP备19039226号</a>
+      </p>
+      <p>
+        <span>Copyright &copy; 2022 郑超(Charles·Zheng).</span>
+        <span>Theme by <a href="https://github.com/chaooo/hexo-theme-BlueLake/" target="_blank">BlueLake.</a></span>
+        <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo.</a></span>
+      </p>
+    </div>
+  </div>
+</footer>
+
+    </div>
+  </div>
+  
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+<script src="/js/search.json.js"></script>
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+
+  
+<script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+    
+<script src="/localshare/js/social-share.js"></script>
+
+    
+<script src="/localshare/js/qrcode.js"></script>
+
+  
+  
+
+
+
+  
+    
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+    
+<script src="//cdn.bootcdn.net/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
+
+    <script>
+      var gitalk = new Gitalk({
+        clientID: 'dd644e0a840b03bbb238',
+        clientSecret: 'd0150281d9691f1d856ca44d6f620dd28782c48e',
+        repo: 'BlogComments',
+        owner: 'chaooo',
+        admin: ['chaooo'],
+        proxy: 'https://cors-server-ecru.vercel.app/github_access_token',
+        id: md5(window.location.pathname),
+        distractionFreeMode: false,
+        language: 'zh-CN',
+        pagerDirection: 'last'
+      });
+      gitalk.render('comments');
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+
+
+
+
+</body>
+</html>
